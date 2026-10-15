@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>صفحه من</title>
+<title>My Page</title>
 
 <style>
 /* === style.css === */
@@ -12,11 +12,11 @@
 </head>
 <body>
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ادیتور HTML / CSS / JS</title>
+    <title>HTML / CSS / JS Editor</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -345,7 +345,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            direction: rtl;
+            direction: ltr;
             font-size: 11px;
         }
 
@@ -652,7 +652,7 @@
             inset: 0;
             overflow-y: auto;
             padding: 16px;
-            direction: rtl;
+            direction: ltr;
             background: #272822;
             color: #eee;
             font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -715,7 +715,7 @@
             transition: all 0.15s;
         }
         .lib-form textarea:focus { border-color: var(--pink-accent); box-shadow: 0 0 8px var(--pink-shadow); }
-        .lib-form textarea::placeholder { color: #a07090; direction: rtl; text-align: right; }
+        .lib-form textarea::placeholder { color: #a07090; direction: ltr; text-align: right; }
         .lib-add-btn {
             margin-top: 10px;
             padding: 9px 20px;
@@ -759,7 +759,7 @@
             flex-direction: column;
             gap: 3px;
             text-align: right;
-            direction: rtl;
+            direction: ltr;
             font-family: inherit;
             color: inherit;
         }
@@ -800,7 +800,7 @@
             pointer-events: none;
             transition: opacity 0.2s, transform 0.2s;
             z-index: 100;
-            direction: rtl;
+            direction: ltr;
             max-width: 260px;
             text-align: center;
             line-height: 1.5;
@@ -960,7 +960,7 @@
             padding: 24px 26px;
             width: min(440px, 100%);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px var(--pink-shadow);
-            direction: rtl;
+            direction: ltr;
             animation: slideUp 0.28s cubic-bezier(0.34, 1.4, 0.64, 1);
         }
         @keyframes slideUp {
@@ -997,7 +997,7 @@
             margin-bottom: 14px;
         }
         .modal-input:focus { border-color: var(--pink-accent); box-shadow: 0 0 12px var(--pink-shadow); }
-        .modal-input::placeholder { color: #a07090; direction: rtl; text-align: right; }
+        .modal-input::placeholder { color: #a07090; direction: ltr; text-align: right; }
         .modal-actions { display: flex; flex-direction: column; gap: 8px; }
         .modal-btn {
             padding: 11px 18px;
@@ -1119,54 +1119,54 @@
 
         <div class="editor-pane">
             <div class="pane-label">
-                <button type="button" class="arrow-btn left" id="btnUndo" title="واگرد (Ctrl+Z)">↶</button>
+                <button type="button" class="arrow-btn left" id="btnUndo" title="Undo (Ctrl+Z)">↶</button>
                 <div class="toolbar">
-                    <button id="btnSave"     title="ذخیره در مرورگر (Ctrl+S)">💾 ذخیره</button>
-                    <button id="btnDownload" title="دانلود با نام دلخواه">⬇ دانلود</button>
-                    <button id="btnReset"    title="بازگشت به کد پیش‌فرض">🔁 بازنشانی</button>
-                    <button id="btnClear"    title="پاک کردن فایل فعلی">🗑 پاک</button>
-                    <button id="btnClearAll" title="پاک کردن همه فایل‌ها">🧹 پاک همه</button>
-                    <button id="btnFontDec"  title="کوچک‌تر">A−</button>
-                    <button id="btnFontInc"  title="بزرگ‌تر">A+</button>
+                    <button id="btnSave"     title="Save in Browser (Ctrl+S)">💾 Save</button>
+                    <button id="btnDownload" title="Download with Custom Name">⬇ Download</button>
+                    <button id="btnReset"    title="Restore Default Code">🔁 Reset</button>
+                    <button id="btnClear"    title="Clear Current File">🗑 Clear</button>
+                    <button id="btnClearAll" title="Clear All Files">🧹 Clear All</button>
+                    <button id="btnFontDec"  title="Decrease Font Size">A−</button>
+                    <button id="btnFontInc"  title="Increase Font Size">A+</button>
                 </div>
-                <button type="button" class="arrow-btn right" id="btnRedo" title="ازنو (Ctrl+Y)">↷</button>
-                <span class="dirty" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
+                <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
+                <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
             </div>
 
             <div class="tabs" role="tablist">
                 <button class="tab" role="tab" data-tab="html">HTML</button>
                 <button class="tab" role="tab" data-tab="css">CSS</button>
                 <button class="tab" role="tab" data-tab="js">JS</button>
-                <button class="tab" role="tab" data-tab="libs">📚 کتابخانه‌ها</button>
+                <button class="tab" role="tab" data-tab="libs">📚 Libraries</button>
             </div>
 
             <div class="search-bar">
                 <input type="text" class="search-input" id="searchInput"
-                       placeholder="🔍 جستجو در کد... (Ctrl+F)"
+                       placeholder="🔍 Search code... (Ctrl+F)"
                        dir="auto" spellcheck="false" autocomplete="off">
                 <span class="search-count zero" id="searchCount">0</span>
-                <button type="button" id="searchPrev" title="نتیجه قبلی (Shift+Enter)">▲</button>
-                <button type="button" id="searchNext" title="نتیجه بعدی (Enter)">▼</button>
-                <button type="button" id="searchClear" title="پاک کردن (Esc)">✕</button>
+                <button type="button" id="searchPrev" title="Previous result (Shift+Enter)">▲</button>
+                <button type="button" id="searchNext" title="Next result (Enter)">▼</button>
+                <button type="button" id="searchClear" title="Clear (Esc)">✕</button>
             </div>
             <div class="search-results" id="searchResults" hidden></div>
 
             <div class="editor-body">
                 <div class="file-explorer">
                     <div class="fe-header">
-                        <span class="fe-title">📁 فایل‌ها</span>
-                        <button type="button" class="fe-add-btn" id="feAddBtn" title="فایل جدید">+</button>
+                        <span class="fe-title">📁 Files</span>
+                        <button type="button" class="fe-add-btn" id="feAddBtn" title="New file">+</button>
                     </div>
                     <div class="fe-new-form" id="feNewForm" hidden>
-                        <input type="text" id="feNewName" placeholder="نام فایل..." maxlength="40" spellcheck="false">
+                        <input type="text" id="feNewName" placeholder="File name..." maxlength="40" spellcheck="false">
                         <select id="feNewType">
                             <option value="html">HTML</option>
                             <option value="css">CSS</option>
                             <option value="js">JS</option>
                         </select>
                         <div class="fe-new-actions">
-                            <button type="button" class="primary" id="feNewCreate">ایجاد</button>
-                            <button type="button" id="feNewCancel">انصراف</button>
+                            <button type="button" class="primary" id="feNewCreate">Create</button>
+                            <button type="button" id="feNewCancel">Cancel</button>
                         </div>
                     </div>
                     <div class="fe-list" id="feList"></div>
@@ -1175,31 +1175,31 @@
                 <div class="editors" id="editors">
                     <div class="libs-panel" id="libsPanel" hidden>
                         <div class="lib-presets-section">
-                            <div class="lib-form-title">⚡ کتابخانه‌های محبوب (کلیک کنید)</div>
+                            <div class="lib-form-title">⚡ Popular Libraries (click to select)</div>
                             <div class="lib-presets-hint">
-                                با کلیک روی هر کدام، نام و نوعش در فرم پایین پر می‌شود.
-                                اگر آنلاین باشید، کد از CDN دانلود می‌شود؛ در غیر این صورت، کد را از فایل آفلاین Paste کنید.
+                                Click any item to fill in its name and type in the form below.
+                                When online, the code is downloaded from the CDN; otherwise, paste the code from an offline file.
                             </div>
                             <div class="lib-presets-grid" id="libPresetsGrid"></div>
                         </div>
                         <div class="lib-form">
-                            <div class="lib-form-title">➕ افزودن کتابخانه جدید</div>
+                            <div class="lib-form-title">➕ Add New Library</div>
                             <div class="lib-form-row">
-                                <input type="text" id="libName" placeholder="نام کتابخانه (مثلاً jQuery)">
+                                <input type="text" id="libName" placeholder="Library name (e.g. jQuery)">
                                 <select id="libType">
                                     <option value="css">CSS</option>
                                     <option value="js">JS</option>
                                 </select>
                             </div>
                             <textarea id="libCode"
-                                placeholder="کد کتابخانه را اینجا Paste کنید..."
+                                placeholder="Paste library code here..."
                                 spellcheck="false" autocomplete="off"></textarea>
                             <button type="button" class="lib-add-btn" id="libAddBtn">
-                                ➕ افزودن به کتابخانه‌ها
+                                ➕ Add to Libraries
                             </button>
                         </div>
                         <div class="lib-list-title">
-                            📚 کتابخانه‌های ذخیره‌شده
+                            📚 Saved Libraries
                             <span id="libCountBadge" style="color:var(--green); font-size:11px;"></span>
                         </div>
                         <div class="lib-list" id="libList"></div>
@@ -1208,29 +1208,29 @@
             </div>
         </div>
 
-        <div class="divider" id="divider" title="برای تغییر اندازه بکشید"></div>
+        <div class="divider" id="divider" title="Drag to resize"></div>
 
         <div class="preview-pane">
-            <iframe id="output" title="پیش‌نمایش" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
+            <iframe id="output" title="Preview" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
         </div>
 
     </div>
 
     <div class="modal-overlay" id="nameModal" hidden>
         <div class="modal-box">
-            <div class="modal-title">📝 نام پروژه</div>
-            <div class="modal-desc">نام پروژه را وارد کنید تا در نام فایل‌های دانلود شده استفاده شود.</div>
+            <div class="modal-title">📝 Project Name</div>
+            <div class="modal-desc">Enter a project name to use in downloaded file names.</div>
             <input type="text" class="modal-input" id="projectNameInput"
                    placeholder="my-project" value="my-project"
                    maxlength="50" spellcheck="false" autocomplete="off">
             <div class="modal-actions">
                 <button type="button" class="modal-btn primary" id="modalDownloadBundle">
-                    ⬇ دانلود ۴ فایل (HTML + CSS + JS + کتابخانه)
+                    ⬇ Download 4 Files (HTML + CSS + JS + Libraries)
                 </button>
                 <button type="button" class="modal-btn" id="modalDownloadSingle">
-                    ⬇ دانلود یک فایل HTML کامل
+                    ⬇ Download a Complete HTML File
                 </button>
-                <button type="button" class="modal-btn cancel" id="modalCancel">انصراف</button>
+                <button type="button" class="modal-btn cancel" id="modalCancel">Cancel</button>
             </div>
         </div>
     </div>
@@ -1244,10 +1244,10 @@
         // ==========================================
         //  ثابت‌ها
         // ==========================================
-        const DEFAULT_HTML = `<h1>سلام دنیا!</h1>
+        const DEFAULT_HTML = `<h1>Hello, World!</h1>
 <div class="card">
-    <p>این یک کارت نمونه است.</p>
-    <button id="btn">کلیک کن</button>
+    <p>This is a sample card.</p>
+    <button id="btn">Click Me</button>
 </div>`;
 
         const DEFAULT_CSS = `body {
@@ -1284,7 +1284,7 @@ button:hover {
 }`;
 
         const DEFAULT_JS = `document.getElementById('btn').addEventListener('click', function () {
-    alert('کار می‌کنه!');
+    alert('It works!');
 });`;
 
         // ==========================================
@@ -1293,70 +1293,70 @@ button:hover {
         // ==========================================
         const PRESETS = [
             // ---------- ۳۰ کتابخانه اصلی ----------
-            { name: 'Bootstrap 5 CSS', type: 'css', desc: 'محبوب‌ترین فریم‌ورک CSS', cdn: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' },
-            { name: 'Animate.css', type: 'css', desc: 'انیمیشن‌های آماده', cdn: 'https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css' },
+            { name: 'Bootstrap 5 CSS', type: 'css', desc: 'Popular CSS framework', cdn: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' },
+            { name: 'Animate.css', type: 'css', desc: 'Ready-made animations', cdn: 'https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css' },
             { name: 'Tailwind CSS', type: 'css', desc: 'Utility-first', cdn: 'https://cdn.tailwindcss.com/3.4.16' },
-            { name: 'Font Awesome 6', type: 'css', desc: 'آیکون‌های برداری', cdn: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css' },
-            { name: 'Normalize.css', type: 'css', desc: 'ریست استاندارد', cdn: 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css' },
-            { name: 'jQuery 3.7', type: 'js', desc: 'کتابخانه DOM', cdn: 'https://code.jquery.com/jquery-3.7.1.min.js' },
-            { name: 'Bootstrap 5 JS', type: 'js', desc: 'کامپوننت‌های تعاملی', cdn: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js' },
-            { name: 'Lodash', type: 'js', desc: 'ابزارهای تابعی', cdn: 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js' },
-            { name: 'Axios', type: 'js', desc: 'درخواست HTTP', cdn: 'https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js' },
-            { name: 'React 18', type: 'js', desc: 'کتابخانه UI', cdn: 'https://unpkg.com/react@18/umd/react.production.min.js' },
-            { name: 'Vue 3', type: 'js', desc: 'فریم‌ورک UI', cdn: 'https://cdn.jsdelivr.net/npm/vue@3.4.38/dist/vue.global.prod.js' },
-            { name: 'Chart.js', type: 'js', desc: 'نمودار', cdn: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js' },
-            { name: 'D3.js', type: 'js', desc: 'مصورسازی', cdn: 'https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js' },
-            { name: 'Bulma', type: 'css', desc: 'مدرن و سبک', cdn: 'https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css' },
-            { name: 'UIkit', type: 'css', desc: 'سبک و ماژولار', cdn: 'https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/css/uikit.min.css' },
-            { name: 'Foundation', type: 'css', desc: 'حرفه‌ای', cdn: 'https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css' },
+            { name: 'Font Awesome 6', type: 'css', desc: 'Vector icons', cdn: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css' },
+            { name: 'Normalize.css', type: 'css', desc: 'CSS reset', cdn: 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css' },
+            { name: 'jQuery 3.7', type: 'js', desc: 'DOM library', cdn: 'https://code.jquery.com/jquery-3.7.1.min.js' },
+            { name: 'Bootstrap 5 JS', type: 'js', desc: 'Interactive components', cdn: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js' },
+            { name: 'Lodash', type: 'js', desc: 'Utility functions', cdn: 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js' },
+            { name: 'Axios', type: 'js', desc: 'HTTP requests', cdn: 'https://cdn.jsdelivr.net/npm/axios@1.7.7/dist/axios.min.js' },
+            { name: 'React 18', type: 'js', desc: 'UI library', cdn: 'https://unpkg.com/react@18/umd/react.production.min.js' },
+            { name: 'Vue 3', type: 'js', desc: 'UI framework', cdn: 'https://cdn.jsdelivr.net/npm/vue@3.4.38/dist/vue.global.prod.js' },
+            { name: 'Chart.js', type: 'js', desc: 'Charts', cdn: 'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js' },
+            { name: 'D3.js', type: 'js', desc: 'Visualization', cdn: 'https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js' },
+            { name: 'Bulma', type: 'css', desc: 'Modern and lightweight', cdn: 'https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css' },
+            { name: 'UIkit', type: 'css', desc: 'Lightweight and modular', cdn: 'https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/css/uikit.min.css' },
+            { name: 'Foundation', type: 'css', desc: 'Professional', cdn: 'https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css' },
             { name: 'Materialize CSS', type: 'css', desc: 'Material Design', cdn: 'https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/css/materialize.min.css' },
-            { name: 'Pure CSS', type: 'css', desc: 'مینیمال', cdn: 'https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css' },
-            { name: 'Alpine.js', type: 'js', desc: 'سبک و ساده', cdn: 'https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js' },
-            { name: 'SweetAlert2', type: 'js', desc: 'هشدارهای زیبا', cdn: 'https://cdn.jsdelivr.net/npm/sweetalert2@11.12.0/dist/sweetalert2.all.min.js' },
-            { name: 'Swiper', type: 'js', desc: 'اسلایدر لمسی', cdn: 'https://cdn.jsdelivr.net/npm/swiper@11.1.4/swiper-bundle.min.js' },
-            { name: 'GSAP', type: 'js', desc: 'انیمیشن حرفه‌ای', cdn: 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js' },
-            { name: 'AOS', type: 'js', desc: 'انیمیشن اسکرول', cdn: 'https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js' },
-            { name: 'Toastify JS', type: 'js', desc: 'اعلان ساده', cdn: 'https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js' },
-            { name: 'Day.js', type: 'js', desc: 'تاریخ سبک', cdn: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js' },
-            { name: 'Moment.js', type: 'js', desc: 'تاریخ و زمان', cdn: 'https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment.min.js' },
-            { name: 'Clipboard.js', type: 'js', desc: 'کپی کلیپ‌بورد', cdn: 'https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js' },
-            { name: 'CountUp.js', type: 'js', desc: 'شمارش انیمیشنی', cdn: 'https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.min.js' },
-            { name: 'Typed.js', type: 'js', desc: 'افکت تایپ', cdn: 'https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js' },
-            { name: 'Lottie', type: 'js', desc: 'انیمیشن JSON', cdn: 'https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js' },
+            { name: 'Pure CSS', type: 'css', desc: 'Minimal', cdn: 'https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css' },
+            { name: 'Alpine.js', type: 'js', desc: 'Lightweight and simple', cdn: 'https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js' },
+            { name: 'SweetAlert2', type: 'js', desc: 'Beautiful alerts', cdn: 'https://cdn.jsdelivr.net/npm/sweetalert2@11.12.0/dist/sweetalert2.all.min.js' },
+            { name: 'Swiper', type: 'js', desc: 'Touch slider', cdn: 'https://cdn.jsdelivr.net/npm/swiper@11.1.4/swiper-bundle.min.js' },
+            { name: 'GSAP', type: 'js', desc: 'Professional animations', cdn: 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js' },
+            { name: 'AOS', type: 'js', desc: 'Scroll animations', cdn: 'https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js' },
+            { name: 'Toastify JS', type: 'js', desc: 'Simple notifications', cdn: 'https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js' },
+            { name: 'Day.js', type: 'js', desc: 'Lightweight date handling', cdn: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js' },
+            { name: 'Moment.js', type: 'js', desc: 'Date and time', cdn: 'https://cdn.jsdelivr.net/npm/moment@2.30.1/min/moment.min.js' },
+            { name: 'Clipboard.js', type: 'js', desc: 'Clipboard copying', cdn: 'https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js' },
+            { name: 'CountUp.js', type: 'js', desc: 'Animated counters', cdn: 'https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.min.js' },
+            { name: 'Typed.js', type: 'js', desc: 'Typing effects', cdn: 'https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js' },
+            { name: 'Lottie', type: 'js', desc: 'JSON animations', cdn: 'https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js' },
             // ---------- ۳۰ کتابخانه جدید (آفیس، محاسبات، کاربردی) ----------
             // --- آفیس و اسناد (۱۰) ---
-            { name: 'SheetJS (xlsx)', type: 'js', desc: 'خواندن/نوشتن Excel و CSV', cdn: 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js' },
-            { name: 'ExcelJS', type: 'js', desc: 'مدیریت فایل‌های Excel', cdn: 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js' },
-            { name: 'PDF.js', type: 'js', desc: 'نمایش فایل PDF', cdn: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.js' },
-            { name: 'jsPDF', type: 'js', desc: 'ساخت PDF در مرورگر', cdn: 'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js' },
-            { name: 'pdfmake', type: 'js', desc: 'ساخت PDF با JSON', cdn: 'https://cdn.jsdelivr.net/npm/pdfmake@0.2.10/build/pdfmake.min.js' },
-            { name: 'docx', type: 'js', desc: 'ساخت فایل Word', cdn: 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js' },
-            { name: 'docx-preview', type: 'js', desc: 'پیش‌نمایش Word در مرورگر', cdn: 'https://cdn.jsdelivr.net/npm/docx-preview@0.3.3/dist/docx-preview.min.js' },
-            { name: 'mammoth', type: 'js', desc: 'تبدیل Word به HTML', cdn: 'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js' },
-            { name: 'PDF-LIB', type: 'js', desc: 'ساخت و ویرایش PDF', cdn: 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js' },
-            { name: 'docxtemplater', type: 'js', desc: 'پرکردن قالب Word', cdn: 'https://cdn.jsdelivr.net/npm/docxtemplater@3.61.2/build/docxtemplater.js' },
+            { name: 'SheetJS (xlsx)', type: 'js', desc: 'Read/write Excel and CSV', cdn: 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js' },
+            { name: 'ExcelJS', type: 'js', desc: 'Excel file handling', cdn: 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js' },
+            { name: 'PDF.js', type: 'js', desc: 'PDF viewer', cdn: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.7.76/build/pdf.min.js' },
+            { name: 'jsPDF', type: 'js', desc: 'Create PDFs in the browser', cdn: 'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js' },
+            { name: 'pdfmake', type: 'js', desc: 'Create PDFs from JSON', cdn: 'https://cdn.jsdelivr.net/npm/pdfmake@0.2.10/build/pdfmake.min.js' },
+            { name: 'docx', type: 'js', desc: 'Create Word documents', cdn: 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js' },
+            { name: 'docx-preview', type: 'js', desc: 'Preview Word documents in the browser', cdn: 'https://cdn.jsdelivr.net/npm/docx-preview@0.3.3/dist/docx-preview.min.js' },
+            { name: 'mammoth', type: 'js', desc: 'Convert Word to HTML', cdn: 'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js' },
+            { name: 'PDF-LIB', type: 'js', desc: 'Create and edit PDFs', cdn: 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js' },
+            { name: 'docxtemplater', type: 'js', desc: 'Fill Word templates', cdn: 'https://cdn.jsdelivr.net/npm/docxtemplater@3.61.2/build/docxtemplater.js' },
             // --- محاسبات (۱۰) ---
-            { name: 'math.js', type: 'js', desc: 'محاسبات پیشرفته ریاضی', cdn: 'https://cdn.jsdelivr.net/npm/mathjs@13.2.0/lib/browser/math.js' },
-            { name: 'decimal.js', type: 'js', desc: 'محاسبات اعشاری دقیق', cdn: 'https://cdn.jsdelivr.net/npm/decimal.js@10.4.3/decimal.min.js' },
-            { name: 'expr-eval', type: 'js', desc: 'ارزیابی عبارات ریاضی', cdn: 'https://cdn.jsdelivr.net/npm/expr-eval@2.0.2/dist/bundle.min.js' },
-            { name: 'currency.js', type: 'js', desc: 'محاسبات پولی دقیق', cdn: 'https://cdn.jsdelivr.net/npm/currency.js@2.0.3/dist/currency.min.js' },
-            { name: 'numeral.js', type: 'js', desc: 'قالب‌بندی اعداد و ارز', cdn: 'https://cdn.jsdelivr.net/npm/numeral@2.0.6/numeral.min.js' },
-            { name: 'convert', type: 'js', desc: 'تبدیل واحدهای اندازه‌گیری', cdn: 'https://cdn.jsdelivr.net/npm/convert@5.9.0/dist/index.js' },
-            { name: 'date-fns', type: 'js', desc: 'توابع تاریخ کاربردی', cdn: 'https://cdn.jsdelivr.net/npm/date-fns@4.1.0/cdn.min.js' },
-            { name: 'Luxon', type: 'js', desc: 'تاریخ با منطقه زمانی', cdn: 'https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js' },
-            { name: 'big.js', type: 'js', desc: 'حساب با اعداد بزرگ', cdn: 'https://cdn.jsdelivr.net/npm/big.js@6.2.2/big.min.js' },
-            { name: 'Fraction.js', type: 'js', desc: 'محاسبات کسری', cdn: 'https://cdn.jsdelivr.net/npm/fraction.js@4.3.7/fraction.min.js' },
+            { name: 'math.js', type: 'js', desc: 'Advanced math calculations', cdn: 'https://cdn.jsdelivr.net/npm/mathjs@13.2.0/lib/browser/math.js' },
+            { name: 'decimal.js', type: 'js', desc: 'Precise decimal calculations', cdn: 'https://cdn.jsdelivr.net/npm/decimal.js@10.4.3/decimal.min.js' },
+            { name: 'expr-eval', type: 'js', desc: 'Evaluate mathematical expressions', cdn: 'https://cdn.jsdelivr.net/npm/expr-eval@2.0.2/dist/bundle.min.js' },
+            { name: 'currency.js', type: 'js', desc: 'Precise currency calculations', cdn: 'https://cdn.jsdelivr.net/npm/currency.js@2.0.3/dist/currency.min.js' },
+            { name: 'numeral.js', type: 'js', desc: 'Format numbers and currencies', cdn: 'https://cdn.jsdelivr.net/npm/numeral@2.0.6/numeral.min.js' },
+            { name: 'convert', type: 'js', desc: 'Convert measurement units', cdn: 'https://cdn.jsdelivr.net/npm/convert@5.9.0/dist/index.js' },
+            { name: 'date-fns', type: 'js', desc: 'Useful date functions', cdn: 'https://cdn.jsdelivr.net/npm/date-fns@4.1.0/cdn.min.js' },
+            { name: 'Luxon', type: 'js', desc: 'Dates with time zones', cdn: 'https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js' },
+            { name: 'big.js', type: 'js', desc: 'Big-number arithmetic', cdn: 'https://cdn.jsdelivr.net/npm/big.js@6.2.2/big.min.js' },
+            { name: 'Fraction.js', type: 'js', desc: 'Fraction calculations', cdn: 'https://cdn.jsdelivr.net/npm/fraction.js@4.3.7/fraction.min.js' },
             // --- کاربردی (۱۰) ---
-            { name: 'PapaParse', type: 'js', desc: 'پارس سریع CSV', cdn: 'https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js' },
-            { name: 'JSZip', type: 'js', desc: 'ساخت و خواندن فایل ZIP', cdn: 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js' },
-            { name: 'SortableJS', type: 'js', desc: 'درگ و دراپ لیست‌ها', cdn: 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js' },
-            { name: 'Tabulator', type: 'js', desc: 'جدول داده پیشرفته', cdn: 'https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.1/dist/js/tabulator.min.js' },
-            { name: 'QRCode.js', type: 'js', desc: 'ساخت QR Code', cdn: 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js' },
-            { name: 'JsBarcode', type: 'js', desc: 'ساخت بارکد', cdn: 'https://cdn.jsdelivr.net/npm/jsbarcode@3.12.1/dist/JsBarcode.all.min.js' },
-            { name: 'CryptoJS', type: 'js', desc: 'رمزنگاری و هش', cdn: 'https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js' },
-            { name: 'DOMPurify', type: 'js', desc: 'پاکسازی HTML از XSS', cdn: 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js' },
-            { name: 'Tesseract.js', type: 'js', desc: 'تشخیص متن از تصویر (OCR)', cdn: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js' },
-            { name: 'Marked', type: 'js', desc: 'تبدیل Markdown به HTML', cdn: 'https://cdn.jsdelivr.net/npm/marked@15.0.0/marked.min.js' }
+            { name: 'PapaParse', type: 'js', desc: 'Fast CSV parsing', cdn: 'https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js' },
+            { name: 'JSZip', type: 'js', desc: 'Create and read ZIP files', cdn: 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js' },
+            { name: 'SortableJS', type: 'js', desc: 'Drag and drop lists', cdn: 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js' },
+            { name: 'Tabulator', type: 'js', desc: 'Advanced data tables', cdn: 'https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.1/dist/js/tabulator.min.js' },
+            { name: 'QRCode.js', type: 'js', desc: 'Generate QR codes', cdn: 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js' },
+            { name: 'JsBarcode', type: 'js', desc: 'Generate barcodes', cdn: 'https://cdn.jsdelivr.net/npm/jsbarcode@3.12.1/dist/JsBarcode.all.min.js' },
+            { name: 'CryptoJS', type: 'js', desc: 'Encryption and hashing', cdn: 'https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js' },
+            { name: 'DOMPurify', type: 'js', desc: 'Sanitize HTML against XSS', cdn: 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js' },
+            { name: 'Tesseract.js', type: 'js', desc: 'Extract text from images (OCR)', cdn: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js' },
+            { name: 'Marked', type: 'js', desc: 'Convert Markdown to HTML', cdn: 'https://cdn.jsdelivr.net/npm/marked@15.0.0/marked.min.js' }
         ];
 
         const LANGS = ['html', 'css', 'js'];
@@ -1505,10 +1505,10 @@ button:hover {
                 return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '">' +
                     '<span class="fe-icon">' + icon + '</span>' +
                     '<span class="fe-name" data-role="name">' + escHtml(f.name) + '</span>' +
-                    '<button type="button" class="fe-del" data-action="delete" title="حذف">🗑</button>' +
+                    '<button type="button" class="fe-del" data-action="delete" title="Delete">🗑</button>' +
                 '</div>';
             }).join('');
-            feList.innerHTML = html || '<div style="padding:14px 8px; text-align:center; color:#888; font-size:11px;">فایلی نیست</div>';
+            feList.innerHTML = html || '<div style="padding:14px 8px; text-align:center; color:#888; font-size:11px;">No files yet</div>';
         }
 
         feAddBtn.addEventListener('click', function() {
@@ -1531,7 +1531,7 @@ button:hover {
             renderFileExplorer();
             feNewForm.hidden = true;
             openFile(file.id);
-            showToast('✅ فایل «' + name + '» ساخته شد', 'success');
+            showToast('✅ File “' + name + '” created', 'success');
         });
 
         feNewName.addEventListener('keydown', function(e) {
@@ -1634,7 +1634,7 @@ button:hover {
             saveProject();
             renderFileExplorer();
             updatePreviewNow();
-            showToast('🗑 «' + file.name + '» حذف شد', 'info');
+            showToast('🗑 “' + file.name + '” deleted', 'info');
         }
 
         // ==========================================
@@ -1717,18 +1717,18 @@ button:hover {
             const list = document.getElementById('libList');
             const badge = document.getElementById('libCountBadge');
             if (!libraries.length) {
-                list.innerHTML = '<div class="lib-empty">هنوز کتابخانه‌ای اضافه نشده.<br><small>از لیست آماده بالا یکی را انتخاب کنید یا کد را دستی Paste کنید.</small></div>';
+                list.innerHTML = '<div class="lib-empty">No libraries have been added yet.<br><small>Choose one from the preset list above or paste the code manually.</small></div>';
                 badge.textContent = '';
                 return;
             }
             const enabled = libraries.filter(function(l) { return l.enabled; }).length;
-            badge.textContent = '(' + enabled + ' فعال از ' + libraries.length + ')';
+            badge.textContent = '(' + enabled + ' enabled of ' + libraries.length + ')';
             list.innerHTML = libraries.map(function(lib) {
                 return '<div class="lib-item' + (lib.enabled ? '' : ' disabled') + '" data-id="' + escHtml(lib.id) + '">' +
                     '<input type="checkbox" ' + (lib.enabled ? 'checked' : '') + ' data-action="toggle">' +
                     '<span class="lib-item-name">' + escHtml(lib.name) + '</span>' +
                     '<span class="lib-item-type ' + escHtml(lib.type) + '">' + (lib.type === 'css' ? 'CSS' : 'JS') + '</span>' +
-                    '<button type="button" class="lib-item-del" data-action="delete" title="حذف">🗑</button>' +
+                    '<button type="button" class="lib-item-del" data-action="delete" title="Delete">🗑</button>' +
                 '</div>';
             }).join('');
         }
@@ -1757,8 +1757,8 @@ button:hover {
             nameIn.value = preset.name;
             typeIn.value = preset.type;
             codeIn.value = '';
-            codeIn.placeholder = 'در حال دریافت از CDN...';
-            showToast('⏳ تلاش برای دریافت ' + preset.name + ' از CDN...', 'info');
+            codeIn.placeholder = 'Downloading from CDN...';
+            showToast('⏳ Attempting to download ' + preset.name + ' from CDN...', 'info');
 
             try {
                 const ctrl = new AbortController();
@@ -1770,11 +1770,11 @@ button:hover {
                 if (code && code.length > 10) {
                     codeIn.value = code;
                     codeIn.placeholder = '';
-                    showToast('✅ کد دریافت شد (' + Math.round(code.length / 1024) + ' KB)', 'success');
-                } else { throw new Error('خالی'); }
+                    showToast('✅ Code downloaded (' + Math.round(code.length / 1024) + ' KB)', 'success');
+                } else { throw new Error('Empty response'); }
             } catch (err) {
-                codeIn.placeholder = '⚠ دریافت خودکار ناموفق. کد را دستی Paste کنید.';
-                showToast('⚠ آفلاین یا CDN در دسترس نیست', 'error');
+                codeIn.placeholder = '⚠ Automatic download failed. Paste the code manually.';
+                showToast('⚠ Offline or CDN unavailable', 'error');
             }
             codeIn.focus();
         });
@@ -1787,18 +1787,18 @@ button:hover {
             const type = typeIn.value;
             const code = codeIn.value;
 
-            if (!name) { showToast('❌ نام کتابخانه را وارد کنید', 'error'); nameIn.focus(); return; }
-            if (!code.trim()) { showToast('❌ کد کتابخانه را وارد کنید', 'error'); codeIn.focus(); return; }
+            if (!name) { showToast('❌ Enter a library name', 'error'); nameIn.focus(); return; }
+            if (!code.trim()) { showToast('❌ Enter library code', 'error'); codeIn.focus(); return; }
 
             libraries.push({ id: makeLibId(), name: name, type: type, code: code, enabled: true });
             saveLibraries();
             renderLibraries();
             nameIn.value = '';
             codeIn.value = '';
-            codeIn.placeholder = 'کد کتابخانه را اینجا Paste کنید...';
+            codeIn.placeholder = 'Paste library code here...';
             nameIn.focus();
             updatePreviewNow();
-            showToast('✅ کتابخانه «' + name + '» اضافه شد', 'info');
+            showToast('✅ Library “' + name + '” added', 'info');
         }
 
         function toggleLibrary(id, enabled) {
@@ -1817,7 +1817,7 @@ button:hover {
             saveLibraries();
             renderLibraries();
             updatePreviewNow();
-            showToast('🗑 «' + name + '» حذف شد', 'info');
+            showToast('🗑 “' + name + '” deleted', 'info');
         }
 
         document.getElementById('libList').addEventListener('click', function(e) {
@@ -1950,10 +1950,10 @@ button:hover {
                 '<\/script>'
             ].join('\n');
 
-            return '<!DOCTYPE html>\n<html lang="fa" dir="rtl">\n<head>\n' +
+            return '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n' +
                 '<meta charset="UTF-8">\n' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-                '<title>صفحه من</title>\n' +
+                '<title>My Page</title>\n' +
                 errorHook + '\n' +
                 '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n' +
                 '</head>\n<body>\n' + html + '\n' +
@@ -1973,7 +1973,7 @@ button:hover {
 
         window.addEventListener('message', function (e) {
             if (e.source !== outputFrame.contentWindow || !e.data) return;
-            if (e.data.editorError) showToast('خطای JS: ' + e.data.message, 'error');
+            if (e.data.editorError) showToast('JS error: ' + e.data.message, 'error');
             if (e.data.editorSave) saveCode();
         });
 
@@ -2359,8 +2359,8 @@ button:hover {
                 '<div class="cp-row"><div class="cp-swatch"><span class="cp-old"></span><span class="cp-new"></span></div>' +
                 '<input class="cp-text" type="text" spellcheck="false" autocomplete="off">' +
                 '<select class="cp-fmt"><option value="hex">HEX</option><option value="rgb">RGB</option><option value="hsl">HSL</option></select></div>' +
-                '<div class="cp-actions"><button type="button" class="cp-ok">✔ درج رنگ</button>' +
-                '<button type="button" class="cp-cancel">انصراف</button></div>';
+                '<div class="cp-actions"><button type="button" class="cp-ok">✔ Apply Color</button>' +
+                '<button type="button" class="cp-cancel">Cancel</button></div>';
             document.body.appendChild(el);
 
             const wheel = el.querySelector('.cp-wheel');
@@ -2722,7 +2722,7 @@ button:hover {
                 '<div class="code-wrap">' +
                     '<pre class="highlight" aria-hidden="true"><code></code></pre>' +
                     '<textarea class="input" wrap="off" spellcheck="false" autocomplete="off" ' +
-                    'autocorrect="off" autocapitalize="off" aria-label="ویرایشگر ' + lang + '"></textarea>' +
+                    'autocorrect="off" autocapitalize="off" aria-label="Editor ' + lang + '"></textarea>' +
                 '</div>';
             editorsBox.appendChild(wrap);
 
@@ -2810,7 +2810,7 @@ button:hover {
         function saveCode() {
             saveProject();
             setDirty(false);
-            showToast('✅ کد ذخیره شد', 'success');
+            showToast('✅ Code saved', 'success');
         }
 
         function downloadFile(content, filename, mime) {
@@ -2838,9 +2838,9 @@ button:hover {
             if (!enabledLibs.length) return '/* هیچ کتابخانه فعالی وجود ندارد */\n';
             const lines = [];
             lines.push('/* ====================================================');
-            lines.push('   کتابخانه‌های فعال پروژه');
-            lines.push('   تاریخ: ' + new Date().toLocaleString('fa-IR'));
-            lines.push('   تعداد: ' + enabledLibs.length);
+            lines.push('   Active project libraries');
+            lines.push('   Date: ' + new Date().toLocaleString('en-US'));
+            lines.push('   Count: ' + enabledLibs.length);
             lines.push('   ==================================================== */');
             lines.push('');
             enabledLibs.forEach(function(lib, i) {
@@ -2871,7 +2871,7 @@ button:hover {
         function downloadSingle(name) {
             const safe = sanitizeFilename(name);
             downloadFile(buildDocument(true), safe + '.html', 'text/html;charset=utf-8');
-            showToast('⬇ فایل ' + safe + '.html دانلود شد', 'info');
+            showToast('⬇ File ' + safe + '.html downloaded', 'info');
         }
         function downloadBundle(name) {
             const safe = sanitizeFilename(name);
@@ -2884,7 +2884,7 @@ button:hover {
             files.forEach(function(f, i) {
                 setTimeout(function() { downloadFile(f.content, f.filename, f.mime); }, i * 250);
             });
-            showToast('⬇ ۴ فایل با نام «' + safe + '» دانلود می‌شوند', 'success');
+            showToast('⬇ 4 files named “' + safe + '” will be downloaded', 'success');
         }
 
         const nameModal = document.getElementById('nameModal');
@@ -2989,7 +2989,7 @@ button:hover {
         document.getElementById('btnRedo').addEventListener('click', doRedo);
 
         document.getElementById('btnReset').addEventListener('click', function() {
-            if (confirm('همه‌ی فایل‌ها به حالت پیش‌فرض برمی‌گردند. مطمئنی؟')) {
+            if (confirm('All files will be restored to their defaults. Are you sure?')) {
                 project = createDefaultProject();
                 saveProject();
                 LANGS.forEach(function(lang) {
@@ -3006,7 +3006,7 @@ button:hover {
                 }
                 updatePreviewNow();
                 setDirty(false);
-                showToast('🔁 بازنشانی شد', 'info');
+                showToast('🔁 Reset complete', 'info');
             }
         });
 
@@ -3014,7 +3014,7 @@ button:hover {
             if (activeTab === 'libs') {
                 document.getElementById('libName').value = '';
                 document.getElementById('libCode').value = '';
-                showToast('🗑 فرم پاک شد', 'info');
+                showToast('🗑 Editor cleared', 'info');
                 return;
             }
             const ed = editors[activeTab];
@@ -3025,7 +3025,7 @@ button:hover {
             setDirty(true);
             scheduleSaveProject();
             updatePreviewNow();
-            showToast('🗑 فایل پاک شد', 'info');
+            showToast('🗑 File cleared', 'info');
         });
 
         document.getElementById('btnClearAll').addEventListener('click', function() {
@@ -3037,16 +3037,16 @@ button:hover {
             saveProject();
             setDirty(true);
             updatePreviewNow();
-            showToast('🧹 همه فایل‌ها پاک شدند', 'info');
+            showToast('🧹 All files cleared', 'info');
         });
 
         document.getElementById('btnFontInc').addEventListener('click', function() {
             fontSize++; applyFontSize();
-            showToast('اندازه فونت: ' + fontSize + 'px', 'info');
+            showToast('Font size: ' + fontSize + 'px', 'info');
         });
         document.getElementById('btnFontDec').addEventListener('click', function() {
             fontSize--; applyFontSize();
-            showToast('اندازه فونت: ' + fontSize + 'px', 'info');
+            showToast('Font size: ' + fontSize + 'px', 'info');
         });
 
         // ==========================================

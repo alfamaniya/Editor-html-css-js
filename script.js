@@ -1077,6 +1077,44 @@ button:hover {
             const measureCtx = document.createElement('canvas').getContext('2d');
 
             const DATA = window.EDITOR_INTELLISENSE_DATA || {};
+
+            // Preserve source offsets while masking CSS comments.
+            function maskCssComments(text) {
+                return text.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, function(comment) {
+                    return comment.replace(/[^\n]/g, ' ');
+                });
+            }
+
+            // Avoid suggestions inside JavaScript strings and comments.
+            function isInsideJsStringOrComment(text) {
+                let quote = null;
+                let escaped = false;
+                let lineComment = false;
+                let blockComment = false;
+                for (let i = 0; i < text.length; i++) {
+                    const ch = text.charAt(i);
+                    const next = text.charAt(i + 1);
+                    if (lineComment) {
+                        if (ch === '\n' || ch === '\r') lineComment = false;
+                        continue;
+                    }
+                    if (blockComment) {
+                        if (ch === '*' && next === '/') { blockComment = false; i++; }
+                        continue;
+                    }
+                    if (quote) {
+                        if (escaped) { escaped = false; continue; }
+                        if (ch === '\\') { escaped = true; continue; }
+                        if (ch === quote) quote = null;
+                        continue;
+                    }
+                    if (ch === '/' && next === '/') { lineComment = true; i++; continue; }
+                    if (ch === '/' && next === '*') { blockComment = true; i++; continue; }
+                    if (ch === "'" || ch === '"' || ch === '`') quote = ch;
+                }
+                return !!quote || lineComment || blockComment;
+            }
+
             function getWordAndContext(ta, lang) {
                 const val = ta.value;
                 const pos = ta.selectionStart;
@@ -1089,13 +1127,13 @@ button:hover {
                     // CSS completion inside an unfinished inline style attribute.
                     if (tagLt > tagGt && before.slice(tagLt, tagLt + 4) !== '<!--') {
                         const tagFragment = before.slice(tagLt);
-                        const styleMatch = tagFragment.match(/\bstyle\s*=\s*(["'])([^"']*)$/i);
+                        const styleMatch = tagFragment.match(/\bstyle\s*=\s*(["'])((?:(?!\1)[\s\S])*)$/i);
                         if (styleMatch) {
                             const cssBefore = styleMatch[2];
                             const declaration = cssBefore.match(/(?:^|;)\s*([a-zA-Z-][\w-]*)\s*:\s*([^;]*)$/);
                             if (declaration) {
                                 const valueText = declaration[2];
-                                const valueMatch = valueText.match(/([a-zA-Z-][\w-]*)$/);
+                                const valueMatch = valueText.match(/([a-zA-Z0-9_#.%+-]+)$/);
                                 const word = valueMatch ? valueMatch[1] : '';
                                 return { word: word, from: pos - word.length, to: pos, kind: 'cssValue', property: declaration[1].toLowerCase(), inlineStyle: true };
                             }
@@ -1129,7 +1167,7 @@ button:hover {
                     return { word: tagMatch[1], from: pos - tagMatch[1].length, to: pos, kind: 'htmlTag' };
                 }
                 if (lang === 'css') {
-                    const clean = before.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, '');
+                    const clean = maskCssComments(before);
                     const depth = (clean.match(/\{/g) || []).length - (clean.match(/\}/g) || []).length;
                     if (depth <= 0) return null;
                     const lineStart = Math.max(clean.lastIndexOf('{'), clean.lastIndexOf(';'), clean.lastIndexOf('}')) + 1;
@@ -1138,7 +1176,7 @@ button:hover {
                     if (declaration) {
                         const valueText = declaration[2];
                         if (/['"][^'"]*$/.test(valueText)) return null;
-                        const m = valueText.match(/([a-zA-Z-][\w-]*)$/);
+                        const m = valueText.match(/([a-zA-Z0-9_#.%+-]+)$/);
                         return { word: m ? m[1] : '', from: m ? pos - m[1].length : pos, to: pos, kind: 'cssValue', property: declaration[1].toLowerCase() };
                     }
                     const m = line.match(/^\s*([a-zA-Z-][\w-]*)?$/);
@@ -1147,6 +1185,7 @@ button:hover {
                     return { word: word, from: pos - word.length, to: pos, kind: 'cssProperty' };
                 }
                 if (lang === 'js') {
+                    if (isInsideJsStringOrComment(before)) return null;
                     const lineStart = before.lastIndexOf('\n') + 1;
                     const lineBefore = before.substring(lineStart);
                     const member = before.match(/([a-zA-Z_$][\w$]*)\.([a-zA-Z_$][\w$]*)?$/);
@@ -1283,7 +1322,9 @@ button:hover {
             }
             function onInput(ta, lang, e) {
                 if (justAccepted) { justAccepted = false; return; }
-                if (!e || e.inputType !== 'insertText') { hide(); return; }
+                // Re-evaluate after typing, deletion, paste, and other edits; mobile
+                // keyboards do not always report inputType as "insertText".
+                if (!e || e.isComposing) { hide(); return; }
                 const ctx = getWordAndContext(ta, lang);
                 if (!ctx || (ctx.word.length < 1 && !['htmlAttr', 'cssValue', 'jsMember'].includes(ctx.kind))) { hide(); return; }
 

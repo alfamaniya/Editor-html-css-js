@@ -320,6 +320,23 @@ button:hover {
         // ==========================================
         const feList      = document.getElementById('feList');
         const feAddBtn    = document.getElementById('feAddBtn');
+        const fileExplorer = document.getElementById('fileExplorer');
+        const feToggleBtn = document.getElementById('feToggleBtn');
+        const FILE_EXPLORER_KEY = 'html-editor-file-explorer-collapsed';
+
+        function setFileExplorerCollapsed(collapsed, persist) {
+            fileExplorer.classList.toggle('is-collapsed', collapsed);
+            feToggleBtn.setAttribute('aria-expanded', String(!collapsed));
+            feToggleBtn.setAttribute('aria-label', collapsed ? 'Open file manager' : 'Collapse file manager');
+            feToggleBtn.title = collapsed ? 'Open file manager' : 'Collapse file manager';
+            if (persist !== false) storageSet(FILE_EXPLORER_KEY, collapsed ? '1' : '0');
+        }
+
+        const savedExplorerState = storageGet(FILE_EXPLORER_KEY);
+        setFileExplorerCollapsed(savedExplorerState !== '0', false);
+        feToggleBtn.addEventListener('click', function() {
+            setFileExplorerCollapsed(!fileExplorer.classList.contains('is-collapsed'));
+        });
         const feNewForm   = document.getElementById('feNewForm');
         const feNewName   = document.getElementById('feNewName');
         const feNewType   = document.getElementById('feNewType');
@@ -331,7 +348,7 @@ button:hover {
             const html = project.files.map(function(f) {
                 const isActive = f.id === project.activeFileId;
                 const icon = f.type === 'html' ? '📄' : (f.type === 'css' ? '🎨' : '⚡');
-                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '">' +
+                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" title="' + escHtml(f.name) + '">' +
                     '<span class="fe-icon">' + icon + '</span>' +
                     '<span class="fe-name" data-role="name">' + escHtml(f.name) + '</span>' +
                     '<button type="button" class="fe-del" data-action="delete" title="Delete">🗑</button>' +
@@ -341,6 +358,9 @@ button:hover {
         }
 
         feAddBtn.addEventListener('click', function() {
+            if (fileExplorer.classList.contains('is-collapsed')) {
+                setFileExplorerCollapsed(false);
+            }
             feNewForm.hidden = !feNewForm.hidden;
             if (!feNewForm.hidden) {
                 feNewName.value = '';

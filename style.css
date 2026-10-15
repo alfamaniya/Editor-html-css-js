@@ -319,8 +319,8 @@
 
         /* File Explorer */
         .file-explorer {
-            width: 160px;
-            flex-shrink: 0;
+            width: 168px;
+            flex: 0 0 168px;
             background: #1c2938;
             border-right: 1px solid var(--blue-border);
             display: flex;
@@ -328,19 +328,58 @@
             overflow: hidden;
             direction: ltr;
             font-size: 11px;
+            transition: width 0.18s ease, flex-basis 0.18s ease;
+        }
+        .file-explorer.is-collapsed {
+            width: 44px;
+            flex-basis: 44px;
         }
 
         .fe-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 8px;
+            gap: 6px;
+            padding: 6px 7px;
+            min-height: 34px;
+            box-sizing: border-box;
             background: linear-gradient(180deg, var(--blue-bg-2), var(--blue-bg-1));
             border-bottom: 1px solid var(--blue-border);
             font-weight: bold;
             color: var(--blue-text);
             flex-shrink: 0;
         }
+        .fe-toggle-btn {
+            width: 26px;
+            height: 26px;
+            flex: 0 0 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--blue-text);
+            font-size: 15px;
+            padding: 0;
+            cursor: pointer;
+        }
+        .fe-toggle-btn:hover,
+        .fe-toggle-btn:focus-visible {
+            background: var(--blue-bg-4);
+            border-color: var(--blue-border);
+        }
+        .fe-title { flex: 1; min-width: 0; }
+        .file-explorer.is-collapsed .fe-title { display: none; }
+        .file-explorer.is-collapsed .fe-header { flex-direction: column; padding: 6px 0; gap: 7px; }
+        .file-explorer.is-collapsed .fe-add-btn { flex: 0 0 24px; }
+        .file-explorer.is-collapsed .fe-item { justify-content: center; padding: 7px 0; }
+        .file-explorer.is-collapsed .fe-name,
+        .file-explorer.is-collapsed .fe-del { display: none; }
+        .file-explorer.is-collapsed .fe-item { gap: 0; }
+        .file-explorer.is-collapsed .fe-list { padding-left: 4px; padding-right: 4px; }
+        .file-explorer.is-collapsed .fe-item[title] { overflow: hidden; }
+
 
         .fe-title {
             font-size: 11px;
@@ -1096,7 +1135,8 @@
             .tab { font-size: 11px; padding: 5px 4px; }
             .lib-presets-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
             .divider { display: none; }
-            .file-explorer { width: 120px; }
+            .file-explorer { width: 168px; flex-basis: 168px; }
+            .file-explorer.is-collapsed { width: 44px; flex-basis: 44px; }
         }
     
 

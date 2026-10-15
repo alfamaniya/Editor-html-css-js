@@ -190,10 +190,40 @@ button:hover {
                 const raw = storageGet(PROJECT_KEY);
                 if (raw) {
                     const p = JSON.parse(raw);
-                    if (p && Array.isArray(p.files) && p.files.length) {
-                        p.activeFileId = p.activeFileId || null;
-                        p.lastActiveByLang = p.lastActiveByLang || { html: null, css: null, js: null };
-                        return p;
+                    if (p && Array.isArray(p.files)) {
+                        const seenIds = new Set();
+                        const validFiles = p.files
+                            .filter(function(file) {
+                                return file && typeof file === 'object' &&
+                                    LANGS.includes(file.type) && typeof file.content === 'string';
+                            })
+                            .map(function(file) {
+                                let id = (typeof file.id === 'string' && file.id) ? file.id : makeId();
+                                if (seenIds.has(id)) id = makeId();
+                                seenIds.add(id);
+                                const name = (typeof file.name === 'string' && file.name.trim())
+                                    ? file.name.trim().slice(0, 40)
+                                    : 'untitled.' + file.type;
+                                return { id: id, name: name, type: file.type, content: file.content };
+                            });
+
+                        if (validFiles.length) {
+                            const requestedLast = p.lastActiveByLang && typeof p.lastActiveByLang === 'object'
+                                ? p.lastActiveByLang : {};
+                            const lastActiveByLang = {};
+                            LANGS.forEach(function(lang) {
+                                const candidate = validFiles.find(function(file) {
+                                    return file.id === requestedLast[lang] && file.type === lang;
+                                }) || validFiles.find(function(file) { return file.type === lang; });
+                                lastActiveByLang[lang] = candidate ? candidate.id : null;
+                            });
+                            const active = validFiles.find(function(file) { return file.id === p.activeFileId; });
+                            return {
+                                files: validFiles,
+                                activeFileId: active ? active.id : validFiles[0].id,
+                                lastActiveByLang: lastActiveByLang
+                            };
+                        }
                     }
                 }
             } catch (e) {}
@@ -206,9 +236,9 @@ button:hover {
                         const ids = { html: makeId(), css: makeId(), js: makeId() };
                         return {
                             files: [
-                                { id: ids.html, name: 'index.html', type: 'html', content: parsed.html || DEFAULT_HTML },
-                                { id: ids.css,  name: 'style.css',  type: 'css',  content: parsed.css || DEFAULT_CSS },
-                                { id: ids.js,   name: 'script.js',  type: 'js',   content: parsed.js || DEFAULT_JS }
+                                { id: ids.html, name: 'index.html', type: 'html', content: typeof parsed.html === 'string' ? parsed.html : DEFAULT_HTML },
+                                { id: ids.css,  name: 'style.css',  type: 'css',  content: typeof parsed.css === 'string' ? parsed.css : DEFAULT_CSS },
+                                { id: ids.js,   name: 'script.js',  type: 'js',   content: typeof parsed.js === 'string' ? parsed.js : DEFAULT_JS }
                             ],
                             activeFileId: ids.html,
                             lastActiveByLang: { html: ids.html, css: ids.css, js: ids.js }
@@ -221,7 +251,17 @@ button:hover {
         }
 
         function saveProject() {
-            try { storageSet(PROJECT_KEY, JSON.stringify(project)); } catch (e) {}
+            let saved = false;
+            try {
+                saved = storageSet(PROJECT_KEY, JSON.stringify(project));
+            } catch (e) {
+                saved = false;
+            }
+            if (!saved) {
+                setDirty(true);
+                showToast('❌ ذخیره انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+            }
+            return saved;
         }
 
         function scheduleSaveProject() {
@@ -229,8 +269,11 @@ button:hover {
             clearTimeout(autoSaveTimer);
             clearTimeout(dirtyResetTimer);
             autoSaveTimer = setTimeout(function() {
-                saveProject();
-                dirtyResetTimer = setTimeout(function() { setDirty(false); }, 700);
+                if (saveProject()) {
+                    dirtyResetTimer = setTimeout(function() { setDirty(false); }, 700);
+                } else {
+                    setDirty(true);
+                }
             }, 450);
         }
 
@@ -470,7 +513,13 @@ button:hover {
                 return Array.isArray(arr) ? arr : [];
             } catch (e) { return []; }
         }
-        function saveLibraries() { storageSet(LIBS_KEY, JSON.stringify(libraries)); }
+        function saveLibraries() {
+            try {
+                return storageSet(LIBS_KEY, JSON.stringify(libraries));
+            } catch (e) {
+                return false;
+            }
+        }
         function makeLibId() { return 'lib_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8); }
 
         function renderLibraries() {
@@ -551,7 +600,11 @@ button:hover {
             if (!code.trim()) { showToast('❌ Enter library code', 'error'); codeIn.focus(); return; }
 
             libraries.push({ id: makeLibId(), name: name, type: type, code: code, enabled: true });
-            saveLibraries();
+            if (!saveLibraries()) {
+                libraries.pop();
+                showToast('❌ ذخیره کتابخانه انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+                return;
+            }
             renderLibraries();
             nameIn.value = '';
             codeIn.value = '';
@@ -564,17 +617,29 @@ button:hover {
         function toggleLibrary(id, enabled) {
             const lib = libraries.find(function(l) { return l.id === id; });
             if (!lib) return;
+            const previousEnabled = lib.enabled;
             lib.enabled = !!enabled;
-            saveLibraries();
+            if (!saveLibraries()) {
+                lib.enabled = previousEnabled;
+                renderLibraries();
+                showToast('❌ تغییر کتابخانه ذخیره نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+                return;
+            }
             renderLibraries();
             updatePreviewNow();
         }
         function deleteLibrary(id) {
             const idx = libraries.findIndex(function(l) { return l.id === id; });
             if (idx === -1) return;
-            const name = libraries[idx].name;
+            const removed = libraries[idx];
+            const name = removed.name;
             libraries.splice(idx, 1);
-            saveLibraries();
+            if (!saveLibraries()) {
+                libraries.splice(idx, 0, removed);
+                renderLibraries();
+                showToast('❌ حذف کتابخانه ذخیره نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+                return;
+            }
             renderLibraries();
             updatePreviewNow();
             showToast('🗑 “' + name + '” deleted', 'info');
@@ -1568,9 +1633,12 @@ button:hover {
         //  Save / Download
         // ==========================================
         function saveCode() {
-            saveProject();
+            if (!saveProject()) {
+                setDirty(true);
+                return;
+            }
             setDirty(false);
-            showToast('✅ Code saved', 'success');
+            showToast('✅ ذخیره با موفقیت انجام شد.', 'success');
         }
 
         function downloadFile(content, filename, mime) {

@@ -1083,33 +1083,32 @@ button:hover {
                 const before = val.substring(0, pos);
 
                 if (lang === 'html') {
-                    // Support CSS completion inside an HTML style="..." attribute.
-                    {
-                    const lt = before.lastIndexOf('<');
-                    }
-                    const gt = before.lastIndexOf('>');
-                    if (lt > gt && before.slice(lt, lt + 4) !== '<!--') {
-                        const tagFragment = before.slice(lt);
-                        const styleMatch = tagFragment.match(/\\bstyle\\s*=\\s*(["'])([^"']*)$/i);
+                    const tagLt = before.lastIndexOf('<');
+                    const tagGt = before.lastIndexOf('>');
+
+                    // CSS completion inside an unfinished inline style attribute.
+                    if (tagLt > tagGt && before.slice(tagLt, tagLt + 4) !== '<!--') {
+                        const tagFragment = before.slice(tagLt);
+                        const styleMatch = tagFragment.match(/\bstyle\s*=\s*(["'])([^"']*)$/i);
                         if (styleMatch) {
                             const cssBefore = styleMatch[2];
-                            const declaration = cssBefore.match(/(?:^|;)\\s*([a-zA-Z-][\\w-]*)\\s*:\\s*([^;]*)$/);
+                            const declaration = cssBefore.match(/(?:^|;)\s*([a-zA-Z-][\w-]*)\s*:\s*([^;]*)$/);
                             if (declaration) {
                                 const valueText = declaration[2];
-                                const valueMatch = valueText.match(/([a-zA-Z-][\\w-]*)$/);
+                                const valueMatch = valueText.match(/([a-zA-Z-][\w-]*)$/);
                                 const word = valueMatch ? valueMatch[1] : '';
                                 return { word: word, from: pos - word.length, to: pos, kind: 'cssValue', property: declaration[1].toLowerCase(), inlineStyle: true };
                             }
-                            const propertyMatch = cssBefore.match(/(?:^|;)\\s*([a-zA-Z-][\\w-]*)?$/);
+                            const propertyMatch = cssBefore.match(/(?:^|;)\s*([a-zA-Z-][\w-]*)?$/);
                             if (propertyMatch) {
                                 const word = propertyMatch[1] || '';
                                 return { word: word, from: pos - word.length, to: pos, kind: 'cssProperty', inlineStyle: true };
                             }
                         }
                     }
-                    const gt = before.lastIndexOf('>');
-                    if (lt <= gt || before.slice(lt, lt + 4) === '<!--') return null;
-                    const fragment = before.slice(lt);
+
+                    if (tagLt <= tagGt || before.slice(tagLt, tagLt + 4) === '<!--') return null;
+                    const fragment = before.slice(tagLt);
                     const tagMatch = fragment.match(/^<\/?([a-zA-Z][\w:-]*)/);
                     if (!tagMatch) return null;
                     const tag = tagMatch[1].toLowerCase();

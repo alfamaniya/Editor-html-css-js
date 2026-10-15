@@ -112,5 +112,7 @@
             {label:'box-shadow', insert:'0 4px 12px rgba(0, 0, 0, 0.15)', description:'Soft shadow value', caret:0}
         ]
     };
+    Object.keys(cssValues).forEach(function (key) { cssValues[key] = cssValues[key].split(/\\s+/); });
+    Object.keys(jsMembers).forEach(function (key) { jsMembers[key] = jsMembers[key].split(/\\s+/); });
     window.EDITOR_INTELLISENSE_DATA = { htmlTags, htmlAttributes, htmlAttrsByTag, cssProperties, cssValues, jsWords, jsMembers, snippets };
 })();

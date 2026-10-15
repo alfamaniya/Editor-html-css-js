@@ -602,6 +602,22 @@ button:hover {
             if (button) activateTab(button.dataset.helpTab);
         });
 
+        document.getElementById('helpPanel').addEventListener('click', function(e) {
+            const button = e.target.closest('[data-help-language]');
+            if (!button) return;
+            const language = button.dataset.helpLanguage;
+            const englishGuide = document.getElementById('helpEnglish');
+            const persianGuide = document.getElementById('helpPersian');
+            const isPersian = language === 'fa';
+            englishGuide.hidden = isPersian;
+            persianGuide.hidden = !isPersian;
+            document.querySelectorAll('[data-help-language]').forEach(function(toggle) {
+                const selected = toggle.dataset.helpLanguage === language;
+                toggle.classList.toggle('active', selected);
+                toggle.setAttribute('aria-pressed', String(selected));
+            });
+        });
+
         document.getElementById('libPresetsGrid').addEventListener('click', async function(e) {
             const btn = e.target.closest('.lib-preset');
             if (!btn) return;

@@ -46,10 +46,11 @@
             <div class="search-results" id="searchResults" hidden></div>
 
             <div class="editor-body">
-                <div class="file-explorer">
+                <aside class="file-explorer is-collapsed" id="fileExplorer" aria-label="File manager">
                     <div class="fe-header">
-                        <span class="fe-title">📁 Files</span>
-                        <button type="button" class="fe-add-btn" id="feAddBtn" title="New file">+</button>
+                        <button type="button" class="fe-toggle-btn" id="feToggleBtn" title="Open file manager" aria-label="Open file manager" aria-controls="feList" aria-expanded="false">📁</button>
+                        <span class="fe-title">Files</span>
+                        <button type="button" class="fe-add-btn" id="feAddBtn" title="New file" aria-label="New file">+</button>
                     </div>
                     <div class="fe-new-form" id="feNewForm" hidden>
                         <input type="text" id="feNewName" placeholder="File name..." maxlength="40" spellcheck="false">

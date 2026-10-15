@@ -358,6 +358,9 @@ button:hover {
         }
 
         feAddBtn.addEventListener('click', function() {
+            if (fileExplorer.classList.contains('is-collapsed')) {
+                setFileExplorerCollapsed(false);
+            }
             feNewForm.hidden = !feNewForm.hidden;
             if (!feNewForm.hidden) {
                 feNewName.value = '';

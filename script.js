@@ -1541,6 +1541,9 @@ button:hover {
         function createEditor(lang) {
             const wrap = document.createElement('div');
             wrap.className = 'editor-wrap';
+            wrap.id = 'panel-' + lang;
+            wrap.setAttribute('role', 'tabpanel');
+            wrap.setAttribute('aria-labelledby', 'tab-' + lang);
             wrap.hidden = true;
             wrap.innerHTML =
                 '<div class="line-numbers">1</div>' +

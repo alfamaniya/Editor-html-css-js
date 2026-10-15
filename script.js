@@ -1084,7 +1084,7 @@ button:hover {
                 }
                 if (ctx.kind === 'cssProperty') {
                     const snippets = (DATA.snippets && DATA.snippets.css) || [];
-                    return filterList((DATA.cssProperties || CSS_PROPS).concat(snippets), ctx.word);
+                    return filterList(snippets.concat(DATA.cssProperties || CSS_PROPS), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (DATA.cssValues || {})[ctx.property] || [];
@@ -1097,7 +1097,7 @@ button:hover {
                 }
                 if (ctx.kind === 'jsWord') {
                     const snippets = (DATA.snippets && DATA.snippets.js) || [];
-                    return filterList((DATA.jsWords || JS_WORDS).concat(snippets), ctx.word);
+                    return filterList(snippets.concat(DATA.jsWords || JS_WORDS), ctx.word);
                 }
                 return [];
             }

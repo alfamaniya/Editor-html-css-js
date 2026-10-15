@@ -1132,17 +1132,50 @@ button:hover {
                 return !!quote || lineComment || blockComment;
             }
 
+            // Find an unfinished HTML tag without treating > inside quoted attributes as tag end.
+            function findOpenHtmlTagStart(text) {
+                let tagStart = -1;
+                let quote = null;
+                let inComment = false;
+                for (let i = 0; i < text.length; i++) {
+                    if (inComment) {
+                        if (text.slice(i, i + 3) === '-->') {
+                            inComment = false;
+                            i += 2;
+                        }
+                        continue;
+                    }
+                    if (!quote && text.slice(i, i + 4) === '<!--') {
+                        inComment = true;
+                        tagStart = -1;
+                        i += 3;
+                        continue;
+                    }
+                    const ch = text.charAt(i);
+                    if (quote) {
+                        if (ch === quote) quote = null;
+                        continue;
+                    }
+                    if (tagStart >= 0 && (ch === '"' || ch === "'")) {
+                        quote = ch;
+                        continue;
+                    }
+                    if (ch === '<') tagStart = i;
+                    else if (ch === '>') tagStart = -1;
+                }
+                return tagStart;
+            }
+
             function getWordAndContext(ta, lang) {
                 const val = ta.value;
                 const pos = ta.selectionStart;
                 const before = val.substring(0, pos);
 
                 if (lang === 'html') {
-                    const tagLt = before.lastIndexOf('<');
-                    const tagGt = before.lastIndexOf('>');
+                    const tagLt = findOpenHtmlTagStart(before);
 
                     // CSS completion inside an unfinished inline style attribute.
-                    if (tagLt > tagGt && before.slice(tagLt, tagLt + 4) !== '<!--') {
+                    if (tagLt >= 0 && before.slice(tagLt, tagLt + 4) !== '<!--') {
                         const tagFragment = before.slice(tagLt);
                         const styleMatch = tagFragment.match(/\bstyle\s*=\s*(["'])((?:(?!\1)[\s\S])*)$/i);
                         if (styleMatch) {
@@ -1163,7 +1196,7 @@ button:hover {
                         }
                     }
 
-                    if (tagLt <= tagGt || before.slice(tagLt, tagLt + 4) === '<!--') return null;
+                    if (tagLt < 0) return null;
                     const fragment = before.slice(tagLt);
                     const tagMatch = fragment.match(/^<\/?([a-zA-Z][\w:-]*)/);
                     if (!tagMatch) return null;

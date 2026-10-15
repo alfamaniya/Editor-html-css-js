@@ -606,7 +606,10 @@
         }
 
         .intellisense-item {
-            padding: 5px 9px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 6px 9px;
             color: #ddd;
             cursor: pointer;
             white-space: nowrap;
@@ -617,6 +620,9 @@
             user-select: none;
             -webkit-user-select: none;
         }
+        .intellisense-label { overflow: hidden; text-overflow: ellipsis; }
+        .intellisense-description { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 10px; opacity: .68; white-space: normal; }
+        .intellisense-item.selected .intellisense-description { opacity: .8; }
         .intellisense-item:hover { background: var(--pink-bg-3); color: #fff; }
         .intellisense-item.selected {
             background: linear-gradient(180deg, var(--pink-accent), #ff6ba8);

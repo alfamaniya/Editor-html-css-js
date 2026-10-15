@@ -538,7 +538,27 @@ button:hover {
                 const raw = storageGet(LIBS_KEY);
                 if (!raw) return [];
                 const arr = JSON.parse(raw);
-                return Array.isArray(arr) ? arr : [];
+                if (!Array.isArray(arr)) return [];
+
+                const seenIds = new Set();
+                return arr.filter(function(lib) {
+                    return lib && typeof lib === 'object' &&
+                        typeof lib.name === 'string' &&
+                        typeof lib.code === 'string' &&
+                        (lib.type === 'css' || lib.type === 'js');
+                }).map(function(lib) {
+                    let id = typeof lib.id === 'string' && lib.id.trim()
+                        ? lib.id.trim().slice(0, 100) : makeLibId();
+                    if (seenIds.has(id)) id = makeLibId();
+                    seenIds.add(id);
+                    return {
+                        id: id,
+                        name: lib.name.trim().slice(0, 100) || 'Unnamed library',
+                        type: lib.type,
+                        code: lib.code,
+                        enabled: lib.enabled === true
+                    };
+                });
             } catch (e) { return []; }
         }
         function saveLibraries() {

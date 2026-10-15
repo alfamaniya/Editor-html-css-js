@@ -1192,3 +1192,22 @@ textarea:focus-visible,
     .lib-catalog-controls { grid-template-columns: 1fr; }
     .lib-catalog-count { white-space: normal; }
 }
+
+
+/* Language switcher for the in-app guide */
+.help-language-switch { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+.help-language-btn {
+    border: 1px solid #76506a; background: #29212b; color: #ffe4ef;
+    border-radius: 8px; padding: 8px 13px; font: inherit; font-weight: 700; cursor: pointer;
+}
+.help-language-btn:hover, .help-language-btn.active { background: #7a3557; border-color: #ff8ab8; }
+.help-language-btn:focus-visible { outline: 2px solid #ff8ab8; outline-offset: 3px; }
+.help-content[hidden] { display: none !important; }
+.help-persian { direction: rtl; text-align: right; }
+.help-persian .help-card ul, .help-persian .help-card ol { padding-left: 0; padding-right: 21px; }
+.help-persian .help-tip, .help-persian .help-warning { border-left: 0; border-right: 3px solid #6fcf97; }
+.help-persian .help-warning { border-right-color: #ffb84d; }
+.help-persian .help-shortcuts { direction: rtl; }
+.help-persian code, .help-persian kbd { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+.help-persian details p { text-align: right; }
+@media (max-width: 760px) { .help-language-switch { gap: 6px; } .help-language-btn { flex: 1; } }

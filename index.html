@@ -114,6 +114,10 @@
                             <p class="help-eyebrow">HTML / CSS / JAVASCRIPT EDITOR</p>
                             <h1>Editor User Guide</h1>
                             <p>Learn the main controls, write code, preview changes, manage libraries, and export your project.</p>
+                            <div class="help-language-switch" role="group" aria-label="Guide language">
+                                <button type="button" class="help-language-btn active" data-help-language="en" aria-pressed="true">English Guide</button>
+                                <button type="button" class="help-language-btn" data-help-language="fa" aria-pressed="false">راهنمای فارسی</button>
+                            </div>
                             <div class="help-actions">
                                 <button type="button" data-help-tab="html">Start with HTML</button>
                                 <button type="button" data-help-tab="css">Edit CSS</button>
@@ -121,7 +125,7 @@
                                 <button type="button" data-help-tab="libs">Open Libraries</button>
                             </div>
                         </header>
-                        <div class="help-content">
+                        <div class="help-content" id="helpEnglish" lang="en" dir="ltr">
                             <section class="help-card">
                                 <h2>1. Understand the workspace</h2>
                                 <ul>
@@ -203,6 +207,88 @@
                             </section>
                             <p class="help-footer">This guide describes the intended workflow. Browser, mobile keyboard, and assistive-technology behavior should still be tested on the device where you plan to use the editor.</p>
                         </div>
+                            <div class="help-content help-persian" id="helpPersian" lang="fa" dir="rtl" hidden>
+                                <section class="help-card">
+                                    <h2>۱. آشنایی با محیط ویرایشگر</h2>
+                                    <ul>
+                                        <li><strong>HTML، CSS و JS:</strong> با این زبانه‌ها بین سه محیط ویرایش کد جابه‌جا شوید.</li>
+                                        <li><strong>فهرست فایل‌ها:</strong> یک فایل را انتخاب کنید یا با دکمه <strong>+</strong> فایل HTML، CSS یا JavaScript جدید بسازید.</li>
+                                        <li><strong>پیش‌نمایش:</strong> پنل سمت راست نتیجه اجرای صفحه را نشان می‌دهد. تغییرات پس از مکث کوتاهی به‌طور خودکار به‌روزرسانی می‌شوند.</li>
+                                        <li><strong>کتابخانه‌ها:</strong> کتابخانه‌های قابل استفاده در مرورگر را پیدا کنید، کدشان را اضافه کنید و سپس هر کتابخانه ذخیره‌شده را فعال یا غیرفعال کنید.</li>
+                                        <li><strong>راهنما:</strong> این راهنما داخل ویرایشگر قرار دارد و هر زمان لازم باشد می‌توانید دوباره آن را باز کنید.</li>
+                                    </ul>
+                                </section>
+                                <section class="help-card">
+                                    <h2>۲. ساخت اولین پروژه</h2>
+                                    <ol>
+                                        <li>زبانه <strong>HTML</strong> را باز کنید و ساختار صفحه و عناصر قابل مشاهده را بنویسید.</li>
+                                        <li>به <strong>CSS</strong> بروید و ظاهر عناصر را تنظیم کنید؛ برای نمونه: <code>body { font-family: sans-serif; }</code>.</li>
+                                        <li>در <strong>JS</strong> رفتارهایی مانند واکنش به کلیک دکمه‌ها را اضافه کنید.</li>
+                                        <li>نتیجه را در پیش‌نمایش ببینید. اگر مشکلی وجود داشت، کد را بررسی کنید و هر بار یک تغییر کوچک انجام دهید.</li>
+                                    </ol>
+                                    <p class="help-tip">نکته: HTML محتوای صفحه را مشخص می‌کند، CSS ظاهر آن را می‌سازد و JavaScript رفتار و تعامل را اضافه می‌کند.</p>
+                                </section>
+                                <section class="help-card">
+                                    <h2>۳. ویرایش کد و تکمیل خودکار</h2>
+                                    <ul>
+                                        <li>برای دیدن پیشنهاد تگ‌های HTML، بخشی از تگ مانند <code>&lt;di</code> را تایپ کنید.</li>
+                                        <li>داخل تگ، با وارد کردن فاصله پیشنهاد ویژگی‌ها نمایش داده می‌شوند؛ در موارد پشتیبانی‌شده این پیشنهادها به نوع عنصر وابسته‌اند.</li>
+                                        <li>داخل یک قانون CSS نام ویژگی را شروع کنید؛ پس از دونقطه ممکن است مقادیر مرتبط پیشنهاد شوند.</li>
+                                        <li>در JavaScript عبارت‌هایی مانند <code>document.</code> یا <code>console.</code> را امتحان کنید تا اعضا و قطعه‌کدهای شناخته‌شده پیشنهاد شوند.</li>
+                                        <li>وقتی فهرست پیشنهادها باز است، با کلیدهای جهت‌نما حرکت کنید و با Enter یا Tab پیشنهاد را بپذیرید. رفتار دقیق ممکن است به مرورگر و صفحه‌کلید وابسته باشد.</li>
+                                    </ul>
+                                </section>
+                                <section class="help-card">
+                                    <h2>۴. ذخیره، بازگردانی، جست‌وجو و پاک‌سازی</h2>
+                                    <ul>
+                                        <li><strong>Save (ذخیره):</strong> پروژه را در حافظه محلی همین مرورگر نگه می‌دارد؛ نسخه پشتیبان ابری نیست.</li>
+                                        <li><strong>Download (دانلود):</strong> نام پروژه را تعیین کنید و یک فایل HTML کامل یا مجموعه فایل‌های پروژه را دریافت کنید.</li>
+                                        <li><strong>Undo / Redo:</strong> از دکمه‌های پیکان یا میانبرهای صفحه‌کلید زیر استفاده کنید.</li>
+                                        <li><strong>Search (جست‌وجو):</strong> متن موردنظر را در کد پیدا کنید.</li>
+                                        <li><strong>Reset (بازنشانی):</strong> پروژه نمونه را برمی‌گرداند و کد فعلی را جایگزین می‌کند. پیش از آن نسخه پشتیبان بگیرید.</li>
+                                        <li><strong>Clear / Clear All:</strong> کد فایل فعلی یا تمام فایل‌های پروژه را پاک می‌کند.</li>
+                                    </ul>
+                                    <div class="help-shortcuts">
+                                        <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd> ذخیره</span>
+                                        <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> دانلود</span>
+                                        <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>F</kbd> جست‌وجو</span>
+                                        <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Z</kbd> بازگردانی</span>
+                                        <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Y</kbd> انجام دوباره</span>
+                                    </div>
+                                </section>
+                                <section class="help-card">
+                                    <h2>۵. استفاده از زبانه کتابخانه‌ها</h2>
+                                    <ol>
+                                        <li>نام یا کاربرد کتابخانه را جست‌وجو کنید یا فهرست را به CSS و JavaScript محدود کنید.</li>
+                                        <li>یک مورد را انتخاب کنید. ویرایشگر تلاش می‌کند کد آماده مرورگر را از CDN دریافت کند.</li>
+                                        <li>اگر دریافت انجام نشد، اتصال اینترنت و مستندات رسمی را بررسی کنید و در صورت نیاز نسخه مناسب مرورگر را دستی دانلود کرده و کد آن را در کادر قرار دهید.</li>
+                                        <li>در صورت نیاز نام کتابخانه و نوع CSS یا JS را تنظیم کنید و روی <strong>Add to Libraries</strong> بزنید.</li>
+                                        <li>در بخش کتابخانه‌های ذخیره‌شده، تیک کنار کتابخانه را برای فعال‌سازی روشن یا برای غیرفعال‌سازی موقت خاموش کنید. برای حذف، از دکمه سطل زباله استفاده کنید.</li>
+                                    </ol>
+                                    <p class="help-warning">مهم: بعضی بسته‌ها به وابستگی‌های دیگر، فایل‌های جداگانه، نسخه مخصوص مرورگر یا تنظیمات اضافی نیاز دارند. دریافت موفق فایل تضمین نمی‌کند که کتابخانه بدون پیکربندی کار کند. کد را فقط از منابع قابل اعتماد دریافت کنید.</p>
+                                </section>
+                                <section class="help-card">
+                                    <h2>۶. منظور از کارکرد آفلاین چیست؟</h2>
+                                    <p>پس از در دسترس بودن فایل‌های ویرایشگر، خود محیط و کدهای ذخیره‌شده می‌توانند به‌صورت محلی استفاده شوند. دریافت کتابخانه از CDN به اینترنت نیاز دارد و کد کتابخانه‌ها در حافظه مرورگر همین دستگاه ذخیره می‌شود. پاک‌کردن داده‌های مرورگر ممکن است پروژه‌ها و کتابخانه‌های ذخیره‌شده را حذف کند؛ بنابراین مرتباً از کارهای مهم دانلود پشتیبان بگیرید.</p>
+                                </section>
+                                <section class="help-card">
+                                    <h2>۷. دریافت خروجی و بازکردن پروژه</h2>
+                                    <ul>
+                                        <li>روی <strong>Download</strong> بزنید، نام پروژه را وارد کنید و فایل HTML کامل یا بسته فایل‌های پروژه را انتخاب کنید.</li>
+                                        <li>در خروجی چندفایلی، فایل‌های مرتبط را کنار هم نگه دارید.</li>
+                                        <li>فایل HTML خروجی را در مرورگر به‌روز باز کنید. قابلیت‌هایی که از API خارجی یا منابع CDN استفاده می‌کنند ممکن است همچنان به اینترنت نیاز داشته باشند.</li>
+                                        <li>برای پروژه‌های بزرگ‌تر از کنترل نسخه و نسخه‌های پشتیبان جداگانه استفاده کنید و فقط به حافظه محلی مرورگر متکی نباشید.</li>
+                                    </ul>
+                                </section>
+                                <section class="help-card">
+                                    <h2>۸. رفع مشکلات رایج</h2>
+                                    <details><summary>کتابخانه دانلود نشد</summary><p>ممکن است CDN درخواست مرورگر را مسدود کند، موقتاً در دسترس نباشد یا مسیر فایل تغییر کرده باشد. مستندات رسمی را باز کنید، نسخه آماده مرورگر را دریافت کنید و کد را دستی وارد کنید. همه کتابخانه‌ها به‌صورت یک اسکریپت منفرد قابل استفاده نیستند.</p></details>
+                                    <details><summary>پیش‌نمایش خالی است یا به‌روز نمی‌شود</summary><p>کامل‌بودن HTML، خطاهای نحوی CSS، خطاهای JavaScript و وابستگی‌های مفقود را بررسی کنید. تغییر کوچکی انجام دهید و برای به‌روزرسانی پیش‌نمایش کمی صبر کنید. برخی محدودیت‌های امنیتی مرورگر روی فایل‌های محلی اثر می‌گذارند.</p></details>
+                                    <details><summary>کد ذخیره‌شده ناپدید شده است</summary><p>بررسی کنید ویرایشگر را در مرورگر دیگری یا حالت خصوصی باز نکرده باشید. حافظه مرورگر به همان نمایه کاربری وابسته است و با پاک‌کردن داده‌های سایت ممکن است حذف شود. برای پشتیبان از Download استفاده کنید.</p></details>
+                                    <details><summary>کتابخانه ذخیره شده ولی کار نمی‌کند</summary><p>بررسی کنید نسخه و فایل مناسب را اضافه کرده‌اید، وابستگی‌های لازم فعال هستند و دستورالعمل راه‌اندازی رسمی رعایت شده است.</p></details>
+                                </section>
+                                <p class="help-footer">این راهنما روند مورد انتظار کار را توضیح می‌دهد. عملکرد مرورگر، صفحه‌کلید موبایل و فناوری‌های کمکی را روی دستگاهی که قصد استفاده از آن را دارید نیز آزمایش کنید.</p>
+                            </div>
                     </section>
                 </div>
             </div>

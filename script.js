@@ -1084,7 +1084,9 @@ button:hover {
 
                 if (lang === 'html') {
                     // Support CSS completion inside an HTML style="..." attribute.
+                    {
                     const lt = before.lastIndexOf('<');
+                    }
                     const gt = before.lastIndexOf('>');
                     if (lt > gt && before.slice(lt, lt + 4) !== '<!--') {
                         const tagFragment = before.slice(lt);

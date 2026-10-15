@@ -162,5 +162,6 @@
     };
     Object.keys(cssValues).forEach(function (key) { cssValues[key] = cssValues[key].split(/\\s+/); });
     Object.keys(jsMembers).forEach(function (key) { jsMembers[key] = jsMembers[key].split(/\\s+/); });
+    Object.keys(htmlAttrsByTag).forEach(function (key) { htmlAttrsByTag[key] = htmlAttrsByTag[key].split(/\\s+/); });
     window.EDITOR_INTELLISENSE_DATA = { htmlTags, htmlAttributes, htmlAttrsByTag, cssProperties, cssValues, jsWords, jsMembers, snippets };
 })();

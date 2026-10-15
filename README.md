@@ -25,15 +25,16 @@
 
 <h2>Project files</h2>
 <ul>
-<li><code>index.html</code> — page structure, editor interface, and JavaScript application logic.</li>
+<li><code>index.html</code> — page structure and editor interface.</li>
 <li><code>style.css</code> — styles for the editor interface, separated from the HTML.</li>
+<li><code>script.js</code> — JavaScript application logic, separated from the HTML.</li>
 <li><code>README.md</code> — project documentation in English and Persian.</li>
 </ul>
 
 <h2>Run the project</h2>
 <ol>
 <li>Download or clone this repository.</li>
-<li>Keep <code>index.html</code> and <code>style.css</code> in the same directory.</li>
+<li>Keep <code>index.html</code>, <code>style.css</code>, and <code>script.js</code> in the same directory.</li>
 <li>Open <code>index.html</code> in a modern browser.</li>
 </ol>
 <p>No build step is required for the basic editor page.</p>
@@ -50,7 +51,7 @@
 <h2>Notes</h2>
 <ul>
 <li>The CSS is loaded from the local <code>style.css</code> file. Keep it alongside <code>index.html</code> so the interface can be styled correctly.</li>
-<li>The editor's JavaScript logic remains inside <code>index.html</code> in this version.</li>
+<li>The editor's JavaScript logic is loaded from the local <code>script.js</code> file.</li>
 <li>Persian comments inside the source code are intentionally preserved.</li>
 </ul>
 
@@ -74,15 +75,16 @@
 
 <h2 dir="rtl">فایل‌های پروژه</h2>
 <ul dir="rtl">
-<li><code>index.html</code> — ساختار صفحه، رابط ویرایشگر و منطق برنامه با JavaScript.</li>
+<li><code>index.html</code> — ساختار صفحه و رابط ویرایشگر.</li>
 <li><code>style.css</code> — ظاهر و استایل‌های رابط ویرایشگر که از HTML جدا شده‌اند.</li>
+<li><code>script.js</code> — منطق برنامه با JavaScript که از HTML جدا شده است.</li>
 <li><code>README.md</code> — مستندات پروژه به دو زبان فارسی و انگلیسی.</li>
 </ul>
 
 <h2 dir="rtl">اجرای پروژه</h2>
 <ol dir="rtl">
 <li>مخزن را دانلود یا کلون کنید.</li>
-<li>فایل‌های <code>index.html</code> و <code>style.css</code> را در یک پوشه نگه دارید.</li>
+<li>فایل‌های <code>index.html</code>، <code>style.css</code> و <code>script.js</code> را در یک پوشه نگه دارید.</li>
 <li>فایل <code>index.html</code> را با یک مرورگر به‌روز باز کنید.</li>
 </ol>
 <p dir="rtl">برای اجرای پایه صفحه ویرایشگر، نیازی به مرحله ساخت (Build) نیست.</p>
@@ -99,7 +101,7 @@
 <h2 dir="rtl">نکته‌ها</h2>
 <ul dir="rtl">
 <li>استایل‌ها از فایل محلی <code>style.css</code> بارگذاری می‌شوند. برای نمایش درست ظاهر برنامه، این فایل باید کنار <code>index.html</code> باشد.</li>
-<li>در این نسخه، منطق JavaScript ویرایشگر همچنان داخل <code>index.html</code> قرار دارد.</li>
+<li>منطق JavaScript ویرایشگر از فایل محلی <code>script.js</code> بارگذاری می‌شود.</li>
 <li>کامنت‌های فارسی داخل کد عمداً حفظ شده‌اند.</li>
 </ul>
 

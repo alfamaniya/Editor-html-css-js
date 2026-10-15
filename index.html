@@ -27,10 +27,10 @@
             </div>
 
             <div class="tabs" role="tablist">
-                <button class="tab" role="tab" data-tab="html">HTML</button>
-                <button class="tab" role="tab" data-tab="css">CSS</button>
-                <button class="tab" role="tab" data-tab="js">JS</button>
-                <button class="tab" role="tab" data-tab="libs">📚 Libraries</button>
+                <button class="tab" id="tab-html" role="tab" aria-controls="panel-html" aria-selected="false" data-tab="html">HTML</button>
+                <button class="tab" id="tab-css" role="tab" aria-controls="panel-css" aria-selected="false" data-tab="css">CSS</button>
+                <button class="tab" id="tab-js" role="tab" aria-controls="panel-js" aria-selected="false" data-tab="js">JS</button>
+                <button class="tab" id="tab-libs" role="tab" aria-controls="libsPanel" aria-selected="false" data-tab="libs">📚 Libraries</button>
             </div>
 
             <div class="search-bar">
@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="editors" id="editors">
-                    <div class="libs-panel" id="libsPanel" hidden>
+                    <div class="libs-panel" id="libsPanel" role="tabpanel" aria-labelledby="tab-libs" hidden>
                         <div class="lib-presets-section">
                             <div class="lib-form-title">⚡ Popular Libraries (click to select)</div>
                             <div class="lib-presets-hint">

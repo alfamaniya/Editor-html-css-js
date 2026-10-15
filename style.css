@@ -1092,3 +1092,13 @@
             .file-explorer { width: 120px; }
         }
     
+
+/* نشانگر فوکوس برای کار با صفحه‌کلید */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--pink-accent);
+    outline-offset: 2px;
+}

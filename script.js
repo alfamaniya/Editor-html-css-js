@@ -991,49 +991,115 @@ button:hover {
 
             const measureCtx = document.createElement('canvas').getContext('2d');
 
+            const DATA = window.EDITOR_INTELLISENSE_DATA || {};
             function getWordAndContext(ta, lang) {
                 const val = ta.value;
                 const pos = ta.selectionStart;
                 const before = val.substring(0, pos);
 
                 if (lang === 'html') {
-                    const m = before.match(/(<\/?)([a-zA-Z][\w-]*)$/);
-                    if (!m) return null;
-                    return { word: m[2], from: pos - m[2].length, to: pos };
+                    const lt = before.lastIndexOf('<');
+                    const gt = before.lastIndexOf('>');
+                    if (lt <= gt || before.slice(lt, lt + 4) === '<!--') return null;
+                    const fragment = before.slice(lt);
+                    const tagMatch = fragment.match(/^<\/?([a-zA-Z][\w:-]*)/);
+                    if (!tagMatch) return null;
+                    const tag = tagMatch[1].toLowerCase();
+                    if (fragment.charAt(1) === '/') {
+                        const m = fragment.match(/^<\/([a-zA-Z][\w:-]*)$/);
+                        return m ? { word: m[1], from: pos - m[1].length, to: pos, kind: 'htmlTag' } : null;
+                    }
+                    const afterName = fragment.slice(tagMatch[0].length);
+                    if (!afterName.length && !/\s/.test(fragment.slice(-1))) {
+                        return { word: tagMatch[1], from: pos - tagMatch[1].length, to: pos, kind: 'htmlTag' };
+                    }
+                    if (/^\s/.test(afterName)) {
+                        if (/=\s*["'][^"']*$/.test(afterName)) return null;
+                        const attrMatch = afterName.match(/([^\s"'<>/=]*)$/);
+                        if (!attrMatch) return null;
+                        return { word: attrMatch[1], from: pos - attrMatch[1].length, to: pos, kind: 'htmlAttr', tag: tag };
+                    }
+                    return { word: tagMatch[1], from: pos - tagMatch[1].length, to: pos, kind: 'htmlTag' };
                 }
                 if (lang === 'css') {
                     const clean = before.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, '');
                     const depth = (clean.match(/\{/g) || []).length - (clean.match(/\}/g) || []).length;
                     if (depth <= 0) return null;
-                    const lastQuote = Math.max(clean.lastIndexOf('"'), clean.lastIndexOf("'"));
-                    const afterQuote = lastQuote >= 0 ? clean.substring(lastQuote + 1) : '';
-                    const quoteCount = (afterQuote.match(/["']/g) || []).length;
-                    if (quoteCount % 2 === 1) return null;
-                    const m = before.match(/(-?[a-zA-Z][\w-]*)$/);
+                    const lineStart = Math.max(clean.lastIndexOf('{'), clean.lastIndexOf(';'), clean.lastIndexOf('}')) + 1;
+                    const line = clean.slice(lineStart);
+                    const declaration = line.match(/^\s*([a-zA-Z-][\w-]*)\s*:\s*([^;]*)$/);
+                    if (declaration) {
+                        const valueText = declaration[2];
+                        if (/['"][^'"]*$/.test(valueText)) return null;
+                        const m = valueText.match(/([a-zA-Z-][\w-]*)$/);
+                        return { word: m ? m[1] : '', from: m ? pos - m[1].length : pos, to: pos, kind: 'cssValue', property: declaration[1].toLowerCase() };
+                    }
+                    const m = line.match(/^\s*([a-zA-Z-][\w-]*)?$/);
                     if (!m) return null;
-                    return { word: m[1], from: pos - m[1].length, to: pos };
+                    const word = m[1] || '';
+                    return { word: word, from: pos - word.length, to: pos, kind: 'cssProperty' };
                 }
                 if (lang === 'js') {
                     const lineStart = before.lastIndexOf('\n') + 1;
                     const lineBefore = before.substring(lineStart);
                     if (/\/\//.test(lineBefore)) return null;
-                    const m = before.match(/([a-zA-Z_$][\w$]*(?:\.[a-zA-Z_$][\w$]*)*)$/);
+                    const member = before.match(/([a-zA-Z_$][\w$]*)\.([a-zA-Z_$][\w$]*)?$/);
+                    if (member) {
+                        const word = member[2] || '';
+                        return { word: word, from: pos - word.length, to: pos, kind: 'jsMember', root: member[1] };
+                    }
+                    const m = before.match(/([a-zA-Z_$][\w$]*)$/);
                     if (!m) return null;
-                    return { word: m[1], from: pos - m[1].length, to: pos };
+                    return { word: m[1], from: pos - m[1].length, to: pos, kind: 'jsWord' };
                 }
                 return null;
             }
 
+            function asItem(item) {
+                return typeof item === 'string' ? { label: item, insert: item, description: '' } : item;
+            }
             function filterList(list, word) {
-                const w = word.toLowerCase();
+                const w = (word || '').toLowerCase();
                 const out = [];
-                for (let i = 0; i < list.length; i++) {
-                    if (list[i].toLowerCase().startsWith(w)) {
-                        out.push(list[i]);
+                const items = (list || []).map(asItem);
+                for (let i = 0; i < items.length; i++) {
+                    const label = String(items[i].label || items[i].insert || '');
+                    if (!w || label.toLowerCase().startsWith(w)) {
+                        out.push(items[i]);
                         if (out.length >= 14) break;
                     }
                 }
                 return out;
+            }
+
+            function completionList(ctx) {
+                if (ctx.kind === 'htmlTag') return filterList(DATA.htmlTags || HTML_TAGS, ctx.word);
+                if (ctx.kind === 'htmlAttr') {
+                    const attrs = (DATA.htmlAttributes || []).concat((DATA.htmlAttrsByTag || {})[ctx.tag] || []);
+                    const unique = Array.from(new Set(attrs));
+                    return filterList(unique.map(function (name) {
+                        return { label: name, insert: /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|aria-[\w-]+|data-[\w-]+)$/.test(name) ? name + '=""' : name, description: 'HTML attribute' ,
+                            caret: /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|aria-[\w-]+|data-[\w-]+)$/.test(name) ? name.length + 2 : null };
+                    }), ctx.word);
+                }
+                if (ctx.kind === 'cssProperty') {
+                    const snippets = (DATA.snippets && DATA.snippets.css) || [];
+                    return filterList((DATA.cssProperties || CSS_PROPS).concat(snippets), ctx.word);
+                }
+                if (ctx.kind === 'cssValue') {
+                    const values = (DATA.cssValues || {})[ctx.property] || [];
+                    const common = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'transparent', 'currentColor'];
+                    return filterList(values.concat(common), ctx.word);
+                }
+                if (ctx.kind === 'jsMember') {
+                    const members = (DATA.jsMembers || {})[ctx.root] || [];
+                    return filterList(members, ctx.word);
+                }
+                if (ctx.kind === 'jsWord') {
+                    const snippets = (DATA.snippets && DATA.snippets.js) || [];
+                    return filterList((DATA.jsWords || JS_WORDS).concat(snippets), ctx.word);
+                }
+                return [];
             }
 
             function caretRect(ta, pos) {
@@ -1058,8 +1124,13 @@ button:hover {
                 currentTa = ta;
                 currentFrom = from;
                 currentTo = to;
-                el.innerHTML = items.map(function(item, i) {
-                    return '<div class="intellisense-item' + (i === 0 ? ' selected' : '') + '" data-idx="' + i + '">' + escHtml(item) + '</div>';
+                el.innerHTML = items.map(function(raw, i) {
+                    const item = asItem(raw);
+                    const description = item.description ? ' title="' + escHtml(item.description) + '"' : '';
+                    return '<div class="intellisense-item' + (i === 0 ? ' selected' : '') + '" data-idx="' + i + '"' + description + '>' +
+                        '<span class="intellisense-label">' + escHtml(item.label || item.insert) + '</span>' +
+                        (item.description ? '<span class="intellisense-description">' + escHtml(item.description) + '</span>' : '') +
+                        '</div>';
                 }).join('');
                 el.hidden = false;
                 positionDropdown(ta, to);
@@ -1089,7 +1160,7 @@ button:hover {
             }
             function accept() {
                 if (!currentItems.length || !currentTa) return;
-                const item = currentItems[currentIndex];
+                const item = asItem(currentItems[currentIndex]);
                 const ta = currentTa;
                 const from = currentFrom;
                 const to = currentTo;
@@ -1097,21 +1168,20 @@ button:hover {
                 ta.focus();
                 ta.setSelectionRange(from, to);
                 justAccepted = true;
-                insertText(ta, item);
+                insertText(ta, item.insert || item.label);
+                if (Number.isInteger(item.caret) && item.caret > 0) {
+                    const caret = from + item.caret;
+                    ta.setSelectionRange(caret, caret);
+                }
                 setTimeout(function() { justAccepted = false; }, 80);
             }
             function onInput(ta, lang, e) {
                 if (justAccepted) { justAccepted = false; return; }
                 if (!e || e.inputType !== 'insertText') { hide(); return; }
                 const ctx = getWordAndContext(ta, lang);
-                if (!ctx || ctx.word.length < 2) { hide(); return; }
+                if (!ctx || (ctx.word.length < 1 && !['htmlAttr', 'cssValue', 'jsMember'].includes(ctx.kind))) { hide(); return; }
 
-                let list;
-                if (lang === 'html') list = HTML_TAGS;
-                else if (lang === 'css') list = CSS_PROPS;
-                else list = JS_WORDS;
-
-                const items = filterList(list, ctx.word);
+                const items = completionList(ctx);
                 if (!items.length) { hide(); return; }
                 if (items.length === 1 && items[0].toLowerCase() === ctx.word.toLowerCase()) { hide(); return; }
                 show(items, ta, ctx.from, ctx.to);

@@ -31,6 +31,7 @@
                 <button class="tab" id="tab-css" role="tab" aria-controls="panel-css" aria-selected="false" data-tab="css">CSS</button>
                 <button class="tab" id="tab-js" role="tab" aria-controls="panel-js" aria-selected="false" data-tab="js">JS</button>
                 <button class="tab" id="tab-libs" role="tab" aria-controls="libsPanel" aria-selected="false" data-tab="libs">📚 Libraries</button>
+                <button class="tab" id="tab-help" role="tab" aria-controls="helpPanel" aria-selected="false" data-tab="help">❔ Help</button>
             </div>
 
             <div class="search-bar">
@@ -70,10 +71,21 @@
                         <div class="lib-presets-section">
                             <div class="lib-form-title">⚡ Popular Libraries (click to select)</div>
                             <div class="lib-presets-hint">
-                                Click any item to fill in its name and type in the form below.
-                                When online, the code is downloaded from the CDN; otherwise, paste the code from an offline file.
+                                Search or filter the catalog, then select a library. Online, the editor tries to download its browser-ready file from a CDN. If the host blocks downloads, use the official link to obtain the file or paste a local copy.
+                            </div>
+                            <div class="lib-catalog-controls">
+                                <label class="lib-search-label" for="libPresetSearch">Search catalog</label>
+                                <input type="search" id="libPresetSearch" placeholder="Search by name or purpose…" autocomplete="off">
+                                <label class="lib-search-label" for="libPresetTypeFilter">Type</label>
+                                <select id="libPresetTypeFilter">
+                                    <option value="all">All libraries</option>
+                                    <option value="css">CSS only</option>
+                                    <option value="js">JavaScript only</option>
+                                </select>
+                                <span id="libPresetCount" class="lib-catalog-count" aria-live="polite"></span>
                             </div>
                             <div class="lib-presets-grid" id="libPresetsGrid"></div>
+                            <p class="lib-catalog-note">Catalog entries are shortcuts, not automatically enabled dependencies. Select a library, add its code to Saved Libraries, and enable it when needed. Some libraries require extra files or setup; check the official documentation.</p>
                         </div>
                         <div class="lib-form">
                             <div class="lib-form-title">➕ Add New Library</div>
@@ -97,6 +109,101 @@
                         </div>
                         <div class="lib-list" id="libList"></div>
                     </div>
+                    <section class="help-panel" id="helpPanel" role="tabpanel" aria-labelledby="tab-help" hidden>
+                        <header class="help-hero">
+                            <p class="help-eyebrow">HTML / CSS / JAVASCRIPT EDITOR</p>
+                            <h1>Editor User Guide</h1>
+                            <p>Learn the main controls, write code, preview changes, manage libraries, and export your project.</p>
+                            <div class="help-actions">
+                                <button type="button" data-help-tab="html">Start with HTML</button>
+                                <button type="button" data-help-tab="css">Edit CSS</button>
+                                <button type="button" data-help-tab="js">Edit JavaScript</button>
+                                <button type="button" data-help-tab="libs">Open Libraries</button>
+                            </div>
+                        </header>
+                        <div class="help-content">
+                            <section class="help-card">
+                                <h2>1. Understand the workspace</h2>
+                                <ul>
+                                    <li><strong>HTML, CSS, JS:</strong> switch between the three code editors.</li>
+                                    <li><strong>Files:</strong> choose a file or use <strong>+</strong> to create another HTML, CSS, or JavaScript file.</li>
+                                    <li><strong>Preview:</strong> the right-hand panel shows the rendered page. Changes are refreshed automatically after a short delay.</li>
+                                    <li><strong>Libraries:</strong> browse supported browser libraries, add code, then enable or disable each saved library.</li>
+                                    <li><strong>Help:</strong> this guide stays inside the editor; reopen it whenever you need instructions.</li>
+                                </ul>
+                            </section>
+                            <section class="help-card">
+                                <h2>2. A simple first project</h2>
+                                <ol>
+                                    <li>Open <strong>HTML</strong> and write the page structure and visible elements.</li>
+                                    <li>Open <strong>CSS</strong> and style those elements. For example, use <code>body { font-family: sans-serif; }</code>.</li>
+                                    <li>Open <strong>JS</strong> to add interactions such as button clicks.</li>
+                                    <li>Look at the preview. If something is wrong, inspect the code and make a small change at a time.</li>
+                                </ol>
+                                <p class="help-tip">Tip: HTML defines the content, CSS controls the appearance, and JavaScript adds behavior.</p>
+                            </section>
+                            <section class="help-card">
+                                <h2>3. Editing and autocomplete</h2>
+                                <ul>
+                                    <li>Type an opening tag such as <code>&lt;di</code> to see HTML tag suggestions.</li>
+                                    <li>Inside a tag, type a space to suggest attributes; suggestions depend on the element where supported.</li>
+                                    <li>Inside a CSS rule, start typing a property; after a colon, matching value suggestions may appear.</li>
+                                    <li>In JavaScript, try <code>document.</code> or <code>console.</code> to see known members and snippets.</li>
+                                    <li>Use the arrow keys to move through suggestions and Enter/Tab to accept when the suggestion list is open. Exact behavior can depend on the browser keyboard.</li>
+                                </ul>
+                            </section>
+                            <section class="help-card">
+                                <h2>4. Save, undo, search, and reset</h2>
+                                <ul>
+                                    <li><strong>Save:</strong> stores the project in this browser's local storage. It is not a cloud backup.</li>
+                                    <li><strong>Download:</strong> choose a project name and export either a complete HTML page or the project files.</li>
+                                    <li><strong>Undo / Redo:</strong> use the arrow buttons or keyboard shortcuts below.</li>
+                                    <li><strong>Search:</strong> find text in the code with the search field.</li>
+                                    <li><strong>Reset:</strong> restores the starter project and replaces current code. Use it carefully; download a backup first.</li>
+                                    <li><strong>Clear / Clear All:</strong> removes code from the current file or all project files.</li>
+                                </ul>
+                                <div class="help-shortcuts">
+                                    <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd> Save</span>
+                                    <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> Download</span>
+                                    <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>F</kbd> Search</span>
+                                    <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Z</kbd> Undo</span>
+                                    <span><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Y</kbd> Redo</span>
+                                </div>
+                            </section>
+                            <section class="help-card">
+                                <h2>5. Use the Libraries tab</h2>
+                                <ol>
+                                    <li>Search the catalog by library name or purpose, or filter to CSS/JavaScript.</li>
+                                    <li>Select a catalog entry. The editor tries to fetch its browser-ready code from the listed CDN.</li>
+                                    <li>If download fails, check your internet connection and the official library docs, then paste a browser-compatible build into the code box.</li>
+                                    <li>Enter a name and choose CSS or JS if needed, then select <strong>Add to Libraries</strong>.</li>
+                                    <li>In Saved Libraries, tick the checkbox to enable a dependency, or untick it to temporarily disable it. Use the trash button to remove it.</li>
+                                </ol>
+                                <p class="help-warning">Important: many packages have dependencies, module-only builds, license conditions, or additional setup. A successful download does not guarantee that the library works without configuration. Avoid adding code from sources you do not trust.</p>
+                            </section>
+                            <section class="help-card">
+                                <h2>6. What “offline” means</h2>
+                                <p>The editor interface and saved code can work locally after the files are available. CDN library downloads require internet access, and saved library code uses browser storage on this device. Clearing browser data may erase saved projects and libraries. Download important work regularly.</p>
+                            </section>
+                            <section class="help-card">
+                                <h2>7. Export and open your project</h2>
+                                <ul>
+                                    <li>Use <strong>Download</strong>, enter a project name, then choose a complete HTML file or the project bundle.</li>
+                                    <li>Keep related files together when using a multi-file export.</li>
+                                    <li>Open the exported HTML file in a modern browser to inspect it. Features that call external APIs or use CDN resources may still require internet access.</li>
+                                    <li>For larger projects, use version control and keep separate backups instead of relying only on local storage.</li>
+                                </ul>
+                            </section>
+                            <section class="help-card">
+                                <h2>8. Troubleshooting</h2>
+                                <details><summary>A library did not download</summary><p>The CDN may block browser requests, be temporarily unavailable, or have changed the file path. Visit the official documentation, download a browser-ready build, and paste it manually. Some libraries cannot be used as a single script.</p></details>
+                                <details><summary>The preview is blank or outdated</summary><p>Check for incomplete HTML, CSS syntax errors, JavaScript errors, or a missing dependency. Try a small change and wait for the preview refresh. Some browser security restrictions affect local files.</p></details>
+                                <details><summary>My saved code disappeared</summary><p>Check whether you opened the editor in a different browser or private session. Browser storage is local to that browser profile and may be deleted when site data is cleared. Use Download for a backup.</p></details>
+                                <details><summary>A library was saved but does not work</summary><p>Confirm that the correct build and version were added, required dependencies are enabled, and the official setup instructions were followed.</p></details>
+                            </section>
+                            <p class="help-footer">This guide describes the intended workflow. Browser, mobile keyboard, and assistive-technology behavior should still be tested on the device where you plan to use the editor.</p>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

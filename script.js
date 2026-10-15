@@ -1014,7 +1014,7 @@ button:hover {
                         return { word: tagMatch[1], from: pos - tagMatch[1].length, to: pos, kind: 'htmlTag' };
                     }
                     if (/^\s/.test(afterName)) {
-                        if (/=\s*["'][^"']*$/.test(afterName)) return null;
+                        if (/=\s*$/.test(afterName) || if (/=\s*["'][^"']*$/.test(afterName))) return null;
                         const attrMatch = afterName.match(/([^\s"'<>/=]*)$/);
                         if (!attrMatch) return null;
                         return { word: attrMatch[1], from: pos - attrMatch[1].length, to: pos, kind: 'htmlAttr', tag: tag };

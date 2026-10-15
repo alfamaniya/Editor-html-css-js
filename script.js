@@ -251,11 +251,17 @@ button:hover {
         }
 
         function saveProject() {
+            let saved = false;
             try {
-                return storageSet(PROJECT_KEY, JSON.stringify(project));
+                saved = storageSet(PROJECT_KEY, JSON.stringify(project));
             } catch (e) {
-                return false;
+                saved = false;
             }
+            if (!saved) {
+                setDirty(true);
+                showToast('❌ ذخیره انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+            }
+            return saved;
         }
 
         function scheduleSaveProject() {
@@ -267,7 +273,6 @@ button:hover {
                     dirtyResetTimer = setTimeout(function() { setDirty(false); }, 700);
                 } else {
                     setDirty(true);
-                    showToast('⚠ ذخیره خودکار انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
                 }
             }, 450);
         }
@@ -1630,7 +1635,6 @@ button:hover {
         function saveCode() {
             if (!saveProject()) {
                 setDirty(true);
-                showToast('❌ ذخیره انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
                 return;
             }
             setDirty(false);

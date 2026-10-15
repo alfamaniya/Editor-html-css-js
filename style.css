@@ -208,6 +208,7 @@
         .tab[data-tab="css"].active  { background: linear-gradient(180deg, #d6b3ff, #a87fff); }
         .tab[data-tab="js"].active   { background: linear-gradient(180deg, #ffd699, #ffb84d); }
         .tab[data-tab="libs"].active { background: linear-gradient(180deg, var(--green-light), var(--green)); }
+        .tab[data-tab="help"].active { background: linear-gradient(180deg, #d7e8ff, #91b8f5); }
 
         .search-bar {
             display: flex;

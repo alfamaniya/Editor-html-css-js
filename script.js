@@ -1149,7 +1149,6 @@ button:hover {
                 if (lang === 'js') {
                     const lineStart = before.lastIndexOf('\n') + 1;
                     const lineBefore = before.substring(lineStart);
-                    if (/\/\//.test(lineBefore)) return null;
                     const member = before.match(/([a-zA-Z_$][\w$]*)\.([a-zA-Z_$][\w$]*)?$/);
                     if (member) {
                         const word = member[2] || '';

@@ -116,7 +116,33 @@ button:hover {
             { name: 'CryptoJS', type: 'js', desc: 'Encryption and hashing', cdn: 'https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js' },
             { name: 'DOMPurify', type: 'js', desc: 'Sanitize HTML against XSS', cdn: 'https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js' },
             { name: 'Tesseract.js', type: 'js', desc: 'Extract text from images (OCR)', cdn: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js' },
-            { name: 'Marked', type: 'js', desc: 'Convert Markdown to HTML', cdn: 'https://cdn.jsdelivr.net/npm/marked@15.0.0/marked.min.js' }
+            { name: 'Marked', type: 'js', desc: 'Convert Markdown to HTML', cdn: 'https://cdn.jsdelivr.net/npm/marked@15.0.0/marked.min.js' },
+            // ---------- Additional visual, UI, data and utility libraries ----------
+            { name: 'Prism.js', type: 'js', desc: 'Syntax highlighting core', cdn: 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js' },
+            { name: 'Prism.css', type: 'css', desc: 'Syntax highlighting theme', cdn: 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css' },
+            { name: 'Highlight.js', type: 'js', desc: 'Code syntax highlighting', cdn: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/highlight.min.js' },
+            { name: 'Highlight.js CSS', type: 'css', desc: 'Code highlight theme', cdn: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/styles/github-dark.min.css' },
+            { name: 'Bootstrap Icons', type: 'css', desc: 'Bootstrap icon font', cdn: 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css' },
+            { name: 'Remix Icon', type: 'css', desc: 'Large icon collection', cdn: 'https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css' },
+            { name: 'ECharts', type: 'js', desc: 'Interactive data charts', cdn: 'https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js' },
+            { name: 'ApexCharts', type: 'js', desc: 'Interactive charts', cdn: 'https://cdn.jsdelivr.net/npm/apexcharts@3.54.1/dist/apexcharts.min.js' },
+            { name: 'Leaflet CSS', type: 'css', desc: 'Interactive map styles', cdn: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css' },
+            { name: 'Leaflet JS', type: 'js', desc: 'Interactive maps', cdn: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js' },
+            { name: 'Flatpickr CSS', type: 'css', desc: 'Date picker styles', cdn: 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css' },
+            { name: 'Flatpickr JS', type: 'js', desc: 'Date and time picker', cdn: 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js' },
+            { name: 'Choices.js CSS', type: 'css', desc: 'Enhanced select styles', cdn: 'https://cdn.jsdelivr.net/npm/choices.js@11.0.2/public/assets/styles/choices.min.css' },
+            { name: 'Choices.js', type: 'js', desc: 'Enhanced select controls', cdn: 'https://cdn.jsdelivr.net/npm/choices.js@11.0.2/public/assets/scripts/choices.min.js' },
+            { name: 'Fuse.js', type: 'js', desc: 'Fuzzy search for lists', cdn: 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js' },
+            { name: 'FileSaver.js', type: 'js', desc: 'Save files from browser', cdn: 'https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js' },
+            { name: 'html2canvas', type: 'js', desc: 'Capture DOM as image', cdn: 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js' },
+            { name: 'Cropper.js CSS', type: 'css', desc: 'Image cropper styles', cdn: 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css' },
+            { name: 'Cropper.js', type: 'js', desc: 'Crop images in browser', cdn: 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js' },
+            { name: 'p5.js', type: 'js', desc: 'Creative coding and canvas', cdn: 'https://cdn.jsdelivr.net/npm/p5@1.11.0/lib/p5.min.js' },
+            { name: 'Anime.js', type: 'js', desc: 'JavaScript animations', cdn: 'https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js' },
+            { name: 'FullCalendar', type: 'js', desc: 'Calendar and scheduling UI', cdn: 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js' },
+            { name: 'Three.js', type: 'js', desc: '3D graphics with WebGL', cdn: 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js' },
+            { name: 'Pikaday CSS', type: 'css', desc: 'Lightweight date picker theme', cdn: 'https://cdn.jsdelivr.net/npm/pikaday@1.8.2/css/pikaday.css' },
+            { name: 'Pikaday JS', type: 'js', desc: 'Lightweight date picker', cdn: 'https://cdn.jsdelivr.net/npm/pikaday@1.8.2/pikaday.js' }
         ];
 
         const LANGS = ['html', 'css', 'js'];
@@ -462,14 +488,16 @@ button:hover {
         }
 
         function activateTab(lang) {
-            if (lang !== 'libs' && !editors[lang]) lang = 'html';
+            if (lang !== 'libs' && lang !== 'help' && !editors[lang]) lang = 'html';
             picker.close();
             IntelliSense.hide();
             activeTab = lang;
 
             LANGS.forEach(function(l) { editors[l].wrap.hidden = true; });
             libsPanel.hidden = true;
+            document.getElementById('helpPanel').hidden = true;
             if (lang === 'libs') libsPanel.hidden = false;
+            else if (lang === 'help') document.getElementById('helpPanel').hidden = false;
             else editors[lang].wrap.hidden = false;
 
             tabButtons.forEach(function(b) {
@@ -478,7 +506,7 @@ button:hover {
                 b.setAttribute('aria-selected', on ? 'true' : 'false');
             });
 
-            if (lang !== 'libs') {
+            if (lang !== 'libs' && lang !== 'help') {
                 editors[lang].syncScroll();
                 const f = getFileForLang(lang);
                 if (f) project.activeFileId = f.id;
@@ -492,7 +520,7 @@ button:hover {
         }
 
         function switchTab(lang) {
-            if (lang === 'libs') { activateTab('libs'); return; }
+            if (lang === 'libs' || lang === 'help') { activateTab(lang); return; }
             const file = getFileForLang(lang);
             if (file) openFile(file.id);
             else activateTab(lang);
@@ -544,14 +572,35 @@ button:hover {
 
         function renderPresets() {
             const grid = document.getElementById('libPresetsGrid');
-            grid.innerHTML = PRESETS.map(function(p, i) {
-                return '<button type="button" class="lib-preset" data-preset-idx="' + i + '" data-tooltip="' + escHtml(p.desc) + '">' +
+            const search = (document.getElementById('libPresetSearch').value || '').trim().toLowerCase();
+            const type = document.getElementById('libPresetTypeFilter').value;
+            const filtered = PRESETS.map(function(p, i) { return { preset: p, index: i }; }).filter(function(item) {
+                const p = item.preset;
+                const matchesText = !search || (p.name + ' ' + p.desc).toLowerCase().includes(search);
+                return matchesText && (type === 'all' || p.type === type);
+            });
+            document.getElementById('libPresetCount').textContent = filtered.length + ' of ' + PRESETS.length + ' libraries';
+            if (!filtered.length) {
+                grid.innerHTML = '<div class="lib-empty">No libraries match this search. Try another word or choose “All libraries”.</div>';
+                return;
+            }
+            grid.innerHTML = filtered.map(function(item) {
+                const p = item.preset;
+                return '<button type="button" class="lib-preset" data-preset-idx="' + item.index + '" data-tooltip="' + escHtml(p.desc) + '">' +
                     '<span class="lib-preset-name">' + escHtml(p.name) + '</span>' +
                     '<span class="lib-preset-desc">' + escHtml(p.desc) + '</span>' +
                     '<span class="lib-preset-type ' + p.type + '">' + p.type.toUpperCase() + '</span>' +
                 '</button>';
             }).join('');
         }
+
+        document.getElementById('libPresetSearch').addEventListener('input', renderPresets);
+        document.getElementById('libPresetTypeFilter').addEventListener('change', renderPresets);
+
+        document.getElementById('helpPanel').addEventListener('click', function(e) {
+            const button = e.target.closest('[data-help-tab]');
+            if (button) activateTab(button.dataset.helpTab);
+        });
 
         document.getElementById('libPresetsGrid').addEventListener('click', async function(e) {
             const btn = e.target.closest('.lib-preset');

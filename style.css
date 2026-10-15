@@ -1108,3 +1108,86 @@ textarea:focus-visible,
     outline: 2px solid var(--pink-accent);
     outline-offset: 2px;
 }
+
+
+/* In-app guide */
+.help-panel {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 18px;
+    background: #20221f;
+    color: #ecefe9;
+    direction: ltr;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+}
+.help-panel[hidden] { display: none; }
+.help-hero {
+    padding: 22px;
+    border: 1px solid #76506a;
+    border-radius: 14px;
+    background: radial-gradient(circle at top right, #57324c, #29212b 62%, #20221f);
+    margin-bottom: 14px;
+}
+.help-eyebrow { color: #ff9dc5; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 5px; }
+.help-hero h1 { font-size: clamp(22px, 3vw, 32px); line-height: 1.2; margin: 0 0 8px; color: #fff0f6; }
+.help-hero p { max-width: 720px; color: #d4c7d0; margin-bottom: 12px; }
+.help-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.help-actions button {
+    border: 1px solid #a04a7a; background: #4d1f3a; color: #ffe4ef;
+    border-radius: 8px; padding: 8px 11px; font: inherit; font-weight: 700; cursor: pointer;
+}
+.help-actions button:hover { background: #7a3557; }
+.help-actions button:focus-visible, .help-panel summary:focus-visible {
+    outline: 2px solid #ff8ab8; outline-offset: 3px;
+}
+.help-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 12px; align-items: start; }
+.help-card {
+    background: #292b28; border: 1px solid #414640; border-radius: 12px;
+    padding: 15px; min-width: 0;
+}
+.help-card h2 { color: #a8e6cf; font-size: 15px; margin: 0 0 10px; }
+.help-card ul, .help-card ol { padding-left: 21px; margin: 0 0 8px; }
+.help-card li { margin: 0 0 7px; }
+.help-card p { margin: 8px 0; }
+.help-card code { background: #171916; color: #ffd699; padding: 2px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.help-tip { padding: 9px 11px; background: #20362a; border-left: 3px solid #6fcf97; border-radius: 5px; color: #d8f4e2; }
+.help-warning { padding: 9px 11px; background: #3a3020; border-left: 3px solid #ffb84d; border-radius: 5px; color: #ffe4b3; }
+.help-shortcuts { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.help-shortcuts span { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 3px; background: #1b1d1a; border: 1px solid #4a4e48; padding: 5px 7px; border-radius: 7px; font-size: 11px; }
+.help-panel kbd { background: #3a3d38; border: 1px solid #5b6058; border-radius: 4px; padding: 1px 4px; font: inherit; }
+.help-card details { border-top: 1px solid #414640; padding: 9px 0; }
+.help-card details:first-of-type { border-top: 0; }
+.help-card summary { cursor: pointer; color: #ffe4ef; font-weight: 700; }
+.help-card details p { color: #c7cec4; margin: 8px 0 0; }
+.help-footer { grid-column: 1 / -1; color: #9ca59a; font-size: 11px; margin: 2px 4px 8px; }
+
+/* Search and filter controls for the library catalog */
+.lib-catalog-controls {
+    display: grid;
+    grid-template-columns: auto minmax(120px, 1fr) auto minmax(120px, 170px) auto;
+    align-items: center;
+    gap: 7px;
+    margin: 12px 0;
+}
+.lib-search-label { font-size: 11px; color: #c5d9cb; font-weight: 700; }
+.lib-catalog-controls input, .lib-catalog-controls select {
+    width: 100%; min-width: 0; padding: 8px 10px; border-radius: 7px;
+    background: #202820; color: #eef8f0; border: 1px solid #466750; font: inherit;
+}
+.lib-catalog-controls input:focus-visible, .lib-catalog-controls select:focus-visible {
+    outline: 2px solid #6fcf97; outline-offset: 2px;
+}
+.lib-catalog-count { color: #a8e6cf; font-size: 10px; white-space: nowrap; }
+.lib-catalog-note { color: #a6b6aa; font-size: 11px; line-height: 1.6; margin-top: 10px; }
+.lib-preset { text-align: left; }
+.lib-preset-name, .lib-preset-desc { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+    .help-panel { padding: 10px; }
+    .help-hero { padding: 15px; }
+    .help-content { grid-template-columns: minmax(0, 1fr); }
+    .lib-catalog-controls { grid-template-columns: 1fr; }
+    .lib-catalog-count { white-space: normal; }
+}

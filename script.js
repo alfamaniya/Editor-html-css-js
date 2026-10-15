@@ -1085,6 +1085,23 @@ button:hover {
                 });
             }
 
+            // Do not offer CSS value completions while the caret is inside a quoted string.
+            function isInsideCssString(text) {
+                let quote = null;
+                let escaped = false;
+                for (let i = 0; i < text.length; i++) {
+                    const ch = text.charAt(i);
+                    if (escaped) { escaped = false; continue; }
+                    if (quote && ch === '\\') { escaped = true; continue; }
+                    if (quote) {
+                        if (ch === quote) quote = null;
+                    } else if (ch === "'" || ch === '"') {
+                        quote = ch;
+                    }
+                }
+                return !!quote;
+            }
+
             // Avoid suggestions inside JavaScript strings and comments.
             function isInsideJsStringOrComment(text) {
                 let quote = null;
@@ -1133,6 +1150,7 @@ button:hover {
                             const declaration = cssBefore.match(/(?:^|;)\s*([a-zA-Z-][\w-]*)\s*:\s*([^;]*)$/);
                             if (declaration) {
                                 const valueText = declaration[2];
+                                if (isInsideCssString(valueText)) return null;
                                 const valueMatch = valueText.match(/([a-zA-Z0-9_#.%+-]+)$/);
                                 const word = valueMatch ? valueMatch[1] : '';
                                 return { word: word, from: pos - word.length, to: pos, kind: 'cssValue', property: declaration[1].toLowerCase(), inlineStyle: true };
@@ -1175,7 +1193,7 @@ button:hover {
                     const declaration = line.match(/^\s*([a-zA-Z-][\w-]*)\s*:\s*([^;]*)$/);
                     if (declaration) {
                         const valueText = declaration[2];
-                        if (/['"][^'"]*$/.test(valueText)) return null;
+                        if (isInsideCssString(valueText)) return null;
                         const m = valueText.match(/([a-zA-Z0-9_#.%+-]+)$/);
                         return { word: m ? m[1] : '', from: m ? pos - m[1].length : pos, to: pos, kind: 'cssValue', property: declaration[1].toLowerCase() };
                     }

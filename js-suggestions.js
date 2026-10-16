@@ -32,7 +32,7 @@
             {label:'for', insert:'for (let i = 0; i < length; i++) {\n    \n}', description:'For loop', caret:9},
             {label:'foreach', insert:'items.forEach((item) => {\n    \n});', description:'Array forEach loop', caret:7},
             {label:'trycatch', insert:'try {\n    \n} catch (error) {\n    console.error(error);\n}', description:'Try/catch error handling', caret:8},
-            {label:'querySelector', insert:'document.querySelector(\'\')', description:'Select the first matching element', caret:27},
+            {label:'querySelector', insert:'document.querySelector(\'\')', description:'Select the first matching element', caret:24},
             {label:'addEventListener', insert:'addEventListener(\'click\', (event) => {\n    \n});', description:'Register an event listener', caret:19}
         ],
     };

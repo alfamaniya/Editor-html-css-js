@@ -62,8 +62,8 @@
     const nextWordRules = {
         html: [
             { pattern: /<html\s*$/i, items: [
-                { label: ' lang="en"', insert: ' lang="en"', description: 'Set the document language', caret: 7 },
-                { label: ' lang="fa" dir="rtl"', insert: ' lang="fa" dir="rtl"', description: 'Set Persian language and direction', caret: 7 }
+                { label: 'lang="en"', insert: ' lang="en"', description: 'Set the document language', caret: 7 },
+                { label: 'lang="fa" dir="rtl"', insert: ' lang="fa" dir="rtl"', description: 'Set Persian language and direction', caret: 7 }
             ]},
             // When another HTML tag completion is accepted, suggest attributes or a paired element.
             { pattern: /<([a-z][\w:-]*)$/i, create: htmlTagContinuation }
@@ -142,7 +142,7 @@
                 items: [
                     { label: ': repeat(auto-fit, minmax(220px, 1fr));', insert: ': repeat(auto-fit, minmax(220px, 1fr));', description: 'Responsive grid columns' },
                     { label: ': 1fr 1fr;', insert: ': 1fr 1fr;', description: 'Two equal columns' },
-                    { label: ':  repeat(3, 1fr);', insert: ': repeat(3, 1fr);', description: 'Three equal columns' }
+                    { label: ': repeat(3, 1fr);', insert: ': repeat(3, 1fr);', description: 'Three equal columns' }
                 ]
             },
             {
@@ -172,23 +172,23 @@
             {
                 pattern: /\b(?:const|let|var)$/i,
                 items: [
-                    { label: ' name = ', insert: ' name = ', description: 'Create a variable assignment and continue to its value', caret: 8 },
-                    { label: ' element = document.querySelector()', insert: ' element = document.querySelector(\'\')', description: 'Create a DOM element reference', caret: 37 },
-                    { label: ' items = []', insert: ' items = []', description: 'Create an array variable', caret: 11 }
+                    { label: 'name = …', insert: ' name = ', description: 'Create a variable assignment and continue to its value', caret: 8 },
+                    { label: 'element = document.querySelector(…)', insert: ' element = document.querySelector(\'\')', description: 'Create a DOM element reference', caret: 37 },
+                    { label: 'items = []', insert: ' items = []', description: 'Create an array variable', caret: 11 }
                 ]
             },
             {
                 pattern: /\bfunction$/i,
                 items: [
-                    { label: ' name() { … }', insert: ' name() {\n    \n}', description: 'Create a function declaration', caret: 5 },
-                    { label: ' name(value) { return value; }', insert: ' name(value) {\n    return value;\n}', description: 'Create a function that returns a value', caret: 5 }
+                    { label: 'name() { … }', insert: ' name() {\n    \n}', description: 'Create a function declaration', caret: 5 },
+                    { label: 'name(value) { return value; }', insert: ' name(value) {\n    return value;\n}', description: 'Create a function that returns a value', caret: 5 }
                 ]
             },
             {
                 pattern: /\bif$/i,
                 items: [
-                    { label: ' (condition) { … }', insert: ' (condition) {\n    \n}', description: 'Create an if block', caret: 2 },
-                    { label: ' (!condition) return;', insert: ' (!condition) return;', description: 'Early-return guard', caret: 3 }
+                    { label: '(condition) { … }', insert: ' (condition) {\n    \n}', description: 'Create an if block', caret: 2 },
+                    { label: '(!condition) return;', insert: ' (!condition) return;', description: 'Early-return guard', caret: 3 }
                 ]
             },
             {
@@ -262,10 +262,10 @@
             {
                 pattern: /\breturn$/i,
                 items: [
-                    { label: ' value;', insert: ' value;', description: 'Return a value' },
-                    { label: ' null;', insert: ' null;', description: 'Return null' },
-                    { label: ' Promise.resolve(value);', insert: ' Promise.resolve(value);', description: 'Return a resolved promise' },
-                    { label: ';\n', insert: ';\n', description: 'End the statement and continue on the next line' }
+                    { label: 'value;', insert: ' value;', description: 'Return a value' },
+                    { label: 'null;', insert: ' null;', description: 'Return null' },
+                    { label: 'Promise.resolve(value);', insert: ' Promise.resolve(value);', description: 'Return a resolved promise' },
+                    { label: 'Continue on next line', insert: ';\n', description: 'End the statement and continue on the next line' }
                 ]
             },
             {

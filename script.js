@@ -843,6 +843,64 @@ console.info("Starter project ready", {
         // ==========================================
         //  Project
         // ==========================================
+        const LEGACY_STARTER_DEFAULTS = {
+            html: [
+                '<h1>Hello, World!</h1>',
+                '<div class="card">',
+                '    <p>This is a sample card.</p>',
+                '    <button id="btn">Click Me</button>',
+                '</div>'
+            ].join('\\n'),
+            css: [
+                'body {',
+                '    font-family: Tahoma, sans-serif;',
+                '    padding: 30px;',
+                '    background-color: #f4f4f4;',
+                '}',
+                '',
+                'h1 {',
+                '    color: #2c3e50;',
+                '    text-align: center;',
+                '}',
+                '',
+                '.card {',
+                '    background: white;',
+                '    padding: 20px;',
+                '    border-radius: 10px;',
+                '    box-shadow: 0 4px 10px rgba(0,0,0,0.1);',
+                '    max-width: 400px;',
+                '    margin: 20px auto;',
+                '}',
+                '',
+                'button {',
+                '    background: #3498db;',
+                '    color: white;',
+                '    border: none;',
+                '    padding: 10px 20px;',
+                '    border-radius: 5px;',
+                '    cursor: pointer;',
+                '}',
+                '',
+                'button:hover {',
+                '    background: #2980b9;',
+                '}'
+            ].join('\\n'),
+            js: [
+                "document.getElementById('btn').addEventListener('click', function () {",
+                "    alert('It works!');",
+                '});'
+            ].join('\\n')
+        };
+
+        function isUntouchedLegacyStarter(files) {
+            const names = { html: 'index.html', css: 'style.css', js: 'script.js' };
+            return ['html', 'css', 'js'].every(function(lang) {
+                const file = files.find(function(item) { return item.type === lang; });
+                return !!file && file.name === names[lang] &&
+                    file.content === LEGACY_STARTER_DEFAULTS[lang];
+            });
+        }
+
         function createDefaultProject() {
             const ids = { html: makeId(), css: makeId(), js: makeId() };
             return {
@@ -881,6 +939,13 @@ console.info("Starter project ready", {
                             });
 
                         if (validFiles.length) {
+                            if (isUntouchedLegacyStarter(validFiles)) {
+                                // Keep a recoverable copy, then upgrade only the pristine old starter.
+                                storageSet(PROJECT_RECOVERY_KEY, rawProject);
+                                const upgraded = createDefaultProject();
+                                storageSet(PROJECT_KEY, JSON.stringify(upgraded));
+                                return upgraded;
+                            }
                             const requestedLast = p.lastActiveByLang && typeof p.lastActiveByLang === 'object'
                                 ? p.lastActiveByLang : {};
                             const lastActiveByLang = {};
@@ -918,7 +983,7 @@ console.info("Starter project ready", {
                     const parsed = JSON.parse(old);
                     if (parsed && (parsed.html || parsed.css || parsed.js)) {
                         const ids = { html: makeId(), css: makeId(), js: makeId() };
-                        return {
+                        const migrated = {
                             files: [
                                 { id: ids.html, name: 'index.html', type: 'html', content: typeof parsed.html === 'string' ? parsed.html : DEFAULT_HTML },
                                 { id: ids.css,  name: 'style.css',  type: 'css',  content: typeof parsed.css === 'string' ? parsed.css : DEFAULT_CSS },
@@ -927,6 +992,11 @@ console.info("Starter project ready", {
                             activeFileId: ids.html,
                             lastActiveByLang: { html: ids.html, css: ids.css, js: ids.js }
                         };
+                        if (isUntouchedLegacyStarter(migrated.files)) {
+                            storageSet(PROJECT_KEY, JSON.stringify(createDefaultProject()));
+                            return createDefaultProject();
+                        }
+                        return migrated;
                     }
                 }
             } catch (e) {}

@@ -171,9 +171,12 @@ button:hover {
         let dirty = false;
 
         function setDirty(value) {
-            dirty = !!value;
+            const next = !!value;
+            const changed = next !== dirty;
+            dirty = next;
             dirtyBadge.hidden = !dirty;
-            if (typeof renderFileExplorer === 'function' && project) renderFileExplorer();
+            // Re-render the file list only when the state changes, not on every keystroke.
+            if (changed && project) renderFileExplorer();
         }
         window.addEventListener('beforeunload', function (e) {
             if (dirty) { e.preventDefault(); e.returnValue = ''; }
@@ -366,7 +369,7 @@ button:hover {
                 const isActive = f.id === project.activeFileId;
                 const icon = f.type === 'html' ? '📄' : (f.type === 'css' ? '🎨' : '⚡');
                 const isDirty = dirty && isActive && activeTab === f.type;
-                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" role="group" tabindex="0" aria-label="File ' + escHtml(f.name) + (isActive ? ', active file' : '') + '" title="' + escHtml(f.name) + '">' +
+                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" role="button" tabindex="0" aria-label="File ' + escHtml(f.name) + (isActive ? ', active file' : '') + '" title="' + escHtml(f.name) + '">' +
                     '<span class="fe-icon" aria-hidden="true">' + icon + '</span>' +
                     '<span class="fe-name" data-role="name">' + escHtml(f.name) + '</span>' +
                     (isDirty ? '<span class="fe-dirty-dot" title="Unsaved changes" aria-label="Unsaved changes">●</span>' : '') +
@@ -497,7 +500,6 @@ button:hover {
             });
         }
 
-        let lastDeletedSnapshot = null;
         function deleteFile(fileId) {
             const idx = project.files.findIndex(function(f) { return f.id === fileId; });
             if (idx === -1) return;
@@ -505,7 +507,17 @@ button:hover {
             const wasActive = project.activeFileId === fileId;
             const warning = (wasActive ? ' This is the active file.' : '') + (dirty ? ' There are unsaved editor changes.' : '');
             if (!window.confirm('Delete “' + file.name + '”?' + warning + '\n\nYou can undo this deletion from the notification.')) return;
-            lastDeletedSnapshot = JSON.parse(JSON.stringify(project));
+
+            // Keep only what Undo needs: the deleted file, its position, its prior
+            // "last active" pointer, and the blank placeholder created in its place (if any).
+            const undoInfo = {
+                file: file,
+                index: idx,
+                wasActive: wasActive,
+                prevLastActive: project.lastActiveByLang[file.type],
+                blankId: null
+            };
+
             project.files.splice(idx, 1);
 
             LANGS.forEach(function(lang) {
@@ -516,6 +528,7 @@ button:hover {
                 const blank = { id: makeId(), name: 'untitled.' + file.type, type: file.type, content: '' };
                 project.files.push(blank);
                 project.lastActiveByLang[file.type] = blank.id;
+                undoInfo.blankId = blank.id;
             }
 
             if (wasActive) {
@@ -535,20 +548,39 @@ button:hover {
             renderFileExplorer();
             updatePreviewNow();
             showToast('🗑 “' + file.name + '” deleted', 'info', 'Undo', function() {
-                if (!lastDeletedSnapshot) return;
-                project = JSON.parse(JSON.stringify(lastDeletedSnapshot));
-                lastDeletedSnapshot = null;
-                const active = getFile(project.activeFileId) || project.files[0];
-                if (active) {
-                    const ed = editors[active.type];
-                    if (ed) { ed.ta.value = active.content; ed.refresh(); }
-                    activateTab(active.type);
-                }
-                saveProject();
-                renderFileExplorer();
-                updatePreviewNow();
-                showToast('↩ File restored', 'success');
+                restoreDeletedFile(undoInfo);
             });
+        }
+
+        function restoreDeletedFile(info) {
+            const file = info.file;
+            // Do not duplicate a file if the same id is somehow present already.
+            if (getFile(file.id)) return;
+
+            // Remove the placeholder that was created when the file was deleted, but only if it is still empty.
+            if (info.blankId) {
+                const blankIdx = project.files.findIndex(function(f) { return f.id === info.blankId && f.content === ''; });
+                if (blankIdx !== -1) project.files.splice(blankIdx, 1);
+            }
+
+            // Re-insert the file where it was, keeping every edit made to other files since deletion.
+            project.files.splice(Math.min(info.index, project.files.length), 0, file);
+
+            if (!project.lastActiveByLang[file.type] || !getFile(project.lastActiveByLang[file.type])) {
+                project.lastActiveByLang[file.type] = file.id;
+            }
+
+            if (info.wasActive) {
+                project.activeFileId = file.id;
+                const ed = editors[file.type];
+                if (ed) { ed.ta.value = file.content; ed.refresh(); }
+                activateTab(file.type);
+            }
+
+            saveProject();
+            renderFileExplorer();
+            updatePreviewNow();
+            showToast('↩ File restored', 'success');
         }
 
         // ==========================================

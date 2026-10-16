@@ -1,4 +1,4 @@
-// Suggested entries: 1461 (CSS properties, values, and snippets; contextual duplicates included)
+// Suggested entries: 1344 (CSS properties, values, and snippets)
 (function () {
     'use strict';
     const cssProperties = (

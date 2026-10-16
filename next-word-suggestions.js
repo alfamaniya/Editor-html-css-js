@@ -148,7 +148,7 @@
             {
                 pattern: /(?:^|[\n;{]\s*)@media\s*$/i,
                 items: [
-                    { label: ' (max-width: 768px) { … }', insert: ' (max-width: 768px) {\n    \n}', description: 'Tablet and mobile breakpoint', caret: 29 },
+                    { label: ' (max-width: 768px) { … }', insert: ' (max-width: 768px) {\n    \n}', description: 'Tablet and mobile breakpoint', caret: 26 },
                     { label: ' (prefers-reduced-motion: reduce) { … }', insert: ' (prefers-reduced-motion: reduce) {\n    \n}', description: 'Respect reduced-motion settings', caret: 39 }
                 ]
             }

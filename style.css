@@ -240,17 +240,25 @@
             direction: ltr;
         }
 
-        .symbol-toolbar {
+        /* Global symbol strip: independent of editor panes and their scrolling. */
+        body > .symbol-toolbar {
+            position: relative;
+            z-index: 50;
             flex: 0 0 auto;
             width: 100%;
+            max-width: 100vw;
             min-width: 0;
             display: flex;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             overflow-x: auto;
             overflow-y: hidden;
+            overscroll-behavior-x: contain;
+            -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
-            padding: 1px 0;
+            padding: 5px 8px;
+            background: var(--blue-bg-2);
+            border-bottom: 1px solid var(--blue-border);
         }
 
         .symbol-toolbar button {
@@ -288,7 +296,7 @@
             .search-bar { min-width: 104px; gap: 3px; }
             .search-bar .search-count { display: none; }
             .search-bar button { padding: 4px 5px; }
-            .symbol-toolbar { gap: 2px; }
+            .symbol-toolbar { gap: 2px; padding: 4px; }
             .symbol-toolbar button { min-height: 30px; padding: 4px 5px; }
         }
 

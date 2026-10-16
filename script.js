@@ -1759,7 +1759,7 @@ button:hover {
                 // keyboards do not always report inputType as "insertText".
                 if (!e || e.isComposing) { hide(); return; }
                 const ctx = getWordAndContext(ta, lang) || getNextWordContext(ta, lang);
-                if (!ctx || (ctx.kind !== 'nextWord' && ctx.word.length < 1 && !['htmlAttr', 'cssValue', 'jsMember'].includes(ctx.kind))) { hide(); return; }
+                if (!ctx || (ctx.kind !== 'nextWord' && ctx.word.length < 1 && !['htmlAttr', 'cssValue', 'jsMember', 'cssPseudoClass', 'cssPseudoElement'].includes(ctx.kind))) { hide(); return; }
 
                 const items = completionList(ctx);
                 if (!items.length) { hide(); return; }

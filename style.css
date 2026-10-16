@@ -798,10 +798,6 @@
             animation: isFadeIn 0.12s ease-out;
         }
         .intellisense[hidden] { display: none; }
-        .intellisense-hint { display: flex; flex-direction: column; gap: 3px; padding: 7px 9px 8px; margin-bottom: 4px; border-bottom: 1px solid var(--blue-border); color: #e9eef5; white-space: normal; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        .intellisense-hint strong { color: #8fc2ff; font-size: 11px; font-weight: 700; }
-        .intellisense-hint span { font-size: 12px; line-height: 1.5; opacity: .9; }
-
         @keyframes isFadeIn {
             from { opacity: 0; transform: translateY(-4px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -1501,7 +1497,7 @@ details,
 .modal-box,
 .toast,
 .search-input,
-.modal-input,
+
 .cp-text,
 .cp-fmt,
 .lib-catalog-controls input,
@@ -1581,7 +1577,7 @@ input {
 .lib-item,
 .lib-empty { border-radius: 12px; }
 .modal-box,
-.modal-input,
+
 .modal-btn,
 .cp-text,
 .cp-fmt,
@@ -1614,7 +1610,7 @@ input {
     .lib-catalog-controls input, .lib-catalog-controls select,
     .help-content, .help-actions button, .help-language-btn, .help-shortcuts span,
     .help-card details, .help-card summary, .help-card code, .help-card kbd,
-    .modal-actions, .modal-btn, .modal-input, .toast-action,
+    .modal-actions, .modal-btn,  .toast-action,
     .cp-row, .cp-swatch, .cp-text, .cp-fmt, .cp-actions button,
     .preview-pane, .editor-pane, .libs-panel, .help-panel,
     .fe-new-form input, .fe-new-form select, .fe-new-actions button

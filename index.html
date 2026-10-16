@@ -21,17 +21,10 @@
                     <button id="btnClearAll" title="Clear All Files">🧹 Clear All</button>
                     <button id="btnFontDec"  title="Decrease Font Size">A−</button>
                     <button id="btnFontInc"  title="Increase Font Size">A+</button>
+                    <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
                 </div>
                 <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
                 <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
-            </div>
-
-            <div class="tabs" role="tablist">
-                <button class="tab" id="tab-html" role="tab" aria-controls="panel-html" aria-selected="false" data-tab="html">HTML</button>
-                <button class="tab" id="tab-css" role="tab" aria-controls="panel-css" aria-selected="false" data-tab="css">CSS</button>
-                <button class="tab" id="tab-js" role="tab" aria-controls="panel-js" aria-selected="false" data-tab="js">JS</button>
-                <button class="tab" id="tab-libs" role="tab" aria-controls="libsPanel" aria-selected="false" data-tab="libs">📚 Libraries</button>
-                <button class="tab" id="tab-help" role="tab" aria-controls="helpPanel" aria-selected="false" data-tab="help">❔ Help</button>
             </div>
 
             <div class="search-bar">
@@ -50,6 +43,7 @@
                     <div class="fe-header">
                         <button type="button" class="fe-toggle-btn" id="feToggleBtn" title="Open file manager" aria-label="Open file manager" aria-controls="feList" aria-expanded="false">📁</button>
                         <span class="fe-title">Files</span>
+                        <button type="button" class="fe-library-btn" id="feLibraryBtn" title="Open libraries" aria-label="Open libraries">📚</button>
                         <button type="button" class="fe-add-btn" id="feAddBtn" title="New file" aria-label="New file">+</button>
                     </div>
                     <div class="fe-controls" id="feControls">
@@ -68,11 +62,6 @@
                         <label class="visually-hidden" for="feNewName">New file name</label>
                         <input type="text" id="feNewName" placeholder="File name..." maxlength="40" spellcheck="false" aria-describedby="feNameHelp">
                         <span id="feNameHelp" class="fe-help">Required · max 40 characters · unique</span>
-                        <select id="feNewType" aria-label="New file type">
-                            <option value="html">HTML</option>
-                            <option value="css">CSS</option>
-                            <option value="js">JS</option>
-                        </select>
                         <div class="fe-new-actions">
                             <button type="button" class="primary" id="feNewCreate">Create</button>
                             <button type="button" id="feNewCancel">Cancel</button>
@@ -82,7 +71,7 @@
                 </aside>
 
                 <div class="editors" id="editors">
-                    <div class="libs-panel" id="libsPanel" role="tabpanel" aria-labelledby="tab-libs" hidden>
+                    <div class="libs-panel" id="libsPanel" role="tabpanel" aria-label="Libraries" hidden>
                         <div class="lib-presets-section">
                             <div class="lib-form-title">⚡ Popular Libraries (click to select)</div>
                             <div class="lib-presets-hint">
@@ -124,7 +113,7 @@
                         </div>
                         <div class="lib-list" id="libList"></div>
                     </div>
-                    <section class="help-panel" id="helpPanel" role="tabpanel" aria-labelledby="tab-help" hidden>
+                    <section class="help-panel" id="helpPanel" role="tabpanel" aria-label="Help guide" hidden>
                         <header class="help-hero">
                             <p class="help-eyebrow">HTML / CSS / JAVASCRIPT EDITOR</p>
                             <h1>Editor User Guide</h1>

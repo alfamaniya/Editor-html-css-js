@@ -1468,3 +1468,164 @@ textarea:focus-visible,
     .dirty { margin-left: 0; font-size: 9px; }
     .arrow-btn { width: 28px; height: 28px; flex-basis: 28px; }
 }
+
+
+/* Unified rounded components and deliberately distinct workspace surfaces. */
+:root {
+    --chrome-purple: #28243f;
+    --chrome-purple-deep: #1b2034;
+    --chrome-purple-border: #7063a0;
+    --sidebar-teal: #173843;
+    --sidebar-teal-deep: #122d38;
+    --sidebar-teal-border: #3c818b;
+    --editor-navy: #101d2d;
+    --editor-gutter: #172b40;
+    --editor-border: #29435d;
+}
+body { background-color: #0e1725; }
+.page-symbol-header,
+.settings-header {
+    background: linear-gradient(135deg, var(--chrome-purple), var(--chrome-purple-deep));
+    border-color: var(--chrome-purple-border);
+    box-shadow: 0 5px 18px rgb(0 0 0 / 18%);
+}
+.page-symbol-header .symbol-toolbar {
+    background: rgb(13 22 37 / 60%);
+    border: 1px solid var(--chrome-purple-border);
+    border-radius: 14px;
+}
+.settings-header .pane-label {
+    background: transparent;
+}
+.symbol-toolbar button,
+.toolbar button,
+.arrow-btn,
+.tab,
+.fe-toggle-btn,
+.fe-add-btn,
+.fe-library-btn,
+.fe-new-actions button,
+.search-bar button,
+.modal-btn,
+.help-actions button,
+.help-language-btn,
+.button,
+.lib-preset,
+.lib-item,
+.lib-form,
+.lib-empty,
+.help-card,
+.help-hero,
+.table-wrap,
+.demo-card,
+.intro-panel,
+.demo-form,
+.task-panel,
+.task-list li,
+.artwork,
+pre,
+details,
+.cp,
+.modal-box,
+.toast,
+.search-input,
+.modal-input,
+.cp-text,
+.cp-fmt,
+.lib-catalog-controls input,
+.lib-catalog-controls select,
+.fe-controls input,
+.fe-controls select,
+.fe-new-form input,
+.fe-new-form select,
+textarea,
+select,
+input {
+    border-radius: 10px;
+}
+.symbol-toolbar button { border-radius: 9px; }
+.page-symbol-header,
+.settings-header,
+.editor-pane,
+.preview-pane,
+.file-explorer,
+.editors,
+.editor-wrap,
+.code-wrap,
+.libs-panel,
+.help-panel,
+.modal-box,
+.cp {
+    border-radius: 14px;
+}
+.editor-pane {
+    border: 1px solid var(--editor-border);
+    overflow: hidden;
+    background: var(--editor-navy);
+}
+.preview-pane { overflow: hidden; }
+.editors,
+.editor-wrap {
+    background: var(--editor-navy) !important;
+}
+.line-numbers {
+    background: var(--editor-gutter) !important;
+    color: #8194aa;
+    border-right: 1px solid var(--editor-border);
+}
+.file-explorer {
+    background: var(--sidebar-teal);
+    border-right: 1px solid var(--sidebar-teal-border);
+}
+.fe-header {
+    background: linear-gradient(180deg, #23505a, var(--sidebar-teal-deep));
+    border-bottom-color: var(--sidebar-teal-border);
+}
+.fe-controls,
+.fe-new-form {
+    background: #15313c;
+    border-bottom-color: var(--sidebar-teal-border);
+}
+.fe-controls input,
+.fe-controls select,
+.fe-new-form input,
+.fe-new-form select {
+    background: #102833;
+    border-color: #477d87;
+}
+.fe-list { background: var(--sidebar-teal); }
+.fe-item { border-radius: 9px; }
+.fe-item:hover { background: #24505a; border-color: #477d87; }
+.fe-item.active {
+    background: linear-gradient(135deg, rgb(78 160 166 / 22%), rgb(33 87 98 / 35%));
+    border-color: #5c9ca4;
+}
+.fe-toggle-btn:hover,
+.fe-toggle-btn:focus-visible,
+.fe-library-btn:hover { background: #285b65; border-color: #5c9ca4; }
+.fe-add-btn { background: #285b65; border-color: #5c9ca4; }
+.fe-add-btn:hover { background: #34717b; }
+.lib-form,
+.lib-item,
+.lib-empty { border-radius: 12px; }
+.modal-box,
+.modal-input,
+.modal-btn,
+.cp-text,
+.cp-fmt,
+.lib-catalog-controls input,
+.lib-catalog-controls select,
+.fe-controls input,
+.fe-controls select,
+.fe-new-form input,
+.fe-new-form select { border-radius: 10px; }
+.help-card, .help-hero, .lib-preset, .lib-item, .lib-form,
+.demo-card, .intro-panel, .demo-form, .task-panel, .table-wrap { border-radius: 14px; }
+.page-symbol-header[hidden] { display: none !important; }
+
+@media (max-width: 760px) {
+    .page-symbol-header,
+    .settings-header { border-radius: 0 0 12px 12px; }
+    .symbol-toolbar { flex-wrap: wrap; }
+    .symbol-toolbar button { min-height: 34px; }
+}

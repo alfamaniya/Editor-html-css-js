@@ -850,7 +850,7 @@ console.info("Starter project ready", {
                 '    <p>This is a sample card.</p>',
                 '    <button id="btn">Click Me</button>',
                 '</div>'
-            ].join('\\n'),
+            ].join('\n'),
             css: [
                 'body {',
                 '    font-family: Tahoma, sans-serif;',
@@ -884,12 +884,12 @@ console.info("Starter project ready", {
                 'button:hover {',
                 '    background: #2980b9;',
                 '}'
-            ].join('\\n'),
+            ].join('\n'),
             js: [
                 "document.getElementById('btn').addEventListener('click', function () {",
                 "    alert('It works!');",
                 '});'
-            ].join('\\n')
+            ].join('\n')
         };
 
         function isUntouchedLegacyStarter(files) {

@@ -309,7 +309,7 @@ button:hover {
                 } else {
                     setDirty(true);
                 }
-            }, 450);
+            }, 120);
         }
 
         function getFile(id) {
@@ -1453,12 +1453,15 @@ button:hover {
             function filterList(list, word) {
                 const w = (word || '').toLowerCase();
                 const out = [];
+                const seenLabels = new Set();
                 const items = (list || []).map(asItem);
                 for (let i = 0; i < items.length; i++) {
                     const label = String(items[i].label || items[i].insert || '');
+                    if (!label || seenLabels.has(label.toLowerCase())) continue;
+                    seenLabels.add(label.toLowerCase());
                     if (!w || label.toLowerCase().startsWith(w)) {
                         out.push(items[i]);
-                        if (out.length >= 14) break;
+                        if (out.length >= 24) break;
                     }
                 }
                 return out;
@@ -2334,7 +2337,6 @@ button:hover {
         // ==========================================
         //  Buttons
         // ==========================================
-        document.getElementById('btnSave').addEventListener('click', saveCode);
         document.getElementById('btnDownload').addEventListener('click', openNameModal);
         document.getElementById('btnUndo').addEventListener('click', doUndo);
         document.getElementById('btnRedo').addEventListener('click', doRedo);
@@ -2408,7 +2410,7 @@ button:hover {
             if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
             const k = String(e.key).toLowerCase();
             if (k === 's' && e.shiftKey) { e.preventDefault(); openNameModal(); return; }
-            if (k === 's') { e.preventDefault(); saveCode(); return; }
+            if (k === 's') { e.preventDefault(); if (project) { clearTimeout(autoSaveTimer); if (saveProject()) { setDirty(false); showToast('✅ Auto-saved', 'success'); } } return; }
             if (k === 'f') {
                 e.preventDefault();
                 searchInput.focus();

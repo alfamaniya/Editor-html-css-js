@@ -1,4 +1,4 @@
-// Suggested entries: 484 (HTML tags and attributes, including contextual entries)
+// Expanded HTML, SVG, MathML, global attribute, and contextual attribute suggestions.
 (function () {
     'use strict';
     const htmlTags = (
@@ -114,8 +114,12 @@
         annotation: 'encoding src'
     };
     Object.keys(additionalAttrsByTag).forEach(function (tag) {
-        const current = Array.isArray(htmlAttrsByTag[tag]) ? htmlAttrsByTag[tag] : [];
-        htmlAttrsByTag[tag] = Array.from(new Set(current.concat(additionalAttrsByTag[tag].split(/\s+/))));
+        const key = tag.toLowerCase();
+        const current = Array.isArray(htmlAttrsByTag[key])
+            ? htmlAttrsByTag[key]
+            : (Array.isArray(htmlAttrsByTag[tag]) ? htmlAttrsByTag[tag] : []);
+        htmlAttrsByTag[key] = Array.from(new Set(current.concat(additionalAttrsByTag[tag].split(/\s+/))));
+        if (key !== tag) delete htmlAttrsByTag[tag];
     });
 
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {

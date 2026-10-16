@@ -1,4 +1,4 @@
-// Suggested entries: 662 (JavaScript words, members, and snippets; contextual duplicates included)
+// Suggested entries: 589 (JavaScript words, members, and snippets)
 (function () {
     'use strict';
     const jsWords = (

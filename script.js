@@ -373,6 +373,7 @@ button:hover {
                     '<span class="fe-icon" aria-hidden="true">' + icon + '</span>' +
                     '<span class="fe-name" data-role="name">' + escHtml(f.name) + '</span>' +
                     (isDirty ? '<span class="fe-dirty-dot" title="Unsaved changes" aria-label="Unsaved changes">●</span>' : '') +
+                    '<button type="button" class="fe-rename" data-action="rename" title="Rename ' + escHtml(f.name) + '" aria-label="Rename ' + escHtml(f.name) + '">✏️</button>' +
                     '<button type="button" class="fe-del" data-action="delete" title="Delete ' + escHtml(f.name) + '" aria-label="Delete ' + escHtml(f.name) + '">🗑</button>' +
                 '</div>';
             }).join('');
@@ -429,6 +430,12 @@ button:hover {
         });
 
         feList.addEventListener('click', function(e) {
+            const renameBtn = e.target.closest('[data-action="rename"]');
+            if (renameBtn) {
+                const item = renameBtn.closest('.fe-item');
+                if (item) startRename(item, item.dataset.id);
+                return;
+            }
             const delBtn = e.target.closest('[data-action="delete"]');
             if (delBtn) {
                 const item = delBtn.closest('.fe-item');
@@ -2119,32 +2126,29 @@ button:hover {
         }
 
         const nameModal = document.getElementById('nameModal');
-        const projectNameIn = document.getElementById('projectNameInput');
+        function getDownloadBaseName() {
+            const activeFile = project.files.find(function(file) { return file.id === project.activeFileId; });
+            if (!activeFile || !activeFile.name) return 'my-project';
+            // Use the name saved in File Explorer, removing only a matching file extension.
+            const extension = /\.(html?|css|mjs|js)$/i;
+            return sanitizeFilename(activeFile.name.replace(extension, '')) || 'my-project';
+        }
         function openNameModal() {
-            let last = storageGet('html-editor-project-name') || 'my-project';
-            projectNameIn.value = last;
             nameModal.hidden = false;
-            setTimeout(function() { projectNameIn.focus(); projectNameIn.select(); }, 50);
         }
         function closeNameModal() { nameModal.hidden = true; }
         document.getElementById('modalCancel').addEventListener('click', closeNameModal);
         document.getElementById('modalDownloadSingle').addEventListener('click', function() {
-            const name = projectNameIn.value.trim() || 'my-project';
-            storageSet('html-editor-project-name', name);
+            const name = getDownloadBaseName();
             closeNameModal();
             downloadSingle(name);
         });
         document.getElementById('modalDownloadBundle').addEventListener('click', function() {
-            const name = projectNameIn.value.trim() || 'my-project';
-            storageSet('html-editor-project-name', name);
+            const name = getDownloadBaseName();
             closeNameModal();
             downloadBundle(name);
         });
         nameModal.addEventListener('click', function(e) { if (e.target === nameModal) closeNameModal(); });
-        projectNameIn.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('modalDownloadBundle').click(); }
-            else if (e.key === 'Escape') { e.preventDefault(); closeNameModal(); }
-        });
 
         // ==========================================
         //  Toast / Font

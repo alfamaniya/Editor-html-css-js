@@ -107,6 +107,21 @@
         jsMembers[key] = Array.from(new Set(String(value).split(/\s+/).filter(Boolean)));
     });
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
+        symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
+            js: [
+            { label: "console.log()", prefix: "console.log(", suffix: ");", description: "Log a value to the console" },
+            { label: "querySelector()", prefix: "document.querySelector('", suffix: "')", description: "Select an element with a CSS selector" },
+            { label: "addEventListener", prefix: "addEventListener('click', () => {\n    ", suffix: "\n});", description: "Add a click event handler" },
+            { label: "() => { }", prefix: "() => {", suffix: "}", description: "Insert an arrow function body" },
+            { label: "if ( )", prefix: "if (", suffix: ") {\n    \n}", description: "Insert an if statement" },
+            { label: "{ }", prefix: "{", suffix: "}", description: "Insert paired braces" },
+            { label: "[ ]", prefix: "[", suffix: "]", description: "Insert an array or bracket pair" },
+            { label: "/* */", prefix: "/* ", suffix: " */", description: "Insert a block comment" },
+            { label: "//", prefix: "// ", suffix: "", description: "Start a single-line comment" },
+            { label: "try/catch", prefix: "try {\n    ", suffix: "\n} catch (error) {\n    console.error(error);\n}", description: "Insert error handling" }
+            ]
+        }),
+
         jsWords,
         jsMembers,
         snippets: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).snippets || {}, { js: snippets.js })

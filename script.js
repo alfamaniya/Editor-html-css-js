@@ -1458,12 +1458,18 @@ button:hover {
                 }
                 if (ctx.kind === 'cssProperty') {
                     const snippets = (data.snippets && data.snippets.css) || [];
-                    return filterList(snippets.concat(data.cssProperties || CSS_PROPS), ctx.word);
+                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
+                    const properties = (data.cssProperties || CSS_PROPS).map(function (name) {
+                        return { label: name, insert: name, description: (guide.properties || {})[name] || 'CSS ویژگی (Property)' };
+                    });
+                    return filterList(snippets.concat(properties), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];
+                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
+                    const guidedValues = ((guide.values || {})[ctx.property] || []);
                     const common = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'transparent', 'currentColor'];
-                    return filterList(values.concat(common), ctx.word);
+                    return filterList(guidedValues.concat(values, common), ctx.word);
                 }
                 if (ctx.kind === 'jsMember') {
                     const members = (data.jsMembers || {})[ctx.root] || [];

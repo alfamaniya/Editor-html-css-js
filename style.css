@@ -445,6 +445,7 @@
         .file-explorer.is-collapsed .fe-header { flex-direction: column; padding: 6px 0; gap: 7px; }
         .file-explorer.is-collapsed .fe-add-btn { flex: 0 0 24px; }
         .file-explorer.is-collapsed .fe-item { justify-content: center; padding: 7px 0; }
+        .file-explorer.is-collapsed .fe-open { flex: 0 0 auto; justify-content: center; }
         .file-explorer.is-collapsed .fe-name,
         .file-explorer.is-collapsed .fe-rename,
         .file-explorer.is-collapsed .fe-del { display: none; }
@@ -575,7 +576,7 @@
             -webkit-user-select: none;
         }
         .fe-item:hover { background: #2b3e54; border-color: #3d536b; }
-        .fe-item:focus-visible { outline: 2px solid var(--blue-accent); outline-offset: 1px; }
+        .fe-open:focus-visible { outline: 2px solid var(--blue-accent); outline-offset: 1px; }
         .fe-item.active {
             background: linear-gradient(180deg, rgba(138, 185, 232, 0.18), rgba(111, 167, 232, 0.12));
             border-color: var(--blue-border);
@@ -586,6 +587,25 @@
         .fe-icon { font-size: 11px; flex-shrink: 0; }
         .fe-dirty-dot { color: #f5c56b; font-size: 9px; flex-shrink: 0; }
         .file-explorer.is-collapsed .fe-dirty-dot { display: none; }
+        .fe-open {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+        .fe-open:focus-visible {
+            outline: 2px solid var(--blue-accent);
+            outline-offset: 1px;
+            border-radius: 3px;
+        }
         .fe-name {
             flex: 1 1 auto;
             min-width: 0;
@@ -1404,6 +1424,7 @@ textarea:focus-visible,
 .pane-label { gap: 7px; }
 .dirty { position: static; margin-left: auto; white-space: nowrap; }
 .file-explorer.is-collapsed .fe-item { justify-content: center; }
+.file-explorer.is-collapsed .fe-open { flex: 0 0 auto; justify-content: center; }
 .file-explorer.is-collapsed .fe-library-btn { display: none; }
 
 @media (max-width: 760px) {

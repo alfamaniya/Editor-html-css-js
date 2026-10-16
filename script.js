@@ -556,9 +556,13 @@ button:hover {
         function loadLibraries() {
             try {
                 const raw = storageGet(LIBS_KEY);
-                if (!raw) return [];
+                // A standalone HTML export cannot inherit the source site's localStorage.
+                // Fall back to the library metadata embedded by buildDocument(true).
+                const embedded = Array.isArray(window.__EDITOR_EMBEDDED_LIBRARIES__)
+                    ? window.__EDITOR_EMBEDDED_LIBRARIES__ : [];
+                if (!raw) return embedded;
                 const arr = JSON.parse(raw);
-                if (!Array.isArray(arr)) return [];
+                if (!Array.isArray(arr)) return embedded;
 
                 const seenIds = new Set();
                 return arr.filter(function(lib) {
@@ -872,6 +876,16 @@ button:hover {
                 .map(function(l) { return '/* === ' + l.name + ' === */\n' + l.code.replace(/<\/script/gi, '<\\/script'); })
                 .join('\n\n');
 
+            // Carry the library list (including enabled/disabled state) into a standalone
+            // editor HTML export. Browser localStorage is not transferred with a download.
+            const embeddedLibraries = forExport
+                ? '<script>window.__EDITOR_EMBEDDED_LIBRARIES__=' +
+                    JSON.stringify(libraries.map(function(lib) {
+                        return { id: lib.id, name: lib.name, type: lib.type, code: lib.code, enabled: !!lib.enabled };
+                    })).replace(/</g, '\\u003c') +
+                    ';<\\/script>\\n'
+                : '';
+
             const errorHook = forExport ? '' : [
                 '<script>',
                 'window.addEventListener("error",function(e){ parent.postMessage({editorError:true,message:String(e.message)},"*"); });',
@@ -884,6 +898,7 @@ button:hover {
                 '<meta charset="UTF-8">\n' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
                 '<title>My Page</title>\n' +
+                embeddedLibraries +
                 errorHook + '\n' +
                 '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n' +
                 '</head>\n<body>\n' + html + '\n' +

@@ -211,6 +211,7 @@
         .tab[data-tab="help"].active { background: linear-gradient(180deg, #d7e8ff, #91b8f5); }
 
         .search-tools-row {
+            box-sizing: border-box;
             margin-left: 44px;
             width: calc(100% - 44px);
             display: flex;

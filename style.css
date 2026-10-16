@@ -12,6 +12,15 @@
             --blue-shadow: rgba(138, 185, 232, 0.25);
             --green:       #6fcf97;
             --green-light: #a8e6cf;
+            --chrome-purple: #28243f;
+            --chrome-purple-deep: #1b2034;
+            --chrome-purple-border: #7063a0;
+            --sidebar-teal: #173843;
+            --sidebar-teal-deep: #122d38;
+            --sidebar-teal-border: #3c818b;
+            --editor-navy: #101d2d;
+            --editor-gutter: #172b40;
+            --editor-border: #29435d;
         }
 
         body {
@@ -415,8 +424,8 @@
 
         /* File Explorer */
         .file-explorer {
-            width: 168px;
-            flex: 0 0 168px;
+            width: 248px;
+            flex: 0 0 248px;
             background: #1c2938;
             border-right: 1px solid var(--blue-border);
             display: flex;
@@ -427,8 +436,8 @@
             transition: width 0.18s ease, flex-basis 0.18s ease;
         }
         .file-explorer.is-collapsed {
-            width: 44px;
-            flex-basis: 44px;
+            width: 46px;
+            flex-basis: 46px;
         }
 
         .fe-header {
@@ -1256,8 +1265,7 @@
             .tab { font-size: 11px; padding: 5px 4px; }
             .lib-presets-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
             .divider { display: none; }
-            .file-explorer { width: 168px; flex-basis: 168px; }
-            .file-explorer.is-collapsed { width: 44px; flex-basis: 44px; }
+
             .file-explorer:not(.is-collapsed) { max-width: 42vw; }
             .fe-del { opacity: 1; min-width: 28px; min-height: 28px; font-size: 12px; }
             .fe-item { min-height: 34px; }
@@ -1382,15 +1390,7 @@ textarea:focus-visible,
 
 
 /* UI refinement: file manager, compact top navigation, and responsive layout */
-.file-explorer {
-    width: 248px;
-    flex-basis: 248px;
-    font-size: 13px;
-}
-.file-explorer.is-collapsed {
-    width: 46px;
-    flex-basis: 46px;
-}
+.file-explorer { font-size: 13px; }
 .fe-title { font-size: 14px; }
 .fe-item {
     gap: 7px;
@@ -1444,10 +1444,6 @@ textarea:focus-visible,
         flex-basis: 250px;
         max-width: min(78vw, 280px);
     }
-    .file-explorer.is-collapsed {
-        width: 46px;
-        flex-basis: 46px;
-    }
     .pane-label { flex-wrap: wrap; justify-content: flex-start; padding: 6px; }
     .pane-label .toolbar { margin: 0; gap: 4px; }
     .toolbar button { padding: 5px 7px; font-size: 11px; }
@@ -1457,17 +1453,7 @@ textarea:focus-visible,
 
 
 /* Unified rounded components and deliberately distinct workspace surfaces. */
-:root {
-    --chrome-purple: #28243f;
-    --chrome-purple-deep: #1b2034;
-    --chrome-purple-border: #7063a0;
-    --sidebar-teal: #173843;
-    --sidebar-teal-deep: #122d38;
-    --sidebar-teal-border: #3c818b;
-    --editor-navy: #101d2d;
-    --editor-gutter: #172b40;
-    --editor-border: #29435d;
-}
+/* Workspace color tokens are defined together in the main :root block. */
 body { background-color: #0e1725; }
 .page-symbol-header,
 .settings-header {

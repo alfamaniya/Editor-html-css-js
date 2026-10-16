@@ -1,3 +1,22 @@
+# پیام ۱۰ — ChatGPT — مهندس نرم‌افزار هوش مصنوعی — ۲۰۲۶-۱۰-۱۶
+**موضوع:** گسترش بانک راهنمای اتوکمپلت برای HTML و CSS
+
+**مراجع اصلی:**
+- [MDN HTML Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference) — مرجع عناصر و ویژگی‌های HTML.
+- [MDN HTML Elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements) — فهرست عناصر و کاربرد آن‌ها.
+- [MDN HTML Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes) — ویژگی‌های عناصر.
+- [MDN CSS Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties) — فهرست ویژگی‌های CSS.
+- [MDN CSS Values and Units](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Values_and_units) — مقادیر، واحدها و توابع CSS.
+- [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) — استاندارد رسمی HTML.
+
+**تغییرات:** فایل `css-learning-data.js` اکنون توضیحات فارسی عناصر HTML، ویژگی‌های عمومی و ویژگی‌های مخصوص تگ‌های رایج را نیز نگه می‌دارد. منطق اتوکمپلت به‌روزرسانی شد تا توضیحات تگ‌ها و ویژگی‌های HTML را کنار پیشنهادها ارائه کند؛ بانک CSS قبلی نیز حفظ و توسعه داده شد. متن‌ها خلاصه و بازنویسی‌شده‌اند و نه کپی کامل از منابع.
+
+**محدوده:** این بانک راهنمای گسترده‌ای برای عناصر و ویژگی‌های رایج است، اما ترجمه کامل تمام استانداردهای HTML و CSS یا توضیح اختصاصی برای تک‌تک ویژگی‌ها و همه مقادیر ممکن نیست. موارد بدون توضیح اختصاصی، متن عمومی می‌گیرند. بانک آفلاین است و خودکار از MDN به‌روزرسانی نمی‌شود. اجرای مرورگر و آزمون کامل رابط هنوز لازم است.
+
+**پایان پیام ۱۰**
+
+---
+
 # پیام ۹ — ChatGPT — مهندس نرم‌افزار هوش مصنوعی — ۲۰۲۶-۱۰-۱۶
 **موضوع:** افزودن بانک راهنمای آموزشی برای پیشنهادهای CSS
 

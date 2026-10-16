@@ -1271,7 +1271,9 @@ console.info("Starter project ready", {
                 if (!saved) {
                     showToast('⚠ Rename is only in this session; browser storage could not save it.', 'error');
                 } else {
-                    showToast(warning ? '⚠ ' + warning : '✅ File renamed to “' + newName + '”', warning ? 'info' : 'success');
+                    const successMessage = '✅ File renamed to “' + newName + '”' +
+                        (warning ? ' (the extension differs from the file type)' : '');
+                    showToast(successMessage, 'success');
                 }
             }
             function cancel() {

@@ -1548,13 +1548,16 @@ button:hover {
                 };
             }
 
-            function show(items, ta, from, to) {
+            function show(items, ta, from, to, hint) {
                 currentItems = items;
                 currentIndex = 0;
                 currentTa = ta;
                 currentFrom = from;
                 currentTo = to;
-                el.innerHTML = items.map(function(raw, i) {
+                const hintHtml = hint
+                    ? '<div class="intellisense-hint"><strong>فرمت مقدار</strong><span>' + escHtml(hint) + '</span></div>'
+                    : '';
+                el.innerHTML = hintHtml + items.map(function(raw, i) {
                     const item = asItem(raw);
                     const description = item.description ? ' title="' + escHtml(item.description) + '"' : '';
                     return '<div class="intellisense-item' + (i === 0 ? ' selected' : '') + '" data-idx="' + i + '"' + description + '>' +
@@ -1564,6 +1567,32 @@ button:hover {
                 }).join('');
                 el.hidden = false;
                 positionDropdown(ta, to);
+            }
+
+            // A compact syntax hint shown inside the autocomplete popup (not a separate help panel).
+            function getCssFormatHint(property) {
+                const p = String(property || '').toLowerCase();
+                if (/^(padding|margin|inset|top|right|bottom|left|gap|row-gap|column-gap|width|height|min-width|max-width|min-height|max-height|font-size|line-height|letter-spacing|word-spacing|border-radius|border-width|outline-width|outline-offset|padding-|margin-|scroll-padding|scroll-margin)/.test(p))
+                    return 'عدد همراه واحد مثل 10px، 1rem یا 5%؛ برای چند جهت می‌توان چند مقدار با فاصله نوشت.';
+                if (/^(color|background-color|border-color|outline-color|text-decoration-color|caret-color|fill|stroke)$/.test(p))
+                    return 'نام رنگ (red)، HEX (#3498db)، rgb()/hsl() یا currentColor.';
+                if (/^(background|background-image|mask-image)$/.test(p))
+                    return 'رنگ، نشانی url(...)، گرادیان یا ترکیبی از لایه‌ها؛ بسته به ویژگی.';
+                if (/^(display|position|overflow|overflow-x|overflow-y|visibility|float|clear|box-sizing|object-fit|text-align|text-transform|font-style|font-weight|white-space|cursor|flex-direction|flex-wrap|justify-content|align-items|align-content|align-self|justify-items|justify-self|place-items|place-content|pointer-events|user-select|resize|direction|flex-basis|grid-auto-flow|border-style|border-top-style|border-right-style|border-bottom-style|border-left-style|text-decoration-style|list-style-type)$/.test(p))
+                    return 'یک کلمه از گزینه‌های پیشنهادی؛ هر گزینه یک حالت یا روش نمایش را مشخص می‌کند.';
+                if (/^(opacity|flex-grow|flex-shrink|order|z-index|font-stretch|scale)$/.test(p))
+                    return 'عدد؛ برای opacity معمولاً بین 0 و 1، و برای z-index عدد صحیح مناسب است.';
+                if (/^(transition-duration|transition-delay|animation-duration|animation-delay)$/.test(p))
+                    return 'زمان با واحد s یا ms؛ مثال: 0.3s یا 250ms.';
+                if (/^(transform|translate|rotate|filter|box-shadow|text-shadow|background-position|background-size|border|outline|flex|grid-template-columns|grid-template-rows|grid-template-areas|animation|transition)$/.test(p))
+                    return 'مقدار ترکیبی یا تابع CSS؛ نمونه‌های پیشنهادی را ببینید و ترتیب اجزا را رعایت کنید.';
+                if (/^(content)$/.test(p))
+                    return 'متن داخل کوتیشن، رشته خالی "" یا یکی از کلیدواژه‌های مجاز.';
+                if (/^(font-family)$/.test(p))
+                    return 'نام فونت یا فهرست فونت‌ها با کاما؛ مثال: Arial, sans-serif.';
+                if (/^(background-repeat|background-attachment|background-clip|background-origin|border-collapse|text-decoration-line|text-overflow|word-break|overflow-wrap|scroll-behavior|animation-direction|animation-fill-mode|animation-play-state)$/.test(p))
+                    return 'یک مقدار کلیدی از گزینه‌های پیشنهادی.';
+                return 'مقدار CSS متناسب با این ویژگی؛ می‌تواند عدد و واحد، رنگ، کلمه کلیدی یا تابع باشد. پیشنهادها را برای نمونه‌های معتبر ببینید.';
             }
             function positionDropdown(ta, pos) {
                 const c = caretRect(ta, pos);
@@ -1616,7 +1645,7 @@ button:hover {
                 const items = completionList(ctx);
                 if (!items.length) { hide(); return; }
                 if (items.length === 1 && String(asItem(items[0]).label || asItem(items[0]).insert).toLowerCase() === ctx.word.toLowerCase()) { hide(); return; }
-                show(items, ta, ctx.from, ctx.to);
+                show(items, ta, ctx.from, ctx.to, ctx.kind === 'cssValue' ? getCssFormatHint(ctx.property) : '');
             }
             function onKeyDown(e) {
                 if (el.hidden) return false;

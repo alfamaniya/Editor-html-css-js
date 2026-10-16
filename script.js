@@ -376,9 +376,10 @@ button:hover {
                 const isActive = f.id === project.activeFileId;
                 const icon = f.type === 'html' ? '📄' : (f.type === 'css' ? '🎨' : '⚡');
                 const isDirty = dirty && isActive && activeTab === f.type;
-                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" role="button" tabindex="0" aria-label="File ' + escHtml(f.name) + (isActive ? ', active file' : '') + '" title="' + escHtml(f.name) + '">' +
+                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" title="' + escHtml(f.name) + '">' +
+                    '<button type="button" class="fe-open" data-role="name" aria-label="Open file ' + escHtml(f.name) + (isActive ? ', active file' : '') + '">' +
                     '<span class="fe-icon" aria-hidden="true">' + icon + '</span>' +
-                    '<span class="fe-name" data-role="name">' + escHtml(f.name) + '</span>' +
+                    '<span class="fe-name">' + escHtml(f.name) + '</span></button>' +
                     (isDirty ? '<span class="fe-dirty-dot" title="Unsaved changes" aria-label="Unsaved changes">●</span>' : '') +
                     '<button type="button" class="fe-rename" data-action="rename" title="Rename ' + escHtml(f.name) + '" aria-label="Rename ' + escHtml(f.name) + '">✏️</button>' +
                     '<button type="button" class="fe-del" data-action="delete" title="Delete ' + escHtml(f.name) + '" aria-label="Delete ' + escHtml(f.name) + '">🗑</button>' +
@@ -473,9 +474,12 @@ button:hover {
         });
         feList.addEventListener('keydown', function(e) {
             const item = e.target.closest('.fe-item');
-            if (!item || e.target.matches('input.fe-rename-input') || e.target.closest('[data-action="delete"], [data-action="rename"]')) return;
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFile(item.dataset.id); }
-            else if (e.key === 'F2') { e.preventDefault(); startRename(item, item.dataset.id); }
+            if (!item || e.target.matches('input.fe-rename-input')) return;
+            if (e.key === 'F2' && !e.target.closest('[data-action="delete"], [data-action="rename"]')) {
+                e.preventDefault();
+                startRename(item, item.dataset.id);
+            }
+            // Open/rename/delete controls retain their native keyboard activation.
         });
 
         feList.addEventListener('dblclick', function(e) {

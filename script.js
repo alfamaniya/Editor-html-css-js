@@ -1990,7 +1990,8 @@ button:hover {
 
             ta.addEventListener('paste', function(e) {
                 if (lang !== 'html' || !e.clipboardData) return;
-                const pasted = e.clipboardData.getData('text/html') || e.clipboardData.getData('text/plain');
+                // Prefer plain text so code copied from GitHub is not mistaken for clipboard formatting markup.
+                const pasted = e.clipboardData.getData('text/plain') || e.clipboardData.getData('text/html');
                 if (!pasted || !(/<!doctype\s+html\b|<html\b|<head\b|<body\b/i).test(pasted)) return;
 
                 let parsed;

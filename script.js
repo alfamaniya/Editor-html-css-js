@@ -344,9 +344,9 @@ button:hover {
             if (persist !== false) storageSet(FILE_EXPLORER_KEY, collapsed ? '1' : '0');
         }
 
-        const savedExplorerState = storageGet(FILE_EXPLORER_KEY);
         const isMobileViewport = window.matchMedia('(max-width: 760px)').matches;
-        setFileExplorerCollapsed(savedExplorerState === null ? isMobileViewport : savedExplorerState !== '0', false);
+        // Always start from the requested responsive default: open on desktop, collapsed on mobile.
+        setFileExplorerCollapsed(isMobileViewport, false);
         feToggleBtn.addEventListener('click', function() {
             setFileExplorerCollapsed(!fileExplorer.classList.contains('is-collapsed'));
         });
@@ -412,7 +412,7 @@ button:hover {
 
         function fileNameError(name, type, excludeId) {
             if (!name) return 'Enter a file name.';
-            if (name.length > 40) return 'File names must be 40 characters or fewer.';
+            if (name.length > 120) return 'File names must be 120 characters or fewer.';
             if (project.files.some(function(f) { return f.id !== excludeId && f.name.toLowerCase() === name.toLowerCase(); })) return 'A file with that name already exists.';
             return '';
         }
@@ -494,7 +494,7 @@ button:hover {
             input.type = 'text';
             input.className = 'fe-rename-input';
             input.value = file.name;
-            input.maxLength = 40;
+            input.maxLength = 120;
             input.spellcheck = false;
             nameEl.replaceWith(input);
             input.focus();

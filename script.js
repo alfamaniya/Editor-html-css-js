@@ -271,8 +271,7 @@ button:hover {
             // Preserve unreadable or structurally invalid project data before a later
             // autosave can replace it with the fallback starter project.
             if (rawProject) {
-                const existingRecovery = storageGet(PROJECT_RECOVERY_KEY);
-                projectRecoveryAvailable = existingRecovery !== null || storageSet(PROJECT_RECOVERY_KEY, rawProject);
+                projectRecoveryAvailable = storageSet(PROJECT_RECOVERY_KEY, rawProject);
                 projectLoadWarning = projectRecoveryAvailable
                     ? 'Saved project data could not be loaded. Download the recovery copy before editing.'
                     : 'Saved project data could not be loaded, and the browser could not preserve a recovery copy.';
@@ -359,7 +358,7 @@ button:hover {
             if (persist !== false) storageSet(FILE_EXPLORER_KEY, collapsed ? '1' : '0');
         }
 
-        const isMobileViewport = window.matchMedia('(max-width: 760px)').matches;
+        const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
         // Always start from the requested responsive default: open on desktop, collapsed on mobile.
         setFileExplorerCollapsed(isMobileViewport, false);
         feToggleBtn.addEventListener('click', function() {
@@ -407,7 +406,7 @@ button:hover {
 
         feLibraryBtn.addEventListener('click', function() {
             activateTab('libs');
-            if (window.matchMedia('(max-width: 760px)').matches) setFileExplorerCollapsed(true);
+            if (window.matchMedia('(max-width: 768px)').matches) setFileExplorerCollapsed(true);
         });
         document.getElementById('btnHelp').addEventListener('click', function() {
             activateTab('help');
@@ -455,7 +454,7 @@ button:hover {
             renderFileExplorer();
             feNewForm.hidden = true;
             const saved = openFile(file.id);
-            if (window.matchMedia('(max-width: 760px)').matches) setFileExplorerCollapsed(true);
+            if (window.matchMedia('(max-width: 768px)').matches) setFileExplorerCollapsed(true);
             showToast(
                 saved ? '✅ File “' + name + '” created' : '⚠ File created in this session, but could not be saved.',
                 saved ? 'success' : 'error'
@@ -484,7 +483,7 @@ button:hover {
             const item = e.target.closest('.fe-item');
             if (item) {
                 openFile(item.dataset.id);
-                if (window.matchMedia('(max-width: 760px)').matches) setFileExplorerCollapsed(true);
+                if (window.matchMedia('(max-width: 768px)').matches) setFileExplorerCollapsed(true);
             }
         });
         feList.addEventListener('keydown', function(e) {
@@ -531,6 +530,7 @@ button:hover {
                 if (error) { showToast('❌ ' + error, 'error'); renderFileExplorer(); return; }
                 file.name = newName;
                 const saved = saveProject();
+                if (saved) setDirty(false);
                 renderFileExplorer();
                 const warning = fileNameWarning(newName, file.type);
                 if (!saved) {
@@ -600,6 +600,7 @@ button:hover {
             }
 
             const saved = saveProject();
+            if (saved) setDirty(false);
             renderFileExplorer();
             updatePreviewNow();
             showToast(
@@ -636,6 +637,7 @@ button:hover {
             }
 
             const saved = saveProject();
+            if (saved) setDirty(false);
             renderFileExplorer();
             updatePreviewNow();
             showToast(saved ? '↩ File restored' : '⚠ File restored in this session, but could not be saved.', saved ? 'success' : 'error');
@@ -659,6 +661,7 @@ button:hover {
 
             activateTab(file.type);
             const saved = saveProject();
+            if (saved) setDirty(false);
             updatePreviewNow();
             return saved;
         }
@@ -2457,7 +2460,8 @@ button:hover {
             if (confirm('All files will be restored to their defaults. Are you sure?')) {
                 clearTimeout(autoSaveTimer);
                 clearTimeout(dirtyResetTimer);
-                const resetSaved = (project = createDefaultProject(), saveProject());
+                project = createDefaultProject();
+                const resetSaved = saveProject();
                 LANGS.forEach(function(lang) {
                     const f = getFileForLang(lang);
                     if (f) {

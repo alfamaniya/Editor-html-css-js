@@ -31,7 +31,7 @@
         const specific = data.htmlAttrsByTag && data.htmlAttrsByTag[normalizedTag];
         const priority = htmlAttributePriority[normalizedTag] || [];
         const attrs = Array.from(new Set(
-            ['class', 'id', 'style', 'aria-label'].concat(priority, Array.isArray(specific) ? specific : [])
+            priority.concat(['class', 'id', 'style', 'aria-label'], Array.isArray(specific) ? specific : [])
         )).slice(0, 5);
 
         const items = attrs.map(function (attr) {

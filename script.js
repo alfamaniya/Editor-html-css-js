@@ -809,11 +809,13 @@ console.info("Starter project ready", {
         let libraryDownloadRequest = 0;
         let activeTab = 'html';
         let dirty = false;
+        const dirtyFileIds = new Set();
 
         function setDirty(value) {
             const next = !!value;
             const changed = next !== dirty;
             dirty = next;
+            if (!next) dirtyFileIds.clear();
             dirtyBadge.hidden = !dirty;
             // Re-render the file list only when the state changes, not on every keystroke.
             if (changed && project) renderFileExplorer();
@@ -1109,7 +1111,7 @@ console.info("Starter project ready", {
             const html = files.map(function(f) {
                 const isActive = f.id === project.activeFileId;
                 const icon = f.type === 'html' ? '📄' : (f.type === 'css' ? '🎨' : '⚡');
-                const isDirty = dirty && isActive && activeTab === f.type;
+                const isDirty = dirtyFileIds.has(f.id);
                 return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" title="' + escHtml(f.name) + '">' +
                     '<button type="button" class="fe-open" data-role="name" aria-label="Open file ' + escHtml(f.name) + (isActive ? ', active file' : '') + '">' +
                     '<span class="fe-icon" aria-hidden="true">' + icon + '</span>' +
@@ -3086,9 +3088,20 @@ console.info("Starter project ready", {
                 const file = activeId ? getFile(activeId) : null;
                 if (file && file.type === lang) {
                     file.content = ta.value;
+                    if (!dirtyFileIds.has(file.id)) {
+                        dirtyFileIds.add(file.id);
+                        renderFileExplorer();
+                    }
                 } else {
                     const f = project.files.find(function(x) { return x.type === lang; });
-                    if (f) { f.content = ta.value; project.lastActiveByLang[lang] = f.id; }
+                    if (f) {
+                        f.content = ta.value;
+                        project.lastActiveByLang[lang] = f.id;
+                        if (!dirtyFileIds.has(f.id)) {
+                            dirtyFileIds.add(f.id);
+                            renderFileExplorer();
+                        }
+                    }
                 }
 
                 refresh();

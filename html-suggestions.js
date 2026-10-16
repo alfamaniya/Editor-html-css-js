@@ -1,4 +1,4 @@
-// Suggested entries: 484 (HTML tags and attributes, including contextual duplicates)
+// Suggested entries: 484 (HTML tags and attributes, including contextual entries)
 (function () {
     'use strict';
     const htmlTags = (

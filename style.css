@@ -211,6 +211,8 @@
         .tab[data-tab="help"].active { background: linear-gradient(180deg, #d7e8ff, #91b8f5); }
 
         .search-bar {
+            margin-left: 44px;
+            width: calc(100% - 44px);
             display: flex;
             align-items: center;
             gap: 5px;
@@ -219,6 +221,12 @@
             border-bottom: 1px solid var(--blue-border);
             flex-shrink: 0;
             direction: ltr;
+        }
+
+        /* Align search with the code column, not the file explorer. */
+        .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-bar {
+            margin-left: 168px;
+            width: calc(100% - 168px);
         }
 
         .search-input {

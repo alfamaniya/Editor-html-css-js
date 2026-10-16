@@ -1165,7 +1165,7 @@ console.info("Starter project ready", {
         function fileNameWarning(name, type) {
             const match = name.match(/\.([^.]+)$/);
             const extType = match ? ({ html: 'html', htm: 'html', css: 'css', js: 'js', mjs: 'js' })[match[1].toLowerCase()] : null;
-            return extType && extType !== type ? 'The file extension does not match the selected ' + type.toUpperCase() + ' type. The name was kept unchanged.' : '';
+            return extType && extType !== type ? 'The file extension does not match the selected ' + type.toUpperCase() + ' type.' : '';
         }
         feNewCreate.addEventListener('click', function() {
             let name = feNewName.value.trim();

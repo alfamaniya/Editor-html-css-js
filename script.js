@@ -1447,13 +1447,21 @@ button:hover {
 
             function completionList(ctx) {
                 const data = getIntelliSenseData();
-                if (ctx.kind === 'htmlTag') return filterList(data.htmlTags || HTML_TAGS, ctx.word);
+                if (ctx.kind === 'htmlTag') {
+                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
+                    return filterList((data.htmlTags || HTML_TAGS).map(function (name) {
+                        return { label: name, insert: name, description: (guide.htmlTags || {})[name] || 'عنصر HTML برای ساختار یا محتوای صفحه.' };
+                    }), ctx.word);
+                }
                 if (ctx.kind === 'htmlAttr') {
-                    const attrs = (data.htmlAttributes || []).concat((data.htmlAttrsByTag || {})[ctx.tag] || []);
-                    const unique = Array.from(new Set(attrs));
-                    return filterList(unique.map(function (name) {
-                        return { label: name, insert: /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|aria-[\w-]+|data-[\w-]+)$/.test(name) ? name + '=""' : name, description: 'HTML attribute' ,
-                            caret: /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|aria-[\w-]+|data-[\w-]+)$/.test(name) ? name.length + 2 : null };
+                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
+                    const extra = ((guide.htmlAttrsByTag || {})[ctx.tag] || '').split(/\\s+/).filter(Boolean);
+                    const attrs = (data.htmlAttributes || []).concat((data.htmlAttrsByTag || {})[ctx.tag] || [], extra);
+                    return filterList(Array.from(new Set(attrs)).map(function (name) {
+                        const hasValue = /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|lang|dir|for|target|rel|method|action|width|height|colspan|rowspan|scope|accept|autocomplete|pattern|inputmode|aria-[\\w-]+|data-[\\w-]+)$/.test(name);
+                        return { label: name, insert: hasValue ? name + '=""' : name,
+                            description: (guide.htmlAttributes || {})[name] || 'ویژگی HTML برای تنظیم رفتار یا اطلاعات عنصر.',
+                            caret: hasValue ? name.length + 2 : null };
                     }), ctx.word);
                 }
                 if (ctx.kind === 'cssProperty') {

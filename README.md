@@ -6,7 +6,8 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 
 - Separate HTML, CSS, and JavaScript editing panels with syntax highlighting and line numbers.
 - Live preview inside a sandboxed iframe.
-- Code completion for HTML tags/attributes, CSS properties/values, and JavaScript keywords, members, and snippets.
+- Code completion for HTML tags/attributes, CSS properties/values/selectors/at-rules, and JavaScript keywords, members, browser APIs, and snippets.
+- Context-aware next-word predictions that can continue selected suggestions into attributes, CSS values, variable initializers, and common code patterns.
 - Quick-insert symbols, automatic closing HTML tags, indentation helpers, and bracket-aware Enter behavior.
 - Project file manager with create, rename, delete/undo, search, filters, and ordering options.
 - Search within the current editor, with next/previous match navigation.
@@ -33,9 +34,33 @@ No build command or package installation is required. The editor itself can run 
 | `html-suggestions.js` | HTML tag, global-attribute, and tag-specific attribute completion data |
 | `css-suggestions.js` | CSS property/value completion data and code snippets |
 | `js-suggestions.js` | JavaScript words, member lists, and snippets |
+| `next-word-suggestions.js` | Context-sensitive next-token continuation rules for HTML, CSS, and JavaScript |
 | `README.md` | Project documentation, usage, audit notes, and validation status |
 
-The completion data is split among the three `*-suggestions.js` files above. There is no `intellisense-data.js` file in the current repository.
+The completion bank is split into four JavaScript data files. The HTML bank includes contextual attributes and embedded SVG/MathML elements. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language words, browser APIs, object members, and reusable snippets. There is no `intellisense-data.js` file in the current repository.
+
+## Suggestion-bank coverage and next-word prediction
+
+The current curated banks contain approximately these unique entries after normalization:
+
+| Bank | Coverage currently loaded by the editor |
+|---|---|
+| HTML | 200 element names (including SVG and MathML), 231 global/event-handler attributes, and 61 tag-specific attribute groups |
+| CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, and 13 snippets |
+| JavaScript | 538 language/global/browser API words, 41 member roots, and 23 snippets |
+| Next-word database | 24 contextual rules across HTML, CSS, and JavaScript, plus dynamically generated tag-attribute/body continuations |
+
+These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment.
+
+### How the next-word database works
+
+After a completion is accepted, the editor checks the text before the caret against ordered, language-specific rules. A matching rule can offer a continuation without replacing the word already accepted. Examples include:
+
+- HTML: after accepting a tag name, offer common attributes or a paired opening/closing element.
+- CSS: after accepting a property such as display or position, offer common values; after selecting a flex/grid display value, offer related alignment and gap declarations.
+- JavaScript: after const/let/var, suggest an assignment; after the assignment, suggest common initializer types; after identifiers such as document or console, suggest common members and call patterns.
+
+The next-word database is a deterministic, hand-maintained rule/sequence list, not a trained language model. It skips prediction inside JavaScript strings/comments and CSS strings/comments, and only shows continuations for known contexts. Dismiss the popup with Escape to keep typing normally.
 
 ## Basic use
 
@@ -220,12 +245,24 @@ A static review of the HTML, CSS, main editor logic, export paths, storage flows
 
 Review date: 2026-10-16.
 
-- Parsed `script.js`, `html-suggestions.js`, `css-suggestions.js`, and `js-suggestions.js` with the JavaScript parser (`new Function`): **pass**. This checks syntax only; it does not execute the application.
+- Parsed `script.js`, `html-suggestions.js`, `css-suggestions.js`, `js-suggestions.js`, and `next-word-suggestions.js` with the JavaScript parser (`new Function`): **pass**. This checks syntax only; it does not execute the application.
+- Loaded the four suggestion-data scripts against a test window object and verified that each bank initializes, contextual tag attributes are arrays, and the next-word rules for all three languages are present.
 - Checked the HTML for duplicate IDs: **none found**.
 - Checked static `getElementById` references against the HTML: no missing editor UI elements were found. The sole unmatched identifier, `btn`, appears in the default example JavaScript code rather than as a required editor UI element.
 - Checked the local script/style references in `index.html`: all referenced local files are present in the repository.
-- Re-checked markers for the corrected autocomplete pattern, race-safe download flow, bundle CSS/JS links, recovery flow, safe generated comment labels, native file-open buttons, and responsive breakpoint alignment.
+- Re-checked markers for the corrected autocomplete pattern, race-safe download flow, bundle CSS/JS links, recovery flow, safe generated comment labels, native file-open buttons, responsive breakpoint alignment, and next-word continuation hooks.
 - **Not performed:** interactive browser testing, cross-browser testing, or automated end-to-end testing. These should be completed before treating the changes as fully verified in runtime conditions.
+
+
+## Reference material
+
+The completion banks are curated against browser-language references and should be revisited as standards change:
+
+- [MDN HTML reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference)
+- [MDN HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements)
+- [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)
+- [MDN JavaScript reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference)
+- [MDN JavaScript standard built-in objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects)
 
 ## License
 

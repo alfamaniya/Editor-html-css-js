@@ -21,6 +21,8 @@
             --editor-navy: #101d2d;
             --editor-gutter: #172b40;
             --editor-border: #29435d;
+            --file-explorer-width: 248px;
+            --file-explorer-collapsed-width: 46px;
         }
 
         body {
@@ -425,8 +427,8 @@
 
         /* File Explorer */
         .file-explorer {
-            width: 248px;
-            flex: 0 0 248px;
+            width: var(--file-explorer-width);
+            flex: 0 0 var(--file-explorer-width);
             background: #1c2938;
             border-right: 1px solid var(--blue-border);
             display: flex;
@@ -437,8 +439,8 @@
             transition: width 0.18s ease, flex-basis 0.18s ease;
         }
         .file-explorer.is-collapsed {
-            width: 46px;
-            flex-basis: 46px;
+            width: var(--file-explorer-collapsed-width);
+            flex-basis: var(--file-explorer-collapsed-width);
         }
 
         .fe-header {
@@ -1438,10 +1440,9 @@ textarea:focus-visible,
 .file-explorer.is-collapsed .fe-library-btn { display: none; }
 
 @media (max-width: 760px) {
-    .file-explorer {
-        width: 250px;
-        flex-basis: 250px;
-        max-width: min(78vw, 280px);
+    :root { --file-explorer-width: min(78vw, 280px); }
+    .file-explorer:not(.is-collapsed) {
+        max-width: var(--file-explorer-width);
     }
     .pane-label { flex-wrap: wrap; justify-content: flex-start; padding: 6px; }
     .pane-label .toolbar { margin: 0; gap: 4px; }
@@ -1625,20 +1626,17 @@ input {
 .highlight, .input { border-radius: 12px; }
 
 
-/* Correct search alignment for the actual sidebar widths. */
-.search-tools-row { margin-left: 46px; width: calc(100% - 46px); }
+/* Keep the search bar aligned to the actual file-explorer width on every viewport. */
+.search-tools-row {
+    margin-left: var(--file-explorer-collapsed-width);
+    width: calc(100% - var(--file-explorer-collapsed-width));
+}
 .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
-    margin-left: 248px;
-    width: calc(100% - 248px);
+    margin-left: var(--file-explorer-width);
+    width: calc(100% - var(--file-explorer-width));
 }
 .toast-action { pointer-events: auto; }
 #btnHelp { margin-left: 0; }
-@media (max-width: 760px) {
-    .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-    }
-}
 .file-explorer .fe-toggle-btn:focus-visible,
 .file-explorer .fe-add-btn:focus-visible,
 .file-explorer .fe-library-btn:focus-visible {

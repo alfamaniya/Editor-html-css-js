@@ -1648,7 +1648,7 @@ button:hover {
                 if (ctx.kind === 'htmlAttr') {
                     const attrs = (data.htmlAttributes || []).concat((data.htmlAttrsByTag || {})[ctx.tag] || []);
                     return filterList(Array.from(new Set(attrs)).map(function (name) {
-                        const hasValue = /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|lang|dir|for|target|rel|method|action|width|height|colspan|rowspan|scope|accept|autocomplete|pattern|inputmode|aria-[\w-]+|data-[\w-]+)$/.test(name);
+                        const hasValue = /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|lang|dir|for|target|rel|method|action|width|height|colspan|rowspan|scope|accept|autocomplete|pattern|inputmode|on[a-z][a-z0-9-]*|aria-[\w-]+|data-[\w-]+)$/.test(name);
                         return { label: name, insert: hasValue ? name + '=""' : name,
                             caret: hasValue ? name.length + 2 : null };
                     }), ctx.word);

@@ -1094,35 +1094,71 @@ button:hover {
             }
         }
 
-        // Quick symbol toolbar: wrap selected text or place the caret between paired symbols.
+        // Quick symbol toolbar: remember the active editor selection even when a toolbar
+        // button temporarily takes focus (especially on touch/mobile browsers).
         const symbolToolbar = document.getElementById('symbolToolbar');
+        const symbolSelections = Object.create(null);
+        LANGS.forEach(function(lang) {
+            const editor = editors[lang];
+            if (!editor || !editor.ta) return;
+            const ta = editor.ta;
+            const rememberSelection = function() {
+                symbolSelections[lang] = {
+                    start: ta.selectionStart,
+                    end: ta.selectionEnd,
+                    direction: ta.selectionDirection || 'none'
+                };
+            };
+            ['select', 'keyup', 'click', 'input', 'pointerup'].forEach(function(eventName) {
+                ta.addEventListener(eventName, rememberSelection);
+            });
+            rememberSelection();
+        });
+
         if (symbolToolbar) {
+            // Prevent mouse focus transfer where supported, but also retain a saved range
+            // for browsers that still move focus when tapping a toolbar button.
             symbolToolbar.addEventListener('mousedown', function(e) {
-                // Keep the editor's selection/caret when a toolbar button is clicked.
                 if (e.target.closest('button')) e.preventDefault();
             });
             symbolToolbar.addEventListener('click', function(e) {
                 const button = e.target.closest('button[data-prefix]');
-                if (!button || activeTab === 'libs' || !editors[activeTab]) return;
+                if (!button || !LANGS.includes(activeTab) || !editors[activeTab]) return;
+
                 const ta = editors[activeTab].ta;
-                const prefix = button.dataset.prefix;
+                const saved = symbolSelections[activeTab] || {
+                    start: ta.selectionStart,
+                    end: ta.selectionEnd,
+                    direction: ta.selectionDirection || 'none'
+                };
+                const start = Math.max(0, Math.min(saved.start, ta.value.length));
+                const end = Math.max(start, Math.min(saved.end, ta.value.length));
+                const prefix = button.dataset.prefix || '';
                 const suffix = button.dataset.suffix || '';
-                const start = ta.selectionStart;
-                const end = ta.selectionEnd;
                 const selected = ta.value.slice(start, end);
                 const replacement = prefix + selected + suffix;
-                ta.focus();
+
+                ta.focus({ preventScroll: true });
                 ta.setRangeText(replacement, start, end, 'select');
+                const selectionStart = start + prefix.length;
+                const selectionEnd = selectionStart + selected.length;
                 if (selected) {
-                    ta.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
+                    ta.setSelectionRange(selectionStart, selectionEnd, 'forward');
                 } else {
-                    const caret = start + prefix.length;
-                    ta.setSelectionRange(caret, caret);
+                    // Place the caret inside paired symbols; line-comment has no suffix.
+                    ta.setSelectionRange(selectionStart, selectionStart);
                 }
+                symbolSelections[activeTab] = {
+                    start: ta.selectionStart,
+                    end: ta.selectionEnd,
+                    direction: ta.selectionDirection || 'none'
+                };
                 ta.dispatchEvent(new Event('input', { bubbles: true }));
                 if (editors[activeTab].refresh) editors[activeTab].refresh();
+                ta.focus({ preventScroll: true });
             });
         }
+
         function doUndo() {
             const ed = editors[activeTab];
             if (!ed) return;

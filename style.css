@@ -210,23 +210,83 @@
         .tab[data-tab="libs"].active { background: linear-gradient(180deg, var(--green-light), var(--green)); }
         .tab[data-tab="help"].active { background: linear-gradient(180deg, #d7e8ff, #91b8f5); }
 
-        .search-bar {
+        .search-tools-row {
             margin-left: 44px;
             width: calc(100% - 44px);
             display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 8px;
+            align-items: stretch;
+            gap: 6px;
+            padding: 4px 6px;
             background: var(--blue-bg-2);
             border-bottom: 1px solid var(--blue-border);
             flex-shrink: 0;
+            min-width: 0;
             direction: ltr;
         }
 
-        /* Align search with the code column, not the file explorer. */
-        .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-bar {
+        .search-bar {
+            flex: 0 1 50%;
+            width: 50%;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0;
+            background: transparent;
+            border-bottom: 0;
+            flex-shrink: 1;
+            direction: ltr;
+        }
+
+        .symbol-toolbar {
+            flex: 1 1 50%;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            padding: 1px 0;
+        }
+
+        .symbol-toolbar button {
+            flex: 0 0 auto;
+            min-width: 28px;
+            min-height: 28px;
+            padding: 4px 6px;
+            border: 1px solid var(--blue-border);
+            border-radius: 5px;
+            background: var(--blue-bg-3);
+            color: var(--blue-text);
+            font: 11px 'Courier New', monospace;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .15s, border-color .15s, transform .15s;
+        }
+        .symbol-toolbar button:hover {
+            background: var(--blue-bg-4);
+            border-color: var(--blue-accent);
+        }
+        .symbol-toolbar button:active { transform: scale(.96); }
+        .symbol-toolbar button:focus-visible {
+            outline: 2px solid var(--blue-accent);
+            outline-offset: 1px;
+        }
+
+        /* Align the search and symbol toolbar with the code column, not the file explorer. */
+        .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
             margin-left: 168px;
             width: calc(100% - 168px);
+        }
+
+        @media (max-width: 760px) {
+            .search-tools-row { gap: 4px; padding: 4px; }
+            .search-bar { min-width: 104px; gap: 3px; }
+            .search-bar .search-count { display: none; }
+            .search-bar button { padding: 4px 5px; }
+            .symbol-toolbar { gap: 2px; }
+            .symbol-toolbar button { min-height: 30px; padding: 4px 5px; }
         }
 
         .search-input {

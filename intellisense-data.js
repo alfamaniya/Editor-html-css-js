@@ -25,7 +25,6 @@
         option:'disabled label selected value',
         ol:'reversed start type',
         li:'value',
-        table:'border',
         td:'colspan headers rowspan',
         th:'colspan headers rowspan scope abbr',
         meta:'charset content http-equiv name',

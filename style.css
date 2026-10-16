@@ -466,6 +466,8 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+            min-width: 0;
+            overflow-x: hidden;
         }
         .fe-list::-webkit-scrollbar { width: 5px; }
         .fe-list::-webkit-scrollbar-thumb { background: var(--blue-border); border-radius: 3px; }
@@ -474,6 +476,8 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            min-width: 0;
+            max-width: 100%;
             padding: 4px 6px;
             border-radius: 6px;
             cursor: pointer;
@@ -494,7 +498,8 @@
 
         .fe-icon { font-size: 11px; flex-shrink: 0; }
         .fe-name {
-            flex: 1;
+            flex: 1 1 auto;
+            min-width: 0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;

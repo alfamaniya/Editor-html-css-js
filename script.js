@@ -49,13 +49,13 @@ button:hover {
 
         // ==========================================
         //  کتابخانه‌های آماده (Presets)
-        //  ۶۰ کتابخانه: ۳۰ اصلی + ۳۰ جدید (آفیس، محاسبات، کاربردی)
+        //  ۸۵ کتابخانه: ۳۰ اصلی + ۳۰ جدید (آفیس، محاسبات، کاربردی) + ۲۵ کتابخانه تکمیلی
         // ==========================================
         const PRESETS = [
             // ---------- ۳۰ کتابخانه اصلی ----------
             { name: 'Bootstrap 5 CSS', type: 'css', desc: 'Popular CSS framework', cdn: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' },
             { name: 'Animate.css', type: 'css', desc: 'Ready-made animations', cdn: 'https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css' },
-            { name: 'Tailwind CSS', type: 'css', desc: 'Utility-first', cdn: 'https://cdn.tailwindcss.com/3.4.16' },
+            { name: 'Tailwind CSS', type: 'js', desc: 'Utility-first (Play CDN script)', cdn: 'https://cdn.tailwindcss.com/3.4.16' },
             { name: 'Font Awesome 6', type: 'css', desc: 'Vector icons', cdn: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css' },
             { name: 'Normalize.css', type: 'css', desc: 'CSS reset', cdn: 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css' },
             { name: 'jQuery 3.7', type: 'js', desc: 'DOM library', cdn: 'https://code.jquery.com/jquery-3.7.1.min.js' },
@@ -153,6 +153,7 @@ button:hover {
         const tabButtons  = document.querySelectorAll('.tab');
         const dirtyBadge  = document.getElementById('dirtyBadge');
         const libsPanel   = document.getElementById('libsPanel');
+        const editors     = {};
 
         const STORAGE_KEY = 'html-editor-code-v2';
         const PROJECT_KEY = 'html-editor-project-v3';
@@ -364,7 +365,7 @@ button:hover {
             feNewForm.hidden = !feNewForm.hidden;
             if (!feNewForm.hidden) {
                 feNewName.value = '';
-                feNewType.value = activeTab === 'libs' ? 'html' : activeTab;
+                feNewType.value = LANGS.includes(activeTab) ? activeTab : 'html';
                 setTimeout(function() { feNewName.focus(); }, 30);
             }
         });
@@ -373,7 +374,7 @@ button:hover {
 
         feNewCreate.addEventListener('click', function() {
             const name = feNewName.value.trim() || ('untitled.' + feNewType.value);
-            const type = feNewType.value;
+            const type = LANGS.includes(feNewType.value) ? feNewType.value : 'html';
             const file = { id: makeId(), name: name, type: type, content: '' };
             project.files.push(file);
             saveProject();
@@ -468,7 +469,7 @@ button:hover {
             }
 
             if (wasActive) {
-                const currentLang = (activeTab === 'libs') ? file.type : activeTab;
+                const currentLang = LANGS.includes(activeTab) ? activeTab : file.type;
                 const next = getFileForLang(currentLang) || project.files[0];
                 if (next) {
                     project.activeFileId = next.id;
@@ -531,6 +532,8 @@ button:hover {
                 const f = getFileForLang(lang);
                 if (f) project.activeFileId = f.id;
                 renderFileExplorer();
+                // Matches are offsets into one editor; recompute them for the newly shown editor.
+                if (searchInput.value) scheduleSearch();
             } else {
                 searchMatches = []; searchIndex = -1;
                 renderSearchResults();
@@ -864,7 +867,7 @@ button:hover {
                                  .replace(/<\/style/gi, '<\\/style');
             const js   = jsFiles.map(function(f) { return '/* === ' + f.name + ' === */\n' + f.content; })
                                 .join('\n\n')
-                    ';<\/script>\n'
+                                .replace(/<\/script/gi, '<\\/script');
 
             const enabledLibs = libraries.filter(function(l) { return l.enabled; });
             const libCss = enabledLibs
@@ -1272,8 +1275,6 @@ button:hover {
                 }
                 if (lang === 'js') {
                     if (isInsideJsStringOrComment(before)) return null;
-                    const lineStart = before.lastIndexOf('\n') + 1;
-                    const lineBefore = before.substring(lineStart);
                     const member = before.match(/([a-zA-Z_$][\w$]*)\.([a-zA-Z_$][\w$]*)?$/);
                     if (member) {
                         const word = member[2] || '';
@@ -2152,6 +2153,7 @@ button:hover {
                 return;
             }
             const ed = editors[activeTab];
+            if (!ed) { showToast('Open an HTML, CSS or JS tab to clear a file', 'info'); return; }
             const f = getFileForLang(activeTab);
             ed.ta.value = '';
             if (f) f.content = '';
@@ -2168,8 +2170,7 @@ button:hover {
                 editors[lang].ta.value = '';
                 editors[lang].refresh();
             });
-            saveProject();
-            setDirty(true);
+            if (saveProject()) setDirty(false);
             updatePreviewNow();
             showToast('🧹 All files cleared', 'info');
         });

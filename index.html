@@ -26,14 +26,27 @@
                 <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
             </div>
 
-            <div class="search-bar">
-                <input type="text" class="search-input" id="searchInput"
-                       placeholder="🔍 Search code... (Ctrl+F)"
-                       dir="auto" spellcheck="false" autocomplete="off">
-                <span class="search-count zero" id="searchCount">0</span>
-                <button type="button" id="searchPrev" title="Previous result (Shift+Enter)">▲</button>
-                <button type="button" id="searchNext" title="Next result (Enter)">▼</button>
-                <button type="button" id="searchClear" title="Clear (Esc)">✕</button>
+            <div class="search-tools-row">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="searchInput"
+                           placeholder="🔍 Search code... (Ctrl+F)"
+                           dir="auto" spellcheck="false" autocomplete="off">
+                    <span class="search-count zero" id="searchCount">0</span>
+                    <button type="button" id="searchPrev" title="Previous result (Shift+Enter)">▲</button>
+                    <button type="button" id="searchNext" title="Next result (Enter)">▼</button>
+                    <button type="button" id="searchClear" title="Clear (Esc)">✕</button>
+                </div>
+                <div class="symbol-toolbar" id="symbolToolbar" role="toolbar" aria-label="Quick code symbols">
+                    <button type="button" data-prefix="<" data-suffix=">" data-label="Opening tag" title="Insert opening tag"> &lt; &gt; </button>
+                    <button type="button" data-prefix="</" data-suffix=">" data-label="Closing tag" title="Insert closing tag">&lt;/&gt;</button>
+                    <button type="button" data-prefix="&quot;" data-suffix="&quot;" data-label="Double quotes" title="Double quotes">&quot; &quot;</button>
+                    <button type="button" data-prefix="{" data-suffix="}" data-label="Braces" title="Curly braces">{ }</button>
+                    <button type="button" data-prefix="(" data-suffix=")" data-label="Parentheses" title="Parentheses">( )</button>
+                    <button type="button" data-prefix="[" data-suffix="]" data-label="Brackets" title="Square brackets">[ ]</button>
+                    <button type="button" data-prefix="&lt;!-- " data-suffix=" -->" data-label="HTML comment" title="HTML comment">&lt;!-- --&gt;</button>
+                    <button type="button" data-prefix="/* " data-suffix=" */" data-label="CSS/JS comment" title="CSS / JS block comment">/* */</button>
+                    <button type="button" data-prefix="// " data-suffix="" data-label="Line comment" title="JavaScript line comment">//</button>
+                </div>
             </div>
             <div class="search-results" id="searchResults" hidden></div>
 

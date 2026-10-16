@@ -1,4 +1,4 @@
-// Suggested entries: 589 (JavaScript words, members, and snippets)
+// Expanded JavaScript language and browser API suggestions; see extended lists below.
 (function () {
     'use strict';
     const jsWords = (
@@ -36,6 +36,79 @@
             {label:'addEventListener', insert:'addEventListener(\'click\', (event) => {\n    \n});', description:'Register an event listener', caret:19}
         ],
     };
-    Object.keys(jsMembers).forEach(function (key) { jsMembers[key] = jsMembers[key].split(/\s+/); });
-    window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, { jsWords, jsMembers, snippets: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).snippets || {}, { js: snippets.js }) });
+    const extendedJsWords = (
+        'globalThis AggregateError WeakRef FinalizationRegistry SuppressedError Iterator AsyncIterator Temporal Intl.Locale Intl.DateTimeFormat Intl.NumberFormat Intl.Collator Intl.PluralRules Intl.ListFormat Intl.RelativeTimeFormat Intl.Segmenter URLPattern structuredClone queueMicrotask reportError scheduler AbortSignal DOMParser XMLSerializer XPathEvaluator XPathResult TreeWalker NodeIterator NodeFilter MutationRecord ShadowRoot DocumentFragment DocumentType DocumentTimeline DOMTokenList NamedNodeMap HTMLCollection NodeList StaticRange Selection Range TreeWalker MutationObserver ResizeObserver IntersectionObserver PerformanceObserver PerformanceEntry PerformanceResourceTiming PerformanceNavigationTiming PerformancePaintTiming PerformanceMark PerformanceMeasure CSS CSSStyleSheet CSSRule CSSStyleDeclaration CSSStyleValue CSSUnitValue CSSKeywordValue CustomElementRegistry HTMLElement Element Node Attr Text Comment CharacterData DocumentFragment NodeList StaticRange HTMLAnchorElement HTMLButtonElement HTMLCanvasElement HTMLFormElement HTMLInputElement HTMLImageElement HTMLLinkElement HTMLScriptElement HTMLSelectElement HTMLTextAreaElement HTMLTemplateElement HTMLSlotElement HTMLDialogElement HTMLDetailsElement HTMLMediaElement HTMLVideoElement HTMLAudioElement DOMRect DOMRectReadOnly DOMPoint DOMMatrix DOMMatrixReadOnly DOMQuad DOMException Event EventTarget CustomEvent MessageEvent KeyboardEvent MouseEvent PointerEvent TouchEvent FocusEvent InputEvent SubmitEvent ErrorEvent ProgressEvent StorageEvent HashChangeEvent PopStateEvent PromiseRejectionEvent BeforeUnloadEvent AnimationEvent TransitionEvent WheelEvent ClipboardEvent DragEvent CompositionEvent FormDataEvent URLSearchParams TextEncoder TextDecoder TextEncoderStream TextDecoderStream CompressionStream DecompressionStream ReadableStream ReadableStreamDefaultReader ReadableStreamBYOBReader ReadableStreamDefaultController WritableStream WritableStreamDefaultWriter WritableStreamDefaultController TransformStream ByteLengthQueuingStrategy CountQueuingStrategy Blob File FileList FileReader FileReaderSync FileSystemHandle FileSystemFileHandle FileSystemDirectoryHandle FileSystemWritableFileStream FileSystemObserver Storage StorageManager StorageEvent BroadcastChannel MessageChannel MessagePort Worker SharedWorker ServiceWorker ServiceWorkerContainer ServiceWorkerRegistration Cache CacheStorage caches indexedDB IDBFactory IDBDatabase IDBObjectStore IDBIndex IDBKeyRange IDBCursor IDBRequest IDBOpenDBRequest IDBTransaction IDBVersionChangeEvent WebSocket WebTransport XMLHttpRequest XMLHttpRequestUpload Request Response Headers navigator credentials mediaDevices permissions serviceWorker locks userAgentData sendBeacon Notification PushManager PushSubscription PaymentRequest Bluetooth NFC Serial USB HID Gamepad Audio AudioContext OfflineAudioContext AudioNode AudioParam AnalyserNode BiquadFilterNode OscillatorNode GainNode MediaStream MediaStreamTrack MediaRecorder MediaDevices RTCPeerConnection RTCDataChannel RTCSessionDescription RTCIceCandidate WebRTC WebAssembly WebGLRenderingContext WebGL2RenderingContext CanvasRenderingContext2D OffscreenCanvas Path2D Image ImageData ImageBitmap ImageBitmapRenderingContext createImageBitmap requestIdleCallback cancelIdleCallback requestAnimationFrame cancelAnimationFrame IntersectionObserver MutationObserver ResizeObserver getComputedStyle matchMedia scrollTo scrollBy scrollIntoView requestSubmit reportValidity checkValidity setCustomValidity showModal close showPopover hidePopover togglePopover startViewTransition VisualViewport screen orientation devicePixelRatio isSecureContext crossOriginIsolated trustedTypes performance crypto subtle randomUUID getRandomValues digest encrypt decrypt sign verify deriveBits deriveKey generateKey importKey exportKey wrapKey unwrapKey encode decode'
+    ).split(/\s+/);
+    jsWords.push(...extendedJsWords);
+    jsWords.splice(0, jsWords.length, ...Array.from(new Set(jsWords)));
+
+    const extendedJsMembers = {
+        document: 'adoptNode createRange createTreeWalker createNodeIterator createEvent exitFullscreen exitPictureInPicture fullscreenElement pictureInPictureElement scrollingElement getSelection hasFocus createExpression createNSResolver getAnimations startViewTransition',
+        window: 'globalThis self frames parent top opener origin isSecureContext crossOriginIsolated visualViewport devicePixelRatio crypto indexedDB caches trustedTypes scheduler requestIdleCallback cancelIdleCallback getComputedStyle scrollTo scrollBy open print stop reportError',
+        navigator: 'clipboard credentials geolocation hardwareConcurrency language languages locks maxTouchPoints mediaCapabilities mediaDevices permissions platform plugins presentation serviceWorker storage userAgent userAgentData onLine vibrate wakeLock',
+        location: 'assign reload replace toString ancestorOrigins hash host hostname href origin pathname port protocol search',
+        history: 'back forward go pushState replaceState length scrollRestoration state',
+        Element: 'animate append attachShadow before after closest computedStyleMap getAttributeNames getBoundingClientRect getClientRects getHTML hasPointerCapture insertAdjacentElement insertAdjacentHTML insertAdjacentText matches prepend querySelector querySelectorAll releasePointerCapture remove removeAttribute requestFullscreen replaceChildren replaceWith scroll scrollIntoView setAttribute setHTML toggleAttribute',
+        HTMLElement: 'accessKey attachInternals blur click contentEditable dataset dir draggable focus hidden inert innerText inputMode lang offsetHeight offsetLeft offsetParent offsetTop offsetWidth outerText popover spellcheck title translate',
+        Node: 'appendChild baseURI childNodes cloneNode compareDocumentPosition contains getRootNode hasChildNodes insertBefore isConnected isEqualNode isSameNode normalize parentElement parentNode removeChild replaceChild textContent',
+        Event: 'AT_TARGET BUBBLING_PHASE CAPTURING_PHASE NONE bubbles cancelable composed currentTarget defaultPrevented eventPhase isTrusted preventDefault stopImmediatePropagation stopPropagation target timeStamp type',
+        event: 'altKey button buttons clientX clientY composedPath ctrlKey currentTarget data defaultPrevented detail key keyCode metaKey offsetX offsetY pointerId pointerType shiftKey target timeStamp type',
+        Request: 'cache credentials destination headers integrity keepalive method mode redirect referrer referrerPolicy signal url clone arrayBuffer blob formData json text',
+        Response: 'error json redirect headers ok redirected status statusText type url clone arrayBuffer blob formData text',
+        Headers: 'append delete entries forEach get has keys set values',
+        URL: 'canParse createObjectURL parse revokeObjectURL toJSON',
+        URLSearchParams: 'append delete entries forEach get getAll has keys set sort toString values',
+        Promise: 'all allSettled any race reject resolve try with then catch finally',
+        Array: 'at concat copyWithin entries every fill filter find findIndex findLast findLastIndex flat flatMap forEach from fromAsync includes indexOf join keys lastIndexOf map of pop push reduce reduceRight reverse shift slice some sort splice toLocaleString toReversed toSorted toSpliced unshift values with',
+        Object: 'assign create defineProperties defineProperty entries freeze fromEntries getOwnPropertyDescriptor getOwnPropertyDescriptors getOwnPropertyNames getOwnPropertySymbols getPrototypeOf groupBy hasOwn is isExtensible isFrozen isSealed keys preventExtensions seal setPrototypeOf toString values',
+        String: 'at charAt charCodeAt codePointAt concat endsWith includes indexOf italics lastIndexOf localeCompare match matchAll normalize padEnd padStart repeat replace replaceAll search slice small split startsWith strike sub substr substring sup toLocaleLowerCase toLocaleUpperCase toLowerCase toString toUpperCase trim trimEnd trimStart valueOf',
+        Map: 'clear delete entries forEach get has keys set size values',
+        Set: 'add clear delete difference entries forEach has intersection isDisjointFrom isSubsetOf isSupersetOf keys size symmetricDifference union values',
+        RegExp: 'dotAll exec flags global hasIndices ignoreCase lastIndex multiline source sticky test unicode unicodeSets',
+        Date: 'getDate getDay getFullYear getHours getMilliseconds getMinutes getMonth getSeconds getTime getTimezoneOffset getUTCDate getUTCDay getUTCFullYear getUTCHours getUTCMilliseconds getUTCMinutes getUTCMonth getUTCSeconds now parse setDate setFullYear setHours setMilliseconds setMinutes setMonth setSeconds setTime toDateString toISOString toJSON toLocaleDateString toLocaleString toLocaleTimeString toString toTimeString toUTCString UTC valueOf',
+        Math: 'abs acos acosh asin asinh atan atan2 atanh cbrt ceil clz32 cos cosh exp expm1 floor fround hypot imul log log10 log1p log2 max min pow random round sign sin sinh sqrt tan tanh trunc',
+        JSON: 'isRaw parse raw stringify',
+        Intl: 'Collator DateTimeFormat DisplayNames DurationFormat ListFormat Locale NumberFormat PluralRules RelativeTimeFormat Segmenter',
+        performance: 'clearMarks clearMeasures clearResourceTimings getEntries getEntriesByName getEntriesByType mark measure now setResourceTimingBufferSize timeOrigin toJSON',
+        crypto: 'getRandomValues randomUUID subtle',
+        SubtleCrypto: 'decrypt deriveBits deriveKey digest encrypt exportKey generateKey importKey sign unwrapKey verify wrapKey',
+        Storage: 'clear getItem key length removeItem setItem',
+        IDBDatabase: 'close createObjectStore deleteObjectStore name objectStoreNames transaction version',
+        IDBObjectStore: 'add autoIncrement clear count createIndex delete deleteIndex get getAll getAllKeys getKey index keyPath name openCursor openKeyCursor put',
+        ReadableStream: 'cancel getReader locked pipeThrough pipeTo tee values',
+        WritableStream: 'abort close getWriter locked',
+        AbortSignal: 'abort any timeout aborted reason throwIfAborted'
+    };
+    Object.keys(extendedJsMembers).forEach(function (key) {
+        const current = jsMembers[key] || '';
+        jsMembers[key] = Array.from(new Set((current + ' ' + extendedJsMembers[key]).trim().split(/\s+/))).join(' ');
+    });
+
+    const extraJsSnippets = [
+        { label: 'fetch-json', insert: 'fetch(url)\n    .then((response) => {\n        if (!response.ok) throw new Error("HTTP error");\n        return response.json();\n    })\n    .then((data) => {\n        console.log(data);\n    })\n    .catch((error) => {\n        console.error(error);\n    });', description: 'Fetch JSON with response and error checks', caret: 6 },
+        { label: 'async-function', insert: 'async function name() {\n    try {\n        const response = await fetch(url);\n        if (!response.ok) throw new Error("HTTP error");\n        return await response.json();\n    } catch (error) {\n        console.error(error);\n        throw error;\n    }\n}', description: 'Async function with error handling', caret: 15 },
+        { label: 'dom-ready', insert: 'document.addEventListener(\'DOMContentLoaded\', () => {\n    \n});', description: 'Run after HTML parsing', caret: 54 },
+        { label: 'query-all', insert: 'document.querySelectorAll(\'.item\').forEach((element) => {\n    \n});', description: 'Loop over matching elements', caret: 48 },
+        { label: 'toggle-class', insert: 'element.classList.toggle(\'active\');', description: 'Toggle a CSS class', caret: 26 },
+        { label: 'form-submit', insert: 'form.addEventListener(\'submit\', (event) => {\n    event.preventDefault();\n    \n});', description: 'Handle form submission', caret: 57 },
+        { label: 'local-storage', insert: 'localStorage.setItem(\'key\', JSON.stringify(value));', description: 'Store JSON in local storage', caret: 28 },
+        { label: 'try-catch', insert: 'try {\n    \n} catch (error) {\n    console.error(error);\n}', description: 'Handle a synchronous error', caret: 8 },
+        { label: 'promise', insert: 'Promise.resolve(value)\n    .then((result) => {\n        \n    })\n    .catch((error) => {\n        console.error(error);\n    });', description: 'Promise chain with error handling', caret: 51 },
+        { label: 'debounce', insert: 'let timer;\nfunction debounce(callback, delay = 250) {\n    clearTimeout(timer);\n    timer = setTimeout(callback, delay);\n}', description: 'Small debounce pattern', caret: 55 },
+        { label: 'event-delegation', insert: 'container.addEventListener(\'click\', (event) => {\n    const target = event.target.closest(\'[data-action]\');\n    if (!target) return;\n    \n});', description: 'Event delegation pattern', caret: 130 },
+        { label: 'intersection-observer', insert: 'const observer = new IntersectionObserver((entries) => {\n    entries.forEach((entry) => {\n        if (entry.isIntersecting) {\n            \n        }\n    });\n});', description: 'Observe an element entering the viewport', caret: 113 },
+        { label: 'module-import', insert: 'import { name } from \'./module.js\';', description: 'ES module named import', caret: 9 },
+        { label: 'class', insert: 'class Name {\n    constructor(options = {}) {\n        this.options = options;\n    }\n}', description: 'ES class with constructor', caret: 6 }
+    ];
+    snippets.js.push(...extraJsSnippets);
+
+    Object.keys(jsMembers).forEach(function (key) {
+        const value = Array.isArray(jsMembers[key]) ? jsMembers[key].join(' ') : jsMembers[key];
+        jsMembers[key] = Array.from(new Set(String(value).split(/\s+/).filter(Boolean)));
+    });
+    window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
+        jsWords,
+        jsMembers,
+        snippets: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).snippets || {}, { js: snippets.js })
+    });
 })();

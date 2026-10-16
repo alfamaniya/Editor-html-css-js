@@ -439,12 +439,14 @@ button:hover {
             if (error) { showToast('❌ ' + error, 'error'); feNewName.focus(); return; }
             const file = { id: makeId(), name: name, type: type, content: '' };
             project.files.push(file);
-            saveProject();
             renderFileExplorer();
             feNewForm.hidden = true;
-            openFile(file.id);
+            const saved = openFile(file.id);
             if (window.matchMedia('(max-width: 760px)').matches) setFileExplorerCollapsed(true);
-            showToast('✅ File “' + name + '” created', 'success');
+            showToast(
+                saved ? '✅ File “' + name + '” created' : '⚠ File created in this session, but could not be saved.',
+                saved ? 'success' : 'error'
+            );
         });
 
         feNewName.addEventListener('keydown', function(e) {
@@ -515,10 +517,14 @@ button:hover {
                 const error = fileNameError(newName, file.type, file.id);
                 if (error) { showToast('❌ ' + error, 'error'); renderFileExplorer(); return; }
                 file.name = newName;
-                saveProject();
+                const saved = saveProject();
                 renderFileExplorer();
                 const warning = fileNameWarning(newName, file.type);
-                showToast(warning ? '⚠ ' + warning : '✅ File renamed to “' + newName + '”', warning ? 'info' : 'success');
+                if (!saved) {
+                    showToast('⚠ Rename is only in this session; browser storage could not save it.', 'error');
+                } else {
+                    showToast(warning ? '⚠ ' + warning : '✅ File renamed to “' + newName + '”', warning ? 'info' : 'success');
+                }
             }
             function cancel() {
                 if (committed) return;
@@ -580,12 +586,15 @@ button:hover {
                 }
             }
 
-            saveProject();
+            const saved = saveProject();
             renderFileExplorer();
             updatePreviewNow();
-            showToast('🗑 “' + file.name + '” deleted', 'info', 'Undo', function() {
-                restoreDeletedFile(undoInfo);
-            });
+            showToast(
+                saved ? '🗑 “' + file.name + '” deleted' : '⚠ File deleted in this session, but could not be saved.',
+                saved ? 'info' : 'error',
+                'Undo',
+                function() { restoreDeletedFile(undoInfo); }
+            );
         }
 
         function restoreDeletedFile(info) {
@@ -613,10 +622,10 @@ button:hover {
                 activateTab(file.type);
             }
 
-            saveProject();
+            const saved = saveProject();
             renderFileExplorer();
             updatePreviewNow();
-            showToast('↩ File restored', 'success');
+            showToast(saved ? '↩ File restored' : '⚠ File restored in this session, but could not be saved.', saved ? 'success' : 'error');
         }
 
         // ==========================================
@@ -636,8 +645,9 @@ button:hover {
             }
 
             activateTab(file.type);
-            saveProject();
+            const saved = saveProject();
             updatePreviewNow();
+            return saved;
         }
 
         function activateTab(lang) {
@@ -2478,9 +2488,10 @@ button:hover {
                 editors[lang].ta.value = '';
                 editors[lang].refresh();
             });
-            if (saveProject()) setDirty(false);
+            const saved = saveProject();
+            if (saved) setDirty(false);
             updatePreviewNow();
-            showToast('🧹 All files cleared', 'info');
+            showToast(saved ? '🧹 All files cleared' : '⚠ Files cleared in this session, but could not be saved.', saved ? 'info' : 'error');
         });
 
         document.getElementById('btnFontInc').addEventListener('click', function() {

@@ -1533,7 +1533,26 @@ button:hover {
                 if (lang === 'css') {
                     const clean = maskCssComments(before);
                     const depth = (clean.match(/\{/g) || []).length - (clean.match(/\}/g) || []).length;
-                    if (depth <= 0) return null;
+                    if (depth <= 0) {
+                        const selectorLineStart = Math.max(clean.lastIndexOf('\n'), clean.lastIndexOf('{'), clean.lastIndexOf('}')) + 1;
+                        const selectorLine = clean.slice(selectorLineStart);
+
+                        const atRule = selectorLine.match(/^\s*(@[\w-]*)$/);
+                        if (atRule) {
+                            return { word: atRule[1], from: pos - atRule[1].length, to: pos, kind: 'cssAtRule' };
+                        }
+
+                        const pseudoElement = selectorLine.match(/::([\w-]*)$/);
+                        if (pseudoElement) {
+                            return { word: pseudoElement[1], from: pos - pseudoElement[1].length, to: pos, kind: 'cssPseudoElement' };
+                        }
+
+                        const pseudoClass = selectorLine.match(/:([\w-]*)$/);
+                        if (pseudoClass && selectorLine.charAt(pseudoClass.index - 1) !== ':') {
+                            return { word: pseudoClass[1], from: pos - pseudoClass[1].length, to: pos, kind: 'cssPseudoClass' };
+                        }
+                        return null;
+                    }
                     const lineStart = Math.max(clean.lastIndexOf('{'), clean.lastIndexOf(';'), clean.lastIndexOf('}')) + 1;
                     const line = clean.slice(lineStart);
                     const declaration = line.match(/^\s*([a-zA-Z-][\w-]*)\s*:\s*([^;]*)$/);
@@ -1562,6 +1581,37 @@ button:hover {
                 return null;
             }
 
+            // Resolve a contextual continuation at the caret. Rules are curated in
+            // next-word-suggestions.js and only run outside strings and comments.
+            function getNextWordContext(ta, lang) {
+                if (!ta || ta.selectionStart !== ta.selectionEnd) return null;
+                const pos = ta.selectionStart;
+                let before = ta.value.slice(0, pos);
+
+                if (lang === 'js' && isInsideJsStringOrComment(before)) return null;
+                if (lang === 'css') {
+                    before = maskCssComments(before);
+                    if (isInsideCssString(before)) return null;
+                }
+                if (lang === 'html' && findOpenHtmlTagStart(before) < 0) return null;
+
+                const data = getIntelliSenseData();
+                const rules = data.nextWordRules && data.nextWordRules[lang];
+                if (!Array.isArray(rules)) return null;
+
+                for (let i = 0; i < rules.length; i++) {
+                    const rule = rules[i];
+                    const match = rule.pattern && rule.pattern.exec(before);
+                    if (!match) continue;
+                    const items = Array.isArray(rule.items)
+                        ? rule.items
+                        : (typeof rule.create === 'function' ? rule.create(match, before) : []);
+                    if (!Array.isArray(items) || !items.length) continue;
+                    return { kind: 'nextWord', word: '', from: pos, to: pos, lang: lang, items: items };
+                }
+                return null;
+            }
+
             function asItem(item) {
                 return typeof item === 'string' ? { label: item, insert: item, description: '' } : item;
             }
@@ -1584,6 +1634,10 @@ button:hover {
 
             function completionList(ctx) {
                 const data = getIntelliSenseData();
+                if (ctx.kind === 'nextWord') return filterList(ctx.items || [], '');
+                if (ctx.kind === 'cssAtRule') return filterList(data.cssAtRules || [], ctx.word);
+                if (ctx.kind === 'cssPseudoClass') return filterList(data.cssPseudoClasses || [], ctx.word);
+                if (ctx.kind === 'cssPseudoElement') return filterList(data.cssPseudoElements || [], ctx.word);
                 if (ctx.kind === 'htmlTag') {
                     return filterList(data.htmlTags || HTML_TAGS, ctx.word);
                 }
@@ -1602,7 +1656,8 @@ button:hover {
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];
                     const common = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'transparent', 'currentColor'];
-                    return filterList(values.concat(common), ctx.word);
+                    const functions = data.cssFunctions || [];
+                    return filterList(values.concat(common, functions), ctx.word);
                 }
                 if (ctx.kind === 'jsMember') {
                     const members = (data.jsMembers || {})[ctx.root] || [];
@@ -1684,6 +1739,18 @@ button:hover {
                     const caret = from + item.caret;
                     ta.setSelectionRange(caret, caret);
                 }
+                const acceptedLang = LANGS.find(function(lang) {
+                    return editors[lang] && editors[lang].ta === ta;
+                });
+                if (acceptedLang) {
+                    setTimeout(function() {
+                        if (document.activeElement !== ta) return;
+                        const nextCtx = getNextWordContext(ta, acceptedLang);
+                        if (!nextCtx) return;
+                        const nextItems = completionList(nextCtx);
+                        if (nextItems.length) show(nextItems, ta, nextCtx.from, nextCtx.to);
+                    }, 0);
+                }
                 setTimeout(function() { justAccepted = false; }, 80);
             }
             function onInput(ta, lang, e) {
@@ -1691,8 +1758,8 @@ button:hover {
                 // Re-evaluate after typing, deletion, paste, and other edits; mobile
                 // keyboards do not always report inputType as "insertText".
                 if (!e || e.isComposing) { hide(); return; }
-                const ctx = getWordAndContext(ta, lang);
-                if (!ctx || (ctx.word.length < 1 && !['htmlAttr', 'cssValue', 'jsMember'].includes(ctx.kind))) { hide(); return; }
+                const ctx = getWordAndContext(ta, lang) || getNextWordContext(ta, lang);
+                if (!ctx || (ctx.kind !== 'nextWord' && ctx.word.length < 1 && !['htmlAttr', 'cssValue', 'jsMember'].includes(ctx.kind))) { hide(); return; }
 
                 const items = completionList(ctx);
                 if (!items.length) { hide(); return; }

@@ -61,12 +61,12 @@
 
     const nextWordRules = {
         html: [
-            // When an HTML tag completion is accepted, suggest attributes or a paired element.
-            { pattern: /<([a-z][\w:-]*)$/i, create: htmlTagContinuation },
             { pattern: /<html\s*$/i, items: [
-                { label: ' lang="en"', insert: ' lang="en"', description: 'Set the document language', caret: 8 },
-                { label: ' lang="fa" dir="rtl"', insert: ' lang="fa" dir="rtl"', description: 'Set Persian language and direction', caret: 8 }
-            ]}
+                { label: ' lang="en"', insert: ' lang="en"', description: 'Set the document language', caret: 7 },
+                { label: ' lang="fa" dir="rtl"', insert: ' lang="fa" dir="rtl"', description: 'Set Persian language and direction', caret: 7 }
+            ]},
+            // When another HTML tag completion is accepted, suggest attributes or a paired element.
+            { pattern: /<([a-z][\w:-]*)$/i, create: htmlTagContinuation }
         ],
 
         css: [
@@ -163,7 +163,7 @@
                     { label: '{}', insert: '{}', description: 'Initialize an object' },
                     { label: 'false', insert: 'false', description: 'Initialize a boolean' },
                     { label: '0', insert: '0', description: 'Initialize a number' },
-                    { label: 'document.querySelector()', insert: 'document.querySelector(\'\')', description: 'Initialize from a selected DOM element', caret: 25 },
+                    { label: 'document.querySelector()', insert: 'document.querySelector(\'\')', description: 'Initialize from a selected DOM element', caret: 24 },
                     { label: 'new Map()', insert: 'new Map()', description: 'Initialize a map' },
                     { label: 'new Set()', insert: 'new Set()', description: 'Initialize a set' },
                     { label: 'async () => { … }', insert: 'async () => {\n    \n}', description: 'Initialize with an async arrow function', caret: 15 }
@@ -205,7 +205,7 @@
                 items: [
                     { label: '.querySelector(\'\')', insert: '.querySelector(\'\')', description: 'Select the first matching element', caret: 16 },
                     { label: '.getElementById(\'id\')', insert: '.getElementById(\'id\')', description: 'Select by element ID', caret: 17 },
-                    { label: '.createElement(\'div\')', insert: '.createElement(\'div\')', description: 'Create an HTML element', caret: 15 },
+                    { label: '.createElement(\'div\')', insert: '.createElement(\'div\')', description: 'Create an HTML element', caret: 16 },
                     { label: '.querySelectorAll(\'\')', insert: '.querySelectorAll(\'\')', description: 'Select all matching elements', caret: 19 }
                 ]
             },

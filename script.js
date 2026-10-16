@@ -167,6 +167,8 @@ button:hover {
         let dirtyResetTimer = null;
         let project = null;
         let libraries = [];
+        let libraryDownloadController = null;
+        let libraryDownloadRequest = 0;
         let activeTab = 'html';
         let dirty = false;
 
@@ -471,7 +473,7 @@ button:hover {
         });
         feList.addEventListener('keydown', function(e) {
             const item = e.target.closest('.fe-item');
-            if (!item || e.target.matches('input.fe-rename-input') || e.target.closest('[data-action="delete"]')) return;
+            if (!item || e.target.matches('input.fe-rename-input') || e.target.closest('[data-action="delete"], [data-action="rename"]')) return;
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFile(item.dataset.id); }
             else if (e.key === 'F2') { e.preventDefault(); startRename(item, item.dataset.id); }
         });
@@ -685,13 +687,9 @@ button:hover {
         function loadLibraries() {
             try {
                 const raw = storageGet(LIBS_KEY);
-                // A standalone HTML export cannot inherit the source site's localStorage.
-                // Fall back to the library metadata embedded by buildDocument(true).
-                const embedded = Array.isArray(window.__EDITOR_EMBEDDED_LIBRARIES__)
-                    ? window.__EDITOR_EMBEDDED_LIBRARIES__ : [];
-                if (!raw) return embedded;
+                if (!raw) return [];
                 const arr = JSON.parse(raw);
-                if (!Array.isArray(arr)) return embedded;
+                if (!Array.isArray(arr)) return [];
 
                 const seenIds = new Set();
                 return arr.filter(function(lib) {
@@ -801,29 +799,41 @@ button:hover {
             const typeIn = document.getElementById('libType');
             const codeIn = document.getElementById('libCode');
 
+            // A newer choice cancels the previous request so its response cannot
+            // overwrite the library currently selected by the user.
+            if (libraryDownloadController) libraryDownloadController.abort();
+            const requestId = ++libraryDownloadRequest;
+            const ctrl = new AbortController();
+            libraryDownloadController = ctrl;
+
             nameIn.value = preset.name;
             typeIn.value = preset.type;
             codeIn.value = '';
             codeIn.placeholder = 'Downloading from CDN...';
             showToast('⏳ Attempting to download ' + preset.name + ' from CDN...', 'info');
 
+            const timeoutId = setTimeout(function() { ctrl.abort(); }, 8000);
             try {
-                const ctrl = new AbortController();
-                const timeoutId = setTimeout(function() { ctrl.abort(); }, 8000);
                 const res = await fetch(preset.cdn, { signal: ctrl.signal });
-                clearTimeout(timeoutId);
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const code = await res.text();
+                if (requestId !== libraryDownloadRequest) return;
                 if (code && code.length > 10) {
                     codeIn.value = code;
                     codeIn.placeholder = '';
                     showToast('✅ Code downloaded (' + Math.round(code.length / 1024) + ' KB)', 'success');
-                } else { throw new Error('Empty response'); }
+                } else {
+                    throw new Error('Empty response');
+                }
             } catch (err) {
+                if (requestId !== libraryDownloadRequest) return;
                 codeIn.placeholder = '⚠ Automatic download failed. Paste the code manually.';
                 showToast('⚠ Offline or CDN unavailable', 'error');
+            } finally {
+                clearTimeout(timeoutId);
+                if (libraryDownloadController === ctrl) libraryDownloadController = null;
             }
-            codeIn.focus();
+            if (requestId === libraryDownloadRequest) codeIn.focus();
         });
 
         function addLibrary() {
@@ -1006,41 +1016,39 @@ button:hover {
             return template.innerHTML;
         }
 
+        // Keep user-controlled file and library names inside generated comments.
+        function safeCommentLabel(value) {
+            return String(value == null ? '' : value)
+                .replace(/\*\//g, '* /')
+                .replace(/[\r\n\u2028\u2029]+/g, ' ')
+                .trim();
+        }
+
         // ==========================================
         //  Build document
         // ==========================================
-        function buildDocument(forExport) {
+        function buildDocument(forExport, externalAssetBaseName) {
             const htmlFiles = project.files.filter(function(f) { return f.type === 'html'; });
             const cssFiles  = project.files.filter(function(f) { return f.type === 'css'; });
             const jsFiles   = project.files.filter(function(f) { return f.type === 'js'; });
 
             const html = stripBundledAssetReferences(htmlFiles.map(function(f) { return f.content; }).join('\n'), cssFiles, jsFiles);
-            const css  = cssFiles.map(function(f) { return '/* === ' + f.name + ' === */\n' + f.content; })
+            const css  = cssFiles.map(function(f) { return '/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content; })
                                  .join('\n\n')
                                  .replace(/<\/style/gi, '<\\/style');
-            const js   = jsFiles.map(function(f) { return '/* === ' + f.name + ' === */\n' + f.content; })
+            const js   = jsFiles.map(function(f) { return '/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content; })
                                 .join('\n\n')
                                 .replace(/<\/script/gi, '<\\/script');
 
             const enabledLibs = libraries.filter(function(l) { return l.enabled; });
             const libCss = enabledLibs
                 .filter(function(l) { return l.type === 'css'; })
-                .map(function(l) { return '/* === ' + l.name + ' === */\n' + l.code.replace(/<\/style/gi, '<\\/style'); })
+                .map(function(l) { return '/* === ' + safeCommentLabel(l.name) + ' === */\n' + l.code.replace(/<\/style/gi, '<\\/style'); })
                 .join('\n\n');
             const libJs = enabledLibs
                 .filter(function(l) { return l.type === 'js'; })
-                .map(function(l) { return '/* === ' + l.name + ' === */\n' + l.code.replace(/<\/script/gi, '<\\/script'); })
+                .map(function(l) { return '/* === ' + safeCommentLabel(l.name) + ' === */\n' + l.code.replace(/<\/script/gi, '<\\/script'); })
                 .join('\n\n');
-
-            // Carry the library list (including enabled/disabled state) into a standalone
-            // editor HTML export. Browser localStorage is not transferred with a download.
-            const embeddedLibraries = forExport
-                ? '<script>window.__EDITOR_EMBEDDED_LIBRARIES__=' +
-                    JSON.stringify(libraries.map(function(lib) {
-                        return { id: lib.id, name: lib.name, type: lib.type, code: lib.code, enabled: !!lib.enabled };
-                    })).replace(/</g, '\\u003c') +
-                    ';</script>\n'
-                : '';
 
             const errorHook = forExport ? '' : [
                 '<script>',
@@ -1057,12 +1065,15 @@ button:hover {
                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
                 '<title>' + safeTitle + '</title>\n' +
                 stripBundledAssetReferences(project.headExtras || '', cssFiles, jsFiles) + '\n' +
-                embeddedLibraries +
                 errorHook + '\n' +
-                '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n' +
+                (externalAssetBaseName
+                    ? '<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">\n'
+                    : '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n') +
                 '</head>\n<body>\n' + html + '\n' +
-                (libJs ? '<script>\n' + libJs + '\n<\/script>\n' : '') +
-                '<script>\n' + js + '\n<\/script>\n' +
+                (externalAssetBaseName
+                    ? '<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>\n'
+                    : (libJs ? '<script>\n' + libJs + '\n<\/script>\n' : '') +
+                      '<script>\n' + js + '\n<\/script>\n') +
                 '</body>\n</html>';
         }
 
@@ -1549,7 +1560,7 @@ button:hover {
                 if (ctx.kind === 'htmlAttr') {
                     const attrs = (data.htmlAttributes || []).concat((data.htmlAttrsByTag || {})[ctx.tag] || []);
                     return filterList(Array.from(new Set(attrs)).map(function (name) {
-                        const hasValue = /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|lang|dir|for|target|rel|method|action|width|height|colspan|rowspan|scope|accept|autocomplete|pattern|inputmode|aria-[\\w-]+|data-[\\w-]+)$/.test(name);
+                        const hasValue = /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|lang|dir|for|target|rel|method|action|width|height|colspan|rowspan|scope|accept|autocomplete|pattern|inputmode|aria-[\w-]+|data-[\w-]+)$/.test(name);
                         return { label: name, insert: hasValue ? name + '=""' : name,
                             caret: hasValue ? name.length + 2 : null };
                     }), ctx.word);
@@ -2261,7 +2272,7 @@ button:hover {
             lines.push('');
             enabledLibs.forEach(function(lib, i) {
                 lines.push('/* ====================================================');
-                lines.push('   [' + (i + 1) + '] ' + lib.name + '  (' + lib.type.toUpperCase() + ')');
+                lines.push('   [' + (i + 1) + '] ' + safeCommentLabel(lib.name) + '  (' + lib.type.toUpperCase() + ')');
                 lines.push('   ==================================================== */');
                 lines.push(lib.code);
                 lines.push('');
@@ -2271,17 +2282,17 @@ button:hover {
         function buildAllCssCombined() {
             const parts = [];
             libraries.filter(function(l) { return l.enabled && l.type === 'css'; })
-                .forEach(function(l) { parts.push('/* === ' + l.name + ' (lib) === */\n' + l.code); });
+                .forEach(function(l) { parts.push('/* === ' + safeCommentLabel(l.name) + ' (lib) === */\n' + l.code); });
             project.files.filter(function(f) { return f.type === 'css'; })
-                .forEach(function(f) { parts.push('/* === ' + f.name + ' === */\n' + f.content); });
+                .forEach(function(f) { parts.push('/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content); });
             return parts.join('\n\n');
         }
         function buildAllJsCombined() {
             const parts = [];
             libraries.filter(function(l) { return l.enabled && l.type === 'js'; })
-                .forEach(function(l) { parts.push('/* === ' + l.name + ' (lib) === */\n' + l.code); });
+                .forEach(function(l) { parts.push('/* === ' + safeCommentLabel(l.name) + ' (lib) === */\n' + l.code); });
             project.files.filter(function(f) { return f.type === 'js'; })
-                .forEach(function(f) { parts.push('/* === ' + f.name + ' === */\n' + f.content); });
+                .forEach(function(f) { parts.push('/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content); });
             return parts.join('\n\n');
         }
         function downloadSingle(name) {
@@ -2292,7 +2303,7 @@ button:hover {
         function downloadBundle(name) {
             const safe = sanitizeFilename(name);
             const files = [
-                { content: buildDocument(true),   filename: safe + '.html',     mime: 'text/html;charset=utf-8' },
+                { content: buildDocument(true, safe), filename: safe + '.html',     mime: 'text/html;charset=utf-8' },
                 { content: buildAllCssCombined(), filename: safe + '.css',      mime: 'text/css;charset=utf-8' },
                 { content: buildAllJsCombined(),  filename: safe + '.js',       mime: 'text/javascript;charset=utf-8' },
                 { content: buildLibsTextFile(),   filename: safe + '.libs.txt', mime: 'text/plain;charset=utf-8' }
@@ -2417,8 +2428,9 @@ button:hover {
 
         document.getElementById('btnReset').addEventListener('click', function() {
             if (confirm('All files will be restored to their defaults. Are you sure?')) {
-                project = createDefaultProject();
-                saveProject();
+                clearTimeout(autoSaveTimer);
+                clearTimeout(dirtyResetTimer);
+                const resetSaved = (project = createDefaultProject(), saveProject());
                 LANGS.forEach(function(lang) {
                     const f = getFileForLang(lang);
                     if (f) {
@@ -2432,8 +2444,8 @@ button:hover {
                     if (f) project.activeFileId = f.id;
                 }
                 updatePreviewNow();
-                setDirty(false);
-                showToast('🔁 Reset complete', 'info');
+                setDirty(!resetSaved);
+                showToast(resetSaved ? '🔁 Reset complete' : '⚠ Reset is active only in this session; download a backup.', resetSaved ? 'info' : 'error');
             }
         });
 

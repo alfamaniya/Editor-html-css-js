@@ -50,6 +50,77 @@
     // Current global attributes cross-checked against MDN's HTML reference.
     const modernGlobalAttributes = 'accesskey anchor autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover slot spellcheck style tabindex title translate'.split(/\s+/);
     htmlAttributes.splice(0, htmlAttributes.length, ...Array.from(new Set(htmlAttributes.concat(modernGlobalAttributes))).filter(function (attr) { return !/^(align|bgcolor|cellpadding|cellspacing|frame|rules|summary)$/.test(attr); }));
-    Object.keys(htmlAttrsByTag).forEach(function (tag) { htmlAttrsByTag[tag] = Array.from(new Set(htmlAttrsByTag[tag].split(/\s+/).filter(function (attr) { return !/^(align|bgcolor|border|cellpadding|cellspacing|frame|rules|summary)$/.test(attr); }))).join(' '); });
-    window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, { htmlTags, htmlAttributes, htmlAttrsByTag });
+    Object.keys(htmlAttrsByTag).forEach(function (tag) {
+        // Keep tag-specific attributes as arrays; the completion engine combines arrays.
+        htmlAttrsByTag[tag] = Array.from(new Set(htmlAttrsByTag[tag].split(/\s+/).filter(function (attr) {
+            return !/^(align|bgcolor|border|cellpadding|cellspacing|frame|rules|summary)$/.test(attr);
+        })));
+    });
+
+    // Embedded SVG and MathML content models are valid inside HTML documents.
+    const svgTags = (
+        'svg g defs desc title symbol use path circle ellipse rect line polyline polygon text tspan textPath marker pattern linearGradient radialGradient stop clipPath mask filter feBlend feColorMatrix feComponentTransfer feComposite feConvolveMatrix feDiffuseLighting feDisplacementMap feDistantLight feDropShadow feFlood feFuncA feFuncB feFuncG feFuncR feGaussianBlur feImage feMerge feMergeNode feMorphology feOffset fePointLight feSpecularLighting feSpotLight feTile feTurbulence foreignObject'
+    ).split(/\s+/);
+    const mathMlTags = (
+        'math maction maligngroup malignmark menclose merror mfenced mfrac mglyph mi mlabeledtr mlongdiv mmultiscripts mn mo mover mpadded mphantom mprescripts mroot mrow ms mspace msqrt mstyle msub msubsup msup mtable mtd mtext mtr munder munderover semantics annotation annotation-xml'
+    ).split(/\s+/);
+    htmlTags.push(...svgTags, ...mathMlTags);
+
+    // Modern global and event-handler attributes commonly used in browser code.
+    const extendedGlobalAttributes = (
+        'autocorrect writingsuggestions virtualkeyboardpolicy popover popovertarget popovertargetaction command commandfor part exportparts slot onabort onanimationcancel onanimationend onanimationiteration onanimationstart onauxclick onbeforeinput onbeforematch onbeforetoggle onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncopy oncuechange oncut ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended onerror onfocus onformdata ongotpointercapture onhashchange oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart onmessage onmousedown onmouseenter onmouseleave onmousemove onmouseout onmouseover onmouseup onoffline ononline onpagehide onpageshow onpaste onpause onplay onplaying onpointercancel onpointerdown onpointerenter onpointerleave onpointermove onpointerout onpointerover onpointerup onpopstate onprogress onratechange onreset onresize onscroll onscrollend onsecuritypolicyviolation onseeked onseeking onselect onselectionchange onselectstart onslotchange onstalled onsubmit onsuspend ontimeupdate ontoggle ontouchcancel ontouchend ontouchmove ontouchstart ontransitioncancel ontransitionend ontransitionrun ontransitionstart onunhandledrejection onunload onvolumechange onwaiting onwheel'
+    ).split(/\s+/);
+    htmlAttributes.splice(0, htmlAttributes.length, ...Array.from(new Set(htmlAttributes.concat(extendedGlobalAttributes))).filter(function (attr) {
+        return !/^(align|bgcolor|cellpadding|cellspacing|frame|rules|summary)$/.test(attr);
+    }));
+
+    const additionalAttrsByTag = {
+        a: 'attributionsrc',
+        audio: 'autoplay controls controlslist crossorigin loop muted preload src',
+        button: 'command commandfor popovertarget popovertargetaction',
+        dialog: 'closedby',
+        form: 'rel',
+        iframe: 'allowpaymentrequest credentialless csp',
+        img: 'fetchpriority ismap usemap',
+        input: 'alpha dirname enterkeyhint formaction formenctype formmethod formnovalidate formtarget',
+        link: 'blocking imagesizes imagesrcset',
+        meta: 'media',
+        script: 'blocking fetchpriority',
+        select: 'autocomplete',
+        source: 'width height',
+        video: 'disablepictureinpicture disableremoteplayback playsinline',
+        svg: 'viewBox preserveAspectRatio xmlns fill stroke stroke-width aria-label role',
+        path: 'd fill stroke stroke-width stroke-linecap stroke-linejoin transform',
+        circle: 'cx cy r fill stroke stroke-width',
+        ellipse: 'cx cy rx ry fill stroke stroke-width',
+        rect: 'x y width height rx ry fill stroke stroke-width',
+        line: 'x1 x2 y1 y2 stroke stroke-width',
+        polygon: 'points fill stroke stroke-width',
+        polyline: 'points fill stroke stroke-width',
+        text: 'x y dx dy text-anchor dominant-baseline fill stroke',
+        tspan: 'x y dx dy text-anchor dominant-baseline',
+        use: 'href x y width height',
+        linearGradient: 'x1 x2 y1 y2 gradientUnits gradientTransform spreadMethod',
+        radialGradient: 'cx cy r fx fy fr gradientUnits gradientTransform spreadMethod',
+        stop: 'offset stop-color stop-opacity',
+        clipPath: 'clipPathUnits transform',
+        foreignObject: 'x y width height',
+        math: 'display mathvariant xmlns',
+        mi: 'mathvariant mathsize',
+        mo: 'form fence stretchy symmetric maxsize minsize largeop movablelimits separator',
+        mfrac: 'linethickness bevelled',
+        mtable: 'columnalign rowalign columnspacing rowspacing frame',
+        mtd: 'columnspan rowspan columnalign rowalign',
+        annotation: 'encoding src'
+    };
+    Object.keys(additionalAttrsByTag).forEach(function (tag) {
+        const current = Array.isArray(htmlAttrsByTag[tag]) ? htmlAttrsByTag[tag] : [];
+        htmlAttrsByTag[tag] = Array.from(new Set(current.concat(additionalAttrsByTag[tag].split(/\s+/))));
+    });
+
+    window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
+        htmlTags: Array.from(new Set(htmlTags)),
+        htmlAttributes,
+        htmlAttrsByTag
+    });
 })();

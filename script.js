@@ -1093,6 +1093,36 @@ button:hover {
                 ta.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
+
+        // Quick symbol toolbar: wrap selected text or place the caret between paired symbols.
+        const symbolToolbar = document.getElementById('symbolToolbar');
+        if (symbolToolbar) {
+            symbolToolbar.addEventListener('mousedown', function(e) {
+                // Keep the editor's selection/caret when a toolbar button is clicked.
+                if (e.target.closest('button')) e.preventDefault();
+            });
+            symbolToolbar.addEventListener('click', function(e) {
+                const button = e.target.closest('button[data-prefix]');
+                if (!button || activeTab === 'libs' || !editors[activeTab]) return;
+                const ta = editors[activeTab].ta;
+                const prefix = button.dataset.prefix;
+                const suffix = button.dataset.suffix || '';
+                const start = ta.selectionStart;
+                const end = ta.selectionEnd;
+                const selected = ta.value.slice(start, end);
+                const replacement = prefix + selected + suffix;
+                ta.focus();
+                ta.setRangeText(replacement, start, end, 'select');
+                if (selected) {
+                    ta.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
+                } else {
+                    const caret = start + prefix.length;
+                    ta.setSelectionRange(caret, caret);
+                }
+                ta.dispatchEvent(new Event('input', { bubbles: true }));
+                if (editors[activeTab].refresh) editors[activeTab].refresh();
+            });
+        }
         function doUndo() {
             const ed = editors[activeTab];
             if (!ed) return;

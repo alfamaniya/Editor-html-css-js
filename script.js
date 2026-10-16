@@ -1126,11 +1126,19 @@ button:hover {
                 if (!button || !LANGS.includes(activeTab) || !editors[activeTab]) return;
 
                 const ta = editors[activeTab].ta;
-                const saved = symbolSelections[activeTab] || {
+                // Prefer the live caret/selection whenever the editor still owns focus.
+                // The remembered range is only a fallback for browsers that move focus
+                // to the toolbar before dispatching its click event.
+                const liveSelection = document.activeElement === ta;
+                const saved = liveSelection ? {
                     start: ta.selectionStart,
                     end: ta.selectionEnd,
                     direction: ta.selectionDirection || 'none'
-                };
+                } : (symbolSelections[activeTab] || {
+                    start: ta.selectionStart,
+                    end: ta.selectionEnd,
+                    direction: ta.selectionDirection || 'none'
+                });
                 const start = Math.max(0, Math.min(saved.start, ta.value.length));
                 const end = Math.max(start, Math.min(saved.end, ta.value.length));
                 const prefix = button.dataset.prefix || '';

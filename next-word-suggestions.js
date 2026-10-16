@@ -61,6 +61,68 @@
 
     const nextWordRules = {
         html: [
+            // Predict common attribute values after the attribute-name completion inserted its quotes.
+            { pattern: /<[^<>]*\bclass\s*=\s*["']$/i, items: [
+                { label: 'container', insert: 'container', description: 'Common layout class' },
+                { label: 'wrapper', insert: 'wrapper', description: 'Common wrapper class' },
+                { label: 'card', insert: 'card', description: 'Common card class' },
+                { label: 'active', insert: 'active', description: 'Common active-state class' },
+                { label: 'hidden', insert: 'hidden', description: 'Common hidden-state class' },
+                { label: 'sr-only', insert: 'sr-only', description: 'Visually hidden but accessible text' }
+            ]},
+            { pattern: /<[^<>]*\bid\s*=\s*["']$/i, items: [
+                { label: 'app', insert: 'app', description: 'Application root ID' },
+                { label: 'root', insert: 'root', description: 'Root container ID' },
+                { label: 'main', insert: 'main', description: 'Main content ID' },
+                { label: 'content', insert: 'content', description: 'Content container ID' },
+                { label: 'header', insert: 'header', description: 'Header ID' },
+                { label: 'footer', insert: 'footer', description: 'Footer ID' }
+            ]},
+            { pattern: /<([a-z][\w:-]*)\btype\s*=\s*["']$/i, create: function (match) {
+                const tag = match[1].toLowerCase();
+                const values = tag === 'input'
+                    ? 'text email password number checkbox radio submit button reset date datetime-local file hidden image month search tel time url week color range'.split(/\s+/)
+                    : (tag === 'button' ? ['button', 'submit', 'reset']
+                    : (tag === 'script' ? ['text/javascript', 'module', 'importmap', 'application/json']
+                    : (tag === 'link' ? ['stylesheet', 'icon', 'preconnect', 'modulepreload']
+                    : ['text/plain', 'application/json'])));
+                return values.map(function (value) { return { label: value, insert: value, description: 'Value for the ' + tag + ' type attribute' }; });
+            }},
+            { pattern: /<[^<>]*\brole\s*=\s*["']$/i, items: [
+                { label: 'button', insert: 'button' }, { label: 'dialog', insert: 'dialog' },
+                { label: 'alert', insert: 'alert' }, { label: 'status', insert: 'status' },
+                { label: 'navigation', insert: 'navigation' }, { label: 'main', insert: 'main' },
+                { label: 'tab', insert: 'tab' }, { label: 'tabpanel', insert: 'tabpanel' },
+                { label: 'toolbar', insert: 'toolbar' }, { label: 'region', insert: 'region' }
+            ]},
+            { pattern: /<[^<>]*\b(?:aria-hidden|aria-expanded)\s*=\s*["']$/i, items: [
+                { label: 'true', insert: 'true' }, { label: 'false', insert: 'false' }
+            ]},
+            { pattern: /<[^<>]*\baria-live\s*=\s*["']$/i, items: [
+                { label: 'polite', insert: 'polite' }, { label: 'assertive', insert: 'assertive' }, { label: 'off', insert: 'off' }
+            ]},
+            { pattern: /<[^<>]*\btarget\s*=\s*["']$/i, items: [
+                { label: '_self', insert: '_self' }, { label: '_blank', insert: '_blank' },
+                { label: '_parent', insert: '_parent' }, { label: '_top', insert: '_top' }
+            ]},
+            { pattern: /<[^<>]*\brel\s*=\s*["']$/i, items: [
+                { label: 'noopener noreferrer', insert: 'noopener noreferrer' },
+                { label: 'stylesheet', insert: 'stylesheet' }, { label: 'icon', insert: 'icon' },
+                { label: 'preconnect', insert: 'preconnect' }, { label: 'modulepreload', insert: 'modulepreload' }
+            ]},
+            { pattern: /<[^<>]*\bloading\s*=\s*["']$/i, items: [
+                { label: 'lazy', insert: 'lazy' }, { label: 'eager', insert: 'eager' }
+            ]},
+            { pattern: /<[^<>]*\bmethod\s*=\s*["']$/i, items: [
+                { label: 'get', insert: 'get' }, { label: 'post', insert: 'post' }, { label: 'dialog', insert: 'dialog' }
+            ]},
+            { pattern: /<[^<>]*\bdir\s*=\s*["']$/i, items: [
+                { label: 'ltr', insert: 'ltr' }, { label: 'rtl', insert: 'rtl' }, { label: 'auto', insert: 'auto' }
+            ]},
+            { pattern: /<[^<>]*\blang\s*=\s*["']$/i, items: [
+                { label: 'en', insert: 'en' }, { label: 'fa', insert: 'fa' }, { label: 'ar', insert: 'ar' },
+                { label: 'fr', insert: 'fr' }, { label: 'de', insert: 'de' }, { label: 'es', insert: 'es' }
+            ]},
             { pattern: /<html\s*$/i, items: [
                 { label: 'lang="en"', insert: ' lang="en"', description: 'Set the document language', caret: 7 },
                 { label: 'lang="fa" dir="rtl"', insert: ' lang="fa" dir="rtl"', description: 'Set Persian language and direction', caret: 7 }
@@ -148,13 +210,101 @@
             {
                 pattern: /(?:^|[\n;{]\s*)@media\s*$/i,
                 items: [
-                    { label: ' (max-width: 768px) { … }', insert: ' (max-width: 768px) {\n    \n}', description: 'Tablet and mobile breakpoint', caret: 26 },
-                    { label: ' (prefers-reduced-motion: reduce) { … }', insert: ' (prefers-reduced-motion: reduce) {\n    \n}', description: 'Respect reduced-motion settings', caret: 39 }
+                    { label: '(max-width: 768px) { … }', insert: ' (max-width: 768px) {\n    \n}', description: 'Tablet and mobile breakpoint', caret: 26 },
+                    { label: '(prefers-reduced-motion: reduce) { … }', insert: ' (prefers-reduced-motion: reduce) {\n    \n}', description: 'Respect reduced-motion settings', caret: 39 }
                 ]
-            }
+            },
+            { pattern: /(?:^|[\n;{]\s*)@supports\s*$/i, items: [
+                { label: '(display: grid) { … }', insert: ' (display: grid) {\n    \n}', description: 'Feature-support query', caret: 22 },
+                { label: '(backdrop-filter: blur(4px)) { … }', insert: ' (backdrop-filter: blur(4px)) {\n    \n}', description: 'Check support for a visual effect', caret: 36 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@container\s*$/i, items: [
+                { label: '(min-width: 400px) { … }', insert: ' (min-width: 400px) {\n    \n}', description: 'Container width query', caret: 23 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)font-size\s*$/i, items: [
+                { label: ': 1rem;', insert: ': 1rem;' }, { label: ': 1.25rem;', insert: ': 1.25rem;' },
+                { label: ': clamp(1rem, 2vw, 2rem);', insert: ': clamp(1rem, 2vw, 2rem);' },
+                { label: ': var(--font-size);', insert: ': var(--font-size);' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)(flex-direction|justify-content|align-items)\s*$/i, create: function (match) {
+                const property = match[1].toLowerCase();
+                const options = {
+                    'flex-direction': ['row', 'column', 'row-reverse', 'column-reverse'],
+                    'justify-content': ['center', 'space-between', 'space-around', 'space-evenly', 'flex-start', 'flex-end'],
+                    'align-items': ['center', 'stretch', 'flex-start', 'flex-end', 'baseline']
+                }[property] || [];
+                return options.map(function (value) { return { label: ': ' + value + ';', insert: ': ' + value + ';' }; });
+            }},
+            { pattern: /(?:^|[\n;{]\s*)color\s*:\s*[^;\n]+;?$/i, items: [
+                { label: 'Add background-color', insert: '\n    background-color: #f3f4f6;', description: 'Pair text color with a background' },
+                { label: 'Add contrast-safe text color', insert: '\n    color: #111827;', description: 'Use a dark text color on a light surface' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)display\s*:\s*grid\s*;?$/i, items: [
+                { label: 'Add responsive grid columns', insert: '\n    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));', description: 'Create responsive columns' },
+                { label: 'Add place-items: center', insert: '\n    place-items: center;', description: 'Align grid items on both axes' },
+                { label: 'Add gap: 1rem', insert: '\n    gap: 1rem;', description: 'Add consistent spacing' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)position\s*:\s*absolute\s*;?$/i, items: [
+                { label: 'Add inset: 0', insert: '\n    inset: 0;', description: 'Stretch to the containing block' },
+                { label: 'Add top/right/bottom/left: 0', insert: '\n    top: 0;\n    right: 0;\n    bottom: 0;\n    left: 0;', description: 'Set all four offsets' },
+                { label: 'Add z-index: 1', insert: '\n    z-index: 1;', description: 'Set stacking order' }
+            ]}
         ],
 
         js: [
+            { pattern: /\bnew$/i, items: [
+                { label: ' Map()', insert: ' Map()', description: 'Create a Map collection' },
+                { label: ' Set()', insert: ' Set()', description: 'Create a Set collection' },
+                { label: ' Date()', insert: ' Date()', description: 'Create a date object' },
+                { label: ' URL(\'url\')', insert: ' URL(\'url\')', description: 'Parse a URL', caret: 7 },
+                { label: ' AbortController()', insert: ' AbortController()', description: 'Create a request cancellation controller' },
+                { label: ' IntersectionObserver(callback)', insert: ' IntersectionObserver(callback)', description: 'Observe element visibility' }
+            ]},
+            { pattern: /\bawait$/i, items: [
+                { label: ' fetch(\'url\')', insert: ' fetch(\'url\')', description: 'Wait for a network response', caret: 8 },
+                { label: ' Promise.resolve(value)', insert: ' Promise.resolve(value)', description: 'Await a promise value' },
+                { label: ' response.json()', insert: ' response.json()', description: 'Parse a JSON response body' }
+            ]},
+            { pattern: /\bthrow$/i, items: [
+                { label: ' new Error(\'message\');', insert: ' new Error(\'message\');', description: 'Throw an error', caret: 15 },
+                { label: ' new TypeError(\'message\');', insert: ' new TypeError(\'message\');', description: 'Throw a type error', caret: 19 }
+            ]},
+            { pattern: /\btry$/i, items: [
+                { label: ' { … } catch (error) { … }', insert: ' {\n    \n} catch (error) {\n    console.error(error);\n}', description: 'Create a try/catch block', caret: 4 }
+            ]},
+            { pattern: /\bcatch$/i, items: [
+                { label: ' (error) { … }', insert: ' (error) {\n    console.error(error);\n}', description: 'Handle a caught error', caret: 2 }
+            ]},
+            { pattern: /\bcatch\s*\(\s*$/i, items: [
+                { label: 'error', insert: 'error' }, { label: 'err', insert: 'err' }
+            ]},
+            { pattern: /\basync$/i, items: [
+                { label: ' function name() { … }', insert: ' function name() {\n    \n}', description: 'Declare an asynchronous function', caret: 16 },
+                { label: ' () => { … }', insert: ' () => {\n    \n}', description: 'Create an async arrow function', caret: 3 }
+            ]},
+            { pattern: /\bclass$/i, items: [
+                { label: ' Name { constructor() { … } }', insert: ' Name {\n    constructor() {\n        \n    }\n}', description: 'Create a class declaration', caret: 7 }
+            ]},
+            { pattern: /\bfor$/i, items: [
+                { label: ' (let i = 0; i < length; i++) { … }', insert: ' (let i = 0; i < length; i++) {\n    \n}', description: 'Create a counted loop', caret: 2 },
+                { label: ' (const item of items) { … }', insert: ' (const item of items) {\n    \n}', description: 'Iterate over an iterable', caret: 2 }
+            ]},
+            { pattern: /\bfor\s*\(\s*$/i, items: [
+                { label: 'let i = 0; i < items.length; i++', insert: 'let i = 0; i < items.length; i++' },
+                { label: 'const item of items', insert: 'const item of items' },
+                { label: 'const [key, value] of Object.entries(object)', insert: 'const [key, value] of Object.entries(object)' }
+            ]},
+            { pattern: /\bPromise$/i, items: [
+                { label: '.resolve(value)', insert: '.resolve(value)' }, { label: '.all(items)', insert: '.all(items)' },
+                { label: '.allSettled(items)', insert: '.allSettled(items)' }, { label: '.reject(error)', insert: '.reject(error)' }
+            ]},
+            { pattern: /\bJSON$/i, items: [
+                { label: '.parse(text)', insert: '.parse(text)' }, { label: '.stringify(value, null, 2)', insert: '.stringify(value, null, 2)' }
+            ]},
+            { pattern: /\b(?:map|filter|forEach|find|some|every)$/i, items: [
+                { label: '((item) => item)', insert: '((item) => item)', description: 'Pass a callback function', caret: 2 },
+                { label: '((item) => item.property)', insert: '((item) => item.property)', description: 'Access an item property', caret: 2 }
+            ]},
             {
                 pattern: /\b(?:const|let|var)\s+[A-Za-z_$][\w$]*\s*=\s*$/i,
                 items: [

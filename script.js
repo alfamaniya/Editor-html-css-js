@@ -157,6 +157,7 @@ button:hover {
 
         const STORAGE_KEY = 'html-editor-code-v2';
         const PROJECT_KEY = 'html-editor-project-v3';
+        const PROJECT_RECOVERY_KEY = 'html-editor-project-v3-recovery';
         const FONT_KEY    = 'html-editor-font';
         const TAB_KEY     = 'html-editor-tab';
         const LIBS_KEY    = 'html-editor-libs-v1';
@@ -166,6 +167,8 @@ button:hover {
         let autoSaveTimer = null;
         let dirtyResetTimer = null;
         let project = null;
+        let projectLoadWarning = '';
+        let projectRecoveryAvailable = false;
         let libraries = [];
         let libraryDownloadController = null;
         let libraryDownloadRequest = 0;
@@ -221,10 +224,10 @@ button:hover {
         }
 
         function loadProject() {
+            const rawProject = storageGet(PROJECT_KEY);
             try {
-                const raw = storageGet(PROJECT_KEY);
-                if (raw) {
-                    const p = JSON.parse(raw);
+                if (rawProject) {
+                    const p = JSON.parse(rawProject);
                     if (p && Array.isArray(p.files)) {
                         const seenIds = new Set();
                         const validFiles = p.files
@@ -264,6 +267,16 @@ button:hover {
                     }
                 }
             } catch (e) {}
+
+            // Preserve unreadable or structurally invalid project data before a later
+            // autosave can replace it with the fallback starter project.
+            if (rawProject) {
+                const existingRecovery = storageGet(PROJECT_RECOVERY_KEY);
+                projectRecoveryAvailable = existingRecovery !== null || storageSet(PROJECT_RECOVERY_KEY, rawProject);
+                projectLoadWarning = projectRecoveryAvailable
+                    ? 'Saved project data could not be loaded. Download the recovery copy before editing.'
+                    : 'Saved project data could not be loaded, and the browser could not preserve a recovery copy.';
+            }
 
             try {
                 const old = storageGet(STORAGE_KEY);
@@ -2570,6 +2583,16 @@ button:hover {
 
         setDirty(false);
         updatePreviewNow();
+        if (projectLoadWarning) {
+            if (projectRecoveryAvailable) {
+                showToast(projectLoadWarning, 'error', 'Download recovery', function() {
+                    const recovery = storageGet(PROJECT_RECOVERY_KEY);
+                    if (recovery) downloadFile(recovery, 'project-recovery.json', 'application/json;charset=utf-8');
+                });
+            } else {
+                showToast(projectLoadWarning, 'error');
+            }
+        }
 
     })();
     

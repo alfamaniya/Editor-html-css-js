@@ -960,6 +960,33 @@ button:hover {
         }
         const HIGHLIGHTERS = { html: highlightHTML, css: highlightCSS, js: highlightJS };
 
+        // Remove local asset references when the same files are embedded below.
+        // Keep remote URLs and local files that are not part of this project bundle.
+        function stripBundledAssetReferences(markup, cssFiles, jsFiles) {
+            const cssNames = new Set(cssFiles.map(function(file) { return String(file.name || '').toLowerCase(); }));
+            const jsNames = new Set(jsFiles.map(function(file) { return String(file.name || '').toLowerCase(); }));
+            const template = document.createElement('template');
+            template.innerHTML = String(markup || '');
+
+            function getLocalFilename(url) {
+                const value = String(url || '').trim();
+                if (!value || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(value)) return null;
+                const path = value.split(/[?#]/, 1)[0].replace(/\\/g, '/');
+                const filename = path.slice(path.lastIndexOf('/') + 1);
+                if (!filename) return null;
+                try { return decodeURIComponent(filename).toLowerCase(); }
+                catch (error) { return filename.toLowerCase(); }
+            }
+
+            template.content.querySelectorAll('script[src], link[rel~="stylesheet"][href]').forEach(function(node) {
+                const isScript = node.tagName.toLowerCase() === 'script';
+                const filename = getLocalFilename(node.getAttribute(isScript ? 'src' : 'href'));
+                const bundledNames = isScript ? jsNames : cssNames;
+                if (filename && bundledNames.has(filename)) node.remove();
+            });
+            return template.innerHTML;
+        }
+
         // ==========================================
         //  Build document
         // ==========================================
@@ -968,7 +995,7 @@ button:hover {
             const cssFiles  = project.files.filter(function(f) { return f.type === 'css'; });
             const jsFiles   = project.files.filter(function(f) { return f.type === 'js'; });
 
-            const html = htmlFiles.map(function(f) { return f.content; }).join('\n');
+            const html = stripBundledAssetReferences(htmlFiles.map(function(f) { return f.content; }).join('\n'), cssFiles, jsFiles);
             const css  = cssFiles.map(function(f) { return '/* === ' + f.name + ' === */\n' + f.content; })
                                  .join('\n\n')
                                  .replace(/<\/style/gi, '<\\/style');
@@ -1010,7 +1037,7 @@ button:hover {
                 '<meta charset="UTF-8">\n' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
                 '<title>' + safeTitle + '</title>\n' +
-                (project.headExtras || '') + '\n' +
+                stripBundledAssetReferences(project.headExtras || '', cssFiles, jsFiles) + '\n' +
                 embeddedLibraries +
                 errorHook + '\n' +
                 '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n' +
@@ -1224,7 +1251,11 @@ button:hover {
 
             const measureCtx = document.createElement('canvas').getContext('2d');
 
-            const DATA = window.EDITOR_INTELLISENSE_DATA || {};
+            // Read completion data when suggestions are requested, not during initialization.
+            // This also supports bundled projects where the data script appears later.
+            function getIntelliSenseData() {
+                return window.EDITOR_INTELLISENSE_DATA || {};
+            }
 
             // Preserve source offsets while masking CSS comments.
             function maskCssComments(text) {
@@ -1415,9 +1446,10 @@ button:hover {
             }
 
             function completionList(ctx) {
-                if (ctx.kind === 'htmlTag') return filterList(DATA.htmlTags || HTML_TAGS, ctx.word);
+                const data = getIntelliSenseData();
+                if (ctx.kind === 'htmlTag') return filterList(data.htmlTags || HTML_TAGS, ctx.word);
                 if (ctx.kind === 'htmlAttr') {
-                    const attrs = (DATA.htmlAttributes || []).concat((DATA.htmlAttrsByTag || {})[ctx.tag] || []);
+                    const attrs = (data.htmlAttributes || []).concat((data.htmlAttrsByTag || {})[ctx.tag] || []);
                     const unique = Array.from(new Set(attrs));
                     return filterList(unique.map(function (name) {
                         return { label: name, insert: /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|aria-[\w-]+|data-[\w-]+)$/.test(name) ? name + '=""' : name, description: 'HTML attribute' ,
@@ -1425,21 +1457,21 @@ button:hover {
                     }), ctx.word);
                 }
                 if (ctx.kind === 'cssProperty') {
-                    const snippets = (DATA.snippets && DATA.snippets.css) || [];
-                    return filterList(snippets.concat(DATA.cssProperties || CSS_PROPS), ctx.word);
+                    const snippets = (data.snippets && data.snippets.css) || [];
+                    return filterList(snippets.concat(data.cssProperties || CSS_PROPS), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
-                    const values = (DATA.cssValues || {})[ctx.property] || [];
+                    const values = (data.cssValues || {})[ctx.property] || [];
                     const common = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'transparent', 'currentColor'];
                     return filterList(values.concat(common), ctx.word);
                 }
                 if (ctx.kind === 'jsMember') {
-                    const members = (DATA.jsMembers || {})[ctx.root] || [];
+                    const members = (data.jsMembers || {})[ctx.root] || [];
                     return filterList(members, ctx.word);
                 }
                 if (ctx.kind === 'jsWord') {
-                    const snippets = (DATA.snippets && DATA.snippets.js) || [];
-                    return filterList(snippets.concat(DATA.jsWords || JS_WORDS), ctx.word);
+                    const snippets = (data.snippets && data.snippets.js) || [];
+                    return filterList(snippets.concat(data.jsWords || JS_WORDS), ctx.word);
                 }
                 return [];
             }

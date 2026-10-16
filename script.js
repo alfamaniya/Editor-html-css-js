@@ -2122,7 +2122,11 @@ button:hover {
         }
         function scheduleSearch() {
             clearTimeout(searchTimer);
-            searchTimer = setTimeout(function() { performSearch(searchInput.value); }, 120);
+            searchTimer = setTimeout(function() {
+                performSearch(searchInput.value);
+                // Re-render the syntax layer so every match is highlighted as the query changes.
+                if (editors[activeTab]) editors[activeTab].refresh();
+            }, 120);
         }
         function renderSearchResults() {
             const n = searchMatches.length;

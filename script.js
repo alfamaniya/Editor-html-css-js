@@ -785,7 +785,7 @@ console.info("Starter project ready", {
         const outputFrame = document.getElementById('output');
         const editorsBox  = document.getElementById('editors');
         const toast       = document.getElementById('toast');
-        const tabButtons  = [];
+        const tabButtons  = Array.from(document.querySelectorAll('.tab'));
         const dirtyBadge  = document.getElementById('dirtyBadge');
         const libsPanel   = document.getElementById('libsPanel');
         const editors     = {};
@@ -834,7 +834,8 @@ console.info("Starter project ready", {
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
         function makeId() {
             return 'f_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6);
@@ -1013,7 +1014,7 @@ console.info("Starter project ready", {
             }
             if (!saved) {
                 setDirty(true);
-                showToast('❌ ذخیره انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+                showToast('❌ Saving failed. Check available browser storage.', 'error');
             }
             return saved;
         }
@@ -1055,17 +1056,33 @@ console.info("Starter project ready", {
         const feTypeFilter = document.getElementById('feTypeFilter');
         const feGroupMode = document.getElementById('feGroupMode');
 
+        const fileExplorerMedia = window.matchMedia('(max-width: 768px)');
+        const savedExplorerState = storageGet(FILE_EXPLORER_KEY);
+        let hasManualExplorerPreference = savedExplorerState === '1' || savedExplorerState === '0';
+
         function setFileExplorerCollapsed(collapsed, persist) {
             fileExplorer.classList.toggle('is-collapsed', collapsed);
             feToggleBtn.setAttribute('aria-expanded', String(!collapsed));
             feToggleBtn.setAttribute('aria-label', collapsed ? 'Open file manager' : 'Collapse file manager');
             feToggleBtn.title = collapsed ? 'Open file manager' : 'Collapse file manager';
-            if (persist !== false) storageSet(FILE_EXPLORER_KEY, collapsed ? '1' : '0');
+            if (persist !== false) {
+                storageSet(FILE_EXPLORER_KEY, collapsed ? '1' : '0');
+                hasManualExplorerPreference = true;
+            }
         }
 
-        const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
-        // Always start from the requested responsive default: open on desktop, collapsed on mobile.
-        setFileExplorerCollapsed(isMobileViewport, false);
+        const initialExplorerCollapsed = hasManualExplorerPreference
+            ? savedExplorerState === '1'
+            : fileExplorerMedia.matches;
+        setFileExplorerCollapsed(initialExplorerCollapsed, false);
+        const handleExplorerViewportChange = function(event) {
+            if (!hasManualExplorerPreference) setFileExplorerCollapsed(event.matches, false);
+        };
+        if (typeof fileExplorerMedia.addEventListener === 'function') {
+            fileExplorerMedia.addEventListener('change', handleExplorerViewportChange);
+        } else if (typeof fileExplorerMedia.addListener === 'function') {
+            fileExplorerMedia.addListener(handleExplorerViewportChange);
+        }
         feToggleBtn.addEventListener('click', function() {
             setFileExplorerCollapsed(!fileExplorer.classList.contains('is-collapsed'));
         });
@@ -1104,9 +1121,15 @@ console.info("Starter project ready", {
             }).join('');
             feList.innerHTML = html || '<div class="fe-empty" role="status">' + (query || typeFilter !== 'all' ? 'No matching files' : 'No files yet') + '</div>';
         }
-        [feSearch, feTypeFilter, feGroupMode].forEach(function(control) {
-            if (!control) return;
-            control.addEventListener(control === feSearch ? 'input' : 'change', renderFileExplorer);
+        let feSearchTimer = null;
+        if (feSearch) {
+            feSearch.addEventListener('input', function() {
+                clearTimeout(feSearchTimer);
+                feSearchTimer = setTimeout(renderFileExplorer, 120);
+            });
+        }
+        [feTypeFilter, feGroupMode].forEach(function(control) {
+            if (control) control.addEventListener('change', renderFileExplorer);
         });
 
         feLibraryBtn.addEventListener('click', function() {
@@ -1133,6 +1156,7 @@ console.info("Starter project ready", {
         function fileNameError(name, type, excludeId) {
             if (!name) return 'Enter a file name.';
             if (name.length > 120) return 'File names must be 120 characters or fewer.';
+            if (/[\\/:*?"<>|\\u0000-\\u001f]/.test(name)) return 'File names cannot contain \\ / : * ? " < > | or control characters.';
             if (project.files.some(function(f) { return f.id !== excludeId && f.name.toLowerCase() === name.toLowerCase(); })) return 'A file with that name already exists.';
             return '';
         }
@@ -1233,11 +1257,15 @@ console.info("Starter project ready", {
                 if (!newName) { showToast('❌ File name cannot be empty.', 'error'); renderFileExplorer(); return; }
                 const error = fileNameError(newName, file.type, file.id);
                 if (error) { showToast('❌ ' + error, 'error'); renderFileExplorer(); return; }
+                const warning = fileNameWarning(newName, file.type);
+                if (warning && !window.confirm(warning + ' Rename anyway?')) {
+                    renderFileExplorer();
+                    return;
+                }
                 file.name = newName;
                 const saved = saveProject();
                 if (saved) setDirty(false);
                 renderFileExplorer();
-                const warning = fileNameWarning(newName, file.type);
                 if (!saved) {
                     showToast('⚠ Rename is only in this session; browser storage could not save it.', 'error');
                 } else {
@@ -1585,8 +1613,8 @@ console.info("Starter project ready", {
 
             libraries.unshift({ id: makeLibId(), name: name, type: type, code: code, enabled: true });
             if (!saveLibraries()) {
-                libraries.pop();
-                showToast('❌ ذخیره کتابخانه انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+                libraries.shift();
+                showToast('❌ Library could not be saved. Check available browser storage.', 'error');
                 return;
             }
             renderLibraries();
@@ -1606,7 +1634,7 @@ console.info("Starter project ready", {
             if (!saveLibraries()) {
                 lib.enabled = previousEnabled;
                 renderLibraries();
-                showToast('❌ تغییر کتابخانه ذخیره نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+                showToast('❌ Library changes could not be saved. Check available browser storage.', 'error');
                 return;
             }
             renderLibraries();
@@ -1621,7 +1649,7 @@ console.info("Starter project ready", {
             if (!saveLibraries()) {
                 libraries.splice(idx, 0, removed);
                 renderLibraries();
-                showToast('❌ حذف کتابخانه ذخیره نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');
+                showToast('❌ Library could not be deleted. Check available browser storage.', 'error');
                 return;
             }
             renderLibraries();
@@ -1690,7 +1718,7 @@ console.info("Starter project ready", {
                 '|("(?:\\\\.|[^"\\\\\\n])*"?|\'(?:\\\\.|[^\'\\\\\\n])*\'?)' +
                 '|(@[\\w-]+)' +
                 '|(#[0-9a-fA-F]{3,8}\\b)' +
-                '|((?<![\\w-])-?\\d*\\.?\\d+(?:px|em|rem|%|vh|vw|s|ms|deg|fr)?)' +
+                '|(-?\\d*\\.?\\d+(?:px|em|rem|%|vh|vw|s|ms|deg|fr)?)' +
                 '|([\\w-]+)(?=\\s*:\\s*[^;{}]*[;}])',
                 'g'
             );
@@ -1698,7 +1726,12 @@ console.info("Starter project ready", {
                 if (m[1]) return 'hl-comment';
                 if (m[2]) return 'hl-string';
                 if (m[3]) return 'hl-tag';
-                if (m[4] || m[5]) return 'hl-num';
+                if (m[4]) return 'hl-num';
+                if (m[5]) {
+                    const previous = raw[m.index - 1];
+                    if (previous && /[\\w-]/.test(previous)) return '';
+                    return 'hl-num';
+                }
                 if (m[6]) return 'hl-attr';
                 return '';
             });
@@ -1710,7 +1743,7 @@ console.info("Starter project ready", {
                 '|("(?:\\\\.|[^"\\\\\\n])*"?|\'(?:\\\\.|[^\'\\\\\\n])*\'?|`(?:\\\\[\\s\\S]|[^`\\\\])*`?)' +
                 '|\\b(' + JS_KEYWORDS + ')\\b' +
                 '|\\b(true|false|null|undefined|NaN|Infinity)\\b' +
-                '|((?<![\\w$.])\\d+\\.?\\d*\\b)' +
+                '|(\\d+\\.?\\d*\\b)' +
                 '|\\b(document|window|console|alert|setTimeout|setInterval|Math|JSON|Array|Object|String|Number|Promise|fetch)\\b',
                 'g'
             );
@@ -1718,7 +1751,12 @@ console.info("Starter project ready", {
                 if (m[1]) return 'hl-comment';
                 if (m[2]) return 'hl-string';
                 if (m[3]) return 'hl-tag';
-                if (m[4] || m[5]) return 'hl-num';
+                if (m[4]) return 'hl-num';
+                if (m[5]) {
+                    const previous = raw[m.index - 1];
+                    if (previous && /[\\w$.]/.test(previous)) return '';
+                    return 'hl-num';
+                }
                 if (m[6]) return 'hl-doctype';
                 return '';
             });
@@ -1736,8 +1774,11 @@ console.info("Starter project ready", {
             function getLocalFilename(url) {
                 const value = String(url || '').trim();
                 if (!value || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(value)) return null;
-                const path = value.split(/[?#]/, 1)[0].replace(/\\/g, '/');
-                const filename = path.slice(path.lastIndexOf('/') + 1);
+                let path = value.split(/[?#]/, 1)[0].replace(/\\/g, '/');
+                if (path.startsWith('/')) return null;
+                path = path.replace(/^(?:\.\/)+/, '');
+                if (!path || path.includes('/')) return null;
+                const filename = path;
                 if (!filename) return null;
                 try { return decodeURIComponent(filename).toLowerCase(); }
                 catch (error) { return filename.toLowerCase(); }
@@ -2749,12 +2790,17 @@ console.info("Starter project ready", {
                     const depth = (clean.match(/\{/g) || []).length - (clean.match(/\}/g) || []).length;
                     if (depth <= 0) return false;
                     const line = clean.substring(clean.lastIndexOf('\n') + 1);
-                    const m = line.match(/(?:^|[{;])\s*([\w-]*)$/);
+                    const declarationStart = Math.max(line.lastIndexOf(';'), line.lastIndexOf('{'), line.lastIndexOf('}')) + 1;
+                    const declaration = line.slice(declarationStart);
+                    const m = declaration.match(/^\s*([\w-]+)\s*:\s*[^;{}]*$/);
                     token = m && m[1];
                 } else if (lang === 'html') {
                     const tag = before.substring(before.lastIndexOf('<'));
-                    if (!/\sstyle\s*=\s*(["'])(?:(?!\1)[^<])*$/i.test(tag)) return false;
-                    const m = before.match(/[\s"';]([\w-]*)$/);
+                    const styleMatch = tag.match(/\bstyle\s*=\s*(["'])([\s\S]*)$/i);
+                    if (!styleMatch) return false;
+                    const declarations = styleMatch[2];
+                    const declaration = declarations.slice(declarations.lastIndexOf(';') + 1);
+                    const m = declaration.match(/^\s*([\w-]+)\s*:\s*[^;]*$/);
                     token = m && m[1];
                 } else { return false; }
                 return !!token && (token.toLowerCase() === 'color' || /-color$/i.test(token));
@@ -3102,7 +3148,7 @@ console.info("Starter project ready", {
                 return;
             }
             setDirty(false);
-            showToast('✅ ذخیره با موفقیت انجام شد.', 'success');
+            showToast('✅ Saved successfully.', 'success');
         }
 
         function downloadFile(content, filename, mime) {
@@ -3127,7 +3173,7 @@ console.info("Starter project ready", {
         }
         function buildLibsTextFile() {
             const enabledLibs = libraries.filter(function(l) { return l.enabled; });
-            if (!enabledLibs.length) return '/* هیچ کتابخانه فعالی وجود ندارد */\n';
+            if (!enabledLibs.length) return '/* No active libraries */\n';
             const lines = [];
             lines.push('/* ====================================================');
             lines.push('   Active project libraries');

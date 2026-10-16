@@ -47,5 +47,9 @@
         track:'default kind label src srclang',
         table:'align bgcolor border cellpadding cellspacing frame rules summary width'
     };
+    // Current global attributes cross-checked against MDN's HTML reference.
+    const modernGlobalAttributes = 'accesskey anchor autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover slot spellcheck style tabindex title translate'.split(/\s+/);
+    htmlAttributes.splice(0, htmlAttributes.length, ...Array.from(new Set(htmlAttributes.concat(modernGlobalAttributes))).filter(function (attr) { return !/^(align|bgcolor|cellpadding|cellspacing|frame|rules|summary)$/.test(attr); }));
+    Object.keys(htmlAttrsByTag).forEach(function (tag) { htmlAttrsByTag[tag] = Array.from(new Set(htmlAttrsByTag[tag].split(/\s+/).filter(function (attr) { return !/^(align|bgcolor|border|cellpadding|cellspacing|frame|rules|summary)$/.test(attr); }))).join(' '); });
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, { htmlTags, htmlAttributes, htmlAttrsByTag });
 })();

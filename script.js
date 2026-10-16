@@ -75,6 +75,47 @@ console.log(greeting);</code></pre>
         </div>
     </section>
 
+    <section id="advanced-demo" class="section-block">
+        <div class="section-heading">
+            <div><p class="eyebrow">GRAPHICS AND BROWSER FEATURES</p><h2>More HTML capabilities</h2></div>
+            <span class="pill">SVG · Canvas · Dialog</span>
+        </div>
+        <div class="card-grid">
+            <article class="demo-card">
+                <h3>Images and inline SVG</h3>
+                <picture>
+                    <img class="sample-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 120'%3E%3Crect width='320' height='120' rx='16' fill='%23e0e7ff'/%3E%3Ccircle cx='60' cy='60' r='32' fill='%234f46e5'/%3Ctext x='110' y='68' font-size='24' fill='%233730a3'%3ESVG art%3C/text%3E%3C/svg%3E" alt="An inline SVG illustration with a purple circle and the words SVG art">
+                </picture>
+                <svg class="inline-icon" viewBox="0 0 100 60" role="img" aria-label="Blue geometric SVG illustration">
+                    <rect x="3" y="3" width="94" height="54" rx="12" fill="#dbeafe"/>
+                    <circle cx="32" cy="30" r="15" fill="#4f46e5"/>
+                    <path d="M52 42 L68 14 L87 42 Z" fill="#0f9f91"/>
+                </svg>
+                <p class="muted">The image is a data URL, so it works without an external image service.</p>
+            </article>
+            <article class="demo-card">
+                <h3>Canvas and embedded content</h3>
+                <canvas id="drawingCanvas" width="640" height="180">Your browser does not support canvas.</canvas>
+                <iframe class="embed-demo" title="Example embedded document" loading="lazy" srcdoc="&lt;main style='font:16px system-ui;padding:12px;color:%231e293b'&gt;&lt;strong&gt;An iframe&lt;/strong&gt;&lt;p&gt;This content is embedded using srcdoc.&lt;/p&gt;&lt;/main&gt;"></iframe>
+                <p class="muted">Canvas graphics are drawn in JavaScript; an iframe embeds another document.</p>
+            </article>
+            <article class="demo-card">
+                <h3>Dialog and template</h3>
+                <p>Use a native dialog for focused tasks and a template as reusable markup.</p>
+                <button class="button button-primary" type="button" id="openDemoDialog">Open dialog</button>
+                <dialog id="demoDialog" class="demo-dialog">
+                    <form method="dialog">
+                        <p class="eyebrow">NATIVE HTML DIALOG</p>
+                        <h3>Nice work!</h3>
+                        <p>This dialog can be opened and closed with built-in browser behavior.</p>
+                        <button class="button button-primary" type="submit">Close dialog</button>
+                    </form>
+                </dialog>
+                <p class="muted">A task template is also used below to create new list items.</p>
+            </article>
+        </div>
+    </section>
+
     <section id="form-demo" class="section-block form-section">
         <div class="section-heading">
             <div><p class="eyebrow">FORM CONTROLS</p><h2>Try the inputs</h2></div>
@@ -84,7 +125,8 @@ console.log(greeting);</code></pre>
             <div class="form-grid">
                 <div class="field">
                     <label for="fullName">Name</label>
-                    <input id="fullName" name="fullName" type="text" placeholder="Ada Lovelace" autocomplete="name" required minlength="2">
+                    <input id="fullName" name="fullName" type="text" placeholder="Ada Lovelace" autocomplete="name" list="suggestedNames" required minlength="2">
+                    <datalist id="suggestedNames"><option value="Ada Lovelace"><option value="Grace Hopper"><option value="Alan Turing"></datalist>
                 </div>
                 <div class="field">
                     <label for="emailAddress">Email</label>
@@ -149,6 +191,9 @@ console.log(greeting);</code></pre>
                 <li><span>Explore the CSS variables</span><button type="button" data-remove-task aria-label="Remove task">×</button></li>
                 <li><span>Change a button style</span><button type="button" data-remove-task aria-label="Remove task">×</button></li>
             </ul>
+            <template id="taskTemplate">
+                <li><span></span><button type="button" data-remove-task aria-label="Remove task">×</button></li>
+            </template>
         </div>
     </section>
 
@@ -500,6 +545,19 @@ tfoot { color: var(--color-muted); font-size: 0.86rem; background: #f8fafc; }
 .page-footer small { grid-column: 1 / -1; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
+.alternate-theme {
+    --color-primary: #0f766e;
+    --color-primary-dark: #115e59;
+    --color-accent: #c026d3;
+}
+.form-message.is-success { color: #047857; font-weight: 800; }
+.sample-image { display: block; width: 100%; border-radius: 0.8rem; margin-block: 0.7rem; }
+.inline-icon { display: block; width: 100%; max-height: 70px; margin-block: 0.6rem; }
+#drawingCanvas { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); border-radius: 0.8rem; background: #f8fafc; }
+.embed-demo { width: 100%; min-height: 100px; margin-top: 10px; border: 1px solid var(--color-border); border-radius: 0.8rem; background: #fff; }
+.demo-dialog { width: min(420px, calc(100% - 28px)); padding: 24px; border: 1px solid var(--color-border); border-radius: 1.2rem; color: var(--color-ink); box-shadow: 0 25px 80px rgb(15 23 42 / 25%); }
+.demo-dialog::backdrop { background: rgb(15 23 42 / 55%); backdrop-filter: blur(3px); }
+.demo-dialog form { display: grid; gap: 12px; }
 @keyframes orbit { to { transform: rotate(360deg); } }
 @media (max-width: 780px) {
     .intro-panel { grid-template-columns: 1fr; }
@@ -566,15 +624,12 @@ taskForm.addEventListener("submit", (event) => {
     const title = taskInput.value.trim();
     if (!title) return;
 
-    const item = document.createElement("li");
-    const label = document.createElement("span");
-    const removeButton = document.createElement("button");
+    const taskTemplate = document.querySelector("#taskTemplate");
+    const item = taskTemplate.content.firstElementChild.cloneNode(true);
+    const label = item.querySelector("span");
+    const removeButton = item.querySelector("[data-remove-task]");
     label.textContent = title; // textContent avoids treating user input as HTML.
-    removeButton.type = "button";
-    removeButton.textContent = "×";
     removeButton.setAttribute("aria-label", "Remove " + title);
-    removeButton.dataset.removeTask = "";
-    item.append(label, removeButton);
     taskList.append(item);
     taskInput.value = "";
     taskInput.focus();
@@ -599,6 +654,27 @@ document.querySelector(".section-heading").append(themeToggle);
 themeToggle.addEventListener("click", () => {
     const enabled = document.body.classList.toggle("alternate-theme");
     themeToggle.setAttribute("aria-pressed", String(enabled));
+});
+
+const drawingCanvas = document.querySelector("#drawingCanvas");
+const drawingContext = drawingCanvas.getContext("2d");
+const bars = [0.42, 0.75, 0.58, 0.92, 0.66];
+const barColors = ["#4f46e5", "#6366f1", "#0f9f91", "#818cf8", "#14b8a6"];
+bars.forEach((value, index) => {
+    const barHeight = value * 125;
+    drawingContext.fillStyle = barColors[index];
+    drawingContext.beginPath();
+    drawingContext.roundRect(36 + index * 118, 145 - barHeight, 62, barHeight, 8);
+    drawingContext.fill();
+});
+drawingContext.fillStyle = "#475569";
+drawingContext.font = "18px system-ui";
+drawingContext.fillText("Canvas chart", 36, 25);
+
+const demoDialog = document.querySelector("#demoDialog");
+document.querySelector("#openDemoDialog").addEventListener("click", () => {
+    if (typeof demoDialog.showModal === "function") demoDialog.showModal();
+    else demoDialog.setAttribute("open", "");
 });
 
 console.info("Starter project ready", {

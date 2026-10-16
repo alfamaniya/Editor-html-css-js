@@ -1468,7 +1468,30 @@ button:hover {
                     const snippets = (data.snippets && data.snippets.css) || [];
                     const guide = window.EDITOR_CSS_GUIDE_DATA || {};
                     const properties = (data.cssProperties || CSS_PROPS).map(function (name) {
-                        return { label: name, insert: name, description: (guide.properties || {})[name] || 'CSS ویژگی (Property)' };
+                        const descriptions = guide.properties || {};
+                        let description = descriptions[name];
+                        if (!description) {
+                            const prefixRules = [
+                                [/^(margin|padding)(-|$)/, 'فاصله بیرونی/داخلی عنصر و جهت مشخص‌شده در نام ویژگی.'],
+                                [/^(border|outline)(-|$)/, 'تنظیم کادر یا خط دور عنصر.'],
+                                [/^(background)(-|$)/, 'تنظیم رنگ، تصویر یا رفتار پس‌زمینه.'],
+                                [/^(font|text|line-height|letter-spacing|word-spacing)/, 'تنظیم قلم، متن، فاصله یا نحوه نمایش نوشته.'],
+                                [/^(grid|flex|align-|justify-|place-|gap|row-gap|column-gap)/, 'تنظیم چیدمان و فاصله عناصر در Flexbox یا Grid.'],
+                                [/^(animation|transition)/, 'تنظیم حرکت یا تغییر تدریجی در طول زمان.'],
+                                [/^(transform|translate|rotate|scale)/, 'تغییر شکل، زاویه، مقیاس یا موقعیت نمایشی عنصر.'],
+                                [/^(overflow|scroll|overscroll)/, 'تنظیم سرریز محتوا یا رفتار پیمایش.'],
+                                [/^(width|height|size|aspect-ratio|min-|max-)/, 'تنظیم اندازه یا محدودیت اندازه عنصر.'],
+                                [/^(position|inset|top|right|bottom|left|z-index|float|clear)/, 'تنظیم جای‌گذاری عنصر یا ترتیب قرارگیری آن.'],
+                                [/^(color|opacity|filter|backdrop-filter|mix-blend|box-shadow|text-shadow)/, 'تنظیم رنگ، شفافیت یا جلوه بصری.'],
+                                [/^(list-style|counter)/, 'تنظیم نشانگر فهرست یا شمارنده CSS.'],
+                                [/^(column|break-|orphans|widows)/, 'تنظیم ستون‌بندی یا شکستن محتوا در صفحه/ستون.'],
+                                [/^(cursor|pointer-events|user-select|touch-action|resize)/, 'تنظیم تعامل کاربر با عنصر.'],
+                                [/^(object-|content|visibility|display)/, 'تنظیم نمایش یا رفتار محتوای عنصر.']
+                            ];
+                            const match = prefixRules.find(function (rule) { return rule[0].test(name); });
+                            description = match ? match[1] : 'ویژگی CSS برای تنظیم ظاهر، چیدمان یا رفتار عنصر؛ برای جزئیات به مرجع MDN مراجعه کنید.';
+                        }
+                        return { label: name, insert: name, description: description };
                     });
                     return filterList(snippets.concat(properties), ctx.word);
                 }

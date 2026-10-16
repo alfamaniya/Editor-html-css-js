@@ -9,7 +9,6 @@
 <body>
 
     <header class="page-symbol-header" aria-label="Symbol suggestions">
-        <div class="header-title">Quick Symbols</div>
         <div class="symbol-toolbar" id="symbolToolbar" role="toolbar" aria-label="Quick code symbols">
             <button type="button" data-prefix="&lt;" data-suffix="&gt;" data-label="Opening tag" title="Insert opening tag"> &lt; &gt; </button>
             <button type="button" data-prefix="&lt;/" data-suffix="&gt;" data-label="Closing tag" title="Insert closing tag">&lt;/&gt;</button>
@@ -23,26 +22,26 @@
         </div>
     
     </header>
+    <header class="settings-header" aria-label="Editor settings">
+    <div class="pane-label">
+        <button type="button" class="arrow-btn left" id="btnUndo" title="Undo (Ctrl+Z)">↶</button>
+        <div class="toolbar">
+            <button id="btnDownload" title="Download with Custom Name">⬇ Download</button>
+            <button id="btnReset"    title="Restore Default Code">🔁 Reset</button>
+            <button id="btnClear"    title="Clear Current File">🗑 Clear</button>
+            <button id="btnClearAll" title="Clear All Files">🧹 Clear All</button>
+            <button id="btnFontDec"  title="Decrease Font Size">A−</button>
+            <button id="btnFontInc"  title="Increase Font Size">A+</button>
+            <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
+        </div>
+        <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
+        <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
+    </div>
+    </header>
     <div class="container">
 
         <div class="editor-pane">
-            <header class="settings-header" aria-label="Editor settings">
-            <div class="settings-header-title">Editor Settings</div>
-            <div class="pane-label">
-                <button type="button" class="arrow-btn left" id="btnUndo" title="Undo (Ctrl+Z)">↶</button>
-                <div class="toolbar">
-                    <button id="btnDownload" title="Download with Custom Name">⬇ Download</button>
-                    <button id="btnReset"    title="Restore Default Code">🔁 Reset</button>
-                    <button id="btnClear"    title="Clear Current File">🗑 Clear</button>
-                    <button id="btnClearAll" title="Clear All Files">🧹 Clear All</button>
-                    <button id="btnFontDec"  title="Decrease Font Size">A−</button>
-                    <button id="btnFontInc"  title="Increase Font Size">A+</button>
-                    <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
-                </div>
-                <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
-                <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
-            </div>
-            </header>
+
 
             <div class="search-tools-row">
                 <div class="search-bar">

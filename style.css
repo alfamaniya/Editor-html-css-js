@@ -1110,7 +1110,7 @@
             direction: ltr;
         }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast-action { margin-left: 12px; padding: 4px 9px; border: 1px solid rgba(255,255,255,.55); border-radius: 5px; background: transparent; color: inherit; cursor: pointer; font: inherit; font-weight: 700; white-space: nowrap; }
+        .toast-action { pointer-events: auto; margin-left: 12px; padding: 4px 9px; border: 1px solid rgba(255,255,255,.55); border-radius: 5px; background: transparent; color: inherit; cursor: pointer; font: inherit; font-weight: 700; white-space: nowrap; }
         .toast-action:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
         .toast.error { background: #e74c3c; }
         .toast.info  { background: #3498db; }
@@ -1152,20 +1152,6 @@
             margin-bottom: 16px;
             line-height: 1.7;
         }
-        .modal-input {
-            width: 100%;
-            padding: 11px 14px;
-            background: #1c2938;
-            color: var(--blue-text);
-            border: 1px solid var(--blue-border);
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            outline: none;
-            margin-bottom: 14px;
-        }
-        .modal-input:focus { border-color: var(--blue-accent); }
-        .modal-input::placeholder { color: #829bb5; direction: ltr; text-align: right; }
         .modal-actions { display: flex; flex-direction: column; gap: 8px; }
         .modal-btn {
             padding: 11px 14px;
@@ -1442,7 +1428,7 @@ textarea:focus-visible,
 .fe-help { font-size: 11px; }
 .pane-label { padding: 5px 12px; }
 .pane-label .toolbar { margin-left: 38px; margin-right: 38px; }
-#btnHelp { margin-left: auto; }
+#btnHelp { margin-left: 0; }
 .arrow-btn { position: static; transform: none; flex: 0 0 30px; }
 .arrow-btn:hover { transform: scale(1.04); }
 .arrow-btn:active { transform: scale(.96); }
@@ -1652,3 +1638,25 @@ input {
 .search-tools-row, .search-results, .lib-presets-section, .lib-form, .lib-list,
 .help-content, .modal-actions { border-radius: 14px; }
 .highlight, .input { border-radius: 12px; }
+
+
+/* Correct search alignment for the actual sidebar widths. */
+.search-tools-row { margin-left: 46px; width: calc(100% - 46px); }
+.editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
+    margin-left: 248px;
+    width: calc(100% - 248px);
+}
+.toast-action { pointer-events: auto; }
+#btnHelp { margin-left: 0; }
+@media (max-width: 760px) {
+    .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+    }
+}
+.file-explorer .fe-toggle-btn:focus-visible,
+.file-explorer .fe-add-btn:focus-visible,
+.file-explorer .fe-library-btn:focus-visible {
+    outline: 2px solid var(--blue-accent);
+    outline-offset: 2px;
+}

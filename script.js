@@ -1467,59 +1467,24 @@ button:hover {
             function completionList(ctx) {
                 const data = getIntelliSenseData();
                 if (ctx.kind === 'htmlTag') {
-                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
-                    return filterList((data.htmlTags || HTML_TAGS).map(function (name) {
-                        return { label: name, insert: name, description: (guide.htmlTags || {})[name] || 'عنصر HTML برای ساختار یا محتوای صفحه.' };
-                    }), ctx.word);
+                    return filterList(data.htmlTags || HTML_TAGS, ctx.word);
                 }
                 if (ctx.kind === 'htmlAttr') {
-                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
-                    const extra = ((guide.htmlAttrsByTag || {})[ctx.tag] || '').split(/\\s+/).filter(Boolean);
-                    const attrs = (data.htmlAttributes || []).concat((data.htmlAttrsByTag || {})[ctx.tag] || [], extra);
+                    const attrs = (data.htmlAttributes || []).concat((data.htmlAttrsByTag || {})[ctx.tag] || []);
                     return filterList(Array.from(new Set(attrs)).map(function (name) {
                         const hasValue = /^(class|id|style|title|alt|src|href|placeholder|name|value|type|role|lang|dir|for|target|rel|method|action|width|height|colspan|rowspan|scope|accept|autocomplete|pattern|inputmode|aria-[\\w-]+|data-[\\w-]+)$/.test(name);
                         return { label: name, insert: hasValue ? name + '=""' : name,
-                            description: (guide.htmlAttributes || {})[name] || 'ویژگی HTML برای تنظیم رفتار یا اطلاعات عنصر.',
                             caret: hasValue ? name.length + 2 : null };
                     }), ctx.word);
                 }
                 if (ctx.kind === 'cssProperty') {
                     const snippets = (data.snippets && data.snippets.css) || [];
-                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
-                    const properties = (data.cssProperties || CSS_PROPS).map(function (name) {
-                        const descriptions = guide.properties || {};
-                        let description = descriptions[name];
-                        if (!description) {
-                            const prefixRules = [
-                                [/^(margin|padding)(-|$)/, 'فاصله بیرونی/داخلی عنصر و جهت مشخص‌شده در نام ویژگی.'],
-                                [/^(border|outline)(-|$)/, 'تنظیم کادر یا خط دور عنصر.'],
-                                [/^(background)(-|$)/, 'تنظیم رنگ، تصویر یا رفتار پس‌زمینه.'],
-                                [/^(font|text|line-height|letter-spacing|word-spacing)/, 'تنظیم قلم، متن، فاصله یا نحوه نمایش نوشته.'],
-                                [/^(grid|flex|align-|justify-|place-|gap|row-gap|column-gap)/, 'تنظیم چیدمان و فاصله عناصر در Flexbox یا Grid.'],
-                                [/^(animation|transition)/, 'تنظیم حرکت یا تغییر تدریجی در طول زمان.'],
-                                [/^(transform|translate|rotate|scale)/, 'تغییر شکل، زاویه، مقیاس یا موقعیت نمایشی عنصر.'],
-                                [/^(overflow|scroll|overscroll)/, 'تنظیم سرریز محتوا یا رفتار پیمایش.'],
-                                [/^(width|height|size|aspect-ratio|min-|max-)/, 'تنظیم اندازه یا محدودیت اندازه عنصر.'],
-                                [/^(position|inset|top|right|bottom|left|z-index|float|clear)/, 'تنظیم جای‌گذاری عنصر یا ترتیب قرارگیری آن.'],
-                                [/^(color|opacity|filter|backdrop-filter|mix-blend|box-shadow|text-shadow)/, 'تنظیم رنگ، شفافیت یا جلوه بصری.'],
-                                [/^(list-style|counter)/, 'تنظیم نشانگر فهرست یا شمارنده CSS.'],
-                                [/^(column|break-|orphans|widows)/, 'تنظیم ستون‌بندی یا شکستن محتوا در صفحه/ستون.'],
-                                [/^(cursor|pointer-events|user-select|touch-action|resize)/, 'تنظیم تعامل کاربر با عنصر.'],
-                                [/^(object-|content|visibility|display)/, 'تنظیم نمایش یا رفتار محتوای عنصر.']
-                            ];
-                            const match = prefixRules.find(function (rule) { return rule[0].test(name); });
-                            description = match ? match[1] : 'ویژگی CSS برای تنظیم ظاهر، چیدمان یا رفتار عنصر؛ برای جزئیات به مرجع MDN مراجعه کنید.';
-                        }
-                        return { label: name, insert: name, description: description };
-                    });
-                    return filterList(snippets.concat(properties), ctx.word);
+                    return filterList(snippets.concat(data.cssProperties || CSS_PROPS), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];
-                    const guide = window.EDITOR_CSS_GUIDE_DATA || {};
-                    const guidedValues = ((guide.values || {})[ctx.property] || []);
                     const common = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'transparent', 'currentColor'];
-                    return filterList(guidedValues.concat(values, common), ctx.word);
+                    return filterList(values.concat(common), ctx.word);
                 }
                 if (ctx.kind === 'jsMember') {
                     const members = (data.jsMembers || {})[ctx.root] || [];
@@ -1645,7 +1610,7 @@ button:hover {
                 const items = completionList(ctx);
                 if (!items.length) { hide(); return; }
                 if (items.length === 1 && String(asItem(items[0]).label || asItem(items[0]).insert).toLowerCase() === ctx.word.toLowerCase()) { hide(); return; }
-                show(items, ta, ctx.from, ctx.to, ctx.kind === 'cssValue' ? getCssFormatHint(ctx.property) : '');
+                show(items, ta, ctx.from, ctx.to);
             }
             function onKeyDown(e) {
                 if (el.hidden) return false;

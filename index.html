@@ -52,9 +52,23 @@
                         <span class="fe-title">Files</span>
                         <button type="button" class="fe-add-btn" id="feAddBtn" title="New file" aria-label="New file">+</button>
                     </div>
+                    <div class="fe-controls" id="feControls">
+                        <label class="visually-hidden" for="feSearch">Search files</label>
+                        <input type="search" id="feSearch" placeholder="Search files…" autocomplete="off" aria-label="Search files">
+                        <label class="visually-hidden" for="feTypeFilter">Filter files by type</label>
+                        <select id="feTypeFilter" aria-label="Filter files by type">
+                            <option value="all">All types</option><option value="html">HTML</option><option value="css">CSS</option><option value="js">JavaScript</option>
+                        </select>
+                        <label class="visually-hidden" for="feGroupMode">File ordering</label>
+                        <select id="feGroupMode" aria-label="File ordering">
+                            <option value="manual">Added order</option><option value="type">Group by type</option><option value="name">Sort by name</option>
+                        </select>
+                    </div>
                     <div class="fe-new-form" id="feNewForm" hidden>
-                        <input type="text" id="feNewName" placeholder="File name..." maxlength="40" spellcheck="false">
-                        <select id="feNewType">
+                        <label class="visually-hidden" for="feNewName">New file name</label>
+                        <input type="text" id="feNewName" placeholder="File name..." maxlength="40" spellcheck="false" aria-describedby="feNameHelp">
+                        <span id="feNameHelp" class="fe-help">Required · max 40 characters · unique</span>
+                        <select id="feNewType" aria-label="New file type">
                             <option value="html">HTML</option>
                             <option value="css">CSS</option>
                             <option value="js">JS</option>

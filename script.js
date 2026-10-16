@@ -150,7 +150,7 @@ button:hover {
         const outputFrame = document.getElementById('output');
         const editorsBox  = document.getElementById('editors');
         const toast       = document.getElementById('toast');
-        const tabButtons  = document.querySelectorAll('.tab');
+        const tabButtons  = [];
         const dirtyBadge  = document.getElementById('dirtyBadge');
         const libsPanel   = document.getElementById('libsPanel');
         const editors     = {};
@@ -345,13 +345,14 @@ button:hover {
         }
 
         const savedExplorerState = storageGet(FILE_EXPLORER_KEY);
-        setFileExplorerCollapsed(savedExplorerState === null ? true : savedExplorerState !== '0', false);
+        const isMobileViewport = window.matchMedia('(max-width: 760px)').matches;
+        setFileExplorerCollapsed(savedExplorerState === null ? isMobileViewport : savedExplorerState !== '0', false);
         feToggleBtn.addEventListener('click', function() {
             setFileExplorerCollapsed(!fileExplorer.classList.contains('is-collapsed'));
         });
         const feNewForm   = document.getElementById('feNewForm');
         const feNewName   = document.getElementById('feNewName');
-        const feNewType   = document.getElementById('feNewType');
+        const feLibraryBtn = document.getElementById('feLibraryBtn');
         const feNewCreate = document.getElementById('feNewCreate');
         const feNewCancel = document.getElementById('feNewCancel');
 
@@ -388,6 +389,14 @@ button:hover {
             control.addEventListener(control === feSearch ? 'input' : 'change', renderFileExplorer);
         });
 
+        feLibraryBtn.addEventListener('click', function() {
+            activateTab('libs');
+            if (window.matchMedia('(max-width: 760px)').matches) setFileExplorerCollapsed(true);
+        });
+        document.getElementById('btnHelp').addEventListener('click', function() {
+            activateTab('help');
+        });
+
         feAddBtn.addEventListener('click', function() {
             if (fileExplorer.classList.contains('is-collapsed')) {
                 setFileExplorerCollapsed(false);
@@ -395,7 +404,6 @@ button:hover {
             feNewForm.hidden = !feNewForm.hidden;
             if (!feNewForm.hidden) {
                 feNewName.value = '';
-                feNewType.value = LANGS.includes(activeTab) ? activeTab : 'html';
                 setTimeout(function() { feNewName.focus(); }, 30);
             }
         });
@@ -414,8 +422,16 @@ button:hover {
             return extType && extType !== type ? 'The file extension does not match the selected ' + type.toUpperCase() + ' type. The name was kept unchanged.' : '';
         }
         feNewCreate.addEventListener('click', function() {
-            const name = feNewName.value.trim();
-            const type = LANGS.includes(feNewType.value) ? feNewType.value : 'html';
+            let name = feNewName.value.trim();
+            if (!name) { showToast('❌ Enter a file name with an extension, e.g. style.css', 'error'); feNewName.focus(); return; }
+            if (!/\.[^.]+$/.test(name)) {
+                const fallbackType = LANGS.includes(activeTab) ? activeTab : 'html';
+                name += '.' + fallbackType;
+            }
+            const extension = (name.match(/\.([^.]+)$/) || [,''])[1].toLowerCase();
+            const typeByExtension = { html: 'html', htm: 'html', css: 'css', js: 'js', mjs: 'js' };
+            const type = typeByExtension[extension];
+            if (!type) { showToast('❌ Supported extensions: .html, .htm, .css, .js, .mjs', 'error'); feNewName.focus(); return; }
             const error = fileNameError(name, type, null);
             if (error) { showToast('❌ ' + error, 'error'); feNewName.focus(); return; }
             const file = { id: makeId(), name: name, type: type, content: '' };
@@ -424,8 +440,8 @@ button:hover {
             renderFileExplorer();
             feNewForm.hidden = true;
             openFile(file.id);
-            const warning = fileNameWarning(name, type);
-            showToast(warning ? '⚠ ' + warning : '✅ File “' + name + '” created', warning ? 'info' : 'success');
+            if (window.matchMedia('(max-width: 760px)').matches) setFileExplorerCollapsed(true);
+            showToast('✅ File “' + name + '” created', 'success');
         });
 
         feNewName.addEventListener('keydown', function(e) {
@@ -448,7 +464,10 @@ button:hover {
             }
             if (e.target.matches('input.fe-rename-input')) return;
             const item = e.target.closest('.fe-item');
-            if (item) openFile(item.dataset.id);
+            if (item) {
+                openFile(item.dataset.id);
+                if (window.matchMedia('(max-width: 760px)').matches) setFileExplorerCollapsed(true);
+            }
         });
         feList.addEventListener('keydown', function(e) {
             const item = e.target.closest('.fe-item');
@@ -818,7 +837,7 @@ button:hover {
             if (!name) { showToast('❌ Enter a library name', 'error'); nameIn.focus(); return; }
             if (!code.trim()) { showToast('❌ Enter library code', 'error'); codeIn.focus(); return; }
 
-            libraries.push({ id: makeLibId(), name: name, type: type, code: code, enabled: true });
+            libraries.unshift({ id: makeLibId(), name: name, type: type, code: code, enabled: true });
             if (!saveLibraries()) {
                 libraries.pop();
                 showToast('❌ ذخیره کتابخانه انجام نشد؛ فضای ذخیره‌سازی مرورگر را بررسی کنید.', 'error');

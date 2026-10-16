@@ -2192,6 +2192,34 @@ button:hover {
         const VOID_TAGS = ['area','base','br','col','embed','hr','img','input',
                            'link','meta','param','source','track','wbr'];
 
+        function applySearchHighlights(code, query) {
+            const term = String(query || '');
+            if (term.length < 2) return;
+            const lowerTerm = term.toLocaleLowerCase();
+            const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT);
+            const nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            nodes.forEach(function(node) {
+                const value = node.nodeValue || '';
+                const lowerValue = value.toLocaleLowerCase();
+                let from = 0;
+                let index = lowerValue.indexOf(lowerTerm, from);
+                if (index < 0) return;
+                const fragment = document.createDocumentFragment();
+                while (index >= 0) {
+                    if (index > from) fragment.appendChild(document.createTextNode(value.slice(from, index)));
+                    const mark = document.createElement('mark');
+                    mark.className = 'search-match-highlight';
+                    mark.textContent = value.slice(index, index + term.length);
+                    fragment.appendChild(mark);
+                    from = index + term.length;
+                    index = lowerValue.indexOf(lowerTerm, from);
+                }
+                if (from < value.length) fragment.appendChild(document.createTextNode(value.slice(from)));
+                node.parentNode.replaceChild(fragment, node);
+            });
+        }
+
         function createEditor(lang) {
             const wrap = document.createElement('div');
             wrap.className = 'editor-wrap';
@@ -2221,6 +2249,7 @@ button:hover {
             }
             function refresh() {
                 code.innerHTML = highlight(ta.value) + '\n';
+                applySearchHighlights(code, searchInput.value);
                 const count = ta.value.split('\n').length;
                 const parts = new Array(count);
                 for (let i = 0; i < count; i++) parts[i] = i + 1;

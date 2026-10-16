@@ -111,6 +111,140 @@
             {label:'box-shadow', insert:'0 4px 12px rgba(0, 0, 0, 0.15)', description:'Soft shadow value', caret:0}
         ]
     };
-    Object.keys(cssValues).forEach(function (key) { cssValues[key] = cssValues[key].split(/\s+/); });
-    window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, { cssProperties, cssValues, snippets: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).snippets || {}, { css: snippets.css }) });
+    const extendedCssProperties = (
+        'all animation-composition animation-range-end animation-range-start animation-timeline anchor-name anchor-scope block-overflow border-block-end-color border-block-end-style border-block-end-width border-block-start-color border-block-start-style border-block-start-width border-inline-end-color border-inline-end-style border-inline-end-width border-inline-start-color border-inline-start-style border-inline-start-width caret-animation caret-shape corner-shape field-sizing font-language-override font-smooth interpolate-size line-clamp line-height-step math-depth math-shift math-style overlay position-anchor position-area position-try position-try-fallbacks position-try-order reading-flow reading-order scroll-initial-target scroll-marker-group scroll-target-group text-box text-box-edge text-box-trim text-wrap text-wrap-mode text-wrap-style view-transition-class view-transition-name white-space-collapse word-space-transform -webkit-appearance -webkit-line-clamp -webkit-text-fill-color -webkit-text-stroke -webkit-text-stroke-color -webkit-text-stroke-width -webkit-font-smoothing --primary-color --secondary-color --surface-color --text-color --muted-color --border-color --accent-color --spacing --radius --shadow --font-size --content-width'
+    ).split(/\s+/);
+    cssProperties.push(...extendedCssProperties);
+    cssProperties.splice(0, cssProperties.length, ...Array.from(new Set(cssProperties)));
+
+    const cssAtRules = (
+        '@charset @container @counter-style @font-face @font-feature-values @font-palette-values @import @keyframes @layer @media @namespace @page @property @scope @starting-style @supports @view-transition'
+    ).split(/\s+/);
+    const cssPseudoClasses = (
+        'active any-link autofill blank checked current default defined dir() disabled empty enabled first first-child first-of-type focus focus-visible focus-within fullscreen future has() host host-context() hover in-range indeterminate invalid is() lang() last-child last-of-type left link local-link modal not() nth-child() nth-col() nth-last-child() nth-last-col() nth-last-of-type() nth-of-type() only-child only-of-type optional out-of-range past paused picture-in-picture placeholder-shown playing read-only read-write required right root scope seeking stalled state() target target-within user-invalid user-valid valid visited where()'
+    ).split(/\s+/);
+    const cssPseudoElements = (
+        'after backdrop before cue cue-region file-selector-button first-letter first-line grammar-error highlight() marker part() placeholder selection slotted() spelling-error target-text view-transition view-transition-group view-transition-image-pair view-transition-new view-transition-old'
+    ).split(/\s+/);
+    const cssFunctions = (
+        'abs() acos() anchor() anchor-size() asin() atan() atan2() attr() blur() brightness() calc() calc-size() clamp() color() color-mix() contrast() cos() counter() counters() cubic-bezier() drop-shadow() env() exp() fit-content() grayscale() hsl() hsla() hypot() if() inset() invert() lab() lch() light-dark() linear() linear-gradient() log() matrix() matrix3d() max() min() minmax() mod() opacity() oklab() oklch() perspective() polygon() pow() radial-gradient() rem() repeat() repeating-linear-gradient() repeating-radial-gradient() rotate() rotate3d() round() saturate() scale() scale3d() sepia() sign() sin() skew() sqrt() steps() tan() translate() translate3d() url() var()'
+    ).split(/\s+/);
+    const cssUnits = (
+        'px em rem ex ch cap ic lh rlh vw vh vi vb vmin vmax svw svh lvw lvh dvw dvh cqw cqh cqi cqb cqmin cqmax % deg grad rad turn s ms Hz kHz dpi dpcm dppx fr'
+    ).split(/\s+/);
+
+    const extraCssValues = {
+        display: 'block inline inline-block flex inline-flex grid inline-grid flow-root contents none',
+        position: 'static relative absolute fixed sticky',
+        'container-type': 'normal size inline-size scroll-state',
+        'text-wrap': 'wrap nowrap balance pretty stable',
+        'text-wrap-mode': 'wrap nowrap',
+        'text-wrap-style': 'auto balance stable pretty',
+        'font-size': 'xx-small x-small small medium large x-large xx-large xxx-large smaller larger clamp() calc() var()',
+        width: 'auto min-content max-content fit-content() stretch 100% 100vw 100dvw calc() clamp() var()',
+        height: 'auto min-content max-content fit-content() stretch 100% 100vh 100dvh calc() clamp() var()',
+        'min-width': 'auto min-content max-content fit-content() 0 100% 100vw',
+        'max-width': 'none min-content max-content fit-content() 100% 100vw',
+        'min-height': 'auto min-content max-content fit-content() 0 100%',
+        'max-height': 'none min-content max-content fit-content() 100%',
+        margin: '0 auto auto 1rem 1em calc() clamp() var()',
+        padding: '0 0.5rem 1rem 1em 1px calc() clamp() var()',
+        gap: 'normal 0 0.25rem 0.5rem 1rem 1em 10px calc() clamp() var()',
+        'grid-template-columns': 'none subgrid repeat() minmax() fit-content() 1fr 2fr 100px auto min-content max-content',
+        'grid-template-rows': 'none subgrid repeat() minmax() fit-content() 1fr auto min-content max-content',
+        'grid-auto-flow': 'row column dense row dense column dense',
+        'grid-column': 'auto span 1 / -1',
+        'grid-row': 'auto span 1 / -1',
+        'border-radius': '0 2px 4px 8px 0.5rem 1rem 50% 999px',
+        'box-shadow': 'none 0 1px 2px rgb() 0 4px 12px rgba() inset',
+        'text-shadow': 'none 0 1px 2px rgba()',
+        color: 'currentColor transparent black white red blue rebeccapurple rgb() rgba() hsl() hsla() oklch() color-mix() light-dark() var()',
+        'background-color': 'transparent currentColor rgb() rgba() hsl() hsla() oklch() color-mix() light-dark() var()',
+        'background-image': 'none url() linear-gradient() radial-gradient() conic-gradient() repeating-linear-gradient() image-set() cross-fade()',
+        transform: 'none translateX() translateY() translate() scale() rotate() skew() matrix() perspective()',
+        filter: 'none blur() brightness() contrast() grayscale() hue-rotate() invert() opacity() saturate() sepia() drop-shadow()',
+        'backdrop-filter': 'none blur() brightness() contrast() grayscale() hue-rotate() invert() opacity() saturate() sepia()',
+        transition: 'none all opacity transform color background-color box-shadow 150ms ease 300ms ease-in-out',
+        animation: 'none name 1s ease 0s 1 normal both running',
+        'animation-timing-function': 'ease ease-in ease-out ease-in-out linear step-start step-end steps() cubic-bezier() linear()',
+        'transition-timing-function': 'ease ease-in ease-out ease-in-out linear step-start step-end steps() cubic-bezier() linear()',
+        'font-family': 'system-ui sans-serif serif monospace cursive fantasy ui-sans-serif ui-serif ui-monospace Arial Helvetica Inter Roboto Georgia',
+        'font-weight': '100 200 300 400 500 600 700 800 900 normal bold bolder lighter',
+        'line-height': 'normal 1 1.25 1.5 1.75 2',
+        'object-fit': 'fill contain cover none scale-down',
+        'aspect-ratio': 'auto 1 / 1 4 / 3 3 / 2 16 / 9',
+        'scroll-behavior': 'auto smooth',
+        'scroll-snap-align': 'none start end center',
+        'scroll-snap-stop': 'normal always',
+        'scroll-snap-type': 'none x y block inline both mandatory proximity',
+        'content-visibility': 'visible auto hidden',
+        'contain': 'none strict content size inline-size layout style paint',
+        'container-type': 'normal size inline-size',
+        'color-scheme': 'normal light dark light dark only',
+        'accent-color': 'auto currentColor transparent',
+        'pointer-events': 'auto none visiblePainted visibleFill visibleStroke painted fill stroke all',
+        'overflow': 'visible hidden clip scroll auto',
+        'white-space': 'normal pre nowrap pre-wrap pre-line break-spaces',
+        'white-space-collapse': 'collapse preserve preserve-breaks preserve-spaces break-spaces',
+        'text-overflow': 'clip ellipsis',
+        'text-decoration-thickness': 'auto from-font 1px 0.1em',
+        'text-underline-offset': 'auto 1px 0.1em',
+        'view-transition-name': 'none root match-element',
+        'anchor-name': 'none --anchor',
+        'position-anchor': 'auto --anchor',
+        'position-area': 'none center top bottom left right span-all',
+        'field-sizing': 'fixed content',
+        'scrollbar-gutter': 'auto stable stable both-edges',
+        'writing-mode': 'horizontal-tb vertical-rl vertical-lr',
+        'direction': 'ltr rtl',
+        'user-select': 'auto text none contain all',
+        'touch-action': 'auto none pan-x pan-y manipulation pinch-zoom',
+        'font-synthesis': 'weight style small-caps none',
+        'font-variant-numeric': 'normal lining-nums oldstyle-nums proportional-nums tabular-nums diagonal-fractions stacked-fractions ordinal slashed-zero',
+        'text-emphasis-style': 'none filled open dot circle double-circle triangle sesame',
+        'text-align': 'start end left right center justify match-parent',
+        'transform-origin': 'center top bottom left right 50% 50%',
+        'mask-image': 'none url() linear-gradient() radial-gradient()',
+        'clip-path': 'none circle() ellipse() inset() polygon() path() url()',
+        'shape-outside': 'none circle() ellipse() inset() polygon() url()',
+        'color-interpolation': 'auto sRGB linearRGB',
+        'stroke-linecap': 'butt round square',
+        'stroke-linejoin': 'arcs bevel miter miter-clip round',
+        'fill-rule': 'nonzero evenodd',
+        'stroke-width': '0 1 2 1px 2px',
+        'animation-range': 'normal cover contain entry exit entry-crossing exit-crossing',
+        'timeline-scope': 'none --timeline'
+    };
+    Object.keys(extraCssValues).forEach(function (key) {
+        cssValues[key] = (cssValues[key] || '') + ' ' + extraCssValues[key];
+    });
+
+    // Curated browser-supported at-rules, selector pseudo-classes/elements, and value functions.
+    const extraCssSnippets = [
+        { label: '@media', insert: '@media (max-width: 768px) {\n    \n}', description: 'Responsive media query', caret: 29 },
+        { label: '@supports', insert: '@supports (display: grid) {\n    \n}', description: 'Feature query', caret: 31 },
+        { label: '@container', insert: '@container (min-width: 400px) {\n    \n}', description: 'Container query', caret: 32 },
+        { label: 'flex-center', insert: 'display: flex;\njustify-content: center;\nalign-items: center;', description: 'Center content with flexbox', caret: 0 },
+        { label: 'grid-center', insert: 'display: grid;\nplace-items: center;', description: 'Center content with grid', caret: 0 },
+        { label: 'responsive-grid', insert: 'display: grid;\ngrid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\ngap: 1rem;', description: 'Responsive auto-fit grid', caret: 0 },
+        { label: 'focus-visible', insert: ':focus-visible {\n    outline: 2px solid currentColor;\n    outline-offset: 2px;\n}', description: 'Visible keyboard focus', caret: 0 },
+        { label: 'reduced-motion', insert: '@media (prefers-reduced-motion: reduce) {\n    *, *::before, *::after {\n        animation-duration: 0.01ms !important;\n        animation-iteration-count: 1 !important;\n        scroll-behavior: auto !important;\n        transition-duration: 0.01ms !important;\n    }\n}', description: 'Respect reduced motion preference', caret: 0 },
+        { label: 'css-variables', insert: ':root {\n    --primary-color: #2563eb;\n    --surface-color: #ffffff;\n    --text-color: #111827;\n    --spacing: 1rem;\n}', description: 'Common custom properties', caret: 0 }
+    ];
+    snippets.css.push(...extraCssSnippets);
+
+    Object.keys(cssValues).forEach(function (key) {
+        const values = Array.isArray(cssValues[key]) ? cssValues[key] : String(cssValues[key]).trim().split(/\s+/);
+        cssValues[key] = Array.from(new Set(values.concat(values.filter(Boolean))));
+    });
+    window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
+        cssProperties,
+        cssValues,
+        cssAtRules,
+        cssPseudoClasses,
+        cssPseudoElements,
+        cssFunctions,
+        cssUnits,
+        snippets: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).snippets || {}, { css: snippets.css })
+    });
 })();

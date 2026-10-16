@@ -212,7 +212,9 @@ button:hover {
                     { id: ids.js,   name: 'script.js',  type: 'js',   content: DEFAULT_JS }
                 ],
                 activeFileId: ids.html,
-                lastActiveByLang: { html: ids.html, css: ids.css, js: ids.js }
+                lastActiveByLang: { html: ids.html, css: ids.css, js: ids.js },
+                documentTitle: 'My Page',
+                headExtras: ''
             };
         }
 
@@ -252,7 +254,9 @@ button:hover {
                             return {
                                 files: validFiles,
                                 activeFileId: active ? active.id : validFiles[0].id,
-                                lastActiveByLang: lastActiveByLang
+                                lastActiveByLang: lastActiveByLang,
+                                documentTitle: typeof p.documentTitle === 'string' ? p.documentTitle.slice(0, 200) : 'My Page',
+                                headExtras: typeof p.headExtras === 'string' ? p.headExtras : ''
                             };
                         }
                     }
@@ -1000,10 +1004,13 @@ button:hover {
                 '<\/script>'
             ].join('\n');
 
+            const safeTitle = String(project.documentTitle || 'My Page')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             return '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n' +
                 '<meta charset="UTF-8">\n' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-                '<title>My Page</title>\n' +
+                '<title>' + safeTitle + '</title>\n' +
+                (project.headExtras || '') + '\n' +
                 embeddedLibraries +
                 errorHook + '\n' +
                 '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n' +
@@ -1980,6 +1987,48 @@ button:hover {
                 lineNumbers.textContent = parts.join('\n');
                 syncScroll();
             }
+
+            ta.addEventListener('paste', function(e) {
+                if (lang !== 'html' || !e.clipboardData) return;
+                const pasted = e.clipboardData.getData('text/html') || e.clipboardData.getData('text/plain');
+                if (!pasted || !(/<!doctype\s+html\b|<html\b|<head\b|<body\b/i).test(pasted)) return;
+
+                let parsed;
+                try {
+                    parsed = new DOMParser().parseFromString(pasted, 'text/html');
+                    if (!parsed || !parsed.documentElement || !parsed.body) return;
+                } catch (error) {
+                    showToast('⚠️ HTML document could not be parsed; pasted text was left unchanged.', 'warning');
+                    return;
+                }
+
+                e.preventDefault();
+                const title = parsed.querySelector('head > title');
+                project.documentTitle = title ? title.textContent.trim().slice(0, 200) || 'My Page' : 'My Page';
+                const headNodes = Array.from(parsed.head ? parsed.head.children : []);
+                const extras = [];
+                const styles = [];
+                headNodes.forEach(function(node) {
+                    const tag = node.tagName.toLowerCase();
+                    if (tag === 'title' || tag === 'style') {
+                        if (tag === 'style' && node.textContent.trim()) styles.push(node.textContent.trim());
+                        return;
+                    }
+                    if (tag === 'meta' && (node.hasAttribute('charset') ||
+                        (node.getAttribute('name') || '').toLowerCase() === 'viewport')) return;
+                    extras.push(node.outerHTML);
+                });
+                project.headExtras = extras.join('\n');
+
+                const cssEditor = editors.css && editors.css.ta;
+                if (styles.length && cssEditor) {
+                    cssEditor.value = [cssEditor.value.trim(), styles.join('\n\n')].filter(Boolean).join('\n\n');
+                    cssEditor.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                ta.value = parsed.body.innerHTML;
+                ta.dispatchEvent(new Event('input', { bubbles: true }));
+                showToast('✅ Full HTML document normalized. Body, title, styles, and supported head elements were retained.', 'success');
+            });
 
             ta.addEventListener('input', function(e) {
                 const activeId = project.lastActiveByLang[lang];

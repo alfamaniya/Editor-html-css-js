@@ -45,7 +45,7 @@ The current curated banks contain approximately these unique entries after norma
 
 | Bank | Coverage currently loaded by the editor |
 |---|---|
-| HTML | 200 element names (including SVG and MathML), 231 global/event-handler attributes, and 61 tag-specific attribute groups |
+| HTML | 200 element names (including SVG and MathML), 231 common attributes including event handlers/ARIA/data attributes, and 61 tag-specific attribute groups |
 | CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, and 13 snippets |
 | JavaScript | 538 language/global/browser API words, 41 member roots, and 23 snippets |
 | Next-word database | 24 contextual rules across HTML, CSS, and JavaScript, plus dynamically generated tag-attribute/body continuations |
@@ -247,6 +247,8 @@ Review date: 2026-10-16.
 
 - Parsed `script.js`, `html-suggestions.js`, `css-suggestions.js`, `js-suggestions.js`, and `next-word-suggestions.js` with the JavaScript parser (`new Function`): **pass**. This checks syntax only; it does not execute the application.
 - Loaded the four suggestion-data scripts against a test window object and verified that each bank initializes, contextual tag attributes are arrays, and the next-word rules for all three languages are present.
+- Exercised representative next-word rules for an HTML tag, a CSS display property, a JavaScript declaration, and a JavaScript assignment; all returned candidate lists.
+- Checked caret offsets in the completion snippets and static next-word candidates: **no out-of-range offsets found**.
 - Checked the HTML for duplicate IDs: **none found**.
 - Checked static `getElementById` references against the HTML: no missing editor UI elements were found. The sole unmatched identifier, `btn`, appears in the default example JavaScript code rather than as a required editor UI element.
 - Checked the local script/style references in `index.html`: all referenced local files are present in the repository.

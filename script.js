@@ -1156,7 +1156,7 @@ console.info("Starter project ready", {
         function fileNameError(name, type, excludeId) {
             if (!name) return 'Enter a file name.';
             if (name.length > 120) return 'File names must be 120 characters or fewer.';
-            if (/[\\/:*?"<>|\\u0000-\\u001f]/.test(name)) return 'File names cannot contain \\ / : * ? " < > | or control characters.';
+            if (/[\\/:*?"<>|\u0000-\u001f]/.test(name)) return 'File names cannot contain \\ / : * ? " < > | or control characters.';
             if (project.files.some(function(f) { return f.id !== excludeId && f.name.toLowerCase() === name.toLowerCase(); })) return 'A file with that name already exists.';
             return '';
         }

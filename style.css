@@ -375,6 +375,7 @@
         .file-explorer.is-collapsed .fe-add-btn { flex: 0 0 24px; }
         .file-explorer.is-collapsed .fe-item { justify-content: center; padding: 7px 0; }
         .file-explorer.is-collapsed .fe-name,
+        .file-explorer.is-collapsed .fe-rename,
         .file-explorer.is-collapsed .fe-del { display: none; }
         .file-explorer.is-collapsed .fe-item { gap: 0; }
         .file-explorer.is-collapsed .fe-list { padding-left: 4px; padding-right: 4px; }
@@ -540,6 +541,7 @@
             text-align: left;
         }
 
+        .fe-rename,
         .fe-del {
             background: transparent;
             border: 0;
@@ -552,9 +554,13 @@
             opacity: 0;
             transition: all 0.15s;
         }
+        .fe-item:hover .fe-rename,
         .fe-item:hover .fe-del { opacity: 1; }
+        .fe-rename:hover { background: rgba(138, 185, 232, 0.2); color: #fff; }
         .fe-del:hover { background: rgba(231, 76, 60, 0.2); color: #8ab9e8; }
+        .fe-rename:focus-visible,
         .fe-del:focus-visible { opacity: 1; outline: 2px solid var(--blue-accent); }
+        .file-explorer.is-collapsed .fe-rename,
         .file-explorer.is-collapsed .fe-del { display: none; }
 
         .editors {

@@ -864,7 +864,7 @@ button:hover {
                                  .replace(/<\/style/gi, '<\\/style');
             const js   = jsFiles.map(function(f) { return '/* === ' + f.name + ' === */\n' + f.content; })
                                 .join('\n\n')
-                                .replace(/<\/script/gi, '<\\/script');
+                    ';<\/script>\n'
 
             const enabledLibs = libraries.filter(function(l) { return l.enabled; });
             const libCss = enabledLibs

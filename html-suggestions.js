@@ -123,6 +123,21 @@
     });
 
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
+        symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
+            html: [
+            { label: "<div>", prefix: "<div>", suffix: "</div>", description: "Insert a div container" },
+            { label: "<section>", prefix: "<section>", suffix: "</section>", description: "Insert a semantic section" },
+            { label: "<article>", prefix: "<article>", suffix: "</article>", description: "Insert a self-contained article" },
+            { label: "<a>", prefix: "<a href=\"\">", suffix: "</a>", description: "Insert a link" },
+            { label: "<button>", prefix: "<button type=\"button\">", suffix: "</button>", description: "Insert a button" },
+            { label: "<img>", prefix: "<img src=\"\" alt=\"\">", suffix: "", description: "Insert an image with source and accessible alt text" },
+            { label: "<ul>/<li>", prefix: "<ul>\n    <li>", suffix: "</li>\n</ul>", description: "Insert an unordered list with one item" },
+            { label: "<form>", prefix: "<form action=\"#\" method=\"get\">", suffix: "</form>", description: "Insert a form" },
+            { label: "<!-- -->", prefix: "<!-- ", suffix: " -->", description: "Insert an HTML comment" },
+            { label: "\"\"", prefix: "\"", suffix: "\"", description: "Wrap selected text in quotation marks" }
+            ]
+        }),
+
         htmlTags: Array.from(new Set(htmlTags)),
         htmlAttributes,
         htmlAttrsByTag

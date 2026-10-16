@@ -4,47 +4,606 @@
         // ==========================================
         //  ثابت‌ها
         // ==========================================
-        const DEFAULT_HTML = `<h1>Hello, World!</h1>
-<div class="card">
-    <p>This is a sample card.</p>
-    <button id="btn">Click Me</button>
-</div>`;
+        const DEFAULT_HTML = `<main class="demo-shell">
+    <header class="hero" id="top">
+        <p class="eyebrow">HTML · CSS · JAVASCRIPT</p>
+        <h1>Build a Better Web Page</h1>
+        <p class="hero-copy">A hands-on starter project that demonstrates common elements, attributes, layout patterns, and interactions.</p>
+        <nav class="hero-nav" aria-label="Page sections">
+            <a href="#examples">Elements</a>
+            <a href="#form-demo">Form</a>
+            <a href="#data-demo">Data</a>
+        </nav>
+    </header>
 
-        const DEFAULT_CSS = `body {
-    font-family: Tahoma, sans-serif;
-    padding: 30px;
-    background-color: #f4f4f4;
+    <section class="intro-panel" aria-labelledby="intro-title">
+        <div>
+            <p class="eyebrow">SEMANTIC HTML</p>
+            <h2 id="intro-title">Start with structure</h2>
+            <p>Use meaningful elements such as <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code> and <code>&lt;footer&gt;</code> before styling them with CSS.</p>
+        </div>
+        <figure class="artwork" aria-label="Decorative illustration made with HTML and CSS">
+            <div class="artwork-orbit"></div>
+            <div class="artwork-core">&lt;/&gt;</div>
+            <figcaption>Simple CSS illustration</figcaption>
+        </figure>
+    </section>
+
+    <section id="examples" class="section-block">
+        <div class="section-heading">
+            <div><p class="eyebrow">ELEMENT EXAMPLES</p><h2>Content and components</h2></div>
+            <span class="pill">HTML 5</span>
+        </div>
+        <div class="card-grid">
+            <article class="demo-card interactive-card">
+                <span class="icon-tile" aria-hidden="true">01</span>
+                <h3>Text and links</h3>
+                <p>Mix <strong>strong text</strong>, <em>emphasis</em>, <mark>highlighted text</mark>, <del>removed text</del> and <ins>inserted text</ins>.</p>
+                <p>Use <abbr title="HyperText Markup Language">HTML</abbr>, inline <code>code</code>, H<sub>2</sub>O and x<sup>2</sup>.</p>
+                <blockquote>“Good structure makes good interfaces easier to build.”</blockquote>
+                <p class="muted">Updated <time datetime="2026-10-17">October 17, 2026</time>.</p>
+                <button type="button" class="button button-primary" id="counterButton">Clicked <span id="counterValue">0</span> times</button>
+            </article>
+
+            <article class="demo-card">
+                <span class="icon-tile" aria-hidden="true">02</span>
+                <h3>Disclosure and status</h3>
+                <details open>
+                    <summary>What does this demonstrate?</summary>
+                    <p>The <code>details</code> and <code>summary</code> elements create a native disclosure widget without JavaScript.</p>
+                </details>
+                <label class="meter-label" for="courseProgress">Learning progress</label>
+                <progress id="courseProgress" max="100" value="68">68%</progress>
+                <label class="meter-label" for="skillLevel">Practice level</label>
+                <meter id="skillLevel" min="0" max="10" low="3" high="8" optimum="9" value="7">7 out of 10</meter>
+                <p class="muted">Try opening and closing the disclosure, then change its CSS.</p>
+            </article>
+
+            <article class="demo-card">
+                <span class="icon-tile" aria-hidden="true">03</span>
+                <h3>Lists and code</h3>
+                <ol class="feature-list">
+                    <li>Write semantic markup.</li>
+                    <li>Style with reusable rules.</li>
+                    <li>Add accessible interactions.</li>
+                </ol>
+                <pre><code>const greeting = "Hello!";
+console.log(greeting);</code></pre>
+                <p>Keyboard shortcut: <kbd>Ctrl</kbd> + <kbd>Enter</kbd></p>
+                <p class="muted">Output example: <samp>Hello!</samp></p>
+            </article>
+        </div>
+    </section>
+
+    <section id="form-demo" class="section-block form-section">
+        <div class="section-heading">
+            <div><p class="eyebrow">FORM CONTROLS</p><h2>Try the inputs</h2></div>
+            <span class="pill">Accessible labels</span>
+        </div>
+        <form id="profileForm" class="demo-form">
+            <div class="form-grid">
+                <div class="field">
+                    <label for="fullName">Name</label>
+                    <input id="fullName" name="fullName" type="text" placeholder="Ada Lovelace" autocomplete="name" required minlength="2">
+                </div>
+                <div class="field">
+                    <label for="emailAddress">Email</label>
+                    <input id="emailAddress" name="email" type="email" placeholder="ada@example.com" autocomplete="email" required>
+                </div>
+                <div class="field">
+                    <label for="topic">Choose a topic</label>
+                    <select id="topic" name="topic">
+                        <option value="html">HTML structure</option>
+                        <option value="css">CSS design</option>
+                        <option value="js">JavaScript behavior</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="confidence">Confidence: <output id="confidenceValue" for="confidence">6</output>/10</label>
+                    <input id="confidence" name="confidence" type="range" min="1" max="10" value="6">
+                </div>
+                <fieldset class="field choice-field">
+                    <legend>Preferred practice</legend>
+                    <label><input type="radio" name="practice" value="reading" checked> Reading</label>
+                    <label><input type="radio" name="practice" value="building"> Building</label>
+                    <label><input type="checkbox" id="newsletter" name="newsletter"> Send me learning tips</label>
+                </fieldset>
+            </div>
+            <div class="field">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" rows="3" maxlength="240" placeholder="What would you like to build?"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">Check form</button>
+                <button class="button button-secondary" type="reset">Reset fields</button>
+                <p id="formMessage" class="form-message" role="status" aria-live="polite">Your form feedback appears here.</p>
+            </div>
+        </form>
+    </section>
+
+    <section id="data-demo" class="section-block">
+        <div class="section-heading">
+            <div><p class="eyebrow">TABLE AND DOM</p><h2>Example data</h2></div>
+            <span class="pill">Semantic table</span>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <caption>Learning modules and their status</caption>
+                <thead><tr><th scope="col">Module</th><th scope="col">Focus</th><th scope="col">Status</th></tr></thead>
+                <tbody>
+                    <tr><th scope="row">HTML</th><td>Structure and forms</td><td><span class="status status-done">Ready</span></td></tr>
+                    <tr><th scope="row">CSS</th><td>Grid, flexbox, responsive UI</td><td><span class="status status-progress">Practice</span></td></tr>
+                    <tr><th scope="row">JavaScript</th><td>Events and DOM updates</td><td><span class="status status-next">Next</span></td></tr>
+                </tbody>
+                <tfoot><tr><td colspan="3">Three small examples in one starter project.</td></tr></tfoot>
+            </table>
+        </div>
+        <div class="task-panel">
+            <div><h3>Mini task list</h3><p class="muted">Add an item to practise DOM creation and event handling.</p></div>
+            <form id="taskForm" class="task-form">
+                <label class="visually-hidden" for="taskInput">New task</label>
+                <input id="taskInput" name="task" type="text" placeholder="Add a small task…" maxlength="80" required>
+                <button class="button button-primary" type="submit">Add</button>
+            </form>
+            <ul id="taskList" class="task-list">
+                <li><span>Explore the CSS variables</span><button type="button" data-remove-task aria-label="Remove task">×</button></li>
+                <li><span>Change a button style</span><button type="button" data-remove-task aria-label="Remove task">×</button></li>
+            </ul>
+        </div>
+    </section>
+
+    <footer class="page-footer">
+        <p><strong>Keep experimenting.</strong> Inspect each element, change a property, and watch the preview update.</p>
+        <a href="#top">Back to top ↑</a>
+        <small>Demo uses <var>HTML</var> + <var>CSS</var> + <var>JavaScript</var>.</small>
+    </footer>
+</main>`;
+
+        const DEFAULT_CSS = `:root {
+    --color-ink: #16233a;
+    --color-muted: #62718a;
+    --color-primary: #4f46e5;
+    --color-primary-dark: #3730a3;
+    --color-accent: #0f9f91;
+    --color-surface: #ffffff;
+    --color-canvas: #f3f6fc;
+    --color-border: #dbe3f0;
+    --radius-small: 0.6rem;
+    --radius-card: 1.2rem;
+    --shadow-card: 0 16px 45px rgb(22 35 58 / 8%);
+    color-scheme: light;
 }
 
-h1 {
-    color: #2c3e50;
-    text-align: center;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    max-width: 400px;
-    margin: 20px auto;
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 1rem;
 }
 
-button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+body {
+    margin: 0;
+    padding: clamp(12px, 3vw, 36px);
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.65;
+    color: var(--color-ink);
+    background:
+        radial-gradient(circle at 10% 0%, rgb(79 70 229 / 10%), transparent 32rem),
+        var(--color-canvas);
+}
+
+.demo-shell {
+    width: min(100%, 1120px);
+    margin-inline: auto;
+}
+
+.hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(24px, 5vw, 56px);
+    border: 1px solid rgb(255 255 255 / 20%);
+    border-radius: 1.6rem;
+    color: #fff;
+    background: linear-gradient(125deg, #24205f, #4f46e5 58%, #0f9f91);
+    box-shadow: 0 22px 55px rgb(55 48 163 / 22%);
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 18rem;
+    aspect-ratio: 1;
+    inset: auto -5rem -10rem auto;
+    border: 1px solid rgb(255 255 255 / 22%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2.5rem rgb(255 255 255 / 5%), 0 0 0 5rem rgb(255 255 255 / 4%);
+}
+
+.eyebrow {
+    margin: 0 0 0.4rem;
+    color: var(--color-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.hero .eyebrow { color: #a7f3e9; }
+.hero h1 {
+    max-width: 760px;
+    margin: 0;
+    font-size: clamp(2rem, 5.5vw, 4rem);
+    line-height: 1.06;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+}
+
+.hero-copy {
+    max-width: 660px;
+    color: #e5e7ff;
+    font-size: clamp(1rem, 2vw, 1.16rem);
+    margin: 1.1rem 0 1.4rem;
+}
+
+.hero-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.hero-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: 999px;
+    color: #fff;
+    text-decoration: none;
+    background: rgb(255 255 255 / 10%);
+    transition: background 180ms ease, transform 180ms ease;
+}
+
+.hero-nav a:hover {
+    background: rgb(255 255 255 / 20%);
+    transform: translateY(-2px);
+}
+
+.intro-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(180px, 0.7fr);
+    align-items: center;
+    gap: clamp(16px, 4vw, 34px);
+    margin-block: 18px;
+    padding: clamp(20px, 4vw, 38px);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+}
+
+h2, h3, p { overflow-wrap: anywhere; }
+h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.2; }
+h3 { margin: 0.8rem 0 0.55rem; font-size: 1.15rem; }
+p { margin-block: 0.7rem; }
+a { color: var(--color-primary); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid #f59e0b;
+    outline-offset: 3px;
+}
+::selection { color: #fff; background: var(--color-primary); }
+
+.artwork {
+    position: relative;
+    display: grid;
+    min-height: 180px;
+    margin: 0;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #e0e7ff, #ccfbf1);
+}
+.artwork-orbit {
+    position: absolute;
+    width: 130px;
+    aspect-ratio: 1;
+    border: 2px dashed #818cf8;
+    border-radius: 50%;
+    animation: orbit 18s linear infinite;
+}
+.artwork-core {
+    display: grid;
+    width: 96px;
+    aspect-ratio: 1;
+    place-items: center;
+    border-radius: 28px;
+    color: #fff;
+    background: linear-gradient(145deg, var(--color-primary), var(--color-accent));
+    box-shadow: 0 14px 24px rgb(55 48 163 / 22%);
+    font: 800 1.6rem ui-monospace, monospace;
+    transform: rotate(-6deg);
+}
+.artwork figcaption { position: absolute; inset: auto 0 8px; text-align: center; color: #3730a3; font-size: 0.75rem; }
+
+.section-block { margin-block: 28px; }
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 13px;
+}
+.pill {
+    flex: 0 0 auto;
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    color: #3730a3;
+    background: #e0e7ff;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+.demo-card {
+    min-width: 0;
+    padding: clamp(17px, 2.5vw, 26px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+.demo-card:hover { border-color: #a5b4fc; transform: translateY(-3px); box-shadow: 0 20px 48px rgb(22 35 58 / 12%); }
+.icon-tile {
+    display: inline-grid;
+    width: 42px;
+    aspect-ratio: 1;
+    place-items: center;
+    border-radius: 13px;
+    color: var(--color-primary-dark);
+    background: #e0e7ff;
+    font-weight: 900;
+    font-size: 0.85rem;
+}
+.muted { color: var(--color-muted); font-size: 0.9rem; }
+code, pre, kbd, samp {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+}
+:not(pre) > code { padding: 0.12rem 0.35rem; border-radius: 0.35rem; color: #3730a3; background: #eef2ff; }
+blockquote {
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+    border-left: 3px solid var(--color-accent);
+    border-radius: 0 var(--radius-small) var(--radius-small) 0;
+    background: #f0fdfa;
+    color: #285b5a;
+}
+pre {
+    overflow: auto;
+    padding: 0.9rem;
+    border: 1px solid #293853;
+    border-radius: var(--radius-small);
+    background: #111827;
+    color: #dbeafe;
+    font-size: 0.82rem;
+}
+kbd {
+    display: inline-block;
+    padding: 0.1rem 0.38rem;
+    border: 1px solid #cad5e5;
+    border-bottom-width: 3px;
+    border-radius: 0.35rem;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 0.78rem;
+}
+
+details {
+    margin-block: 0.75rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-small);
+    background: #f8faff;
+}
+summary { color: var(--color-primary-dark); font-weight: 750; cursor: pointer; }
+.meter-label { display: block; margin-top: 0.7rem; color: var(--color-muted); font-size: 0.83rem; }
+progress, meter { width: 100%; height: 0.8rem; accent-color: var(--color-accent); }
+
+.demo-form {
+    padding: clamp(18px, 3vw, 30px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+}
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; margin: 0 0 15px; }
+.field > label, legend { color: var(--color-ink); font-weight: 750; font-size: 0.9rem; }
+.field input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), .field select, .field textarea,
+.task-form input {
+    width: 100%;
+    min-width: 0;
+    padding: 0.72rem 0.82rem;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-small);
+    background: #fbfdff;
+    color: var(--color-ink);
+    font: inherit;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.field input:focus, .field select:focus, .field textarea:focus, .task-form input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgb(79 70 229 / 12%);
+    outline: none;
+}
+.field input[type="range"] { width: 100%; accent-color: var(--color-primary); }
+.field textarea { resize: vertical; }
+.choice-field {
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-small);
+}
+.choice-field legend { padding-inline: 5px; }
+.choice-field label { display: flex; align-items: center; gap: 0.5rem; margin-top: 5px; font-weight: 500; }
+.choice-field input { accent-color: var(--color-primary); }
+.form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 42px;
+    padding: 0.65rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    font: inherit;
+    font-weight: 800;
     cursor: pointer;
+    transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
+.button:active { transform: translateY(1px) scale(0.99); }
+.button-primary { color: #fff; background: var(--color-primary); box-shadow: 0 6px 14px rgb(79 70 229 / 18%); }
+.button-primary:hover { background: var(--color-primary-dark); }
+.button-secondary { color: var(--color-ink); background: #fff; border-color: var(--color-border); }
+.button-secondary:hover { background: #f1f5f9; }
+.form-message { flex: 1 1 100%; min-height: 1.5em; color: var(--color-muted); margin: 0; }
 
-button:hover {
-    background: #2980b9;
+.table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-card); }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+caption { padding: 14px; color: var(--color-muted); text-align: left; font-weight: 700; }
+th, td { padding: 12px 15px; border-top: 1px solid #e6ebf3; vertical-align: top; }
+thead { color: #fff; background: #26365a; }
+tbody tr:nth-child(even) { background: #f7f9fd; }
+tbody tr:hover { background: #eef2ff; }
+tfoot { color: var(--color-muted); font-size: 0.86rem; background: #f8fafc; }
+.status { display: inline-flex; padding: 0.2rem 0.55rem; border-radius: 999px; font-size: 0.78rem; font-weight: 800; }
+.status-done { color: #166534; background: #dcfce7; }
+.status-progress { color: #92400e; background: #fef3c7; }
+.status-next { color: #3730a3; background: #e0e7ff; }
+
+.task-panel { display: grid; grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.2fr); gap: 18px; align-items: start; margin-top: 16px; padding: 22px; border: 1px solid var(--color-border); border-radius: var(--radius-card); background: #fff; box-shadow: var(--shadow-card); }
+.task-panel h3 { margin-top: 0; }
+.task-form { display: flex; gap: 8px; min-width: 0; }
+.task-list { grid-column: 2; display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.task-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-small); background: #f8faff; }
+.task-list li span { overflow-wrap: anywhere; }
+.task-list li button { flex: 0 0 30px; width: 30px; height: 30px; border: 0; border-radius: 9px; color: #991b1b; background: #fee2e2; font-size: 1.1rem; cursor: pointer; }
+.task-list li button:hover { background: #fecaca; }
+
+.page-footer { display: grid; grid-template-columns: 1fr auto; gap: 8px 20px; align-items: center; margin-top: 34px; padding: 22px; border-top: 1px solid var(--color-border); color: var(--color-muted); }
+.page-footer p { margin: 0; }
+.page-footer small { grid-column: 1 / -1; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+@keyframes orbit { to { transform: rotate(360deg); } }
+@media (max-width: 780px) {
+    .intro-panel { grid-template-columns: 1fr; }
+    .artwork { min-height: 145px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; gap: 6px; }
+    .task-panel { grid-template-columns: 1fr; }
+    .task-list { grid-column: 1; }
+    .task-form .button { flex-shrink: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }`;
 
-        const DEFAULT_JS = `document.getElementById('btn').addEventListener('click', function () {
-    alert('It works!');
+        const DEFAULT_JS = `// DOM selection, state, validation, and event handling examples.
+const counterButton = document.querySelector("#counterButton");
+const counterValue = document.querySelector("#counterValue");
+let clickCount = 0;
+
+counterButton.addEventListener("click", () => {
+    clickCount += 1;
+    counterValue.textContent = String(clickCount);
+    counterButton.setAttribute("aria-label", "Clicked " + clickCount + " times");
+});
+
+const confidence = document.querySelector("#confidence");
+const confidenceValue = document.querySelector("#confidenceValue");
+confidence.addEventListener("input", (event) => {
+    confidenceValue.value = event.currentTarget.value;
+});
+
+const profileForm = document.querySelector("#profileForm");
+const formMessage = document.querySelector("#formMessage");
+profileForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (!profileForm.checkValidity()) {
+        profileForm.reportValidity();
+        return;
+    }
+
+    const formData = new FormData(profileForm);
+    const profile = Object.fromEntries(formData.entries());
+    formMessage.textContent = "Thanks, " + profile.fullName + "! Topic: " + profile.topic + ".";
+    formMessage.classList.add("is-success");
+});
+profileForm.addEventListener("reset", () => {
+    formMessage.textContent = "Your form feedback appears here.";
+    formMessage.classList.remove("is-success");
+    setTimeout(() => { confidenceValue.value = confidence.value; }, 0);
+});
+
+const taskForm = document.querySelector("#taskForm");
+const taskInput = document.querySelector("#taskInput");
+const taskList = document.querySelector("#taskList");
+
+taskForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const title = taskInput.value.trim();
+    if (!title) return;
+
+    const item = document.createElement("li");
+    const label = document.createElement("span");
+    const removeButton = document.createElement("button");
+    label.textContent = title; // textContent avoids treating user input as HTML.
+    removeButton.type = "button";
+    removeButton.textContent = "×";
+    removeButton.setAttribute("aria-label", "Remove " + title);
+    removeButton.dataset.removeTask = "";
+    item.append(label, removeButton);
+    taskList.append(item);
+    taskInput.value = "";
+    taskInput.focus();
+});
+
+taskList.addEventListener("click", (event) => {
+    const removeButton = event.target.closest("[data-remove-task]");
+    if (!removeButton) return;
+    removeButton.closest("li").remove();
+});
+
+document.querySelectorAll("[data-remove-task]").forEach((button) => {
+    button.title = "Remove this task";
+});
+
+const themeToggle = document.createElement("button");
+themeToggle.type = "button";
+themeToggle.className = "button button-secondary theme-toggle";
+themeToggle.textContent = "Toggle accent";
+themeToggle.setAttribute("aria-pressed", "false");
+document.querySelector(".section-heading").append(themeToggle);
+themeToggle.addEventListener("click", () => {
+    const enabled = document.body.classList.toggle("alternate-theme");
+    themeToggle.setAttribute("aria-pressed", String(enabled));
+});
+
+console.info("Starter project ready", {
+    modules: ["HTML", "CSS", "JavaScript"],
+    formValid: profileForm.checkValidity()
 });`;
 
         // ==========================================
@@ -671,6 +1230,7 @@ button:hover {
             picker.close();
             IntelliSense.hide();
             activeTab = lang;
+            renderSymbolToolbar(lang);
 
             LANGS.forEach(function(l) { editors[l].wrap.hidden = true; });
             libsPanel.hidden = true;
@@ -1138,6 +1698,29 @@ button:hover {
         // Quick symbol toolbar: remember the active editor selection even when a toolbar
         // button temporarily takes focus (especially on touch/mobile browsers).
         const symbolToolbar = document.getElementById('symbolToolbar');
+        function renderSymbolToolbar(language) {
+            if (!symbolToolbar) return;
+            const header = symbolToolbar.closest('.page-symbol-header');
+            const supportedLanguage = LANGS.includes(language);
+            if (header) header.hidden = !supportedLanguage;
+            if (!supportedLanguage) return;
+
+            const data = window.EDITOR_INTELLISENSE_DATA || {};
+            const items = data.symbols && data.symbols[language];
+            if (!Array.isArray(items)) {
+                symbolToolbar.replaceChildren();
+                return;
+            }
+            symbolToolbar.dataset.language = language;
+            symbolToolbar.innerHTML = items.map(function(item) {
+                return '<button type="button" data-prefix="' + escHtml(item.prefix || '') +
+                    '" data-suffix="' + escHtml(item.suffix || '') +
+                    '" title="' + escHtml(item.description || item.label || 'Insert symbol') +
+                    '" aria-label="' + escHtml(item.description || item.label || 'Insert symbol') +
+                    '">' + escHtml(item.label || 'Symbol') + '</button>';
+            }).join('');
+        }
+
         const symbolSelections = Object.create(null);
         LANGS.forEach(function(lang) {
             const editor = editors[lang];
@@ -1207,6 +1790,8 @@ button:hover {
                 ta.focus({ preventScroll: true });
             });
         }
+
+        renderSymbolToolbar(activeTab);
 
         function doUndo() {
             const ed = editors[activeTab];

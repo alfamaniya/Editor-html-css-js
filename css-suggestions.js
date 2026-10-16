@@ -1,4 +1,4 @@
-// Suggested entries: 1344 (CSS properties, values, and snippets)
+// Expanded CSS properties, values, selectors, functions, units, and snippets.
 (function () {
     'use strict';
     const cssProperties = (

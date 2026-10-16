@@ -886,7 +886,7 @@ button:hover {
                     JSON.stringify(libraries.map(function(lib) {
                         return { id: lib.id, name: lib.name, type: lib.type, code: lib.code, enabled: !!lib.enabled };
                     })).replace(/</g, '\\u003c') +
-                    ';<\\/script>\\n'
+                    ';</script>\n'
                 : '';
 
             const errorHook = forExport ? '' : [

@@ -78,7 +78,7 @@
                 { label: 'header', insert: 'header', description: 'Header ID' },
                 { label: 'footer', insert: 'footer', description: 'Footer ID' }
             ]},
-            { pattern: /<([a-z][\w:-]*)\btype\s*=\s*["']$/i, create: function (match) {
+            { pattern: /<([a-z][\w:-]*)\s+\btype\s*=\s*["']$/i, create: function (match) {
                 const tag = match[1].toLowerCase();
                 const values = tag === 'input'
                     ? 'text email password number checkbox radio submit button reset date datetime-local file hidden image month search tel time url week color range'.split(/\s+/)

@@ -1533,14 +1533,18 @@ button:hover {
                 if (lang === 'css') {
                     const clean = maskCssComments(before);
                     const depth = (clean.match(/\{/g) || []).length - (clean.match(/\}/g) || []).length;
+
+                    // At-rules can occur both at the top level and inside supported grouping rules.
+                    const atRuleLineStart = Math.max(clean.lastIndexOf('\n'), clean.lastIndexOf('{'), clean.lastIndexOf('}'), clean.lastIndexOf(';')) + 1;
+                    const atRuleLine = clean.slice(atRuleLineStart);
+                    const atRule = atRuleLine.match(/^\s*(@[\w-]*)$/);
+                    if (atRule) {
+                        return { word: atRule[1], from: pos - atRule[1].length, to: pos, kind: 'cssAtRule' };
+                    }
+
                     if (depth <= 0) {
                         const selectorLineStart = Math.max(clean.lastIndexOf('\n'), clean.lastIndexOf('{'), clean.lastIndexOf('}')) + 1;
                         const selectorLine = clean.slice(selectorLineStart);
-
-                        const atRule = selectorLine.match(/^\s*(@[\w-]*)$/);
-                        if (atRule) {
-                            return { word: atRule[1], from: pos - atRule[1].length, to: pos, kind: 'cssAtRule' };
-                        }
 
                         const pseudoElement = selectorLine.match(/::([\w-]*)$/);
                         if (pseudoElement) {

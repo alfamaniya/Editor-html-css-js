@@ -173,6 +173,7 @@ button:hover {
         function setDirty(value) {
             dirty = !!value;
             dirtyBadge.hidden = !dirty;
+            if (typeof renderFileExplorer === 'function' && project) renderFileExplorer();
         }
         window.addEventListener('beforeunload', function (e) {
             if (dirty) { e.preventDefault(); e.returnValue = ''; }
@@ -324,6 +325,9 @@ button:hover {
         const fileExplorer = document.getElementById('fileExplorer');
         const feToggleBtn = document.getElementById('feToggleBtn');
         const FILE_EXPLORER_KEY = 'html-editor-file-explorer-collapsed';
+        const feSearch = document.getElementById('feSearch');
+        const feTypeFilter = document.getElementById('feTypeFilter');
+        const feGroupMode = document.getElementById('feGroupMode');
 
         function setFileExplorerCollapsed(collapsed, persist) {
             fileExplorer.classList.toggle('is-collapsed', collapsed);
@@ -334,7 +338,7 @@ button:hover {
         }
 
         const savedExplorerState = storageGet(FILE_EXPLORER_KEY);
-        setFileExplorerCollapsed(savedExplorerState !== '0', false);
+        setFileExplorerCollapsed(savedExplorerState === null ? true : savedExplorerState !== '0', false);
         feToggleBtn.addEventListener('click', function() {
             setFileExplorerCollapsed(!fileExplorer.classList.contains('is-collapsed'));
         });
@@ -346,17 +350,35 @@ button:hover {
 
         function renderFileExplorer() {
             if (!project) return;
-            const html = project.files.map(function(f) {
+            const query = feSearch ? feSearch.value.trim().toLowerCase() : '';
+            const typeFilter = feTypeFilter ? feTypeFilter.value : 'all';
+            const groupMode = feGroupMode ? feGroupMode.value : 'manual';
+            let files = project.files.filter(function(f) {
+                return (typeFilter === 'all' || f.type === typeFilter) && (!query || f.name.toLowerCase().includes(query));
+            });
+            if (groupMode === 'type') {
+                const order = { html: 0, css: 1, js: 2 };
+                files.sort(function(a, b) { return order[a.type] - order[b.type] || a.name.localeCompare(b.name); });
+            } else if (groupMode === 'name') {
+                files.sort(function(a, b) { return a.name.localeCompare(b.name); });
+            }
+            const html = files.map(function(f) {
                 const isActive = f.id === project.activeFileId;
                 const icon = f.type === 'html' ? '📄' : (f.type === 'css' ? '🎨' : '⚡');
-                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" title="' + escHtml(f.name) + '">' +
-                    '<span class="fe-icon">' + icon + '</span>' +
+                const isDirty = dirty && isActive && activeTab === f.type;
+                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" role="group" tabindex="0" aria-label="File ' + escHtml(f.name) + (isActive ? ', active file' : '') + '" title="' + escHtml(f.name) + '">' +
+                    '<span class="fe-icon" aria-hidden="true">' + icon + '</span>' +
                     '<span class="fe-name" data-role="name">' + escHtml(f.name) + '</span>' +
-                    '<button type="button" class="fe-del" data-action="delete" title="Delete">🗑</button>' +
+                    (isDirty ? '<span class="fe-dirty-dot" title="Unsaved changes" aria-label="Unsaved changes">●</span>' : '') +
+                    '<button type="button" class="fe-del" data-action="delete" title="Delete ' + escHtml(f.name) + '" aria-label="Delete ' + escHtml(f.name) + '">🗑</button>' +
                 '</div>';
             }).join('');
-            feList.innerHTML = html || '<div style="padding:14px 8px; text-align:center; color:#888; font-size:11px;">No files yet</div>';
+            feList.innerHTML = html || '<div class="fe-empty" role="status">' + (query || typeFilter !== 'all' ? 'No matching files' : 'No files yet') + '</div>';
         }
+        [feSearch, feTypeFilter, feGroupMode].forEach(function(control) {
+            if (!control) return;
+            control.addEventListener(control === feSearch ? 'input' : 'change', renderFileExplorer);
+        });
 
         feAddBtn.addEventListener('click', function() {
             if (fileExplorer.classList.contains('is-collapsed')) {
@@ -372,16 +394,30 @@ button:hover {
 
         feNewCancel.addEventListener('click', function() { feNewForm.hidden = true; });
 
+        function fileNameError(name, type, excludeId) {
+            if (!name) return 'Enter a file name.';
+            if (name.length > 40) return 'File names must be 40 characters or fewer.';
+            if (project.files.some(function(f) { return f.id !== excludeId && f.name.toLowerCase() === name.toLowerCase(); })) return 'A file with that name already exists.';
+            return '';
+        }
+        function fileNameWarning(name, type) {
+            const match = name.match(/\.([^.]+)$/);
+            const extType = match ? ({ html: 'html', htm: 'html', css: 'css', js: 'js', mjs: 'js' })[match[1].toLowerCase()] : null;
+            return extType && extType !== type ? 'The file extension does not match the selected ' + type.toUpperCase() + ' type. The name was kept unchanged.' : '';
+        }
         feNewCreate.addEventListener('click', function() {
-            const name = feNewName.value.trim() || ('untitled.' + feNewType.value);
+            const name = feNewName.value.trim();
             const type = LANGS.includes(feNewType.value) ? feNewType.value : 'html';
+            const error = fileNameError(name, type, null);
+            if (error) { showToast('❌ ' + error, 'error'); feNewName.focus(); return; }
             const file = { id: makeId(), name: name, type: type, content: '' };
             project.files.push(file);
             saveProject();
             renderFileExplorer();
             feNewForm.hidden = true;
             openFile(file.id);
-            showToast('✅ File “' + name + '” created', 'success');
+            const warning = fileNameWarning(name, type);
+            showToast(warning ? '⚠ ' + warning : '✅ File “' + name + '” created', warning ? 'info' : 'success');
         });
 
         feNewName.addEventListener('keydown', function(e) {
@@ -399,6 +435,12 @@ button:hover {
             if (e.target.matches('input.fe-rename-input')) return;
             const item = e.target.closest('.fe-item');
             if (item) openFile(item.dataset.id);
+        });
+        feList.addEventListener('keydown', function(e) {
+            const item = e.target.closest('.fe-item');
+            if (!item || e.target.matches('input.fe-rename-input') || e.target.closest('[data-action="delete"]')) return;
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFile(item.dataset.id); }
+            else if (e.key === 'F2') { e.preventDefault(); startRename(item, item.dataset.id); }
         });
 
         feList.addEventListener('dblclick', function(e) {
@@ -429,10 +471,15 @@ button:hover {
             function commit() {
                 if (committed) return;
                 committed = true;
-                const newName = (input.value.trim() || file.name);
+                const newName = input.value.trim();
+                if (!newName) { showToast('❌ File name cannot be empty.', 'error'); renderFileExplorer(); return; }
+                const error = fileNameError(newName, file.type, file.id);
+                if (error) { showToast('❌ ' + error, 'error'); renderFileExplorer(); return; }
                 file.name = newName;
                 saveProject();
                 renderFileExplorer();
+                const warning = fileNameWarning(newName, file.type);
+                showToast(warning ? '⚠ ' + warning : '✅ File renamed to “' + newName + '”', warning ? 'info' : 'success');
             }
             function cancel() {
                 if (committed) return;
@@ -450,12 +497,15 @@ button:hover {
             });
         }
 
+        let lastDeletedSnapshot = null;
         function deleteFile(fileId) {
             const idx = project.files.findIndex(function(f) { return f.id === fileId; });
             if (idx === -1) return;
             const file = project.files[idx];
             const wasActive = project.activeFileId === fileId;
-
+            const warning = (wasActive ? ' This is the active file.' : '') + (dirty ? ' There are unsaved editor changes.' : '');
+            if (!window.confirm('Delete “' + file.name + '”?' + warning + '\n\nYou can undo this deletion from the notification.')) return;
+            lastDeletedSnapshot = JSON.parse(JSON.stringify(project));
             project.files.splice(idx, 1);
 
             LANGS.forEach(function(lang) {
@@ -484,7 +534,21 @@ button:hover {
             saveProject();
             renderFileExplorer();
             updatePreviewNow();
-            showToast('🗑 “' + file.name + '” deleted', 'info');
+            showToast('🗑 “' + file.name + '” deleted', 'info', 'Undo', function() {
+                if (!lastDeletedSnapshot) return;
+                project = JSON.parse(JSON.stringify(lastDeletedSnapshot));
+                lastDeletedSnapshot = null;
+                const active = getFile(project.activeFileId) || project.files[0];
+                if (active) {
+                    const ed = editors[active.type];
+                    if (ed) { ed.ta.value = active.content; ed.refresh(); }
+                    activateTab(active.type);
+                }
+                saveProject();
+                renderFileExplorer();
+                updatePreviewNow();
+                showToast('↩ File restored', 'success');
+            });
         }
 
         // ==========================================
@@ -2054,11 +2118,26 @@ button:hover {
         //  Toast / Font
         // ==========================================
         let toastTimer;
-        function showToast(msg, type) {
-            toast.textContent = msg;
+        function showToast(msg, type, actionLabel, onAction) {
+            toast.replaceChildren();
+            const message = document.createElement('span');
+            message.textContent = msg;
+            toast.appendChild(message);
+            if (actionLabel && typeof onAction === 'function') {
+                const action = document.createElement('button');
+                action.type = 'button';
+                action.className = 'toast-action';
+                action.textContent = actionLabel;
+                action.addEventListener('click', function() {
+                    clearTimeout(toastTimer);
+                    toast.className = 'toast';
+                    onAction();
+                }, { once: true });
+                toast.appendChild(action);
+            }
             toast.className = 'toast show ' + (type || '');
             clearTimeout(toastTimer);
-            toastTimer = setTimeout(function() { toast.className = 'toast ' + (type || ''); }, 2500);
+            toastTimer = setTimeout(function() { toast.className = 'toast ' + (type || ''); }, actionLabel ? 6000 : 2500);
         }
         let fontSize = parseInt(storageGet(FONT_KEY), 10) || 15;
         function applyFontSize() {

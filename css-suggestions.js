@@ -238,6 +238,21 @@
         cssValues[key] = Array.from(new Set(values.concat(values.filter(Boolean))));
     });
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
+        symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
+            css: [
+            { label: "{ }", prefix: "{", suffix: "}", description: "Insert a CSS rule block" },
+            { label: ": ;", prefix: ": ", suffix: ";", description: "Insert a CSS declaration" },
+            { label: "var(--)", prefix: "var(--", suffix: ")", description: "Reference a CSS custom property" },
+            { label: "()", prefix: "(", suffix: ")", description: "Insert paired parentheses" },
+            { label: "/* */", prefix: "/* ", suffix: " */", description: "Insert a CSS comment" },
+            { label: "@media", prefix: "@media (max-width: 768px) {\n    ", suffix: "\n}", description: "Insert a responsive media query" },
+            { label: "calc()", prefix: "calc(", suffix: ")", description: "Insert a CSS calculation" },
+            { label: "linear-gradient()", prefix: "linear-gradient(", suffix: ")", description: "Insert a gradient function" },
+            { label: "!important", prefix: " !important", suffix: "", description: "Append important priority to a declaration" },
+            { label: "#color", prefix: "#", suffix: "", description: "Start a hexadecimal color value" }
+            ]
+        }),
+
         cssProperties,
         cssValues,
         cssAtRules,

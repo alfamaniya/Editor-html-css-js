@@ -48,7 +48,7 @@ The current curated banks contain approximately these unique entries after norma
 | HTML | 200 element names (including SVG and MathML), 231 common attributes including event handlers/ARIA/data attributes, and 61 tag-specific attribute groups |
 | CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, and 13 snippets |
 | JavaScript | 538 language/global/browser API words, 41 member roots, and 23 snippets |
-| Next-word database | 24 contextual rules across HTML, CSS, and JavaScript, plus dynamically generated tag-attribute/body continuations |
+| Next-word database | 56 contextual rules (14 HTML, 16 CSS, 26 JavaScript), 177 listed candidates, plus dynamically generated tag/attribute/code continuations |
 
 These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment.
 
@@ -60,7 +60,7 @@ After a completion is accepted, the editor checks the text before the caret agai
 - CSS: after accepting a property such as display or position, offer common values; after selecting a flex/grid display value, offer related alignment and gap declarations.
 - JavaScript: after const/let/var, suggest an assignment; after the assignment, suggest common initializer types; after identifiers such as document or console, suggest common members and call patterns.
 
-The next-word database is a deterministic, hand-maintained rule/sequence list, not a trained language model. It skips prediction inside JavaScript strings/comments and CSS strings/comments, and only shows continuations for known contexts. Dismiss the popup with Escape to keep typing normally.
+The next-word database is a deterministic, hand-maintained rule/sequence list with 56 contexts and 177 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. It skips prediction inside JavaScript strings/comments and CSS strings/comments, and only shows continuations for known contexts. Dismiss the popup with Escape to keep typing normally.
 
 ## Basic use
 

@@ -4363,8 +4363,11 @@ console.info("Starter project ready", {
 
             const ed = editors[file.type];
             if (ed) {
-                ed.ta.value = file.content;
-                ed.refresh();
+                // Avoid resetting the textarea value when it already matches; this preserves native undo history.
+                if (ed.ta.value !== file.content) {
+                    ed.ta.value = file.content;
+                    ed.refresh();
+                }
             }
 
             activateTab(file.type);
@@ -5889,7 +5892,7 @@ console.info("Starter project ready", {
             const ed = editors[activeTab];
             if (!ed) return;
             const ta = ed.ta;
-            ta.focus();
+            // Keep keyboard focus in the search field so Enter never edits the selected code.
             ta.setSelectionRange(m.start, m.end);
             const cs = getComputedStyle(ta);
             const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.5;

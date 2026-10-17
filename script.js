@@ -3068,13 +3068,15 @@ console.info("Starter project ready", {
             });
 
             ta.addEventListener('input', function(e) {
+                const wasDirty = dirty;
+                let addedDirtyFile = false;
                 const activeId = project.lastActiveByLang[lang];
                 const file = activeId ? getFile(activeId) : null;
                 if (file && file.type === lang) {
                     file.content = ta.value;
                     if (!dirtyFileIds.has(file.id)) {
                         dirtyFileIds.add(file.id);
-                        renderFileExplorer();
+                        addedDirtyFile = true;
                     }
                 } else {
                     const f = project.files.find(function(x) { return x.type === lang; });
@@ -3083,13 +3085,14 @@ console.info("Starter project ready", {
                         project.lastActiveByLang[lang] = f.id;
                         if (!dirtyFileIds.has(f.id)) {
                             dirtyFileIds.add(f.id);
-                            renderFileExplorer();
+                            addedDirtyFile = true;
                         }
                     }
                 }
 
                 refresh();
                 setDirty(true);
+                if (addedDirtyFile && wasDirty) renderFileExplorer();
                 scheduleSaveProject();
                 schedulePreview();
                 IntelliSense.onInput(ta, lang, e);

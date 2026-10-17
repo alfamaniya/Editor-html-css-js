@@ -24,6 +24,10 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 
 No build command or package installation is required. The editor itself can run from local files. Network access is needed for optional library downloads and for exported code that references remote resources. Browser restrictions may differ when opening local files; testing through a small local static server can help diagnose those differences.
 
+## Starter example
+
+The default project is intentionally small: **10 compact boxes and 10 buttons**, each demonstrating one simple action. The examples cover a message, a color change, increment/decrement, hide/show, title change, current time, color reset, dark mode, and adding a box. The starter HTML, CSS, and JavaScript are kept short so users can understand and modify them easily.
+
 ## Project files
 
 | File | Purpose |

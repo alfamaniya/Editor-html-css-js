@@ -1265,7 +1265,7 @@
             .lib-presets-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
             .divider { display: none; }
 
-            .file-explorer:not(.is-collapsed) { max-width: 42vw; }
+            .file-explorer:not(.is-collapsed) { max-width: min(78vw, 250px); }
             .fe-del { opacity: 1; min-width: 28px; min-height: 28px; font-size: 12px; }
             .fe-item { min-height: 34px; }
         }
@@ -1425,18 +1425,18 @@ textarea:focus-visible,
 .file-explorer.is-collapsed .fe-title { display: none; }
 .fe-new-form input { font-size: 13px; padding: 8px; }
 .fe-help { font-size: 11px; }
-.pane-label .toolbar { margin-left: 38px; margin-right: 38px; }
+.pane-label .toolbar { flex: 1 1 auto; min-width: 0; margin-inline: 0; justify-content: center; }
 #btnHelp { margin-left: 0; }
 .arrow-btn { position: static; transform: none; flex: 0 0 30px; }
 .arrow-btn:hover { transform: scale(1.04); }
 .arrow-btn:active { transform: scale(.96); }
-.dirty { position: static; margin-left: auto; white-space: nowrap; }
+.dirty { position: static; margin-left: 0; white-space: nowrap; }
 .file-explorer.is-collapsed .fe-item { justify-content: center; }
 .file-explorer.is-collapsed .fe-open { flex: 0 0 auto; justify-content: center; }
 .file-explorer.is-collapsed .fe-library-btn { display: none; }
 
 @media (max-width: 760px) {
-    :root { --file-explorer-width: min(78vw, 280px); }
+    :root { --file-explorer-width: min(78vw, 250px); }
     .file-explorer:not(.is-collapsed) {
         max-width: var(--file-explorer-width);
     }

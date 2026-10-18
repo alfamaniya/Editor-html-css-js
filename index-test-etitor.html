@@ -2994,6 +2994,160 @@ input {
                 { label: 'Add top/right/bottom/left: 0', insert: '\n    top: 0;\n    right: 0;\n    bottom: 0;\n    left: 0;', description: 'Set all four offsets' },
                 { label: 'Add z-index: 1', insert: '\n    z-index: 1;', description: 'Set stacking order' }
             ]}
+
+            // Broader CSS property-value vocabulary curated against MDN's CSS reference.
+            {
+                pattern: /(?:^|[\n;{]\s*)(overflow|overflow-x|overflow-y|flex-wrap|text-align|font-weight|font-style|text-transform|text-decoration-line|border-style|border-top-style|border-right-style|border-bottom-style|border-left-style|border-collapse|box-sizing|object-fit|background-repeat|background-size|background-position|cursor|visibility|white-space|word-break|overflow-wrap|pointer-events|user-select|list-style-type|outline-style|resize|table-layout|appearance|scroll-behavior|text-overflow|object-position|flex-flow|grid-auto-flow|grid-auto-columns|grid-auto-rows|grid-template-rows|align-content|align-self|justify-items|justify-self|place-items|place-content|place-self|font-family|line-height|letter-spacing|word-spacing|vertical-align|opacity|z-index|order|flex-grow|flex-shrink|aspect-ratio|color-scheme|isolation|contain|container-type|background-image|border|outline|box-shadow|text-shadow|transform|transition|animation|gap|row-gap|column-gap|margin-inline|margin-block|padding-inline|padding-block)\s*$/i,
+                create: function (match) {
+                    const property = match[1].toLowerCase();
+                    const values = {
+                        overflow: ['visible', 'hidden', 'clip', 'scroll', 'auto'],
+                        'overflow-x': ['visible', 'hidden', 'clip', 'scroll', 'auto'],
+                        'overflow-y': ['visible', 'hidden', 'clip', 'scroll', 'auto'],
+                        'flex-wrap': ['nowrap', 'wrap', 'wrap-reverse'],
+                        'text-align': ['start', 'end', 'left', 'right', 'center', 'justify', 'match-parent'],
+                        'font-weight': ['normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900'],
+                        'font-style': ['normal', 'italic', 'oblique'],
+                        'text-transform': ['none', 'capitalize', 'uppercase', 'lowercase', 'full-width'],
+                        'text-decoration-line': ['none', 'underline', 'overline', 'line-through'],
+                        'border-style': ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset'],
+                        'border-top-style': ['none', 'dotted', 'dashed', 'solid', 'double'],
+                        'border-right-style': ['none', 'dotted', 'dashed', 'solid', 'double'],
+                        'border-bottom-style': ['none', 'dotted', 'dashed', 'solid', 'double'],
+                        'border-left-style': ['none', 'dotted', 'dashed', 'solid', 'double'],
+                        'border-collapse': ['collapse', 'separate'],
+                        'box-sizing': ['content-box', 'border-box'],
+                        'object-fit': ['fill', 'contain', 'cover', 'none', 'scale-down'],
+                        'background-repeat': ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round'],
+                        'background-size': ['auto', 'cover', 'contain'],
+                        'background-position': ['center', 'top', 'right', 'bottom', 'left', 'left top', 'center center'],
+                        cursor: ['auto', 'default', 'none', 'context-menu', 'help', 'pointer', 'progress', 'wait', 'cell', 'crosshair', 'text', 'vertical-text', 'alias', 'copy', 'move', 'no-drop', 'not-allowed', 'grab', 'grabbing', 'all-scroll', 'col-resize', 'row-resize', 'zoom-in', 'zoom-out'],
+                        visibility: ['visible', 'hidden', 'collapse'],
+                        'white-space': ['normal', 'nowrap', 'pre', 'pre-wrap', 'pre-line', 'break-spaces'],
+                        'word-break': ['normal', 'break-all', 'keep-all', 'auto-phrase'],
+                        'overflow-wrap': ['normal', 'break-word', 'anywhere'],
+                        'pointer-events': ['auto', 'none'],
+                        'user-select': ['auto', 'text', 'none', 'contain', 'all'],
+                        'list-style-type': ['none', 'disc', 'circle', 'square', 'decimal', 'decimal-leading-zero', 'lower-roman', 'upper-roman', 'lower-alpha', 'upper-alpha'],
+                        'outline-style': ['none', 'auto', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset'],
+                        resize: ['none', 'both', 'horizontal', 'vertical', 'block', 'inline'],
+                        'table-layout': ['auto', 'fixed'],
+                        appearance: ['none', 'auto'],
+                        'scroll-behavior': ['auto', 'smooth'],
+                        'text-overflow': ['clip', 'ellipsis'],
+                        'object-position': ['center', 'top', 'right', 'bottom', 'left', '50% 50%'],
+                        'flex-flow': ['row wrap', 'row nowrap', 'column wrap', 'column nowrap'],
+                        'grid-auto-flow': ['row', 'column', 'dense', 'row dense', 'column dense'],
+                        'grid-auto-columns': ['auto', 'minmax(0, 1fr)', 'min-content', 'max-content'],
+                        'grid-auto-rows': ['auto', 'minmax(0, 1fr)', 'min-content', 'max-content'],
+                        'grid-template-rows': ['auto', '1fr', 'auto 1fr auto', 'repeat(3, 1fr)', 'minmax(0, 1fr)'],
+                        'align-content': ['normal', 'center', 'start', 'end', 'flex-start', 'flex-end', 'space-between', 'space-around', 'space-evenly', 'stretch', 'baseline'],
+                        'align-self': ['auto', 'normal', 'center', 'start', 'end', 'flex-start', 'flex-end', 'stretch', 'baseline'],
+                        'justify-items': ['normal', 'start', 'end', 'center', 'stretch', 'baseline'],
+                        'justify-self': ['auto', 'normal', 'start', 'end', 'center', 'stretch', 'baseline'],
+                        'place-items': ['center', 'start', 'end', 'stretch', 'baseline'],
+                        'place-content': ['center', 'start', 'end', 'space-between', 'space-around', 'space-evenly', 'stretch'],
+                        'place-self': ['auto', 'center', 'start', 'end', 'stretch'],
+                        'font-family': ['system-ui, sans-serif', 'Arial, sans-serif', 'Georgia, serif', 'monospace', 'sans-serif', 'serif', 'cursive', 'fantasy'],
+                        'line-height': ['normal', '1', '1.5', '1.6', '1.75'],
+                        'letter-spacing': ['normal', '0.02em', '0.05em', '0.1em'],
+                        'word-spacing': ['normal', '0.05em', '0.1em'],
+                        'vertical-align': ['baseline', 'middle', 'top', 'bottom', 'text-top', 'text-bottom', 'sub', 'super'],
+                        opacity: ['0', '0.5', '0.75', '1'],
+                        'z-index': ['auto', '0', '1', '10', '100'],
+                        order: ['0', '1', '-1'],
+                        'flex-grow': ['0', '1'],
+                        'flex-shrink': ['0', '1'],
+                        'aspect-ratio': ['auto', '1 / 1', '16 / 9', '4 / 3', '3 / 2'],
+                        'color-scheme': ['normal', 'light', 'dark', 'light dark', 'only light', 'only dark'],
+                        isolation: ['auto', 'isolate'],
+                        contain: ['none', 'strict', 'content', 'size', 'layout', 'style', 'paint'],
+                        'container-type': ['normal', 'size', 'inline-size'],
+                        'background-image': ['none', 'linear-gradient(135deg, #f5f7fa, #c3cfe2)', 'url("image.jpg")'],
+                        border: ['1px solid currentColor', '1px solid #e5e7eb', 'none', '2px dashed currentColor'],
+                        outline: ['none', '2px solid currentColor', '2px solid #2563eb'],
+                        'box-shadow': ['none', '0 2px 8px rgb(0 0 0 / 12%)', '0 8px 24px rgb(0 0 0 / 16%)', 'inset 0 1px 2px rgb(0 0 0 / 10%)'],
+                        'text-shadow': ['none', '0 1px 2px rgb(0 0 0 / 20%)'],
+                        transform: ['none', 'translateY(-2px)', 'scale(1.05)', 'rotate(5deg)', 'translateX(10px)'],
+                        transition: ['all 0.2s ease', 'opacity 0.2s ease', 'transform 0.2s ease', 'color 0.2s ease, background-color 0.2s ease'],
+                        animation: ['none', 'fade-in 0.3s ease both', 'slide-in 0.4s ease-out both'],
+                        gap: ['0', '0.5rem', '1rem', '1.5rem', '2rem'],
+                        'row-gap': ['0', '0.5rem', '1rem', '1.5rem'],
+                        'column-gap': ['0', '0.5rem', '1rem', '1.5rem'],
+                        'margin-inline': ['auto', '0', '1rem', '0 auto'],
+                        'margin-block': ['0', '1rem', '2rem'],
+                        'padding-inline': ['0', '1rem', '1.5rem', '2rem'],
+                        'padding-block': ['0', '1rem', '1.5rem', '2rem']
+                    }[property] || [];
+                    return values.map(function (value) {
+                        return { label: ': ' + value + ';', insert: ': ' + value + ';', description: 'Common ' + property + ' value' };
+                    });
+                }
+            },
+            { pattern: /(?:^|[\n;{]\s*)@import\s*$/i, items: [
+                { label: ' url("./styles.css");', insert: ' url("./styles.css");', description: 'Import another stylesheet', caret: 6 },
+                { label: ' url("https://example.com/styles.css") layer(external);', insert: ' url("https://example.com/styles.css") layer(external);', description: 'Import a stylesheet into a cascade layer', caret: 6 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@keyframes\s*$/i, items: [
+                { label: ' fade-in { from { opacity: 0; } to { opacity: 1; } }', insert: ' fade-in {\n    from { opacity: 0; }\n    to { opacity: 1; }\n}', description: 'Define a fade-in animation', caret: 8 },
+                { label: ' slide-in { from { transform: translateY(8px); } to { transform: translateY(0); } }', insert: ' slide-in {\n    from { transform: translateY(8px); }\n    to { transform: translateY(0); }\n}', description: 'Define a slide-in animation', caret: 8 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@font-face\s*$/i, items: [
+                { label: ' { font-family: "CustomFont"; src: url("font.woff2") format("woff2"); font-display: swap; }', insert: ' {\n    font-family: "CustomFont";\n    src: url("font.woff2") format("woff2");\n    font-display: swap;\n}', description: 'Declare a downloadable font face', caret: 3 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@layer\s*$/i, items: [
+                { label: ' reset, base, components, utilities;', insert: ' reset, base, components, utilities;', description: 'Establish cascade-layer order', caret: 7 },
+                { label: ' components { … }', insert: ' components {\n    \n}', description: 'Create a named cascade layer', caret: 12 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@scope\s*$/i, items: [
+                { label: ' (.component) { … }', insert: ' (.component) {\n    \n}', description: 'Scope styles to a component subtree', caret: 3 },
+                { label: ' (.component) to (.component__limit) { … }', insert: ' (.component) to (.component__limit) {\n    \n}', description: 'Define a bounded style scope', caret: 3 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@starting-style\s*$/i, items: [
+                { label: ' { opacity: 0; transform: translateY(8px); }', insert: ' {\n    opacity: 0;\n    transform: translateY(8px);\n}', description: 'Provide an entry style for a newly displayed element', caret: 3 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@page\s*$/i, items: [
+                { label: ' { margin: 1cm; }', insert: ' {\n    margin: 1cm;\n}', description: 'Set print-page margins', caret: 3 },
+                { label: ' :first { margin-top: 0; }', insert: ' :first {\n    margin-top: 0;\n}', description: 'Style the first printed page', caret: 3 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@media\s*\(\s*prefers-color-scheme\s*:\s*$/i, items: [
+                { label: 'dark) { … }', insert: 'dark) {\n    \n}', description: 'Use dark-mode preferences', caret: 4 },
+                { label: 'light) { … }', insert: 'light) {\n    \n}', description: 'Use light-mode preferences', caret: 5 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)@media\s*\(\s*prefers-reduced-motion\s*:\s*$/i, items: [
+                { label: 'reduce) { … }', insert: 'reduce) {\n    \n}', description: 'Respect reduced-motion preferences', caret: 6 },
+                { label: 'no-preference) { … }', insert: 'no-preference) {\n    \n}', description: 'Provide motion when allowed', caret: 14 }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)display\s*:\s*flex\s*;?$/i, items: [
+                { label: 'Add flex-wrap: wrap', insert: '\n    flex-wrap: wrap;', description: 'Allow flex items to wrap' },
+                { label: 'Add flex-direction: column', insert: '\n    flex-direction: column;', description: 'Stack flex items vertically' },
+                { label: 'Add justify-content: space-between', insert: '\n    justify-content: space-between;', description: 'Distribute items across the main axis' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)flex-direction\s*:\s*(?:row|row-reverse|column|column-reverse)\s*;?$/i, items: [
+                { label: 'Add flex-wrap: wrap', insert: '\n    flex-wrap: wrap;', description: 'Allow flex items to wrap' },
+                { label: 'Add gap: 1rem', insert: '\n    gap: 1rem;', description: 'Space out flex items' },
+                { label: 'Add align-items: center', insert: '\n    align-items: center;', description: 'Align items on the cross axis' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)grid-template-columns\s*:\s*[^;\n]+;?$/i, items: [
+                { label: 'Add grid-template-rows: auto 1fr auto', insert: '\n    grid-template-rows: auto 1fr auto;', description: 'Define responsive row tracks' },
+                { label: 'Add grid-auto-flow: row', insert: '\n    grid-auto-flow: row;', description: 'Place grid items row by row' },
+                { label: 'Add place-items: center', insert: '\n    place-items: center;', description: 'Align grid items on both axes' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)position\s*:\s*sticky\s*;?$/i, items: [
+                { label: 'Add top: 0', insert: '\n    top: 0;', description: 'Set the sticky threshold at the top' },
+                { label: 'Add z-index: 10', insert: '\n    z-index: 10;', description: 'Keep the sticky element above nearby content' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)font-size\s*:\s*[^;\n]+;?$/i, items: [
+                { label: 'Add line-height: 1.5', insert: '\n    line-height: 1.5;', description: 'Set a readable line height' },
+                { label: 'Add font-weight: 600', insert: '\n    font-weight: 600;', description: 'Increase text emphasis' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)border-radius\s*:\s*[^;\n]+;?$/i, items: [
+                { label: 'Add overflow: hidden', insert: '\n    overflow: hidden;', description: 'Clip child content to rounded corners' },
+                { label: 'Add border: 1px solid #e5e7eb', insert: '\n    border: 1px solid #e5e7eb;', description: 'Add a subtle outline' }
+            ]},
+            { pattern: /(?:^|[\n;{]\s*)transition\s*:\s*[^;\n]+;?$/i, items: [
+                { label: 'Add @media (prefers-reduced-motion: reduce)', insert: '\n@media (prefers-reduced-motion: reduce) {\n    .animated-element { transition: none; animation: none; }\n}', description: 'Respect reduced-motion user settings' }
+            ]},
         ],
 
         js: [

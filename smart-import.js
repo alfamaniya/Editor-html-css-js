@@ -16,6 +16,10 @@
         js:   { output: byId('siResultJs'),   checkbox: byId('siApplyJs'),   count: byId('siCountJs') }
     };
 
+    [summary, actionStatus].forEach((element) => {
+        if (element) { element.lang = 'fa'; element.dir = 'rtl'; }
+    });
+
     function countMatches(source, regex) { return (source.match(regex) || []).length; }
 
     

@@ -126,9 +126,9 @@
     // A practical subset of Emmet-style HTML abbreviations; aliases expand to real markup.
     const htmlDocumentTemplate = '<!doctype html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title></title>\n</head>\n<body>\n    \n</body>\n</html>';
     const htmlAbbreviations = [
-        { trigger: '!', label: '! -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
-        { trigger: 'doc', label: 'doc -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
-        { trigger: 'html:5', label: 'html:5 -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
+        { trigger: '!', label: '! -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('</body>') - 1 },
+        { trigger: 'doc', label: 'doc -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('</body>') - 1 },
+        { trigger: 'html:5', label: 'html:5 -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('</body>') - 1 },
         { trigger: 'meta:vp', label: 'meta:vp -> viewport meta', insert: '<meta name="viewport" content="width=device-width, initial-scale=1.0">', description: 'Insert a responsive viewport meta tag' },
         { trigger: 'meta:utf', label: 'meta:utf -> UTF-8 meta', insert: '<meta charset="UTF-8">', description: 'Declare UTF-8 character encoding' },
         { trigger: 'link:css', label: 'link:css -> stylesheet link', insert: '<link rel="stylesheet" href="style.css">', description: 'Link a CSS stylesheet' },

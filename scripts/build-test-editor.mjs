@@ -2,7 +2,7 @@
 /**
  * Build index-test-etitor.html as a standalone copy of the editor.
  *
- * Sources: index.html, style.css, and the five JavaScript files listed below.
+ * Sources: index.html, style.css, and the six JavaScript files listed below.
  * Run locally: node scripts/build-test-editor.mjs
  * GitHub Actions runs this builder on every push to main.
  */
@@ -19,7 +19,8 @@ const scriptFiles = [
     'css-suggestions.js',
     'js-suggestions.js',
     'next-word-suggestions.js',
-    'script.js'
+    'script.js',
+    'word-tree.js'
 ];
 
 async function readText(path) {

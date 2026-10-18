@@ -18,6 +18,7 @@ const assets = [
   { tag: /<script\s+src=["']js-suggestions\.js["']\s*>\s*<\/script>/i, file: 'js-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']next-word-suggestions\.js["']\s*>\s*<\/script>/i, file: 'next-word-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']script\.js["']\s*>\s*<\/script>/i, file: 'script.js', type: 'script' }
+  { tag: /<script\s+src=["']word-tree\.js["']\s*>\s*<\/script>/i, file: 'word-tree.js', type: 'script' }
 ];
 
 for (const asset of assets) {
@@ -34,4 +35,4 @@ for (const asset of assets) {
 html = html.replace(/<title>[^<]*<\/title>/i, '<title>HTML Editor — Single File Test</title>');
 html = html.replace('</head>', '  <meta name="generated-single-file" content="true">\n</head>');
 fs.writeFileSync(outputPath, html, 'utf8');
-console.log('Built index-test-etitor.html from index.html and 6 local assets.');
+console.log('Built index-test-etitor.html from index.html and 7 local assets.');

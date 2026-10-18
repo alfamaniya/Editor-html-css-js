@@ -15,6 +15,7 @@
 ├── index-test-etitor.html         — نسخهٔ آزمایشی ویرایشگر
 ├── style.css                     — ظاهر، چیدمان و واکنش‌گرایی
 ├── script.js                     — منطق و عملکرد ویرایشگر
+├── word-tree.js                  — نمودار پویا و قابل جست‌وجوی واژه‌ها
 ├── html-suggestions.js            — پیشنهادهای کد HTML
 ├── css-suggestions.js             — پیشنهادهای کد CSS
 ├── js-suggestions.js              — پیشنهادهای کد JavaScript
@@ -32,6 +33,7 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 - Live preview inside a sandboxed iframe.
 - Code completion for HTML tags/attributes, CSS properties/values/selectors/at-rules, and JavaScript keywords, members, browser APIs, and snippets.
 - Context-aware next-word predictions that can continue selected suggestions into attributes, CSS values, variable initializers, and common code patterns.
+- Live Word Tree built from the loaded HTML, CSS, and JavaScript suggestion banks; selecting an entry opens a Persian explanation and a short code example.
 - Quick-insert symbols, automatic closing HTML tags, indentation helpers, and bracket-aware Enter behavior.
 - Project file manager with create, rename, delete/undo, search, filters, and ordering options.
 - Search within the current editor, with next/previous match navigation.
@@ -59,6 +61,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `index.html` | Editor UI, help content, preview iframe, and local asset references |
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
 | `script.js` | Editor behavior, files, storage, library catalog, preview generation, and export |
+| `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |
 | `html-suggestions.js` | HTML tags, global attributes, element-specific attributes, and HTML abbreviations |
 | `css-suggestions.js` | CSS property/value completion data and code snippets |
 | `js-suggestions.js` | JavaScript words, member lists, and snippets |
@@ -66,7 +69,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `tree-world-suggestion.md` | Visual-only branching tree of the current HTML, CSS, and JavaScript next-word rules; not loaded by the application |
 | `README.md` | Project documentation, usage, audit notes, and validation status |
 
-The completion bank is split into four JavaScript data files. The HTML bank separates global attributes from element-specific attributes, includes contextual value rules, and supports embedded SVG/MathML elements. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language and standard built-in names, browser API interfaces and members, object methods, and reusable snippets. Its vocabulary and continuations are curated against the ECMAScript specification and MDN references; newer or permission-gated browser APIs may not exist in every runtime. There is no `intellisense-data.js` file in the current repository.
+The completion bank is split into four JavaScript data files. The HTML bank separates global attributes from element-specific attributes, includes contextual value rules, and supports embedded SVG/MathML elements. The separate `word-tree.js` interface reads the loaded data banks at runtime instead of maintaining a second hard-coded word list. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language and standard built-in names, browser API interfaces and members, object methods, and reusable snippets. Its vocabulary and continuations are curated against the ECMAScript specification and MDN references; newer or permission-gated browser APIs may not exist in every runtime. There is no `intellisense-data.js` file in the current repository.
 
 ## Suggestion-bank coverage and next-word prediction
 
@@ -97,13 +100,13 @@ After a completion is accepted, the editor checks the text before the caret agai
 - CSS: after accepting a property such as display, overflow, text-align, font-weight, cursor, grid-auto-flow, or object-fit, offer common values; after layout declarations, offer related flex/grid, sticky-positioning, typography, border, and reduced-motion continuations. Common at-rules now include `@import`, `@keyframes`, `@font-face`, `@layer`, `@scope`, and relevant preference media queries.
 - JavaScript: after const/let/var, suggest an assignment; after the assignment, suggest common initializer types; after identifiers such as document or console, suggest common members and call patterns.
 
-The next-word database is a deterministic, hand-maintained rule/sequence list with 123 contexts and 390 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The HTML rules cover ARIA states, autocomplete tokens, input hints, media/loading options, form encodings, referrer policies, and related attributes. CSS rules include expanded property values, common at-rules, responsive layout follow-ups, and reduced-motion patterns. JavaScript rules include control-flow, modules, built-in methods, and browser API continuations. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
+The next-word database is a deterministic, hand-maintained rule/sequence list with 125 contexts and 373 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The HTML rules cover ARIA states, autocomplete tokens, input hints, media/loading options, form encodings, referrer policies, and related attributes. CSS rules include expanded property values, common at-rules, responsive layout follow-ups, and reduced-motion patterns. JavaScript rules include control-flow, modules, built-in methods, and browser API continuations. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
 
 ### Visual suggestion tree
 
-- `tree-world-suggestion.md` documents the current context-aware next-word rule bank as branching trees, with 37 HTML, 32 CSS, and 54 JavaScript rule contexts.
+- `tree-world-suggestion.md` documents the context-aware next-word rule bank as a static reference. The in-app Word Tree is different: it reads the currently loaded suggestion data and rebuilds its searchable branches when opened or refreshed.
 - It is a standalone visual reference only. It is not imported or loaded by the editor and does not affect completion behavior.
-- The tree shows explicit rule contexts and listed choices; some choices are generated dynamically, and the general vocabulary banks are broader than the finite next-word chains.
+- The static file shows explicit rule contexts and listed choices; some choices are generated dynamically, and the general vocabulary banks are broader than the finite next-word chains. For the live, interactive tree, use the **Word Tree** button beside Help in the editor.
 
 ### Abbreviation completions and quick symbols
 

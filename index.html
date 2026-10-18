@@ -23,6 +23,7 @@
             <button id="btnFontDec"  title="Decrease Font Size">A−</button>
             <button id="btnFontInc"  title="Increase Font Size">A+</button>
             <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
+            <button type="button" id="btnWordTree" title="Open the live word tree">🌳 Word Tree</button>
         </div>
         <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
         <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
@@ -324,6 +325,57 @@
 
     </div>
 
+    <div class="modal-overlay word-tree-overlay" id="wordTreeModal" hidden>
+        <section class="word-tree-dialog" role="dialog" aria-modal="true" aria-labelledby="wordTreeTitle">
+            <header class="word-tree-header">
+                <div>
+                    <h2 id="wordTreeTitle">Word Tree</h2>
+                    <p>Explore the loaded suggestion banks and contextual continuations.</p>
+                </div>
+                <button type="button" class="word-tree-close" id="wordTreeClose" aria-label="Close Word Tree">✕</button>
+            </header>
+            <div class="word-tree-tools">
+                <input type="search" id="wordTreeSearch" placeholder="Search words, properties, members, or snippets…" aria-label="Search the word tree" autocomplete="off">
+                <select id="wordTreeLanguage" aria-label="Filter by language">
+                    <option value="all">All Languages</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="js">JavaScript</option>
+                </select>
+                <button type="button" id="wordTreeRefresh">Refresh</button>
+                <button type="button" id="wordTreeExpand">Expand All</button>
+                <button type="button" id="wordTreeCollapse">Collapse All</button>
+            </div>
+            <div class="word-tree-stats" id="wordTreeStats" role="status" aria-live="polite">Reading suggestion banks…</div>
+            <div class="word-tree-scroll" id="wordTreeContent" aria-label="Dynamic word tree"></div>
+            <footer class="word-tree-footer">
+                <span>Built from the currently loaded editor data. Select an entry to view its example.</span>
+                <button type="button" class="word-tree-close-secondary" id="wordTreeFooterClose">Close</button>
+            </footer>
+        </section>
+    </div>
+
+    <div class="modal-overlay word-detail-overlay" id="wordDetailModal" hidden>
+        <section class="word-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="wordDetailTitle">
+            <header class="word-detail-header">
+                <div>
+                    <p class="word-detail-category" id="wordDetailCategory">HTML · Element</p>
+                    <h2 id="wordDetailTitle">div</h2>
+                </div>
+                <button type="button" class="word-tree-close" id="wordDetailClose" aria-label="Close word details">✕</button>
+            </header>
+            <p class="word-detail-description" id="wordDetailDescription" lang="fa" dir="rtl"></p>
+            <section class="word-detail-example" aria-labelledby="wordDetailExampleTitle">
+                <div class="word-detail-example-header">
+                    <h3 id="wordDetailExampleTitle">Example</h3>
+                    <button type="button" id="wordDetailCopy">Copy Code</button>
+                </div>
+                <pre><code id="wordDetailCode"></code></pre>
+                <p class="word-detail-copy-status" id="wordDetailCopyStatus" role="status" aria-live="polite"></p>
+            </section>
+        </section>
+    </div>
+
     <div class="modal-overlay" id="nameModal" hidden>
         <div class="modal-box">
             <div class="modal-title">⬇ Download files</div>
@@ -347,6 +399,7 @@
     <script src="js-suggestions.js"></script>
     <script src="next-word-suggestions.js"></script>
     <script src="script.js"></script>
+    <script src="word-tree.js"></script>
 
 </body>
 </html>

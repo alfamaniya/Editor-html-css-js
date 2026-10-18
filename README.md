@@ -49,9 +49,9 @@ The current curated banks contain approximately these unique entries after norma
 
 | Bank | Coverage currently loaded by the editor |
 |---|---|
-| HTML | 200 element names (including SVG and MathML), 231 common attributes including event handlers/ARIA/data attributes, and 61 tag-specific attribute groups |
-| CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, and 13 snippets |
-| JavaScript | 582 language/global/browser API words, 94 member roots with 1,304 distinct member names, and 30 snippets |
+| HTML | 200 element names (including SVG and MathML), 231 common attributes, 61 tag-specific attribute groups, 24 Emmet-style abbreviation triggers, and 18 quick-insert symbols |
+| CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, 13 core snippets, 34 shorthand candidates backed by 46 abbreviation mappings, and 18 quick-insert symbols |
+| JavaScript | 582 language/global/browser API words, 94 member roots with 1,304 distinct member names, 49 snippets (including 19 shorthand triggers), and 21 quick-insert symbols |
 | Next-word database | 123 contextual rules (37 HTML, 32 CSS, 54 JavaScript), 390 explicitly listed candidates, plus dynamically generated tag/attribute/property-value and code continuations |
 
 These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment. JavaScript completion preserves names that differ only by case (for example, `Map` and `map`) because they are distinct identifiers.
@@ -64,8 +64,16 @@ After a completion is accepted, the editor checks the text before the caret agai
 - CSS: after accepting a property such as display, overflow, text-align, font-weight, cursor, grid-auto-flow, or object-fit, offer common values; after layout declarations, offer related flex/grid, sticky-positioning, typography, border, and reduced-motion continuations. Common at-rules now include `@import`, `@keyframes`, `@font-face`, `@layer`, `@scope`, and relevant preference media queries.
 - JavaScript: after const/let/var, suggest an assignment; after the assignment, suggest common initializer types; after identifiers such as document or console, suggest common members and call patterns.
 
-The next-word database is a deterministic, hand-maintained rule/sequence list with 123 contexts and 390 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The HTML rules cover additional ARIA state values, autocomplete tokens, input hints, image/media loading options, form encodings, referrer policies, and related attributes. The CSS rules cover more property values, common at-rules, responsive layout follow-ups, and reduced-motion patterns. JavaScript rules also include expanded control-flow, modules, built-in methods, and browser API continuations. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
+The next-word database is a deterministic, hand-maintained rule/sequence list with 123 contexts and 390 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The HTML rules cover ARIA states, autocomplete tokens, input hints, media/loading options, form encodings, referrer policies, and related attributes. CSS rules include expanded property values, common at-rules, responsive layout follow-ups, and reduced-motion patterns. JavaScript rules include control-flow, modules, built-in methods, and browser API continuations. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
 
+### Abbreviation completions and quick symbols
+
+These are curated editor conveniences, not a complete Emmet parser. The HTML/CSS forms follow the established Emmet abbreviation model; JavaScript labels are local snippet triggers whose syntax and API examples are checked against MDN and ECMAScript references.
+
+- **HTML:** on a line outside an unfinished tag, type `!`, `doc`, `html:5`, `meta:vp`, `meta:utf`, `link:css`, `script:src`, `bq`, `btn`, `img`, `ul+`, `ol+`, `table+`, `form:get`, `.container`, `#app`, or `ul>li*3` and choose the matching completion. The HTML symbol toolbar also offers common entities such as `&nbsp;`, `&amp;`, `&lt;`, and `&gt;`.
+- **CSS:** inside a rule block, type shorthands such as `m10` → `margin: 10px;`, `m10-20` → `margin: 10px 20px;`, `p8-16` → `padding: 8px 16px;`, `w100` → `width: 100px;`, `fz16` → `font-size: 16px;`, `fw700` → `font-weight: 700;`, `lh1.5` → `line-height: 1.5;`, and `op0.5` → `opacity: 0.5;`. Static options include `df` for flex display, `dg` for grid display, and `dn` for `display: none;`. Numeric expansion is limited to properties for which the inferred unit or unitless value is sensible.
+- **JavaScript:** type triggers such as `clg`, `cer`, `qs`, `qsa`, `gid`, `addel`, `afn`, `forof`, `iife`, `tc`, `pall`, `jparse`, `jstr`, `ls`, `raf`, `imp`, or `exp`, then accept the proposed snippet.
+- **Quick symbols:** the toolbar includes common HTML entities; CSS pseudo-selectors and functions; and JavaScript operators such as `=>`, `===`, `!==`, `&&`, `||`, `??`, `?.`, and `...`.
 ## Basic use
 
 1. Select the HTML, CSS, or JavaScript tab and edit the code.
@@ -280,12 +288,23 @@ Review date: 2026-10-16.
 - Checked completion caret offsets: **no out-of-range values found**.
 - **Not performed for this change:** interactive browser testing or cross-browser/end-to-end testing.
 
+### Abbreviation and quick-symbol expansion (2026-10-18)
+
+- Added 24 Emmet-style HTML abbreviation completions, 34 CSS shorthand suggestions with 46 numeric-mapping entries, 19 JavaScript abbreviation-trigger snippets, and additional quick-insert symbols for all three languages.
+- Parsed all five JavaScript files and initialized all four suggestion-data scripts: **pass**.
+- Verified representative HTML aliases and JavaScript triggers exist in the loaded banks; checked CSS numeric shorthands including `m10`, `m10-20`, `p8-16`, `w100`, `fz16`, `fw700`, `lh1.5`, `op0.5`, and `z10` resolve to expected declarations.
+- Verified non-length shorthands such as `bgc10` are not incorrectly expanded as pixel values.
+- Checked abbreviation and snippet caret positions: **no out-of-range offsets found**.
+- **Not performed for this change:** interactive browser testing or cross-browser/end-to-end testing.
+
 
 
 ## Reference material
 
 The completion banks are curated against browser-language references and should be revisited as standards change:
 
+- [Emmet abbreviation reference](https://docs.emmet.io/abbreviations/)
+- [Emmet CSS abbreviations](https://docs.emmet.io/css-abbreviations/)
 - [MDN HTML reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference)
 - [MDN HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements)
 - [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)

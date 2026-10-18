@@ -5417,6 +5417,14 @@ function addBox() {
                 if (values.length > 1 && !multiValueProperties.has(property)) return null;
 
                 const unitlessProperties = new Set(['opacity', 'z-index', 'font-weight', 'line-height', 'order', 'flex-grow', 'flex-shrink']);
+                const lengthProperties = new Set([
+                    'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+                    'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+                    'width', 'height', 'min-width', 'max-width', 'min-height', 'max-height',
+                    'top', 'right', 'bottom', 'left', 'gap', 'row-gap', 'column-gap',
+                    'font-size', 'letter-spacing', 'border-radius', 'border-width'
+                ]);
+                if (!unitlessProperties.has(property) && !lengthProperties.has(property)) return null;
                 const expandedValues = values.map(function (value) {
                     return /(?:px|rem|em|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc)$/i.test(value) || unitlessProperties.has(property)
                         ? value

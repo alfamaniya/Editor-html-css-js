@@ -221,6 +221,103 @@
         return /(?:\b(?:const|let|var|function|class|import|export|return|async|await|console|document|window)\b|=>|\baddEventListener\s*\(|\bquerySelector\s*\()/.test(source);
     }
 
+    // When pasted input contains several full documents, select one structurally complete
+    // document BEFORE extracting <style>, <script>, and <body>. Otherwise a document pasted
+    // inside a <style> block can make all subsequent boundaries incorrect.
+    function selectDocumentCandidate(source) {
+        const docTypePattern = /<!doctype\s+html\b[^>]*>/gi;
+        const htmlPattern = /<html\b[^>]*>/gi;
+        const closePattern = /<\/html\s*>/gi;
+        const bodyOpenPattern = /<body\b[^>]*>/gi;
+        const bodyClosePattern = /<\/body\s*>/gi;
+        const headOpenPattern = /<head\b[^>]*>/gi;
+        const headClosePattern = /<\/head\s*>/gi;
+        const styleOpenPattern = /<style\b[^>]*>/gi;
+        const styleClosePattern = /<\/style\s*>/gi;
+        const scriptOpenPattern = /<script\b[^>]*>/gi;
+        const scriptClosePattern = /<\/script\s*>/gi;
+
+        const starts = [];
+        let match;
+        while ((match = docTypePattern.exec(source)) !== null) {
+            starts.push({ index: match.index, kind: 'doctype' });
+        }
+        while ((match = htmlPattern.exec(source)) !== null) {
+            const previousDoctype = starts.filter((item) => item.kind === 'doctype' && item.index < match.index)
+                .sort((a, b) => b.index - a.index)[0];
+            const hasClosedDocumentSince = previousDoctype
+                ? /<\/html\s*>/i.test(source.slice(previousDoctype.index, match.index))
+                : false;
+            const closeDistance = previousDoctype ? match.index - previousDoctype.index : Infinity;
+            // Ignore an <html> tag belonging to a nearby DOCTYPE; do allow later independent
+            // documents without a DOCTYPE to become candidates.
+            if (!previousDoctype || hasClosedDocumentSince || closeDistance > 240) {
+                starts.push({ index: match.index, kind: 'html' });
+            }
+        }
+        starts.sort((a, b) => a.index - b.index);
+        const uniqueStarts = starts.filter((item, index) =>
+            index === 0 || item.index !== starts[index - 1].index
+        );
+        if (uniqueStarts.length < 2) {
+            return { source: source, recovered: false, count: uniqueStarts.length, start: 0, score: 0 };
+        }
+
+        function scoreCandidate(candidate) {
+            const htmlOpen = countMatches(candidate, /<html\b/gi);
+            const htmlClose = countMatches(candidate, /<\/html\s*>/gi);
+            const bodyOpen = countMatches(candidate, bodyOpenPattern);
+            const bodyClose = countMatches(candidate, bodyClosePattern);
+            const headOpen = countMatches(candidate, headOpenPattern);
+            const headClose = countMatches(candidate, headClosePattern);
+            const styleOpen = countMatches(candidate, styleOpenPattern);
+            const styleClose = countMatches(candidate, styleClosePattern);
+            const scriptOpen = countMatches(candidate, scriptOpenPattern);
+            const scriptClose = countMatches(candidate, scriptClosePattern);
+            let score = 0;
+
+            score += htmlOpen === 1 && htmlClose === 1 ? 14 : -12 * Math.abs(htmlOpen - htmlClose) - 7 * Math.max(0, htmlOpen - 1);
+            score += bodyOpen === 1 && bodyClose === 1 ? 12 : (bodyOpen > 0 && bodyOpen === bodyClose ? 4 : -6 * Math.abs(bodyOpen - bodyClose));
+            score += headOpen === 1 && headClose === 1 ? 3 : -2 * Math.abs(headOpen - headClose);
+            score += styleOpen === styleClose ? (styleOpen ? 3 : 0) : -4 * Math.abs(styleOpen - styleClose);
+            score += scriptOpen === scriptClose ? (scriptOpen ? 3 : 0) : -4 * Math.abs(scriptOpen - scriptClose);
+            if (/<!doctype\s+html\b/i.test(candidate)) score += 1;
+            if (candidate.length > 600) score += 2;
+            if (!/<body\b/i.test(candidate) || !/<\/body\s*>/i.test(candidate)) score -= 8;
+            return score;
+        }
+
+        const candidates = [];
+        uniqueStarts.forEach((start) => {
+            closePattern.lastIndex = start.index;
+            let closing;
+            while ((closing = closePattern.exec(source)) !== null) {
+                const end = closing.index + closing[0].length;
+                const candidate = source.slice(start.index, end);
+                const score = scoreCandidate(candidate);
+                candidates.push({ source: candidate, start: start.index, end: end, score: score });
+            }
+        });
+
+        candidates.sort((a, b) => {
+            if (a.score !== b.score) return b.score - a.score;
+            // Equal-quality documents are commonly successive revisions; prefer the latest.
+            if (a.start !== b.start) return b.start - a.start;
+            return a.end - b.end;
+        });
+        const best = candidates[0];
+        if (!best || best.score < 15) {
+            return { source: source, recovered: false, count: uniqueStarts.length, start: 0, score: best ? best.score : 0 };
+        }
+        return {
+            source: best.source,
+            recovered: true,
+            count: uniqueStarts.length,
+            start: best.start,
+            score: best.score
+        };
+    }
+
     function cleanMarkup(source) {
         let markup = source;
         const bodyOpenings = Array.from(markup.matchAll(/<body\b[^>]*>/gi));
@@ -295,8 +392,8 @@
     }
 
     function analyze(clean) {
-        const raw = sourceInput.value.replace(/^\uFEFF/, '');
-        if (!raw.trim()) {
+        const rawInput = sourceInput.value.replace(/^\uFEFF/, '');
+        if (!rawInput.trim()) {
             resultsPanel.hidden = true;
             summary.textContent = '';
             actionStatus.textContent = 'ابتدا کد را در کادر وارد کن یا یک فایل باز کن.';
@@ -304,6 +401,8 @@
             return;
         }
 
+        const documentRecovery = selectDocumentCandidate(rawInput);
+        const raw = documentRecovery.source;
         const styleBlocks = extractBlocks(raw, 'style');
         const allScriptBlocks = extractBlocks(raw, 'script');
         const inlineScriptBlocks = allScriptBlocks.filter((block) => block.isJavaScript);
@@ -365,7 +464,7 @@
         let scriptMatch;
         while ((scriptMatch = externalScriptPattern.exec(raw)) !== null) externalJs.push(scriptMatch[1]);
 
-        const documentCount = Math.max(countMatches(raw, /<!doctype\b/gi), countMatches(raw, /<html\b/gi));
+        const documentCount = Math.max(countMatches(rawInput, /<!doctype\b/gi), countMatches(rawInput, /<html\b/gi));
         const duplicateBlocks = dedupedCss.removed + dedupedJs.removed;
         const declarationReport = analyzeTopLevelDeclarations(jsParts);
         const similarScripts = compareScriptSimilarity(jsParts);
@@ -373,7 +472,8 @@
         latestJsSource = canOfferLatestJs ? jsParts[jsParts.length - 1] : '';
         if (jsRecovery) jsRecovery.hidden = !canOfferLatestJs;
         const warnings = [];
-        if (documentCount > 1) warnings.push('در ورودی ' + documentCount + ' نشانهٔ شروع سند HTML پیدا شد. ابزار بخش body آخر را برای خروجی انتخاب کرده تا نسخه‌های تو‌در‌تو با هم ادغام نشوند؛ اگر نسخهٔ دیگری مدنظر توست، خروجی HTML را بررسی کن.');
+        if (documentRecovery.recovered) warnings.push('چند نسخه یا شروع سند HTML در ورودی پیدا شد. به‌جای ادغام نسخه‌های ناسازگار، یک سند کامل با ساختار منسجم انتخاب شد (امتیاز ساختاری: ' + documentRecovery.score + '). خروجی‌های زیر فقط از همین نسخه ساخته شده‌اند؛ اگر نسخهٔ دیگری مدنظر توست، کد اصلی را نگه دار و آن را جداگانه وارد کن.');
+        else if (documentCount > 1) warnings.push('چند نشانهٔ شروع سند HTML پیدا شد، اما هیچ نسخه‌ای با اطمینان کافی جدا نشد. خروجی ممکن است نیاز به اصلاح دستی داشته باشد؛ فایل اصلی را تا بررسی کامل جایگزین نکن.');
         if (preparedStyles.some((item) => item.recovered)) warnings.push('یک بلوک style شامل نشانه‌های HTML و یک style تو‌در‌تو بود؛ CSS داخلی آن بازیابی شد. خروجی CSS را بررسی کن، چون این ورودی ساختار معتبر HTML/CSS ندارد.');
         if (preparedStyles.some((item) => item.skipped)) warnings.push('یک بلوک style حاوی ساختار HTML بود اما style داخلی قابل بازیابی پیدا نشد؛ آن بلوک از خروجی CSS کنار گذاشته شد تا HTML به‌اشتباه وارد فایل CSS نشود.');
         if (countMatches(raw, /<style\b/gi) !== styleBlocks.length) warnings.push('احتمالاً یک یا چند بلوک style ناقص است یا تگ پایانی آن شکل غیرمعمولی دارد.');

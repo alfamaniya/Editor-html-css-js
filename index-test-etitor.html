@@ -4980,8 +4980,9 @@ function addBox() {
                 const items = (list || []).map(asItem);
                 for (let i = 0; i < items.length; i++) {
                     const label = String(items[i].label || items[i].insert || '');
-                    if (!label || seenLabels.has(label.toLowerCase())) continue;
-                    seenLabels.add(label.toLowerCase());
+                    // JavaScript is case-sensitive: keep distinct names such as Map and map.
+                    if (!label || seenLabels.has(label)) continue;
+                    seenLabels.add(label);
                     if (!w || label.toLowerCase().startsWith(w)) {
                         out.push(items[i]);
                         if (out.length >= 24) break;

@@ -5233,7 +5233,23 @@ function addBox() {
                         }
                     }
 
-                    if (tagLt < 0) return null;
+                    if (tagLt < 0) {
+                        // Suggest a small, curated set of Emmet-style HTML shortcuts only when
+                        // the current line contains a single abbreviation-like token.
+                        const lineStart = Math.max(before.lastIndexOf('\n'), before.lastIndexOf('\r')) + 1;
+                        const lineFragment = before.slice(lineStart);
+                        const abbreviationMatch = lineFragment.match(/^([ \t]*)([^\s<>"']+)$/);
+                        if (abbreviationMatch) {
+                            const token = abbreviationMatch[2];
+                            const abbreviations = (getIntelliSenseData().htmlAbbreviations || []);
+                            if (abbreviations.some(function (item) {
+                                return String(item.trigger || '').toLowerCase().startsWith(token.toLowerCase());
+                            })) {
+                                return { word: token, from: pos - token.length, to: pos, kind: 'htmlAbbreviation' };
+                            }
+                        }
+                        return null;
+                    }
                     const fragment = before.slice(tagLt);
                     const tagMatch = fragment.match(/^<\/?([a-zA-Z][\w:-]*)/);
                     if (!tagMatch) return null;
@@ -5361,12 +5377,39 @@ function addBox() {
                 return out;
             }
 
+            function resolveCssAbbreviation(word, data) {
+                const mappings = (data && data.cssAbbreviationProperties) || {};
+                const match = String(word || '').match(/^([a-z]+)(\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc)?(?:-\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc)?){0,3})$/i);
+                if (!match) return null;
+                const property = mappings[match[1].toLowerCase()];
+                if (!property) return null;
+
+                const values = match[2].match(/\d+(?:\.\d+)?(?:px|rem|em|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc)?/gi) || [];
+                if (!values.length || values.join('-').toLowerCase() !== match[2].toLowerCase()) return null;
+                const multiValueProperties = new Set(['margin', 'padding', 'border-radius', 'border-width', 'border-style', 'border-color', 'gap']);
+                if (values.length > 1 && !multiValueProperties.has(property)) return null;
+
+                const unitlessProperties = new Set(['opacity', 'z-index', 'font-weight', 'line-height', 'order', 'flex-grow', 'flex-shrink']);
+                const expandedValues = values.map(function (value) {
+                    return /(?:px|rem|em|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc)$/i.test(value) || unitlessProperties.has(property)
+                        ? value
+                        : value + 'px';
+                });
+                const insert = property + ': ' + expandedValues.join(' ') + ';';
+                return {
+                    label: String(word) + ' -> ' + insert,
+                    insert: insert,
+                    description: 'Expand a CSS shorthand abbreviation into a standard declaration'
+                };
+            }
+
             function completionList(ctx) {
                 const data = getIntelliSenseData();
                 if (ctx.kind === 'nextWord') return filterList(ctx.items || [], '');
                 if (ctx.kind === 'cssAtRule') return filterList(data.cssAtRules || [], ctx.word);
                 if (ctx.kind === 'cssPseudoClass') return filterList(data.cssPseudoClasses || [], ctx.word);
                 if (ctx.kind === 'cssPseudoElement') return filterList(data.cssPseudoElements || [], ctx.word);
+                if (ctx.kind === 'htmlAbbreviation') return filterList(data.htmlAbbreviations || [], ctx.word);
                 if (ctx.kind === 'htmlTag') {
                     return filterList(data.htmlTags || HTML_TAGS, ctx.word);
                 }
@@ -5379,8 +5422,10 @@ function addBox() {
                     }), ctx.word);
                 }
                 if (ctx.kind === 'cssProperty') {
+                    const shorthand = resolveCssAbbreviation(ctx.word, data);
+                    if (shorthand) return [shorthand];
                     const snippets = (data.snippets && data.snippets.css) || [];
-                    return filterList(snippets.concat(data.cssProperties || CSS_PROPS), ctx.word);
+                    return filterList(snippets.concat(data.cssAbbreviations || [], data.cssProperties || CSS_PROPS), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];

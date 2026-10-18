@@ -2447,6 +2447,15 @@ input {
     jsWords.push(...extendedJsWords);
     jsWords.splice(0, jsWords.length, ...Array.from(new Set(jsWords)));
 
+
+    // Vocabulary curated against the ECMAScript specification and MDN's JavaScript/Web API references.
+    // Static completion is not browser-feature detection; newer APIs may vary by runtime.
+    const standardsAndWebApiWords = (
+        'using as AggregateError EvalError ReferenceError URIError SuppressedError Generator GeneratorFunction AsyncFunction AsyncGeneratorFunction AsyncGenerator DisposableStack AsyncDisposableStack Iterator AsyncIterator Float16Array Int8Array Uint8Array Uint8ClampedArray Int16Array Uint16Array Int32Array Uint32Array Float32Array Float64Array BigInt64Array BigUint64Array ArrayBuffer SharedArrayBuffer DataView Atomics Document Element HTMLElement SVGElement Node Text Comment Attr DocumentType DocumentFragment HTMLFormElement HTMLInputElement HTMLButtonElement HTMLSelectElement HTMLTextAreaElement HTMLAnchorElement HTMLImageElement HTMLScriptElement HTMLStyleElement HTMLLinkElement HTMLTemplateElement HTMLDialogElement HTMLMediaElement HTMLVideoElement HTMLAudioElement HTMLCanvasElement HTMLOptionElement HTMLCollection NodeList RadioNodeList NamedNodeMap DOMTokenList DOMParser XMLSerializer XPathEvaluator XPathExpression XPathResult TreeWalker NodeIterator NodeFilter MutationRecord Range Selection TextEncoder TextDecoder TextEncoderStream TextDecoderStream CompressionStream DecompressionStream ReadableStream ReadableStreamDefaultReader ReadableStreamDefaultController WritableStream WritableStreamDefaultWriter WritableStreamDefaultController TransformStream ByteLengthQueuingStrategy CountQueuingStrategy BroadcastChannel MessageChannel MessagePort ServiceWorker ServiceWorkerContainer ServiceWorkerRegistration Cache CacheStorage IDBFactory IDBDatabase IDBObjectStore IDBIndex IDBKeyRange IDBCursor IDBRequest IDBOpenDBRequest IDBTransaction FileSystemHandle FileSystemFileHandle FileSystemDirectoryHandle FileSystemWritableFileStream EventSource WebTransport RTCPeerConnection RTCDataChannel RTCSessionDescription RTCIceCandidate Notification PermissionStatus PushManager PushSubscription MediaRecorder MediaStream MediaStreamTrack MediaDevices AudioContext OfflineAudioContext AudioNode AudioParam AnalyserNode BiquadFilterNode OscillatorNode GainNode AudioBuffer AudioBufferSourceNode ImageData ImageBitmap ImageBitmapRenderingContext OffscreenCanvas Path2D WebAssembly VisualViewport Screen Storage StorageManager Crypto SubtleCrypto DOMPoint DOMMatrix DOMRect DOMRectReadOnly showOpenFilePicker showSaveFilePicker requestIdleCallback cancelIdleCallback reportError customElements createImageBitmap'
+    ).split(/\s+/);
+    jsWords.push(...standardsAndWebApiWords);
+    jsWords.splice(0, jsWords.length, ...Array.from(new Set(jsWords)));
+
     const extendedJsMembers = {
         document: 'adoptNode createRange createTreeWalker createNodeIterator createEvent exitFullscreen exitPictureInPicture fullscreenElement pictureInPictureElement scrollingElement getSelection hasFocus createExpression createNSResolver getAnimations startViewTransition',
         window: 'globalThis self frames parent top opener origin isSecureContext crossOriginIsolated visualViewport devicePixelRatio crypto indexedDB caches trustedTypes scheduler requestIdleCallback cancelIdleCallback getComputedStyle scrollTo scrollBy open print stop reportError',
@@ -2489,6 +2498,86 @@ input {
         jsMembers[key] = Array.from(new Set((current + ' ' + extendedJsMembers[key]).trim().split(/\s+/))).join(' ');
     });
 
+
+    // Member maps for standard built-ins and commonly used browser interfaces.
+    const standardsBrowserMembers = {
+        globalThis: 'Infinity NaN undefined Object Function Boolean Symbol Error AggregateError Array String Number BigInt Date RegExp Map Set WeakMap WeakSet Promise Math JSON Reflect Proxy Intl ArrayBuffer SharedArrayBuffer DataView Atomics URL URLSearchParams fetch document navigator location history localStorage sessionStorage console crypto performance indexedDB caches',
+        RegExp: 'exec test source flags global hasIndices ignoreCase lastIndex multiline dotAll sticky unicode unicodeSets',
+        Number: 'EPSILON MAX_SAFE_INTEGER MAX_VALUE MIN_SAFE_INTEGER MIN_VALUE NaN NEGATIVE_INFINITY POSITIVE_INFINITY isFinite isInteger isNaN isSafeInteger parseFloat parseInt toExponential toFixed toLocaleString toPrecision toString valueOf',
+        Boolean: 'toString valueOf',
+        BigInt: 'asIntN asUintN',
+        Symbol: 'asyncIterator for hasInstance isConcatSpreadable iterator keyFor match matchAll replace search species split toPrimitive toStringTag unscopables dispose asyncDispose description',
+        Reflect: 'apply construct defineProperty deleteProperty get getOwnPropertyDescriptor getPrototypeOf has isExtensible ownKeys preventExtensions set setPrototypeOf',
+        Proxy: 'revocable',
+        WeakMap: 'delete get has set',
+        WeakSet: 'add delete has',
+        ArrayBuffer: 'byteLength maxByteLength resizable resize slice transfer transferToFixedLength detached isView',
+        SharedArrayBuffer: 'byteLength maxByteLength growable grow slice',
+        DataView: 'buffer byteLength byteOffset getBigInt64 getBigUint64 getFloat16 getFloat32 getFloat64 getInt8 getInt16 getInt32 getUint8 getUint16 getUint32 setBigInt64 setBigUint64 setFloat16 setFloat32 setFloat64 setInt8 setInt16 setInt32 setUint8 setUint16 setUint32',
+        Atomics: 'add and compareExchange exchange isLockFree load notify or pause store sub wait waitAsync xor',
+        Element: 'after animate append attachShadow before closest computedStyleMap getAttribute getAttributeNames getBoundingClientRect getClientRects hasAttribute insertAdjacentElement insertAdjacentHTML insertAdjacentText matches prepend querySelector querySelectorAll remove removeAttribute replaceChildren replaceWith requestFullscreen scrollIntoView setAttribute toggleAttribute',
+        HTMLElement: 'accessKey blur click contentEditable dataset dir draggable focus hidden inert innerText inputMode lang offsetHeight offsetLeft offsetParent offsetTop offsetWidth outerText popover spellcheck title translate',
+        Document: 'activeElement adoptNode body characterSet close compatMode contentType createAttribute createComment createDocumentFragment createElement createElementNS createEvent createNodeIterator createRange createTextNode createTreeWalker doctype documentElement documentURI elementFromPoint elementsFromPoint forms fullscreenElement getElementById getElementsByClassName getElementsByName getElementsByTagName hasFocus head hidden importNode lastModified querySelector querySelectorAll readyState referrer title visibilityState',
+        HTMLFormElement: 'acceptCharset action autocomplete elements encoding enctype length method name noValidate rel reset requestSubmit submit target',
+        HTMLInputElement: 'accept alt autocomplete checked files form formAction formEnctype formMethod formNoValidate formTarget height indeterminate max maxLength min minLength multiple name pattern placeholder readOnly required selectionEnd selectionStart size src step type validationMessage validity value valueAsDate valueAsNumber width checkValidity reportValidity select setCustomValidity setRangeText setSelectionRange',
+        HTMLTextAreaElement: 'cols dirName form maxLength minLength name placeholder readOnly required rows selectionEnd selectionStart textLength type validationMessage validity value wrap checkValidity reportValidity select setCustomValidity setRangeText setSelectionRange',
+        HTMLSelectElement: 'disabled form length multiple name options required selectedIndex selectedOptions size type value add checkValidity item namedItem remove reportValidity setCustomValidity',
+        HTMLButtonElement: 'disabled form formAction formEnctype formMethod formNoValidate formTarget name type value',
+        HTMLCanvasElement: 'height width captureStream getContext toBlob toDataURL transferControlToOffscreen',
+        CanvasRenderingContext2D: 'canvas clearRect fillRect strokeRect fillText strokeText measureText beginPath closePath moveTo lineTo arc rect quadraticCurveTo bezierCurveTo fill stroke clip save restore translate rotate scale transform setTransform resetTransform drawImage createImageData getImageData putImageData createLinearGradient createRadialGradient createPattern',
+        Node: 'ELEMENT_NODE ATTRIBUTE_NODE TEXT_NODE CDATA_SECTION_NODE COMMENT_NODE DOCUMENT_NODE DOCUMENT_TYPE_NODE DOCUMENT_FRAGMENT_NODE nodeName nodeType nodeValue ownerDocument parentNode parentElement childNodes firstChild lastChild previousSibling nextSibling isConnected textContent baseURI cloneNode compareDocumentPosition contains getRootNode hasChildNodes insertBefore appendChild replaceChild removeChild normalize',
+        NodeList: 'length item forEach entries keys values',
+        EventTarget: 'addEventListener dispatchEvent removeEventListener',
+        Event: 'bubbles cancelable composed currentTarget defaultPrevented eventPhase isTrusted target timeStamp type preventDefault stopPropagation stopImmediatePropagation composedPath',
+        CustomEvent: 'detail initCustomEvent',
+        KeyboardEvent: 'altKey code ctrlKey isComposing key location metaKey repeat shiftKey',
+        MouseEvent: 'altKey button buttons clientX clientY ctrlKey metaKey movementX movementY offsetX offsetY pageX pageY relatedTarget screenX screenY shiftKey',
+        PointerEvent: 'height isPrimary pointerId pointerType pressure tangentialPressure tiltX tiltY twist width altitudeAngle azimuthAngle',
+        FormData: 'append delete entries forEach get getAll has keys set values',
+        Blob: 'arrayBuffer bytes size slice stream text type',
+        File: 'lastModified name webkitRelativePath',
+        FileReader: 'abort error readAsArrayBuffer readAsBinaryString readAsDataURL readAsText readyState result',
+        URL: 'canParse createObjectURL parse revokeObjectURL toJSON hash host hostname href origin password pathname port protocol search searchParams username',
+        URLSearchParams: 'append delete entries forEach get getAll has keys set size sort toString values',
+        AbortController: 'abort signal',
+        AbortSignal: 'aborted any reason timeout throwIfAborted',
+        MutationObserver: 'disconnect observe takeRecords',
+        IntersectionObserver: 'disconnect observe root rootMargin thresholds takeRecords unobserve',
+        ResizeObserver: 'disconnect observe unobserve',
+        PerformanceObserver: 'disconnect observe takeRecords supportedEntryTypes',
+        XMLHttpRequest: 'DONE HEADERS_RECEIVED LOADING OPENED UNSENT abort getAllResponseHeaders getResponseHeader open overrideMimeType send setRequestHeader readyState response responseText responseType responseURL responseXML status statusText timeout upload withCredentials',
+        WebSocket: 'CONNECTING OPEN CLOSING CLOSED binaryType bufferedAmount close extensions onclose onerror onmessage onopen protocol readyState send url',
+        Worker: 'onerror onmessage onmessageerror postMessage terminate',
+        Headers: 'append delete entries forEach get has keys set values',
+        Request: 'cache credentials destination headers integrity keepalive method mode redirect referrer referrerPolicy signal url clone arrayBuffer blob formData json text',
+        Response: 'error json redirect headers ok redirected status statusText type url clone arrayBuffer blob formData text bytes',
+        TextEncoder: 'encode encodeInto',
+        TextDecoder: 'decode fatal ignoreBOM encoding',
+        Crypto: 'getRandomValues randomUUID subtle',
+        SubtleCrypto: 'decrypt deriveBits deriveKey digest encrypt exportKey generateKey importKey sign unwrapKey verify wrapKey',
+        Storage: 'clear getItem key length removeItem setItem',
+        indexedDB: 'databases deleteDatabase open cmp',
+        IDBDatabase: 'close createObjectStore deleteObjectStore name objectStoreNames transaction version',
+        IDBObjectStore: 'add autoIncrement clear count createIndex delete deleteIndex get getAll getAllKeys getKey index keyPath name openCursor openKeyCursor put',
+        IDBTransaction: 'db durability error mode objectStoreNames abort commit objectStore',
+        ReadableStream: 'cancel getReader locked pipeThrough pipeTo tee values',
+        ReadableStreamDefaultReader: 'cancel closed read releaseLock',
+        WritableStream: 'abort close getWriter locked',
+        WritableStreamDefaultWriter: 'abort close closed desiredSize ready releaseLock write',
+        TransformStream: 'readable writable',
+        AudioContext: 'baseLatency outputLatency currentTime destination listener sampleRate state close createAnalyser createBuffer createBufferSource createChannelMerger createChannelSplitter createConstantSource createConvolver createDelay createDynamicsCompressor createGain createIIRFilter createMediaElementSource createMediaStreamDestination createMediaStreamSource createOscillator decodeAudioData resume suspend',
+        MediaRecorder: 'audioBitsPerSecond mimeType ondataavailable onerror onpause onresume onstart onstop pause requestData resume start state stop stream videoBitsPerSecond',
+        MediaStream: 'active getAudioTracks getTrackById getTracks getVideoTracks id onaddtrack onremovetrack oninactive removeTrack addTrack',
+        Notification: 'permission close onclick onerror onshow',
+        Intl: 'Collator DateTimeFormat DisplayNames DurationFormat ListFormat Locale NumberFormat PluralRules RelativeTimeFormat Segmenter',
+        DisposableStack: 'disposed defer dispose move use',
+        AsyncDisposableStack: 'disposed defer disposeAsync move use'
+    };
+    Object.keys(standardsBrowserMembers).forEach(function (key) {
+        const current = jsMembers[key] || '';
+        jsMembers[key] = Array.from(new Set((current + ' ' + standardsBrowserMembers[key]).trim().split(/\s+/))).join(' ');
+    });
+
     const extraJsSnippets = [
         { label: 'fetch-json', insert: 'fetch(url)\n    .then((response) => {\n        if (!response.ok) throw new Error("HTTP error");\n        return response.json();\n    })\n    .then((data) => {\n        console.log(data);\n    })\n    .catch((error) => {\n        console.error(error);\n    });', description: 'Fetch JSON with response and error checks', caret: 6 },
         { label: 'async-function', insert: 'async function name() {\n    try {\n        const response = await fetch(url);\n        if (!response.ok) throw new Error("HTTP error");\n        return await response.json();\n    } catch (error) {\n        console.error(error);\n        throw error;\n    }\n}', description: 'Async function with error handling', caret: 15 },
@@ -2506,6 +2595,15 @@ input {
         { label: 'class', insert: 'class Name {\n    constructor(options = {}) {\n        this.options = options;\n    }\n}', description: 'ES class with constructor', caret: 6 }
     ];
     snippets.js.push(...extraJsSnippets);
+    snippets.js.push(
+        { label: 'promise-all', insert: 'const results = await Promise.all([\n    firstTask(),\n    secondTask()\n]);', description: 'Run independent asynchronous tasks together', caret: 29 },
+        { label: 'form-validation', insert: 'form.addEventListener(\'submit\', (event) => {\n    event.preventDefault();\n    if (!form.checkValidity()) {\n        form.reportValidity();\n        return;\n    }\n    \n});', description: 'Validate a form before handling its data', caret: 139 },
+        { label: 'abort-fetch', insert: 'const controller = new AbortController();\nconst response = await fetch(url, { signal: controller.signal });\nif (!response.ok) throw new Error(\'HTTP error\');', description: 'Make a cancellable fetch request', caret: 18 },
+        { label: 'intersection-observer-cleanup', insert: 'const observer = new IntersectionObserver((entries) => {\n    for (const entry of entries) {\n        if (entry.isIntersecting) {\n            \n        }\n    }\n});\nobserver.observe(element);', description: 'Observe visibility and react when an element enters view', caret: 110 },
+        { label: 'mutation-observer', insert: 'const observer = new MutationObserver((mutations) => {\n    for (const mutation of mutations) {\n        console.log(mutation.type);\n    }\n});\nobserver.observe(element, { childList: true, subtree: true });', description: 'Observe DOM changes', caret: 80 },
+        { label: 'storage-parse', insert: 'const raw = localStorage.getItem(\'key\');\nconst value = raw === null ? null : JSON.parse(raw);', description: 'Read and parse a saved JSON value safely', caret: 29 },
+        { label: 'module-export', insert: 'export function name(value) {\n    return value;\n}\n\nexport default name;', description: 'Create named and default module exports', caret: 17 }
+    );
 
     Object.keys(jsMembers).forEach(function (key) {
         const value = Array.isArray(jsMembers[key]) ? jsMembers[key].join(' ') : jsMembers[key];

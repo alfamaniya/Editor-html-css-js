@@ -2387,6 +2387,56 @@ input {
         cssValues[key] = (cssValues[key] || '') + ' ' + extraCssValues[key];
     });
 
+
+    // Emmet-style CSS shorthands. Numeric forms such as m10 and p8-16 are resolved by IntelliSense.
+    const cssAbbreviationProperties = {
+        m: 'margin', mt: 'margin-top', mr: 'margin-right', mb: 'margin-bottom', ml: 'margin-left',
+        p: 'padding', pt: 'padding-top', pr: 'padding-right', pb: 'padding-bottom', pl: 'padding-left',
+        w: 'width', h: 'height', minw: 'min-width', maxw: 'max-width', minh: 'min-height', maxh: 'max-height',
+        t: 'top', r: 'right', b: 'bottom', l: 'left', g: 'gap', rowg: 'row-gap', colg: 'column-gap',
+        fz: 'font-size', fw: 'font-weight', lh: 'line-height', ls: 'letter-spacing', ta: 'text-align',
+        c: 'color', bgc: 'background-color', op: 'opacity', z: 'z-index', br: 'border-radius',
+        bd: 'border', bdc: 'border-color', bdw: 'border-width', pos: 'position',
+        ov: 'overflow', cur: 'cursor', ai: 'align-items', jc: 'justify-content', fd: 'flex-direction',
+        fxw: 'flex-wrap', d: 'display', fsh: 'flex-shrink', fgr: 'flex-grow'
+    };
+    const cssAbbreviations = [
+        { label: 'm -> margin: ;', insert: 'margin: ;', description: 'CSS shortcut for margin', caret: 8 },
+        { label: 'mt -> margin-top: ;', insert: 'margin-top: ;', description: 'CSS shortcut for margin-top', caret: 12 },
+        { label: 'mr -> margin-right: ;', insert: 'margin-right: ;', description: 'CSS shortcut for margin-right', caret: 13 },
+        { label: 'mb -> margin-bottom: ;', insert: 'margin-bottom: ;', description: 'CSS shortcut for margin-bottom', caret: 14 },
+        { label: 'ml -> margin-left: ;', insert: 'margin-left: ;', description: 'CSS shortcut for margin-left', caret: 12 },
+        { label: 'p -> padding: ;', insert: 'padding: ;', description: 'CSS shortcut for padding', caret: 9 },
+        { label: 'pt -> padding-top: ;', insert: 'padding-top: ;', description: 'CSS shortcut for padding-top', caret: 13 },
+        { label: 'pr -> padding-right: ;', insert: 'padding-right: ;', description: 'CSS shortcut for padding-right', caret: 14 },
+        { label: 'pb -> padding-bottom: ;', insert: 'padding-bottom: ;', description: 'CSS shortcut for padding-bottom', caret: 15 },
+        { label: 'pl -> padding-left: ;', insert: 'padding-left: ;', description: 'CSS shortcut for padding-left', caret: 13 },
+        { label: 'w -> width: ;', insert: 'width: ;', description: 'CSS shortcut for width', caret: 7 },
+        { label: 'h -> height: ;', insert: 'height: ;', description: 'CSS shortcut for height', caret: 8 },
+        { label: 'fz -> font-size: ;', insert: 'font-size: ;', description: 'CSS shortcut for font-size', caret: 11 },
+        { label: 'fw -> font-weight: ;', insert: 'font-weight: ;', description: 'CSS shortcut for font-weight', caret: 13 },
+        { label: 'lh -> line-height: ;', insert: 'line-height: ;', description: 'CSS shortcut for line-height', caret: 13 },
+        { label: 'ta -> text-align: ;', insert: 'text-align: ;', description: 'CSS shortcut for text-align', caret: 12 },
+        { label: 'bgc -> background-color: ;', insert: 'background-color: ;', description: 'CSS shortcut for background-color', caret: 18 },
+        { label: 'c -> color: ;', insert: 'color: ;', description: 'CSS shortcut for color', caret: 6 },
+        { label: 'd -> display: ;', insert: 'display: ;', description: 'CSS shortcut for display', caret: 9 },
+        { label: 'df -> display: flex;', insert: 'display: flex;', description: 'Set display to flex', caret: 0 },
+        { label: 'dg -> display: grid;', insert: 'display: grid;', description: 'Set display to grid', caret: 0 },
+        { label: 'dn -> display: none;', insert: 'display: none;', description: 'Hide an element with display', caret: 0 },
+        { label: 'pos -> position: ;', insert: 'position: ;', description: 'CSS shortcut for position', caret: 10 },
+        { label: 'ai -> align-items: center;', insert: 'align-items: center;', description: 'Common alignment shorthand', caret: 0 },
+        { label: 'jc -> justify-content: center;', insert: 'justify-content: center;', description: 'Common alignment shorthand', caret: 0 },
+        { label: 'fd -> flex-direction: column;', insert: 'flex-direction: column;', description: 'Stack flex items vertically', caret: 0 },
+        { label: 'fxw -> flex-wrap: wrap;', insert: 'flex-wrap: wrap;', description: 'Allow flex items to wrap', caret: 0 },
+        { label: 'g -> gap: ;', insert: 'gap: ;', description: 'CSS shortcut for gap', caret: 5 },
+        { label: 'br -> border-radius: ;', insert: 'border-radius: ;', description: 'CSS shortcut for border-radius', caret: 15 },
+        { label: 'bd -> border: ;', insert: 'border: ;', description: 'CSS shortcut for border', caret: 8 },
+        { label: 'op -> opacity: ;', insert: 'opacity: ;', description: 'CSS shortcut for opacity', caret: 9 },
+        { label: 'z -> z-index: ;', insert: 'z-index: ;', description: 'CSS shortcut for z-index', caret: 9 },
+        { label: 'cur -> cursor: pointer;', insert: 'cursor: pointer;', description: 'Common pointer cursor value', caret: 0 },
+        { label: 'ov -> overflow: hidden;', insert: 'overflow: hidden;', description: 'Clip overflowing content', caret: 0 }
+    ];
+
     // Curated browser-supported at-rules, selector pseudo-classes/elements, and value functions.
     const extraCssSnippets = [
         { label: '@media', insert: '@media (max-width: 768px) {\n    \n}', description: 'Responsive media query', caret: 29 },
@@ -2421,6 +2471,8 @@ input {
             ]
         }),
 
+        cssAbbreviationProperties,
+        cssAbbreviations,
         cssProperties,
         cssValues,
         cssAtRules,

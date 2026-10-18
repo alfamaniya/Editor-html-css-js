@@ -39,6 +39,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `css-suggestions.js` | CSS property/value completion data and code snippets |
 | `js-suggestions.js` | JavaScript words, member lists, and snippets |
 | `next-word-suggestions.js` | Context-sensitive next-token continuation rules for HTML, CSS, and JavaScript |
+| `tree-world-suggestion.md` | Visual-only branching tree of the current HTML, CSS, and JavaScript next-word rules; not loaded by the application |
 | `README.md` | Project documentation, usage, audit notes, and validation status |
 
 The completion bank is split into four JavaScript data files. The HTML bank includes contextual attributes and embedded SVG/MathML elements. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language and standard built-in names, browser API interfaces and members, object methods, and reusable snippets. Its vocabulary and continuations are curated against the ECMAScript specification and MDN references; newer or permission-gated browser APIs may not exist in every runtime. There is no `intellisense-data.js` file in the current repository.
@@ -65,6 +66,12 @@ After a completion is accepted, the editor checks the text before the caret agai
 - JavaScript: after const/let/var, suggest an assignment; after the assignment, suggest common initializer types; after identifiers such as document or console, suggest common members and call patterns.
 
 The next-word database is a deterministic, hand-maintained rule/sequence list with 123 contexts and 390 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The HTML rules cover ARIA states, autocomplete tokens, input hints, media/loading options, form encodings, referrer policies, and related attributes. CSS rules include expanded property values, common at-rules, responsive layout follow-ups, and reduced-motion patterns. JavaScript rules include control-flow, modules, built-in methods, and browser API continuations. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
+
+### Visual suggestion tree
+
+- `tree-world-suggestion.md` documents the current context-aware next-word rule bank as branching trees, with 37 HTML, 32 CSS, and 54 JavaScript rule contexts.
+- It is a standalone visual reference only. It is not imported or loaded by the editor and does not affect completion behavior.
+- The tree shows explicit rule contexts and listed choices; some choices are generated dynamically, and the general vocabulary banks are broader than the finite next-word chains.
 
 ### Abbreviation completions and quick symbols
 

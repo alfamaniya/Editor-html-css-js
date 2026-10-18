@@ -132,14 +132,29 @@ const diagnostics = elements.get('siNotes').children.map((item) => item.textCont
 assert(html.includes('Latest body'), 'should select the latest complete body as the HTML candidate');
 assert(!html.includes('Old embedded body'), 'should not preserve the malformed nested document as the chosen body');
 assert(!/<(?:!doctype|html|head)\b/i.test(css), 'recovered CSS output should not contain document wrapper tags');
-assert(diagnostics.includes('openBtn'), 'should report the repeated top-level openBtn binding');
+assert(!js.includes('Version one') && !js.includes('Version two'), 'script blocks outside the selected complete document should not be merged into it');
+assert(diagnostics.includes('چند نسخه یا شروع سند HTML'), 'should explain in Persian why a single coherent document was selected');
+
+// Now test an ordinary document with two conflicting script blocks inside that same document.
+elements.get('siSource').value = [
+    '<!DOCTYPE html><html lang="fa"><head><style>body { color: blue; }</style></head><body>',
+    '<div id="latest-page">Valid body</div>',
+    '<script>', firstJs, '</script>',
+    '<script>', latestJs, '</script>',
+    '</body></html>'
+].join('\n');
+elements.get('siAnalyze').click();
+
+const conflictedJs = elements.get('siResultJs').value;
+const conflictDiagnostics = elements.get('siNotes').children.map((item) => item.textContent).join('\n');
+assert(conflictedJs.includes('Version one') && conflictedJs.includes('Version two'), 'normal analysis should preserve both conflicting script blocks for review');
+assert(conflictDiagnostics.includes('openBtn'), 'should report the repeated top-level openBtn binding');
 assert(elements.get('siApplyJs').checked === false, 'should uncheck Apply JavaScript when top-level conflicts are found');
 assert(elements.get('siJsRecovery').hidden === false, 'should offer latest-version recovery for two highly similar conflicting scripts');
-assert(js.includes('Version one') && js.includes('Version two'), 'normal analysis should preserve both script versions for review');
 
 elements.get('siUseLatestJs').click();
 assert(elements.get('siResultJs').value.trim() === latestJs.trim(), 'recovery action should select only the latest JS block');
 assert(elements.get('siApplyJs').checked === true, 'Apply JavaScript should be re-selected when the chosen version has no detected binding conflict');
 assert(elements.get('siActionStatus').textContent.includes('فایل اصلی هنوز تغییر نکرده'), 'recovery action should clearly say that it only changes the suggested output');
 
-console.log('Smart Import integration test passed: malformed wrappers, CSS recovery, declaration conflicts, and explicit latest-JS recovery.');
+console.log('Smart Import integration test passed: document selection, CSS recovery, declaration conflicts, and explicit latest-JS recovery.');

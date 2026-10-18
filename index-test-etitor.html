@@ -3063,6 +3063,139 @@ input {
         ]
     };
 
+
+    // Additional JavaScript continuations curated against the ECMAScript and MDN references.
+    // These remain lightweight text rules; they deliberately do not attempt full syntax parsing.
+    const additionalJavaScriptRules = [
+        { pattern: /\bswitch$/i, items: [
+            { label: ' (expression) { … }', insert: ' (expression) {\n    case value:\n        break;\n    default:\n        break;\n}', description: 'Create a switch statement', caret: 3 }
+        ]},
+        { pattern: /\bswitch\s*\(\s*$/i, items: [
+            { label: 'expression', insert: 'expression' }, { label: 'value', insert: 'value' },
+            { label: 'event.key', insert: 'event.key' }, { label: 'status', insert: 'status' }
+        ]},
+        { pattern: /\bwhile$/i, items: [
+            { label: ' (condition) { … }', insert: ' (condition) {\n    \n}', description: 'Create a while loop', caret: 2 }
+        ]},
+        { pattern: /\bwhile\s*\(\s*$/i, items: [
+            { label: 'condition', insert: 'condition' }, { label: 'index < items.length', insert: 'index < items.length' },
+            { label: 'element !== null', insert: 'element !== null' }
+        ]},
+        { pattern: /\bdo$/i, items: [
+            { label: ' { … } while (condition);', insert: ' {\n    \n} while (condition);', description: 'Create a do-while loop', caret: 3 }
+        ]},
+        { pattern: /\belse$/i, items: [
+            { label: ' { … }', insert: ' {\n    \n}', description: 'Create an else block', caret: 3 },
+            { label: ' if (condition) { … }', insert: ' if (condition) {\n    \n}', description: 'Create an else-if branch', caret: 7 }
+        ]},
+        { pattern: /\bfinally$/i, items: [
+            { label: ' { … }', insert: ' {\n    \n}', description: 'Run cleanup after try/catch', caret: 3 }
+        ]},
+        { pattern: /\bcase$/i, items: [
+            { label: ' value:', insert: ' value:\n    break;', description: 'Add a switch case', caret: 2 },
+            { label: ' "name":', insert: ' "name":\n    break;', description: 'Add a string switch case', caret: 3 }
+        ]},
+        { pattern: /\bdefault$/i, items: [
+            { label: ':', insert: ':\n    break;', description: 'Add the default switch branch', caret: 1 }
+        ]},
+        { pattern: /\bimport$/i, items: [
+            { label: ' { name } from "./module.js";', insert: ' { name } from "./module.js";', description: 'Import a named export', caret: 3 },
+            { label: ' name from "./module.js";', insert: ' name from "./module.js";', description: 'Import a default export', caret: 1 },
+            { label: ' "./module.js";', insert: ' "./module.js";', description: 'Load a module for its side effects', caret: 2 }
+        ]},
+        { pattern: /\bexport$/i, items: [
+            { label: ' default value;', insert: ' default value;', description: 'Export a default value', caret: 8 },
+            { label: ' { name };', insert: ' { name };', description: 'Export a named binding', caret: 3 },
+            { label: ' function name() { … }', insert: ' function name() {\n    \n}', description: 'Export a function declaration', caret: 10 }
+        ]},
+        { pattern: /\bMath$/i, items: [
+            { label: '.random()', insert: '.random()', description: 'Generate a random number' },
+            { label: '.round(value)', insert: '.round(value)', description: 'Round to the nearest integer' },
+            { label: '.max(a, b)', insert: '.max(a, b)', description: 'Find the maximum value' },
+            { label: '.min(a, b)', insert: '.min(a, b)', description: 'Find the minimum value' },
+            { label: '.floor(value)', insert: '.floor(value)', description: 'Round down' },
+            { label: '.abs(value)', insert: '.abs(value)', description: 'Get an absolute value' }
+        ]},
+        { pattern: /\bArray$/i, items: [
+            { label: '.isArray(value)', insert: '.isArray(value)', description: 'Check whether a value is an array' },
+            { label: '.from(iterable)', insert: '.from(iterable)', description: 'Create an array from an iterable' },
+            { label: '.of(value)', insert: '.of(value)', description: 'Create an array from arguments' }
+        ]},
+        { pattern: /\bObject$/i, items: [
+            { label: '.keys(object)', insert: '.keys(object)', description: 'Get an object’s own enumerable keys' },
+            { label: '.values(object)', insert: '.values(object)', description: 'Get an object’s own enumerable values' },
+            { label: '.entries(object)', insert: '.entries(object)', description: 'Get key/value pairs' },
+            { label: '.fromEntries(entries)', insert: '.fromEntries(entries)', description: 'Build an object from key/value pairs' }
+        ]},
+        { pattern: /\bDate$/i, items: [
+            { label: '.now()', insert: '.now()', description: 'Get the current timestamp' },
+            { label: '.parse(dateString)', insert: '.parse(dateString)', description: 'Parse a date string' },
+            { label: '()', insert: '()', description: 'Create the current date object' }
+        ]},
+        { pattern: /\bRegExp$/i, items: [
+            { label: '(pattern, flags)', insert: '(pattern, flags)', description: 'Create a regular expression' }
+        ]},
+        { pattern: /\bURL$/i, items: [
+            { label: "('https://example.com')", insert: "('https://example.com')", description: 'Parse an absolute URL', caret: 2 },
+            { label: '.createObjectURL(blob)', insert: '.createObjectURL(blob)', description: 'Create a temporary URL for a Blob' },
+            { label: '.revokeObjectURL(url)', insert: '.revokeObjectURL(url)', description: 'Release a temporary object URL' }
+        ]},
+        { pattern: /\bURLSearchParams$/i, items: [
+            { label: '()', insert: '()', description: 'Create an empty query-parameter list' },
+            { label: '(location.search)', insert: '(location.search)', description: 'Parse the current query string', caret: 1 }
+        ]},
+        { pattern: /\blocalStorage$/i, items: [
+            { label: '.getItem("key")', insert: '.getItem("key")', description: 'Read a saved string' },
+            { label: '.setItem("key", value)', insert: '.setItem("key", value)', description: 'Save a string value' },
+            { label: '.removeItem("key")', insert: '.removeItem("key")', description: 'Remove one saved item' },
+            { label: '.clear()', insert: '.clear()', description: 'Remove all saved items for this origin' }
+        ]},
+        { pattern: /\bsessionStorage$/i, items: [
+            { label: '.getItem("key")', insert: '.getItem("key")', description: 'Read a session value' },
+            { label: '.setItem("key", value)', insert: '.setItem("key", value)', description: 'Save a session value' },
+            { label: '.removeItem("key")', insert: '.removeItem("key")', description: 'Remove one session item' }
+        ]},
+        { pattern: /\bnavigator$/i, items: [
+            { label: '.clipboard', insert: '.clipboard', description: 'Access clipboard operations (permission/security rules apply)' },
+            { label: '.geolocation', insert: '.geolocation', description: 'Access geolocation (permission required)' },
+            { label: '.mediaDevices', insert: '.mediaDevices', description: 'Access media device APIs (permission/security rules apply)' },
+            { label: '.onLine', insert: '.onLine', description: 'Check the browser’s online status' },
+            { label: '.language', insert: '.language', description: 'Read the preferred browser language' }
+        ]},
+        { pattern: /\blocation$/i, items: [
+            { label: '.href', insert: '.href', description: 'Read or navigate to the current URL' },
+            { label: '.pathname', insert: '.pathname', description: 'Read the URL path' },
+            { label: '.search', insert: '.search', description: 'Read the query string' },
+            { label: '.reload()', insert: '.reload()', description: 'Reload the current page' }
+        ]},
+        { pattern: /\bhistory$/i, items: [
+            { label: '.back()', insert: '.back()', description: 'Navigate to the previous history entry' },
+            { label: '.forward()', insert: '.forward()', description: 'Navigate to the next history entry' },
+            { label: '.pushState(state, "", url)', insert: '.pushState(state, "", url)', description: 'Add a same-origin history entry' },
+            { label: '.replaceState(state, "", url)', insert: '.replaceState(state, "", url)', description: 'Replace the current history entry' }
+        ]},
+        { pattern: /\bcrypto$/i, items: [
+            { label: '.randomUUID()', insert: '.randomUUID()', description: 'Generate a cryptographically random UUID' },
+            { label: '.getRandomValues(array)', insert: '.getRandomValues(array)', description: 'Fill a typed array with random values' },
+            { label: '.subtle.digest("SHA-256", data)', insert: '.subtle.digest("SHA-256", data)', description: 'Calculate a cryptographic digest' }
+        ]},
+        { pattern: /\bperformance$/i, items: [
+            { label: '.now()', insert: '.now()', description: 'Get a high-resolution timestamp' },
+            { label: '.mark("name")', insert: '.mark("name")', description: 'Create a performance mark' },
+            { label: '.measure("name", "start", "end")', insert: '.measure("name", "start", "end")', description: 'Measure between performance marks' }
+        ]},
+        { pattern: /\bsetTimeout$/i, items: [
+            { label: '(() => { … }, delay)', insert: '(() => {\n    \n}, delay)', description: 'Schedule a one-time callback', caret: 7 }
+        ]},
+        { pattern: /\bsetInterval$/i, items: [
+            { label: '(() => { … }, delay)', insert: '(() => {\n    \n}, delay)', description: 'Schedule a repeating callback', caret: 7 }
+        ]},
+        { pattern: /\brequestAnimationFrame$/i, items: [
+            { label: '((timestamp) => { … })', insert: '((timestamp) => {\n    \n})', description: 'Schedule work before the next repaint', caret: 2 }
+        ]}
+    ];
+    nextWordRules.js.push(...additionalJavaScriptRules);
+
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, { nextWordRules: nextWordRules });
 })();
 </script>

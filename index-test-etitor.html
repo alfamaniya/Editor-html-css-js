@@ -2795,7 +2795,7 @@ input {
                 { label: 'multipart/form-data', insert: 'multipart/form-data' },
                 { label: 'text/plain', insert: 'text/plain' }
             ]},
-            { pattern: /<[^<>]*\b(?:crossorigin|crossorigin)\s*=\s*["']$/i, items: [
+            { pattern: /<[^<>]*\bcrossorigin\s*=\s*["']$/i, items: [
                 { label: 'anonymous', insert: 'anonymous' }, { label: 'use-credentials', insert: 'use-credentials' }
             ]},
             { pattern: /<[^<>]*\breferrerpolicy\s*=\s*["']$/i, items: [
@@ -2933,7 +2933,10 @@ input {
                 items: [
                     { label: 'Add align-items: center', insert: '\n    align-items: center;', description: 'Align children on the cross axis' },
                     { label: 'Add justify-content: center', insert: '\n    justify-content: center;', description: 'Center children on the main axis' },
-                    { label: 'Add gap: 1rem', insert: '\n    gap: 1rem;', description: 'Add consistent spacing between children' }
+                    { label: 'Add gap: 1rem', insert: '\n    gap: 1rem;', description: 'Add consistent spacing between children' },
+                    { label: 'Add flex-wrap: wrap', insert: '\n    flex-wrap: wrap;', description: 'Allow flex items to wrap' },
+                    { label: 'Add flex-direction: column', insert: '\n    flex-direction: column;', description: 'Stack flex items vertically' },
+                    { label: 'Add justify-content: space-between', insert: '\n    justify-content: space-between;', description: 'Distribute items across the main axis' }
                 ]
             },
             {
@@ -3117,11 +3120,6 @@ input {
             { pattern: /(?:^|[\n;{]\s*)@media\s*\(\s*prefers-reduced-motion\s*:\s*$/i, items: [
                 { label: 'reduce) { … }', insert: 'reduce) {\n    \n}', description: 'Respect reduced-motion preferences', caret: 6 },
                 { label: 'no-preference) { … }', insert: 'no-preference) {\n    \n}', description: 'Provide motion when allowed', caret: 14 }
-            ]},
-            { pattern: /(?:^|[\n;{]\s*)display\s*:\s*flex\s*;?$/i, items: [
-                { label: 'Add flex-wrap: wrap', insert: '\n    flex-wrap: wrap;', description: 'Allow flex items to wrap' },
-                { label: 'Add flex-direction: column', insert: '\n    flex-direction: column;', description: 'Stack flex items vertically' },
-                { label: 'Add justify-content: space-between', insert: '\n    justify-content: space-between;', description: 'Distribute items across the main axis' }
             ]},
             { pattern: /(?:^|[\n;{]\s*)flex-direction\s*:\s*(?:row|row-reverse|column|column-reverse)\s*;?$/i, items: [
                 { label: 'Add flex-wrap: wrap', insert: '\n    flex-wrap: wrap;', description: 'Allow flex items to wrap' },

@@ -299,7 +299,15 @@
             { label: "calc()", prefix: "calc(", suffix: ")", description: "Insert a CSS calculation" },
             { label: "linear-gradient()", prefix: "linear-gradient(", suffix: ")", description: "Insert a gradient function" },
             { label: "!important", prefix: " !important", suffix: "", description: "Append important priority to a declaration" },
-            { label: "#color", prefix: "#", suffix: "", description: "Start a hexadecimal color value" }
+            { label: "#color", prefix: "#", suffix: "", description: "Start a hexadecimal color value" },
+            { label: ":hover", prefix: ":hover {\n    ", suffix: "\n}", description: "Create a hover state rule" },
+            { label: ":focus-visible", prefix: ":focus-visible {\n    ", suffix: "\n}", description: "Create an accessible keyboard-focus rule" },
+            { label: "::before", prefix: "::before {\n    content: \"\";\n    ", suffix: "\n}", description: "Create a before pseudo-element with content" },
+            { label: "::after", prefix: "::after {\n    content: \"\";\n    ", suffix: "\n}", description: "Create an after pseudo-element with content" },
+            { label: "@supports", prefix: "@supports (display: grid) {\n    ", suffix: "\n}", description: "Create a feature support query" },
+            { label: "@keyframes", prefix: "@keyframes fade-in {\n    from { opacity: 0; }\n    to { opacity: 1; }\n}", suffix: "", description: "Insert a keyframes animation" },
+            { label: "clamp()", prefix: "clamp(", suffix: ")", description: "Insert a responsive clamp() value" },
+            { label: "minmax()", prefix: "minmax(", suffix: ")", description: "Insert a CSS grid minmax() value" }
             ]
         }),
 

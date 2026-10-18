@@ -7979,6 +7979,7 @@ function addBox() {
             source: best.source,
             recovered: true,
             count: uniqueStarts.length,
+            ordinal: uniqueStarts.findIndex((item) => item.index === best.start) + 1,
             start: best.start,
             score: best.score
         };
@@ -8138,7 +8139,7 @@ function addBox() {
         latestJsSource = canOfferLatestJs ? jsParts[jsParts.length - 1] : '';
         if (jsRecovery) jsRecovery.hidden = !canOfferLatestJs;
         const warnings = [];
-        if (documentRecovery.recovered) warnings.push('چند نسخه یا شروع سند HTML در ورودی پیدا شد. به‌جای ادغام نسخه‌های ناسازگار، یک سند کامل با ساختار منسجم انتخاب شد (امتیاز ساختاری: ' + documentRecovery.score + '). خروجی‌های زیر فقط از همین نسخه ساخته شده‌اند؛ اگر نسخهٔ دیگری مدنظر توست، کد اصلی را نگه دار و آن را جداگانه وارد کن.');
+        if (documentRecovery.recovered) warnings.push('چند نسخه یا شروع سند HTML در ورودی پیدا شد. نسخهٔ شماره ' + documentRecovery.ordinal + ' از ' + documentRecovery.count + ' نسخه، بر اساس کامل‌بودن ساختار انتخاب شد (امتیاز ساختاری: ' + documentRecovery.score + '). خروجی‌ها فقط از همین نسخه ساخته شده‌اند. چون نسخه‌های دیگر کنار گذاشته شده‌اند، تیک‌های اعمال به‌صورت پیش‌فرض برداشته شده‌اند؛ هر سه خروجی را بررسی کن و فقط بخش‌های درست را انتخاب کن.');
         else if (documentCount > 1) warnings.push('چند نشانهٔ شروع سند HTML پیدا شد، اما هیچ نسخه‌ای با اطمینان کافی جدا نشد. خروجی ممکن است نیاز به اصلاح دستی داشته باشد؛ فایل اصلی را تا بررسی کامل جایگزین نکن.');
         if (preparedStyles.some((item) => item.recovered)) warnings.push('یک بلوک style شامل نشانه‌های HTML و یک style تو‌در‌تو بود؛ CSS داخلی آن بازیابی شد. خروجی CSS را بررسی کن، چون این ورودی ساختار معتبر HTML/CSS ندارد.');
         if (preparedStyles.some((item) => item.skipped)) warnings.push('یک بلوک style حاوی ساختار HTML بود اما style داخلی قابل بازیابی پیدا نشد؛ آن بلوک از خروجی CSS کنار گذاشته شد تا HTML به‌اشتباه وارد فایل CSS نشود.');
@@ -8184,10 +8185,15 @@ function addBox() {
         ]);
         setNotes(warnings);
         latestWarnings = warnings.slice();
+        if (documentRecovery.recovered) {
+            Object.keys(targets).forEach((language) => { targets[language].checkbox.checked = false; });
+        }
         if (declarationReport.conflicts.length) targets.js.checkbox.checked = false;
-        summary.textContent = declarationReport.conflicts.length
-            ? 'تحلیل انجام شد؛ پیش از اعمال JavaScript، تعارض‌های گزارش‌شده را اصلاح کن.'
-            : 'تحلیل انجام شد. هر سه خروجی را بررسی کن؛ هنوز تغییری در فایل‌های اصلی ویرایشگر اعمال نشده است.';
+        summary.textContent = documentRecovery.recovered
+            ? 'یک نسخهٔ پیشنهادی انتخاب شد. خروجی‌ها را بررسی کن و سپس تیک بخش‌هایی را که می‌خواهی اعمال شوند، دستی فعال کن.'
+            : (declarationReport.conflicts.length
+                ? 'تحلیل انجام شد؛ پیش از اعمال JavaScript، تعارض‌های گزارش‌شده را اصلاح کن.'
+                : 'تحلیل انجام شد. هر سه خروجی را بررسی کن؛ هنوز تغییری در فایل‌های اصلی ویرایشگر اعمال نشده است.');
         actionStatus.textContent = '';
         resultsPanel.hidden = false;
         resultsPanel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });

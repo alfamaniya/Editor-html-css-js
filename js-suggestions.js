@@ -191,13 +191,13 @@
     ];
     snippets.js.push(...extraJsSnippets);
     snippets.js.push(
-        { label: 'promise-all', insert: 'const results = await Promise.all([\n    firstTask(),\n    secondTask()\n]);', description: 'Run independent asynchronous tasks together', caret: 29 },
-        { label: 'form-validation', insert: 'form.addEventListener(\'submit\', (event) => {\n    event.preventDefault();\n    if (!form.checkValidity()) {\n        form.reportValidity();\n        return;\n    }\n    \n});', description: 'Validate a form before handling its data', caret: 139 },
-        { label: 'abort-fetch', insert: 'const controller = new AbortController();\nconst response = await fetch(url, { signal: controller.signal });\nif (!response.ok) throw new Error(\'HTTP error\');', description: 'Make a cancellable fetch request', caret: 18 },
-        { label: 'intersection-observer-cleanup', insert: 'const observer = new IntersectionObserver((entries) => {\n    for (const entry of entries) {\n        if (entry.isIntersecting) {\n            \n        }\n    }\n});\nobserver.observe(element);', description: 'Observe visibility and react when an element enters view', caret: 110 },
-        { label: 'mutation-observer', insert: 'const observer = new MutationObserver((mutations) => {\n    for (const mutation of mutations) {\n        console.log(mutation.type);\n    }\n});\nobserver.observe(element, { childList: true, subtree: true });', description: 'Observe DOM changes', caret: 80 },
-        { label: 'storage-parse', insert: 'const raw = localStorage.getItem(\'key\');\nconst value = raw === null ? null : JSON.parse(raw);', description: 'Read and parse a saved JSON value safely', caret: 29 },
-        { label: 'module-export', insert: 'export function name(value) {\n    return value;\n}\n\nexport default name;', description: 'Create named and default module exports', caret: 17 }
+        { label: 'promise-all', insert: 'const results = await Promise.all([\n    firstTask(),\n    secondTask()\n]);', description: 'Run independent asynchronous tasks together', caret: 40 },
+        { label: 'form-validation', insert: 'form.addEventListener(\'submit\', (event) => {\n    event.preventDefault();\n    if (!form.checkValidity()) {\n        form.reportValidity();\n        return;\n    }\n    \n});', description: 'Validate a form before handling its data', caret: 163 },
+        { label: 'abort-fetch', insert: 'const controller = new AbortController();\nconst response = await fetch(url, { signal: controller.signal });\nif (!response.ok) throw new Error(\'HTTP error\');', description: 'Make a cancellable fetch request', caret: 71 },
+        { label: 'intersection-observer-cleanup', insert: 'const observer = new IntersectionObserver((entries) => {\n    for (const entry of entries) {\n        if (entry.isIntersecting) {\n            \n        }\n    }\n});\nobserver.observe(element);', description: 'Observe visibility and react when an element enters view', caret: 140 },
+        { label: 'mutation-observer', insert: 'const observer = new MutationObserver((mutations) => {\n    for (const mutation of mutations) {\n        console.log(mutation.type);\n    }\n});\nobserver.observe(element, { childList: true, subtree: true });', description: 'Observe DOM changes', caret: 103 },
+        { label: 'storage-parse', insert: 'const raw = localStorage.getItem(\'key\');\nconst value = raw === null ? null : JSON.parse(raw);', description: 'Read and parse a saved JSON value safely', caret: 77 },
+        { label: 'module-export', insert: 'export function name(value) {\n    return value;\n}\n\nexport default name;', description: 'Create named and default module exports', caret: 34 }
     );
 
     Object.keys(jsMembers).forEach(function (key) {

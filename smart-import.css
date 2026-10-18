@@ -83,3 +83,26 @@
     .si-apply-button { width:100%; }
 }
 @media (prefers-reduced-motion:reduce) { .smart-import-panel * { transition:none !important; scroll-behavior:auto !important; } }
+
+/* Persian diagnostic copy is scoped to Smart Import; control labels/buttons remain English. */
+.smart-import-panel [lang="fa"][dir="rtl"] { direction: rtl; text-align: right; unicode-bidi: plaintext; }
+.smart-import-panel .si-subtitle,
+.smart-import-panel .si-notice,
+.smart-import-panel .si-small-note,
+.smart-import-panel .si-summary,
+.smart-import-panel .si-notes,
+.smart-import-panel .si-action-status { direction: rtl; text-align: right; line-height: 1.9; }
+.si-mode-help { margin-top: 7px; padding: 9px 11px; border: 1px solid #344e63; border-radius: 8px; color: #c9d9e7; background: rgba(20,38,54,.62); }
+.si-notes { direction: rtl; }
+.si-note { direction: rtl; text-align: right; line-height: 1.9; }
+.si-note.si-note-critical { border-color: #a64752; color: #ffd6d9; background: rgba(135,35,48,.24); }
+.si-note.si-note-critical::before { content: "⛔ "; }
+.si-note.si-note-ok { direction: rtl; }
+.si-stat span { direction: rtl; text-align: right; line-height: 1.7; }
+.si-stat strong { overflow-wrap: anywhere; }
+.si-apply-footer p[lang="fa"] { direction: rtl; text-align: right; line-height: 1.9; }
+@media (max-width:620px) {
+    .si-mode-help { width: 100%; }
+    .si-summary { text-align: right; }
+}
+

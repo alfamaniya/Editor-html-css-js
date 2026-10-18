@@ -1750,6 +1750,93 @@ input {
 }
 
 </style>
+    <style data-bundled-from="smart-import.css">
+/* Smart Import is isolated so the main editor stylesheet remains untouched. */
+.smart-import-panel { position: absolute; inset: 0; z-index: 3; overflow: auto; padding: clamp(12px,2vw,26px); color: #eaf1f8; background: radial-gradient(circle at 88% 0%,rgba(55,115,160,.17),transparent 34%),linear-gradient(145deg,#172435,#111a26 72%); font-family: "Segoe UI",Tahoma,Arial,sans-serif; font-size: 13px; line-height: 1.55; }
+.smart-import-panel[hidden] { display: none !important; }
+.smart-import-panel * { box-sizing: border-box; }
+.smart-import-panel button,.smart-import-panel textarea,.smart-import-panel input { font: inherit; }
+.editor-pane .tabs .tab[data-tab="smart-import"] { border-top: 2px solid #8b91df; }
+.editor-pane .tabs .tab[data-tab="smart-import"].active { color: #1d2040; background: linear-gradient(180deg,#d5d7ff,#a9b5ed); }
+.si-shell { width: min(1500px,100%); margin: 0 auto; }
+.si-header { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin:2px 0 18px; }
+.si-eyebrow { margin:0 0 5px; color:#78c7e7; font-size:10px; font-weight:800; letter-spacing:.14em; }
+.si-header h2 { margin:0; color:#f4f8fc; font-size:clamp(22px,2.4vw,30px); line-height:1.2; }
+.si-subtitle { margin:8px 0 0; max-width:750px; color:#b9c7d6; }
+.si-local-badge { flex:0 0 auto; padding:6px 10px; border:1px solid #2b8d72; border-radius:99px; color:#8ee3c5; background:rgba(23,115,88,.13); font-size:11px; font-weight:700; white-space:nowrap; }
+.si-notice { margin:0 0 16px; padding:11px 14px; border:1px solid #344c61; border-left:3px solid #4eb0da; border-radius:10px; color:#c8d8e7; background:rgba(34,61,83,.56); }
+.si-notice strong { color:#f1f7fc; }
+.si-source-card,.si-output-card { border:1px solid #344354; border-radius:13px; background:rgba(26,39,54,.88); box-shadow:0 9px 22px rgba(0,0,0,.12); }
+.si-source-card { padding:clamp(12px,1.6vw,20px); }
+.si-section-heading,.si-results-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.si-section-heading>div,.si-results-heading>div { display:flex; align-items:center; gap:9px; min-width:0; }
+.si-step { display:inline-flex; width:28px; height:28px; flex:0 0 28px; align-items:center; justify-content:center; border-radius:9px; color:#092334; background:linear-gradient(145deg,#79c9e7,#6e9fe5); font-weight:900; }
+.si-section-heading h3,.si-results-heading h3 { margin:0; color:#eff6fc; font-size:16px; }
+.si-helper { color:#849db1; font-size:11px; }
+.si-field-label { display:block; margin:0 0 6px; color:#ccdae7; font-weight:700; }
+#siSource,.si-result-code { display:block; width:100%; min-width:0; resize:vertical; border:1px solid #3b5064; border-radius:9px; padding:12px 13px; color:#e8f1fa; background:#0d1621; line-height:1.55; tab-size:2; outline:none; transition:border-color .16s ease,box-shadow .16s ease; }
+#siSource { min-height:220px; max-height:45vh; direction:ltr; text-align:left; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; }
+.si-result-code { min-height:185px; max-height:45vh; direction:ltr; text-align:left; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:11.5px; }
+#siSource::placeholder,.si-result-code::placeholder { color:#6f8396; }
+#siSource:focus,.si-result-code:focus { border-color:#72c5e8; box-shadow:0 0 0 3px rgba(74,176,218,.16); }
+.si-source-actions { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:12px; }
+.si-action-group { display:flex; gap:7px; flex-wrap:wrap; }
+.si-button { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:36px; border:1px solid #3e566d; border-radius:8px; padding:7px 12px; color:#dbe8f3; background:#24374a; font-size:12px; font-weight:750; cursor:pointer; transition:transform .14s ease,border-color .14s ease,background .14s ease; }
+.si-button:hover { border-color:#6d9fc4; background:#2c4760; }
+.si-button:active { transform:translateY(1px); }
+.si-button:focus-visible { outline:2px solid #7bd4f3; outline-offset:3px; }
+.si-primary { border-color:#3a93bc; color:#071c29; background:linear-gradient(135deg,#81dcf0,#82abea); }
+.si-primary:hover { color:#061823; background:linear-gradient(135deg,#9be6f5,#9cbbf3); }
+.si-quiet { color:#a9bdce; background:transparent; }
+.si-small-note { margin:11px 0 0; color:#8399ad; font-size:11px; }
+.si-results { margin-top:18px; padding-bottom:8px; }
+.si-results-heading { margin-bottom:12px; }
+.si-summary { margin:0; color:#b5dbea; font-size:12px; text-align:right; }
+.si-stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:0 0 12px; }
+.si-stat { min-width:0; padding:10px 11px; border:1px solid #2e4154; border-radius:10px; background:rgba(28,43,59,.7); }
+.si-stat strong { display:block; overflow-wrap:anywhere; color:#e5f5ff; font-size:16px; line-height:1.35; }
+.si-stat span { display:block; margin-top:3px; color:#8ea6bb; font-size:10px; }
+.si-notes { display:grid; gap:6px; margin:0 0 13px; padding:0; list-style:none; }
+.si-note { padding:9px 11px; border:1px solid #634c2d; border-radius:8px; color:#efcb8e; background:rgba(107,70,22,.16); }
+.si-note::before { content:"⚠ "; font-weight:900; }
+.si-note.si-note-ok { border-color:#2e6656; color:#a5d9c5; background:rgba(23,115,88,.1); }
+.si-note.si-note-ok::before { content:"✓ "; }
+.si-output-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; align-items:stretch; }
+.si-output-card { min-width:0; padding:11px; }
+.si-output-header { display:flex; align-items:center; justify-content:space-between; gap:6px; margin:0 0 9px; flex-wrap:wrap; }
+.si-output-title { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.si-apply-label { display:inline-flex; align-items:center; gap:6px; color:#ddeaf5; font-size:11px; font-weight:750; cursor:pointer; }
+.si-apply-label input { width:15px; height:15px; margin:0; accent-color:#67c9e9; }
+.si-apply-label input:disabled { cursor:not-allowed; opacity:.4; }
+.si-language-pill { display:inline-flex; align-items:center; padding:3px 7px; border-radius:5px; font-size:10px; font-weight:900; letter-spacing:.05em; }
+.si-html-pill { color:#ffc38d; background:rgba(210,108,46,.16); }
+.si-css-pill { color:#a8d0ff; background:rgba(60,126,210,.18); }
+.si-js-pill { color:#f4e59b; background:rgba(189,155,36,.17); }
+.si-char-count { color:#8499ac; font-size:10px; }
+.si-apply-footer { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:14px; padding:14px; border:1px solid #35516a; border-radius:11px; background:rgba(30,53,73,.58); }
+.si-apply-footer strong { color:#f2f7fd; font-size:14px; }
+.si-apply-footer p { margin:3px 0 0; color:#a7bbcd; font-size:11px; }
+.si-apply-footer .si-action-status { color:#8fe0c3; }
+.si-apply-button { flex:0 0 auto; min-height:42px; border-color:#3e9bc6; color:#071c29; background:linear-gradient(135deg,#7edcf0,#86a9ee); }
+.si-apply-button:hover { background:linear-gradient(135deg,#a2eafa,#a5bdf8); }
+.si-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+@media (max-width:1050px) { .si-output-grid { grid-template-columns:1fr; } .si-result-code { min-height:145px; } .si-stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width:620px) {
+    .smart-import-panel { padding:12px; }
+    .si-header { flex-direction:column; gap:10px; }
+    .si-local-badge { white-space:normal; }
+    .si-section-heading,.si-results-heading { align-items:flex-start; flex-direction:column; }
+    .si-results-heading { gap:5px; }
+    .si-summary { text-align:left; }
+    .si-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .si-source-actions { align-items:stretch; }
+    .si-action-group { width:100%; }
+    .si-action-group .si-button { flex:1 1 auto; }
+    .si-apply-footer { align-items:stretch; flex-direction:column; }
+    .si-apply-button { width:100%; }
+}
+@media (prefers-reduced-motion:reduce) { .smart-import-panel * { transition:none !important; scroll-behavior:auto !important; } }
+</style>
 </head>
 <body>
 
@@ -1781,6 +1868,7 @@ input {
                 <button type="button" class="tab active" id="tab-html" data-tab="html" role="tab" aria-controls="panel-html" aria-selected="true">HTML</button>
                 <button type="button" class="tab" id="tab-css" data-tab="css" role="tab" aria-controls="panel-css" aria-selected="false">CSS</button>
                 <button type="button" class="tab" id="tab-js" data-tab="js" role="tab" aria-controls="panel-js" aria-selected="false">JavaScript</button>
+                <button type="button" class="tab" id="tab-smart-import" data-tab="smart-import" role="tab" aria-controls="smartImportPanel" aria-selected="false">🧩 Smart Import</button>
             </div>
 
 
@@ -2057,6 +2145,95 @@ input {
                                 </section>
                                 <p class="help-footer">این راهنما روند مورد انتظار کار را توضیح می‌دهد. عملکرد مرورگر، صفحه‌کلید موبایل و فناوری‌های کمکی را روی دستگاهی که قصد استفاده از آن را دارید نیز آزمایش کنید.</p>
                             </div>
+                    </section>
+
+                    <section class="smart-import-panel" id="smartImportPanel" role="tabpanel" aria-labelledby="tab-smart-import" hidden>
+                        <div class="si-shell">
+                            <header class="si-header">
+                                <div>
+                                    <p class="si-eyebrow">SAFE CODE INTAKE</p>
+                                    <h2>Smart Import</h2>
+                                    <p class="si-subtitle">Paste a mixed HTML, CSS, and JavaScript document. Review the separated code before applying it to your project.</p>
+                                </div>
+                                <span class="si-local-badge">● Local processing</span>
+                            </header>
+                            <div class="si-notice" role="note">
+                                <strong>Nothing is applied automatically.</strong>
+                                The analyzer runs in this browser. Choose which results to replace, review them first, and confirm before existing files are changed.
+                            </div>
+                            <section class="si-source-card" aria-labelledby="siSourceTitle">
+                                <div class="si-section-heading">
+                                    <div><span class="si-step">1</span><h3 id="siSourceTitle">Paste code or open a file</h3></div>
+                                    <span class="si-helper">HTML · CSS · JavaScript</span>
+                                </div>
+                                <label class="si-field-label" for="siSource">Complete or mixed source code</label>
+                                <textarea id="siSource" dir="auto" spellcheck="false" autocomplete="off" placeholder="Paste a complete HTML document here — including any embedded &lt;style&gt; and &lt;script&gt; blocks…"></textarea>
+                                <div class="si-source-actions">
+                                    <div class="si-action-group">
+                                        <button type="button" class="si-button si-primary" id="siAnalyze">Analyze code</button>
+                                        <button type="button" class="si-button si-secondary" id="siCleanAnalyze">Clean &amp; analyze</button>
+                                    </div>
+                                    <div class="si-action-group">
+                                        <button type="button" class="si-button si-secondary" id="siPaste">Paste clipboard</button>
+                                        <button type="button" class="si-button si-secondary" id="siChooseFile">Open file</button>
+                                        <button type="button" class="si-button si-quiet" id="siClear">Clear</button>
+                                        <input type="file" id="siFileInput" accept=".html,.htm,.xhtml,.css,.js,.mjs,.txt,text/html,text/css,text/javascript,text/plain" hidden>
+                                    </div>
+                                </div>
+                                <p class="si-small-note">For separate files, import them one at a time. A complete HTML file can contain both embedded style and script blocks.</p>
+                            </section>
+                            <section class="si-results" id="siResults" aria-labelledby="siResultsTitle" hidden>
+                                <div class="si-results-heading">
+                                    <div><span class="si-step">2</span><h3 id="siResultsTitle">Review extracted code</h3></div>
+                                    <p id="siSummary" class="si-summary" role="status" aria-live="polite"></p>
+                                </div>
+                                <div class="si-stats" id="siStats"></div>
+                                <ul class="si-notes" id="siNotes" aria-live="polite"></ul>
+                                <div class="si-output-grid">
+                                    <article class="si-output-card">
+                                        <div class="si-output-header">
+                                            <div class="si-output-title">
+                                                <label class="si-apply-label" for="siApplyHtml"><input type="checkbox" id="siApplyHtml" disabled> Apply HTML</label>
+                                                <span class="si-language-pill si-html-pill">HTML</span>
+                                            </div>
+                                            <span class="si-char-count" id="siCountHtml">0 chars</span>
+                                        </div>
+                                        <label class="si-sr-only" for="siResultHtml">Extracted HTML code</label>
+                                        <textarea id="siResultHtml" class="si-result-code" dir="auto" spellcheck="false" autocomplete="off" placeholder="HTML markup will appear here."></textarea>
+                                    </article>
+                                    <article class="si-output-card">
+                                        <div class="si-output-header">
+                                            <div class="si-output-title">
+                                                <label class="si-apply-label" for="siApplyCss"><input type="checkbox" id="siApplyCss" disabled> Apply CSS</label>
+                                                <span class="si-language-pill si-css-pill">CSS</span>
+                                            </div>
+                                            <span class="si-char-count" id="siCountCss">0 chars</span>
+                                        </div>
+                                        <label class="si-sr-only" for="siResultCss">Extracted CSS code</label>
+                                        <textarea id="siResultCss" class="si-result-code" dir="auto" spellcheck="false" autocomplete="off" placeholder="CSS rules will appear here."></textarea>
+                                    </article>
+                                    <article class="si-output-card">
+                                        <div class="si-output-header">
+                                            <div class="si-output-title">
+                                                <label class="si-apply-label" for="siApplyJs"><input type="checkbox" id="siApplyJs" disabled> Apply JavaScript</label>
+                                                <span class="si-language-pill si-js-pill">JS</span>
+                                            </div>
+                                            <span class="si-char-count" id="siCountJs">0 chars</span>
+                                        </div>
+                                        <label class="si-sr-only" for="siResultJs">Extracted JavaScript code</label>
+                                        <textarea id="siResultJs" class="si-result-code" dir="auto" spellcheck="false" autocomplete="off" placeholder="JavaScript code will appear here."></textarea>
+                                    </article>
+                                </div>
+                                <footer class="si-apply-footer">
+                                    <div>
+                                        <strong>3. Apply the selected sections</strong>
+                                        <p>Only checked languages with non-empty code are sent to the editor. Other files are left unchanged.</p>
+                                        <p id="siActionStatus" class="si-action-status" role="status" aria-live="polite"></p>
+                                    </div>
+                                    <button type="button" class="si-button si-apply-button" id="siApply">Apply selected code to editor</button>
+                                </footer>
+                            </section>
+                        </div>
                     </section>
                 </div>
             </div>
@@ -3998,6 +4175,7 @@ function addBox() {
         const tabButtons  = Array.from(document.querySelectorAll('.tab'));
         const dirtyBadge  = document.getElementById('dirtyBadge');
         const libsPanel   = document.getElementById('libsPanel');
+        const smartImportPanel = document.getElementById('smartImportPanel');
         const editors     = {};
 
         const STORAGE_KEY = 'html-editor-code-v2';
@@ -4617,7 +4795,7 @@ function addBox() {
         }
 
         function activateTab(lang) {
-            if (lang !== 'libs' && lang !== 'help' && !editors[lang]) lang = 'html';
+            if (lang !== 'libs' && lang !== 'help' && lang !== 'smart-import' && !editors[lang]) lang = 'html';
             picker.close();
             IntelliSense.hide();
             activeTab = lang;
@@ -4626,9 +4804,12 @@ function addBox() {
             LANGS.forEach(function(l) { editors[l].wrap.hidden = true; });
             libsPanel.hidden = true;
             document.getElementById('helpPanel').hidden = true;
+            if (smartImportPanel) smartImportPanel.hidden = true;
             if (lang === 'libs') libsPanel.hidden = false;
             else if (lang === 'help') document.getElementById('helpPanel').hidden = false;
-            else editors[lang].wrap.hidden = false;
+            else if (lang === 'smart-import') {
+                if (smartImportPanel) smartImportPanel.hidden = false;
+            } else if (editors[lang]) editors[lang].wrap.hidden = false;
 
             tabButtons.forEach(function(b) {
                 const on = b.dataset.tab === lang;
@@ -4636,7 +4817,7 @@ function addBox() {
                 b.setAttribute('aria-selected', on ? 'true' : 'false');
             });
 
-            if (lang !== 'libs' && lang !== 'help') {
+            if (LANGS.includes(lang)) {
                 editors[lang].syncScroll();
                 const f = getFileForLang(lang);
                 if (f) project.activeFileId = f.id;
@@ -4652,11 +4833,71 @@ function addBox() {
         }
 
         function switchTab(lang) {
-            if (lang === 'libs' || lang === 'help') { activateTab(lang); return; }
+            if (lang === 'libs' || lang === 'help' || lang === 'smart-import') { activateTab(lang); return; }
             const file = getFileForLang(lang);
             if (file) openFile(file.id);
             else activateTab(lang);
         }
+
+        // Narrow bridge used by the isolated Smart Import panel after the user reviews its outputs.
+        window.HTMLCSJSEditor = window.HTMLCSJSEditor || {};
+        window.HTMLCSJSEditor.applyImportedCode = function(codeByLanguage) {
+            if (!codeByLanguage || typeof codeByLanguage !== 'object') {
+                return { applied: [], saved: false, error: 'No valid code sections were provided.' };
+            }
+            const requested = ['html', 'css', 'js'].filter(function(lang) {
+                return Object.prototype.hasOwnProperty.call(codeByLanguage, lang) &&
+                    typeof codeByLanguage[lang] === 'string' && codeByLanguage[lang].trim().length > 0;
+            });
+            if (!requested.length) return { applied: [], saved: false, error: 'Choose at least one non-empty section to apply.' };
+
+            const labels = { html: 'HTML', css: 'CSS', js: 'JavaScript' };
+            const targetList = requested.map(function(lang) { return labels[lang]; }).join(', ');
+            if (!window.confirm('Smart Import will replace the current file for: ' + targetList +
+                '. Other files will remain unchanged. Continue?')) {
+                return { applied: [], saved: false, cancelled: true };
+            }
+
+            const defaultNames = { html: 'index.html', css: 'style.css', js: 'script.js' };
+            const applied = [];
+            requested.forEach(function(lang) {
+                let file = getFileForLang(lang);
+                if (!file) {
+                    const base = defaultNames[lang];
+                    const extension = base.slice(base.lastIndexOf('.'));
+                    const stem = base.slice(0, -extension.length);
+                    let name = base;
+                    let suffix = 2;
+                    while (project.files.some(function(existing) { return existing.name.toLowerCase() === name.toLowerCase(); })) {
+                        name = stem + '-' + suffix++ + extension;
+                    }
+                    file = { id: makeId(), name: name, type: lang, content: '' };
+                    project.files.push(file);
+                    project.lastActiveByLang[lang] = file.id;
+                }
+                file.content = codeByLanguage[lang];
+                project.lastActiveByLang[lang] = file.id;
+                const editor = editors[lang];
+                if (editor) { editor.ta.value = file.content; editor.refresh(); }
+                dirtyFileIds.add(file.id);
+                applied.push(lang);
+            });
+
+            const primaryLanguage = applied.includes('html') ? 'html' : applied[0];
+            activateTab(primaryLanguage);
+            renderFileExplorer();
+            const saved = saveProject();
+            if (saved) setDirty(false);
+            else setDirty(true);
+            updatePreviewNow();
+            showToast(
+                saved
+                    ? '✅ Smart Import applied to ' + applied.map(function(lang) { return labels[lang]; }).join(', ')
+                    : '⚠ Code was applied for this session, but browser storage could not save it.',
+                saved ? 'success' : 'error'
+            );
+            return { applied: applied, saved: saved };
+        };
 
         tabButtons.forEach(function(b) {
             b.addEventListener('click', function() { switchTab(b.dataset.tab); });
@@ -6127,7 +6368,7 @@ function addBox() {
         function performSearch(query) {
             searchMatches = [];
             searchIndex = -1;
-            const ed = (activeTab !== 'libs') ? editors[activeTab] : null;
+            const ed = LANGS.includes(activeTab) ? editors[activeTab] : null;
             if (!ed || !query) { renderSearchResults(); return; }
 
             const text  = ed.ta.value;
@@ -7334,6 +7575,297 @@ function addBox() {
         if (event.key !== 'Escape') return;
         if (!detailModal.hidden) { event.stopPropagation(); closeDetails(); }
         else if (!treeModal.hidden) { event.stopPropagation(); closeTree(); }
+    });
+})();
+</script>
+    <script data-bundled-from="smart-import.js">
+(function () {
+    'use strict';
+    const byId = (id) => document.getElementById(id);
+    const sourceInput = byId('siSource');
+    const resultsPanel = byId('siResults');
+    const summary = byId('siSummary');
+    const stats = byId('siStats');
+    const notes = byId('siNotes');
+    const actionStatus = byId('siActionStatus');
+    const fileInput = byId('siFileInput');
+    if (!sourceInput || !resultsPanel) return;
+
+    const targets = {
+        html: { output: byId('siResultHtml'), checkbox: byId('siApplyHtml'), count: byId('siCountHtml') },
+        css:  { output: byId('siResultCss'),  checkbox: byId('siApplyCss'),  count: byId('siCountCss') },
+        js:   { output: byId('siResultJs'),   checkbox: byId('siApplyJs'),   count: byId('siCountJs') }
+    };
+
+    function countMatches(source, regex) { return (source.match(regex) || []).length; }
+
+    function extractBlocks(source, tagName) {
+        // Supports escaped closing tags and recovery at nearby document boundaries.
+        const pattern = new RegExp(
+            '<' + tagName + '\\b([^>]*)>([\\s\\S]*?)(?:<\\\\?\\/' + tagName +
+            '\\s*>|(?=<\\/(?:head|body|html)\\s*>|<script\\b|<style\\b|<!doctype\\b|<html\\b|<body\\b|$))',
+            'gi'
+        );
+        const blocks = [];
+        let match;
+        while ((match = pattern.exec(source)) !== null) {
+            const attrs = match[1] || '';
+            blocks.push({
+                start: match.index, end: match.index + match[0].length,
+                attrs: attrs, content: match[2] || '',
+                hasSource: /\bsrc\s*=/i.test(attrs),
+                isJavaScript: !/\bsrc\s*=/i.test(attrs) &&
+                    (!/\btype\s*=/i.test(attrs) || /\btype\s*=\s*["']?(?:text|application)\/(?:java|ecma)script|module/i.test(attrs))
+            });
+            if (match[0].length === 0) pattern.lastIndex++;
+        }
+        return blocks;
+    }
+
+    function removeRanges(source, blocks) {
+        let result = source;
+        blocks.slice().sort((a, b) => b.start - a.start).forEach((block) => {
+            result = result.slice(0, block.start) + result.slice(block.end);
+        });
+        return result;
+    }
+
+    function uniqueBlocks(parts, clean) {
+        const seen = new Set(), result = [];
+        let removed = 0;
+        parts.forEach((part) => {
+            const key = part.replace(/\r\n?/g, '\n').trim();
+            if (!key) return;
+            if (seen.has(key)) {
+                removed++;
+                if (clean) return;
+            } else seen.add(key);
+            result.push(clean ? part.trim() : part);
+        });
+        return { parts: result, removed: removed };
+    }
+
+    function looksLikeCss(source) {
+        return source.includes('{') &&
+            /(?:@(?:media|supports|keyframes|import|font-face|layer)\b|\b(?:color|background|margin|padding|display|font|width|height|border|position|grid|flex|opacity|transform|animation)\s*:|--[\w-]+\s*:)/i.test(source) &&
+            /:\s*[^;{}]+;?/.test(source);
+    }
+
+    function looksLikeJavaScript(source) {
+        return /(?:\b(?:const|let|var|function|class|import|export|return|async|await|console|document|window)\b|=>|\baddEventListener\s*\(|\bquerySelector\s*\()/.test(source);
+    }
+
+    function cleanMarkup(source) {
+        let markup = source;
+        const bodyMatch = /<body\b[^>]*>([\s\S]*?)<\/body\s*>/i.exec(markup);
+        if (bodyMatch) {
+            // The first body is deliberately chosen if the paste contains several documents.
+            markup = bodyMatch[1];
+        } else {
+            markup = markup.replace(/<head\b[^>]*>[\s\S]*?<\/head\s*>/gi, '');
+            markup = markup.replace(/<head\b[^>]*>[\s\S]*?(?=<body\b|$)/gi, '');
+            const bodyOpen = /<body\b[^>]*>/i.exec(markup);
+            if (bodyOpen) markup = markup.slice(bodyOpen.index + bodyOpen[0].length);
+        }
+        return markup
+            .replace(/<!doctype\b[^>]*>/gi, '')
+            .replace(/<\/?(?:html|head|body)\b[^>]*>/gi, '')
+            .replace(/<\\?\/?style\b[^>]*>/gi, '')
+            .replace(/<title\b[^>]*>[\s\S]*?<\/title\s*>/gi, '')
+            .replace(/<meta\b[^>]*>/gi, '')
+            .replace(/<link\b[^>]*>/gi, '')
+            .trim();
+    }
+
+    function setNotes(items) {
+        notes.replaceChildren();
+        if (!items.length) {
+            const item = document.createElement('li');
+            item.className = 'si-note si-note-ok';
+            item.textContent = 'No obvious structural warning was detected. Review the extracted code before applying it anyway.';
+            notes.appendChild(item);
+            return;
+        }
+        items.forEach((text) => {
+            const item = document.createElement('li');
+            item.className = 'si-note';
+            item.textContent = text;
+            notes.appendChild(item);
+        });
+    }
+
+    function updateOutputState(language, autoCheck) {
+        const target = targets[language];
+        const value = target.output.value;
+        target.count.textContent = value.length.toLocaleString() + ' chars';
+        target.checkbox.disabled = !value.trim();
+        if (autoCheck !== undefined) target.checkbox.checked = !!autoCheck && !!value.trim();
+        else if (!value.trim()) target.checkbox.checked = false;
+    }
+
+    function renderStats(values) {
+        stats.replaceChildren();
+        values.forEach((value) => {
+            const card = document.createElement('div');
+            card.className = 'si-stat';
+            const number = document.createElement('strong');
+            number.textContent = String(value.value);
+            const label = document.createElement('span');
+            label.textContent = value.label;
+            card.append(number, label);
+            stats.appendChild(card);
+        });
+    }
+
+    function analyze(clean) {
+        const raw = sourceInput.value.replace(/^\uFEFF/, '');
+        if (!raw.trim()) {
+            resultsPanel.hidden = true;
+            summary.textContent = '';
+            actionStatus.textContent = 'Paste code or open a file first.';
+            sourceInput.focus();
+            return;
+        }
+
+        const styleBlocks = extractBlocks(raw, 'style');
+        const allScriptBlocks = extractBlocks(raw, 'script');
+        const inlineScriptBlocks = allScriptBlocks.filter((block) => block.isJavaScript);
+        let cssParts = styleBlocks.map((block) => block.content).filter((part) => part.trim());
+        let jsParts = inlineScriptBlocks.map((block) => block.content).filter((part) => part.trim());
+        let detectedAs = 'Mixed document';
+        const hasAnyHtmlTag = /<\/?[a-z][^>]*>/i.test(raw);
+        if (!styleBlocks.length && !allScriptBlocks.length && !hasAnyHtmlTag) {
+            if (looksLikeJavaScript(raw)) {
+                jsParts = [raw]; detectedAs = 'JavaScript fragment';
+            } else if (looksLikeCss(raw)) {
+                cssParts = [raw]; detectedAs = 'CSS fragment';
+            } else detectedAs = 'HTML fragment';
+        }
+
+        const dedupedCss = uniqueBlocks(cssParts, clean);
+        const dedupedJs = uniqueBlocks(jsParts, clean);
+        cssParts = dedupedCss.parts;
+        jsParts = dedupedJs.parts;
+
+        // Remove extracted styles and executable/external scripts; leave non-JS data scripts in the HTML output.
+        const removedScripts = inlineScriptBlocks.concat(allScriptBlocks.filter((block) => block.hasSource));
+        const markupSource = removeRanges(raw, styleBlocks.concat(removedScripts));
+        const documentWrappers = /<!doctype\b|<html\b|<head\b|<body\b/i.test(markupSource);
+        let html = (detectedAs === 'CSS fragment' || detectedAs === 'JavaScript fragment') ? '' : cleanMarkup(markupSource);
+        if (!documentWrappers && detectedAs === 'HTML fragment') html = markupSource.trim();
+
+        const externalCss = [];
+        const cssLinkPattern = /<link\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/gi;
+        let linkMatch;
+        while ((linkMatch = cssLinkPattern.exec(raw)) !== null) {
+            if (/\.css(?:[?#]|$)/i.test(linkMatch[1]) || /\brel\s*=\s*["']?stylesheet/i.test(linkMatch[0])) externalCss.push(linkMatch[1]);
+        }
+        const externalJs = [];
+        const externalScriptPattern = /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/gi;
+        let scriptMatch;
+        while ((scriptMatch = externalScriptPattern.exec(raw)) !== null) externalJs.push(scriptMatch[1]);
+
+        const documentCount = Math.max(countMatches(raw, /<!doctype\b/gi), countMatches(raw, /<html\b/gi));
+        const duplicateBlocks = dedupedCss.removed + dedupedJs.removed;
+        const warnings = [];
+        if (documentCount > 1) warnings.push('More than one document wrapper was found (' + documentCount + '). The first body section is selected to avoid merging conflicting page versions.');
+        if (countMatches(raw, /<style\b/gi) !== styleBlocks.length) warnings.push('One or more style blocks may be incomplete. Check for cut-off rules or missing braces.');
+        if (countMatches(raw, /<script\b/gi) !== allScriptBlocks.length) warnings.push('One or more script blocks may be incomplete or use an unusual type. Review the extracted code.');
+        if (duplicateBlocks) warnings.push(clean
+            ? duplicateBlocks + ' exact repeated CSS/JavaScript block(s) were removed.'
+            : duplicateBlocks + ' exact repeated CSS/JavaScript block(s) were detected. Choose “Clean & analyze” to remove exact duplicates.');
+        if (externalCss.length) warnings.push('External stylesheet references were found (' + externalCss.length + '). Their remote code was not downloaded.');
+        if (externalJs.length) warnings.push('External script references were found (' + externalJs.length + '). Their remote code was not downloaded.');
+        if (!html.trim() && !cssParts.length && !jsParts.length) warnings.push('No usable section was extracted. The source may use an unsupported or malformed structure.');
+        if (!clean && countMatches(raw, /<(?:html|style|script)\b/gi) > 1 && !duplicateBlocks) warnings.push('Multiple structural blocks were found. Only exact duplicate CSS/JS blocks can be removed automatically; review all outputs manually.');
+
+        targets.html.output.value = html;
+        targets.css.output.value = cssParts.join('\n\n').trim();
+        targets.js.output.value = jsParts.join('\n\n').trim();
+        Object.keys(targets).forEach((language) => updateOutputState(language, !!targets[language].output.value.trim()));
+
+        renderStats([
+            { value: detectedAs, label: 'Input recognized as' },
+            { value: documentCount || 0, label: 'Document wrappers' },
+            { value: styleBlocks.length, label: 'Style blocks' },
+            { value: inlineScriptBlocks.length, label: 'Inline JS blocks' },
+            { value: duplicateBlocks, label: 'Exact duplicates' }
+        ]);
+        setNotes(warnings);
+        summary.textContent = 'Analysis complete — review the three sections below. Nothing has changed yet.';
+        actionStatus.textContent = '';
+        resultsPanel.hidden = false;
+        resultsPanel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    byId('siAnalyze').addEventListener('click', () => analyze(false));
+    byId('siCleanAnalyze').addEventListener('click', () => analyze(true));
+    Object.keys(targets).forEach((language) => {
+        targets[language].output.addEventListener('input', () => updateOutputState(language));
+        targets[language].checkbox.addEventListener('change', () => { actionStatus.textContent = ''; });
+    });
+
+    byId('siChooseFile').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', async () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        try {
+            sourceInput.value = await file.text();
+            actionStatus.textContent = 'Loaded “' + file.name + '”. Review the source and run analysis.';
+            analyze(true);
+        } catch (error) {
+            actionStatus.textContent = 'Could not read this file. Try a text-based HTML, CSS, or JavaScript file.';
+        } finally { fileInput.value = ''; }
+    });
+
+    byId('siPaste').addEventListener('click', async () => {
+        if (!navigator.clipboard || typeof navigator.clipboard.readText !== 'function') {
+            actionStatus.textContent = 'Clipboard access is unavailable here. Paste into the source box manually.';
+            sourceInput.focus(); return;
+        }
+        try {
+            sourceInput.value = await navigator.clipboard.readText();
+            actionStatus.textContent = 'Clipboard pasted. Run analysis to inspect the extracted code.';
+            sourceInput.focus();
+        } catch (error) {
+            actionStatus.textContent = 'Clipboard permission was denied or unavailable. Paste manually into the source box.';
+            sourceInput.focus();
+        }
+    });
+
+    byId('siClear').addEventListener('click', () => {
+        sourceInput.value = '';
+        Object.keys(targets).forEach((language) => {
+            targets[language].output.value = '';
+            updateOutputState(language, false);
+        });
+        resultsPanel.hidden = true;
+        stats.replaceChildren(); notes.replaceChildren();
+        summary.textContent = ''; actionStatus.textContent = '';
+        sourceInput.focus();
+    });
+
+    byId('siApply').addEventListener('click', () => {
+        const selected = {};
+        Object.keys(targets).forEach((language) => {
+            const target = targets[language];
+            if (target.checkbox.checked && !target.checkbox.disabled && target.output.value.trim()) selected[language] = target.output.value;
+        });
+        if (!Object.keys(selected).length) {
+            actionStatus.textContent = 'Select at least one non-empty section to apply.';
+            return;
+        }
+        if (!window.HTMLCSJSEditor || typeof window.HTMLCSJSEditor.applyImportedCode !== 'function') {
+            actionStatus.textContent = 'The editor bridge is not available. Reload the editor and try again.';
+            return;
+        }
+        const result = window.HTMLCSJSEditor.applyImportedCode(selected);
+        if (result && result.cancelled) actionStatus.textContent = 'Cancelled — no editor files were changed.';
+        else if (result && result.error) actionStatus.textContent = result.error;
+        else if (result && result.applied && result.applied.length) {
+            const labels = { html: 'HTML', css: 'CSS', js: 'JavaScript' };
+            actionStatus.textContent = 'Applied to ' + result.applied.map((lang) => labels[lang]).join(', ') + '. Check the editor tabs and live preview.';
+        }
     });
 })();
 </script>

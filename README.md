@@ -41,7 +41,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `next-word-suggestions.js` | Context-sensitive next-token continuation rules for HTML, CSS, and JavaScript |
 | `README.md` | Project documentation, usage, audit notes, and validation status |
 
-The completion bank is split into four JavaScript data files. The HTML bank includes contextual attributes and embedded SVG/MathML elements. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language words, browser APIs, object members, and reusable snippets. There is no `intellisense-data.js` file in the current repository.
+The completion bank is split into four JavaScript data files. The HTML bank includes contextual attributes and embedded SVG/MathML elements. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language and standard built-in names, browser API interfaces and members, object methods, and reusable snippets. Its vocabulary and continuations are curated against the ECMAScript specification and MDN references; newer or permission-gated browser APIs may not exist in every runtime. There is no `intellisense-data.js` file in the current repository.
 
 ## Suggestion-bank coverage and next-word prediction
 
@@ -51,8 +51,8 @@ The current curated banks contain approximately these unique entries after norma
 |---|---|
 | HTML | 200 element names (including SVG and MathML), 231 common attributes including event handlers/ARIA/data attributes, and 61 tag-specific attribute groups |
 | CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, and 13 snippets |
-| JavaScript | 538 language/global/browser API words, 41 member roots, and 23 snippets |
-| Next-word database | 56 contextual rules (14 HTML, 16 CSS, 26 JavaScript), 177 listed candidates, plus dynamically generated tag/attribute/code continuations |
+| JavaScript | 582 language/global/browser API words, 94 member roots with 1,304 distinct member names, and 30 snippets |
+| Next-word database | 84 contextual rules (14 HTML, 16 CSS, 54 JavaScript), 250 explicitly listed candidates, plus dynamically generated tag/attribute/code continuations |
 
 These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment.
 
@@ -64,7 +64,7 @@ After a completion is accepted, the editor checks the text before the caret agai
 - CSS: after accepting a property such as display or position, offer common values; after selecting a flex/grid display value, offer related alignment and gap declarations.
 - JavaScript: after const/let/var, suggest an assignment; after the assignment, suggest common initializer types; after identifiers such as document or console, suggest common members and call patterns.
 
-The next-word database is a deterministic, hand-maintained rule/sequence list with 56 contexts and 177 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. It skips prediction inside JavaScript strings/comments and CSS strings/comments, and only shows continuations for known contexts. Dismiss the popup with Escape to keep typing normally.
+The next-word database is a deterministic, hand-maintained rule/sequence list with 84 contexts and 250 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The JavaScript rules now include additional control-flow and module continuations, standard built-in methods, browser storage/navigation APIs, cryptography/performance helpers, and timer patterns. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
 
 ## Basic use
 
@@ -259,6 +259,17 @@ Review date: 2026-10-16.
 - Re-checked markers for the corrected autocomplete pattern, race-safe download flow, bundle CSS/JS links, recovery flow, safe generated comment labels, native file-open buttons, responsive breakpoint alignment, and next-word continuation hooks.
 - **Not performed:** interactive browser testing, cross-browser testing, or automated end-to-end testing. These should be completed before treating the changes as fully verified in runtime conditions.
 
+### JavaScript suggestion-bank expansion (2026-10-18)
+
+- Parsed all five application/data JavaScript files without executing the editor application: **pass**.
+- Initialized all four completion-data scripts against a test `window` object: **pass**.
+- Verified loaded JavaScript completion data: 582 words, 94 member roots, 1,304 member names, and 30 JavaScript snippets.
+- Verified next-word data: 84 rules total (14 HTML, 16 CSS, 54 JavaScript) and 250 explicit candidate items.
+- Exercised representative JavaScript continuations for `switch`, `while`, `import`, `export`, `Math`, `Object`, `URL`, `localStorage`, `navigator`, `crypto`, and `requestAnimationFrame`: **pass**.
+- Checked caret offsets in static next-word candidates and code snippets: **no out-of-range offsets found**.
+- **Not performed for this change:** running the editor in a real browser or conducting cross-browser/end-to-end tests.
+
+
 
 ## Reference material
 
@@ -269,6 +280,8 @@ The completion banks are curated against browser-language references and should 
 - [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)
 - [MDN JavaScript reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference)
 - [MDN JavaScript standard built-in objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects)
+- [MDN Web API reference](https://developer.mozilla.org/en-US/docs/Web/API)
+- [ECMAScript language specification (TC39)](https://tc39.es/ecma262/)
 
 ## License
 

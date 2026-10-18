@@ -30,6 +30,13 @@
         <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
     </div>
     </header>
+    <section class="github-update" aria-label="GitHub update information">
+        <span class="github-update-dot" aria-hidden="true"></span>
+        <span id="githubUpdateStatus" role="status" aria-live="polite">در حال دریافت زمان آخرین به‌روزرسانی از GitHub…</span>
+        <time id="githubUpdateTime"></time>
+        <a id="githubUpdateLink" href="https://github.com/alfamaniya/Editor-html-css-js/commits/main/" target="_blank" rel="noopener noreferrer" hidden>مشاهده کامیت</a>
+    </section>
+
     <div class="container">
 
         <div class="editor-pane">
@@ -492,6 +499,7 @@
     <script src="script.js"></script>
     <script src="word-tree.js"></script>
     <script src="smart-import.js"></script>
+    <script src="github-update.js"></script>
 
 </body>
 </html>

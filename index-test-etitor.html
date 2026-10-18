@@ -1994,7 +1994,7 @@ input {
         'a abbr address area article aside audio b base bdi bdo blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd label legend li link main map mark menu meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script search section select slot small source span strong style sub summary sup table tbody td template textarea tfoot th thead time title tr track u ul var video wbr'
     ).split(/\s+/);
     const htmlAttributes = (
-        'accept accept-charset accesskey action align allow allowfullscreen alt async autocapitalize autocomplete autofocus autoplay capture cellpadding cellspacing challenge charset checked cite class cols colspan content contenteditable controls coords crossorigin data datetime decoding default defer dir dirname disabled download draggable enctype enterkeyhint for form formaction formenctype formmethod formnovalidate formtarget headers height hidden high href hreflang http-equiv id inert inputmode integrity is itemid itemprop itemref itemscope itemtype kind label lang list loading loop low max maxlength media method min minlength multiple muted name nomodule nonce open optimum pattern placeholder playsinline poster preload readonly referrerpolicy rel required reversed role rows rowspan sandbox scope selected shape size sizes slot span spellcheck src srcdoc srclang srcset start step style tabindex target title translate type usemap value width wrap'
+        'accesskey autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover role slot spellcheck style tabindex title translate virtualkeyboardpolicy writingsuggestions aria-activedescendant aria-atomic aria-autocomplete aria-busy aria-checked aria-colcount aria-colindex aria-colspan aria-controls aria-current aria-describedby aria-description aria-details aria-disabled aria-errormessage aria-expanded aria-flowto aria-haspopup aria-hidden aria-invalid aria-keyshortcuts aria-label aria-labelledby aria-level aria-live aria-modal aria-multiline aria-multiselectable aria-orientation aria-owns aria-placeholder aria-posinset aria-pressed aria-readonly aria-relevant aria-required aria-roledescription aria-rowcount aria-rowindex aria-rowspan aria-selected aria-setsize aria-sort aria-valuemax aria-valuemin aria-valuenow aria-valuetext data-testid data-state data-id data-value'
     ).split(/\s+/);
     const htmlAttrsByTag = {
         a:'href target rel download hreflang type referrerpolicy',
@@ -2034,14 +2034,14 @@ input {
         object:'data form height name type usemap width',
         embed:'height src type width',
         track:'default kind label src srclang',
-        table:'align bgcolor border cellpadding cellspacing frame rules summary width'
+        table:''
     };
     // Current global attributes cross-checked against MDN's HTML reference.
-    const modernGlobalAttributes = 'accesskey anchor autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover slot spellcheck style tabindex title translate'.split(/\s+/);
+    const modernGlobalAttributes = 'accesskey autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover slot spellcheck style tabindex title translate virtualkeyboardpolicy writingsuggestions'.split(/\s+/);
     htmlAttributes.splice(0, htmlAttributes.length, ...Array.from(new Set(htmlAttributes.concat(modernGlobalAttributes))).filter(function (attr) { return !/^(align|bgcolor|cellpadding|cellspacing|frame|rules|summary)$/.test(attr); }));
     Object.keys(htmlAttrsByTag).forEach(function (tag) {
         // Keep tag-specific attributes as arrays; the completion engine combines arrays.
-        htmlAttrsByTag[tag] = Array.from(new Set(htmlAttrsByTag[tag].split(/\s+/).filter(function (attr) {
+        htmlAttrsByTag[tag] = Array.from(new Set(htmlAttrsByTag[tag].split(/\s+/).filter(Boolean).filter(function (attr) {
             return !/^(align|bgcolor|border|cellpadding|cellspacing|frame|rules|summary)$/.test(attr);
         })));
     });
@@ -2057,21 +2057,28 @@ input {
 
     // Modern global and event-handler attributes commonly used in browser code.
     const extendedGlobalAttributes = (
-        'autocorrect writingsuggestions virtualkeyboardpolicy popover popovertarget popovertargetaction command commandfor part exportparts slot onabort onanimationcancel onanimationend onanimationiteration onanimationstart onauxclick onbeforeinput onbeforematch onbeforetoggle onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncopy oncuechange oncut ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended onerror onfocus onformdata ongotpointercapture onhashchange oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart onmessage onmousedown onmouseenter onmouseleave onmousemove onmouseout onmouseover onmouseup onoffline ononline onpagehide onpageshow onpaste onpause onplay onplaying onpointercancel onpointerdown onpointerenter onpointerleave onpointermove onpointerout onpointerover onpointerup onpopstate onprogress onratechange onreset onresize onscroll onscrollend onsecuritypolicyviolation onseeked onseeking onselect onselectionchange onselectstart onslotchange onstalled onsubmit onsuspend ontimeupdate ontoggle ontouchcancel ontouchend ontouchmove ontouchstart ontransitioncancel ontransitionend ontransitionrun ontransitionstart onunhandledrejection onunload onvolumechange onwaiting onwheel'
+        'autocorrect writingsuggestions virtualkeyboardpolicy popover part exportparts slot onabort onanimationcancel onanimationend onanimationiteration onanimationstart onauxclick onbeforeinput onbeforematch onbeforetoggle onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncopy oncuechange oncut ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended onerror onfocus onformdata ongotpointercapture onhashchange oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart onmessage onmousedown onmouseenter onmouseleave onmousemove onmouseout onmouseover onmouseup onoffline ononline onpagehide onpageshow onpaste onpause onplay onplaying onpointercancel onpointerdown onpointerenter onpointerleave onpointermove onpointerout onpointerover onpointerup onpopstate onprogress onratechange onreset onresize onscroll onscrollend onsecuritypolicyviolation onseeked onseeking onselect onselectionchange onselectstart onslotchange onstalled onsubmit onsuspend ontimeupdate ontoggle ontouchcancel ontouchend ontouchmove ontouchstart ontransitioncancel ontransitionend ontransitionrun ontransitionstart onunhandledrejection onunload onvolumechange onwaiting onwheel'
     ).split(/\s+/);
     htmlAttributes.splice(0, htmlAttributes.length, ...Array.from(new Set(htmlAttributes.concat(extendedGlobalAttributes))).filter(function (attr) {
         return !/^(align|bgcolor|cellpadding|cellspacing|frame|rules|summary)$/.test(attr);
     }));
 
     const additionalAttrsByTag = {
-        a: 'attributionsrc',
+        a: 'attributionsrc ping',
         audio: 'autoplay controls controlslist crossorigin loop muted preload src',
         button: 'command commandfor popovertarget popovertargetaction',
+        base: 'href target',
+        blockquote: 'cite',
+        del: 'cite datetime',
+        ins: 'cite datetime',
+        optgroup: 'disabled label',
+        param: 'name value',
+        q: 'cite',
         dialog: 'closedby',
         form: 'rel',
         iframe: 'allowpaymentrequest credentialless csp',
         img: 'fetchpriority ismap usemap',
-        input: 'alpha dirname enterkeyhint formaction formenctype formmethod formnovalidate formtarget',
+        input: 'alpha dirname enterkeyhint formaction formenctype formmethod formnovalidate formtarget popovertarget popovertargetaction',
         link: 'blocking imagesizes imagesrcset',
         meta: 'media',
         script: 'blocking fetchpriority',
@@ -2182,7 +2189,7 @@ input {
     ).split(/\s+/);
     // Additional modern, logical, typography, scroll, SVG and form-related CSS properties.
     cssProperties.push(...(
-        'anchor-name anchor-scope animation-composition animation-range animation-range-end animation-range-start animation-timeline appearance aspect-ratio block-overflow block-size border-block-color border-block-end-color border-block-end-style border-block-end-width border-block-start-color border-block-start-style border-block-start-width border-inline-color border-inline-end border-inline-end-color border-inline-end-style border-inline-end-width border-inline-start border-inline-start-color border-inline-start-style border-inline-start-width border-start-start-radius border-start-end-radius border-end-start-radius border-end-end-radius border-image-outset border-image-repeat border-image-slice border-image-source border-image-width border-inline-style border-inline-width border-block-style border-block-width box-decoration-break box-shadow break-after break-before break-inside caption-side caret-shape clip-rule color-interpolation color-interpolation-filters color-rendering column-rule-color column-rule-style column-rule-width column-span contain-intrinsic-block-size contain-intrinsic-height contain-intrinsic-inline-size contain-intrinsic-width container container-name container-type content-visibility counter-increment counter-reset counter-set cursor cx cy d direction dominant-baseline fill fill-opacity fill-rule flood-color flood-opacity font-kerning font-optical-sizing font-palette font-size-adjust font-smooth font-synthesis font-synthesis-small-caps font-synthesis-style font-synthesis-weight font-variant-alternates font-variant-emoji font-variant-ligatures font-variant-numeric font-variation-settings font-weight font-width forced-color-adjust gap grid-column-end grid-column-start grid-row-end grid-row-start grid-template-areas hanging-punctuation hyphenate-character hyphenate-limit-chars hyphens image-orientation image-rendering inline-size inset-block inset-block-end inset-block-start inset-inline inset-inline-end inset-inline-start isolation justify-tracks lighting-color line-break line-clamp line-height-step line-height letter-spacing letter-spacing locale marker marker-end marker-mid marker-start mask-border mask-border-mode mask-border-outset mask-border-repeat mask-border-slice mask-border-source mask-border-width mask-clip mask-composite mask-image mask-mode mask-origin mask-position mask-repeat mask-size mask-type math-depth math-shift math-style max-block-size max-inline-size min-block-size min-inline-size object-position offset-anchor offset-distance offset-path offset-position offset-rotate opacity order orphans outline-offset overscroll-behavior overscroll-behavior-block overscroll-behavior-inline overscroll-behavior-x overscroll-behavior-y overflow-block overflow-inline overflow-clip-margin overflow-wrap overflow-anchor overflow-block overflow-inline page page-break-after page-break-before page-break-inside paint-order perspective perspective-origin place-content place-items place-self position-anchor position-area position-try position-try-fallbacks position-try-order print-color-adjust quotes r ruby-align ruby-position rx ry scale scroll-behavior scroll-margin scroll-margin-block scroll-margin-block-end scroll-margin-block-start scroll-margin-bottom scroll-margin-inline scroll-margin-inline-end scroll-margin-inline-start scroll-margin-left scroll-margin-right scroll-margin-top scroll-padding scroll-padding-block scroll-padding-block-end scroll-padding-block-start scroll-padding-bottom scroll-padding-inline scroll-padding-inline-end scroll-padding-inline-start scroll-padding-left scroll-padding-right scroll-padding-top scroll-snap-align scroll-snap-stop scroll-snap-type scrollbar-color scrollbar-gutter scrollbar-width shape-image-threshold shape-margin shape-outside shape-rendering stop-color stop-opacity stroke stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity stroke-width tab-size text-anchor text-combine-upright text-decoration-skip-ink text-emphasis text-emphasis-color text-emphasis-position text-emphasis-style text-orientation text-rendering text-size-adjust text-spacing text-underline-offset text-underline-position timeline-scope touch-action transform-box transform-origin transform-style transition-behavior translate unicode-bidi user-select vector-effect vertical-align view-transition-name visibility white-space widows width will-change word-break word-spacing writing-mode x y z-index zoom'
+        'anchor-name anchor-scope animation-composition animation-range animation-range-end animation-range-start animation-timeline appearance aspect-ratio block-overflow block-size border-block-color border-block-end-color border-block-end-style border-block-end-width border-block-start-color border-block-start-style border-block-start-width border-inline-color border-inline-end border-inline-end-color border-inline-end-style border-inline-end-width border-inline-start border-inline-start-color border-inline-start-style border-inline-start-width border-start-start-radius border-start-end-radius border-end-start-radius border-end-end-radius border-image-outset border-image-repeat border-image-slice border-image-source border-image-width border-inline-style border-inline-width border-block-style border-block-width box-decoration-break box-shadow break-after break-before break-inside caption-side caret-shape clip-rule color-interpolation color-interpolation-filters color-rendering column-rule-color column-rule-style column-rule-width column-span contain-intrinsic-block-size contain-intrinsic-height contain-intrinsic-inline-size contain-intrinsic-width container container-name container-type content-visibility counter-increment counter-reset counter-set cursor cx cy d direction dominant-baseline fill fill-opacity fill-rule flood-color flood-opacity font-kerning font-optical-sizing font-palette font-size-adjust font-synthesis font-synthesis-small-caps font-synthesis-style font-synthesis-weight font-variant-alternates font-variant-emoji font-variant-ligatures font-variant-numeric font-variation-settings font-weight font-width forced-color-adjust gap grid-column-end grid-column-start grid-row-end grid-row-start grid-template-areas hanging-punctuation hyphenate-character hyphenate-limit-chars hyphens image-orientation image-rendering inline-size inset-block inset-block-end inset-block-start inset-inline inset-inline-end inset-inline-start isolation justify-tracks lighting-color line-break line-clamp line-height-step line-height letter-spacing letter-spacing locale marker marker-end marker-mid marker-start mask-border mask-border-mode mask-border-outset mask-border-repeat mask-border-slice mask-border-source mask-border-width mask-clip mask-composite mask-image mask-mode mask-origin mask-position mask-repeat mask-size mask-type math-depth math-shift math-style max-block-size max-inline-size min-block-size min-inline-size object-position offset-anchor offset-distance offset-path offset-position offset-rotate opacity order orphans outline-offset overscroll-behavior overscroll-behavior-block overscroll-behavior-inline overscroll-behavior-x overscroll-behavior-y overflow-block overflow-inline overflow-clip-margin overflow-wrap overflow-anchor overflow-block overflow-inline page page-break-after page-break-before page-break-inside paint-order perspective perspective-origin place-content place-items place-self position-anchor position-area position-try position-try-fallbacks position-try-order print-color-adjust quotes r ruby-align ruby-position rx ry scale scroll-behavior scroll-margin scroll-margin-block scroll-margin-block-end scroll-margin-block-start scroll-margin-bottom scroll-margin-inline scroll-margin-inline-end scroll-margin-inline-start scroll-margin-left scroll-margin-right scroll-margin-top scroll-padding scroll-padding-block scroll-padding-block-end scroll-padding-block-start scroll-padding-bottom scroll-padding-inline scroll-padding-inline-end scroll-padding-inline-start scroll-padding-left scroll-padding-right scroll-padding-top scroll-snap-align scroll-snap-stop scroll-snap-type scrollbar-color scrollbar-gutter scrollbar-width shape-image-threshold shape-margin shape-outside shape-rendering stop-color stop-opacity stroke stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity stroke-width tab-size text-anchor text-combine-upright text-decoration-skip-ink text-emphasis text-emphasis-color text-emphasis-position text-emphasis-style text-orientation text-rendering text-size-adjust text-spacing text-underline-offset text-underline-position timeline-scope touch-action transform-box transform-origin transform-style transition-behavior translate unicode-bidi user-select vector-effect vertical-align view-transition-name visibility white-space widows width will-change word-break word-spacing writing-mode x y z-index zoom'
     ).split(/\s+/));
     const cssValues = {
         display:'block inline inline-block flex inline-flex grid inline-grid none contents flow-root table table-cell table-row list-item',
@@ -2288,7 +2295,7 @@ input {
         ]
     };
     const extendedCssProperties = (
-        'all animation-composition animation-range-end animation-range-start animation-timeline anchor-name anchor-scope block-overflow border-block-end-color border-block-end-style border-block-end-width border-block-start-color border-block-start-style border-block-start-width border-inline-end-color border-inline-end-style border-inline-end-width border-inline-start-color border-inline-start-style border-inline-start-width caret-animation caret-shape corner-shape field-sizing font-language-override font-smooth interpolate-size line-clamp line-height-step math-depth math-shift math-style overlay position-anchor position-area position-try position-try-fallbacks position-try-order reading-flow reading-order scroll-initial-target scroll-marker-group scroll-target-group text-box text-box-edge text-box-trim text-wrap text-wrap-mode text-wrap-style view-transition-class view-transition-name white-space-collapse word-space-transform -webkit-appearance -webkit-line-clamp -webkit-text-fill-color -webkit-text-stroke -webkit-text-stroke-color -webkit-text-stroke-width -webkit-font-smoothing --primary-color --secondary-color --surface-color --text-color --muted-color --border-color --accent-color --spacing --radius --shadow --font-size --content-width'
+        'all animation-composition animation-range-end animation-range-start animation-timeline anchor-name anchor-scope block-overflow border-block-end-color border-block-end-style border-block-end-width border-block-start-color border-block-start-style border-block-start-width border-inline-end-color border-inline-end-style border-inline-end-width border-inline-start-color border-inline-start-style border-inline-start-width caret-animation caret-shape corner-shape field-sizing font-language-override interpolate-size line-clamp line-height-step math-depth math-shift math-style overlay position-anchor position-area position-try position-try-fallbacks position-try-order reading-flow reading-order scroll-initial-target scroll-marker-group scroll-target-group text-box text-box-edge text-box-trim text-wrap text-wrap-mode text-wrap-style view-transition-class view-transition-name white-space-collapse word-space-transform -webkit-appearance -webkit-line-clamp -webkit-text-fill-color -webkit-text-stroke -webkit-text-stroke-color -webkit-text-stroke-width -webkit-font-smoothing -moz-osx-font-smoothing --primary-color --secondary-color --surface-color --text-color --muted-color --border-color --accent-color --spacing --radius --shadow --font-size --content-width'
     ).split(/\s+/);
     cssProperties.push(...extendedCssProperties);
     cssProperties.splice(0, cssProperties.length, ...Array.from(new Set(cssProperties)));
@@ -2394,6 +2401,8 @@ input {
     Object.keys(extraCssValues).forEach(function (key) {
         cssValues[key] = (cssValues[key] || '') + ' ' + extraCssValues[key];
     });
+    // Preserve valid multi-token values instead of suggesting fragments such as 'only'.
+    cssValues['color-scheme'] = ['normal', 'light', 'dark', 'light dark', 'only light', 'only dark'];
 
 
     // Emmet-style CSS shorthands. Numeric forms such as m10 and p8-16 are resolved by IntelliSense.
@@ -2777,6 +2786,13 @@ input {
         'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
         'link', 'meta', 'param', 'source', 'track', 'wbr'
     ]);
+    const emptyForeignTags = new Set([
+        'path', 'circle', 'ellipse', 'rect', 'line', 'polyline', 'polygon', 'stop', 'feBlend',
+        'feColorMatrix', 'feComposite', 'feConvolveMatrix', 'feDisplacementMap', 'feDropShadow',
+        'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage',
+        'feMergeNode', 'feMorphology', 'feOffset', 'fePointLight', 'feDistantLight', 'feSpotLight',
+        'feTile', 'feTurbulence', 'mspace', 'mprescripts', 'mglyph', 'image'
+    ].map(function (tag) { return tag.toLowerCase(); }));
 
     const htmlAttributePriority = {
         a: ['href', 'target', 'rel', 'title'],
@@ -2817,6 +2833,8 @@ input {
         if (htmlVoidTags.has(normalizedTag)) {
             items.push({ label: 'Finish tag with >', insert: '>', description: 'Finish the void element', caret: 1 });
             items.push({ label: 'Finish tag with />', insert: ' />', description: 'Finish with a self-closing slash', caret: 3 });
+        } else if (emptyForeignTags.has(normalizedTag)) {
+            items.push({ label: 'Finish empty SVG/MathML element', insert: ' />', description: 'Close this empty foreign-content element', caret: 3 });
         } else {
             const insert = '>\n    \n</' + tag + '>';
             items.push({
@@ -2848,15 +2866,23 @@ input {
                 { label: 'header', insert: 'header', description: 'Header ID' },
                 { label: 'footer', insert: 'footer', description: 'Footer ID' }
             ]},
-            { pattern: /<([a-z][\w:-]*)\s+\btype\s*=\s*["']$/i, create: function (match) {
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\btype\s*=\s*["']$/i, create: function (match) {
                 const tag = match[1].toLowerCase();
-                const values = tag === 'input'
-                    ? 'text email password number checkbox radio submit button reset date datetime-local file hidden image month search tel time url week color range'.split(/\s+/)
-                    : (tag === 'button' ? ['button', 'submit', 'reset']
-                    : (tag === 'script' ? ['text/javascript', 'module', 'importmap', 'application/json']
-                    : (tag === 'link' ? ['stylesheet', 'icon', 'preconnect', 'modulepreload']
-                    : ['text/plain', 'application/json'])));
-                return values.map(function (value) { return { label: value, insert: value, description: 'Value for the ' + tag + ' type attribute' }; });
+                const valuesByTag = {
+                    input: 'text email password number checkbox radio submit button reset date datetime-local file hidden image month search tel time url week color range'.split(/\s+/),
+                    button: ['button', 'submit', 'reset'],
+                    script: ['text/javascript', 'module', 'importmap', 'application/json'],
+                    style: ['text/css'],
+                    link: ['text/css', 'image/svg+xml', 'image/png', 'image/jpeg', 'image/webp', 'application/manifest+json', 'application/pdf'],
+                    source: ['image/avif', 'image/webp', 'image/jpeg', 'image/png', 'video/mp4', 'audio/mpeg'],
+                    embed: ['application/pdf', 'image/svg+xml', 'image/png', 'image/jpeg', 'text/html'],
+                    object: ['application/pdf', 'image/svg+xml', 'image/png', 'image/jpeg', 'text/html'],
+                    a: ['text/plain', 'text/html', 'application/pdf', 'application/json', 'image/svg+xml'],
+                    area: ['text/plain', 'text/html', 'application/pdf', 'application/json']
+                };
+                return (valuesByTag[tag] || []).map(function (value) {
+                    return { label: value, insert: value, description: 'Value for the ' + tag + ' type attribute' };
+                });
             }},
             { pattern: /<[^<>]*\brole\s*=\s*["']$/i, items: [
                 { label: 'button', insert: 'button' }, { label: 'dialog', insert: 'dialog' },
@@ -2871,21 +2897,40 @@ input {
             { pattern: /<[^<>]*\baria-live\s*=\s*["']$/i, items: [
                 { label: 'polite', insert: 'polite' }, { label: 'assertive', insert: 'assertive' }, { label: 'off', insert: 'off' }
             ]},
-            { pattern: /<[^<>]*\btarget\s*=\s*["']$/i, items: [
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\btarget\s*=\s*["']$/i, create: function (match) {
+                const tag = match[1].toLowerCase();
+                const values = ['a', 'area', 'base', 'form'].includes(tag)
+                    ? ['_self', '_blank', '_parent', '_top'] : [];
+                return values.map(function (value) { return { label: value, insert: value }; });
+            }},
+            { pattern: /<(button|input)\b[^<>]*\bformtarget\s*=\s*["']$/i, items: [
                 { label: '_self', insert: '_self' }, { label: '_blank', insert: '_blank' },
                 { label: '_parent', insert: '_parent' }, { label: '_top', insert: '_top' }
             ]},
-            { pattern: /<[^<>]*\brel\s*=\s*["']$/i, items: [
-                { label: 'noopener noreferrer', insert: 'noopener noreferrer' },
-                { label: 'stylesheet', insert: 'stylesheet' }, { label: 'icon', insert: 'icon' },
-                { label: 'preconnect', insert: 'preconnect' }, { label: 'modulepreload', insert: 'modulepreload' }
-            ]},
-            { pattern: /<[^<>]*\bloading\s*=\s*["']$/i, items: [
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\brel\s*=\s*["']$/i, create: function (match) {
+                const tag = match[1].toLowerCase();
+                const valuesByTag = {
+                    link: ['stylesheet', 'icon', 'preconnect', 'preload', 'modulepreload', 'manifest', 'alternate', 'canonical', 'dns-prefetch', 'prefetch', 'next', 'prev'],
+                    a: ['noopener noreferrer', 'nofollow', 'external', 'help', 'license', 'next', 'prev', 'search', 'tag', 'author', 'opener'],
+                    area: ['noopener noreferrer', 'nofollow', 'external', 'help', 'license', 'next', 'prev', 'search'],
+                    form: ['noopener noreferrer', 'nofollow', 'external', 'help', 'license', 'next', 'prev', 'search', 'opener']
+                };
+                return (valuesByTag[tag] || []).map(function (value) {
+                    return { label: value, insert: value, description: 'Valid rel value for <' + tag + '>' };
+                });
+            }},
+            { pattern: /<(img|iframe)\b[^<>]*\bloading\s*=\s*["']$/i, items: [
                 { label: 'lazy', insert: 'lazy' }, { label: 'eager', insert: 'eager' }
             ]},
-            { pattern: /<[^<>]*\bmethod\s*=\s*["']$/i, items: [
-                { label: 'get', insert: 'get' }, { label: 'post', insert: 'post' }, { label: 'dialog', insert: 'dialog' }
-            ]},
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\b(method|formmethod)\s*=\s*["']$/i, create: function (match) {
+                const tag = match[1].toLowerCase();
+                const attribute = match[2].toLowerCase();
+                const isValid = (attribute === 'method' && tag === 'form') ||
+                    (attribute === 'formmethod' && ['button', 'input'].includes(tag));
+                return (isValid ? ['get', 'post', 'dialog'] : []).map(function (value) {
+                    return { label: value, insert: value, description: 'Valid ' + attribute + ' value' };
+                });
+            }},
             { pattern: /<[^<>]*\bdir\s*=\s*["']$/i, items: [
                 { label: 'ltr', insert: 'ltr' }, { label: 'rtl', insert: 'rtl' }, { label: 'auto', insert: 'auto' }
             ]},
@@ -2930,10 +2975,10 @@ input {
                 { label: 'multipart/form-data', insert: 'multipart/form-data' },
                 { label: 'text/plain', insert: 'text/plain' }
             ]},
-            { pattern: /<[^<>]*\bcrossorigin\s*=\s*["']$/i, items: [
+            { pattern: /<(audio|video|img|link|script)\b[^<>]*\bcrossorigin\s*=\s*["']$/i, items: [
                 { label: 'anonymous', insert: 'anonymous' }, { label: 'use-credentials', insert: 'use-credentials' }
             ]},
-            { pattern: /<[^<>]*\breferrerpolicy\s*=\s*["']$/i, items: [
+            { pattern: /<(a|area|img|iframe|link|script)\b[^<>]*\breferrerpolicy\s*=\s*["']$/i, items: [
                 { label: 'no-referrer', insert: 'no-referrer' },
                 { label: 'no-referrer-when-downgrade', insert: 'no-referrer-when-downgrade' },
                 { label: 'origin', insert: 'origin' },
@@ -2943,13 +2988,13 @@ input {
                 { label: 'strict-origin-when-cross-origin', insert: 'strict-origin-when-cross-origin' },
                 { label: 'unsafe-url', insert: 'unsafe-url' }
             ]},
-            { pattern: /<[^<>]*\b(?:fetchpriority)\s*=\s*["']$/i, items: [
+            { pattern: /<(img|link|script)\b[^<>]*\bfetchpriority\s*=\s*["']$/i, items: [
                 { label: 'high', insert: 'high' }, { label: 'low', insert: 'low' }, { label: 'auto', insert: 'auto' }
             ]},
-            { pattern: /<[^<>]*\bdecoding\s*=\s*["']$/i, items: [
+            { pattern: /<img\b[^<>]*\bdecoding\s*=\s*["']$/i, items: [
                 { label: 'async', insert: 'async' }, { label: 'sync', insert: 'sync' }, { label: 'auto', insert: 'auto' }
             ]},
-            { pattern: /<[^<>]*\bpreload\s*=\s*["']$/i, items: [
+            { pattern: /<(audio|video)\b[^<>]*\bpreload\s*=\s*["']$/i, items: [
                 { label: 'none', insert: 'none' }, { label: 'metadata', insert: 'metadata' }, { label: 'auto', insert: 'auto' }
             ]},
             { pattern: /<[^<>]*\b(?:draggable|spellcheck)\s*=\s*["']$/i, items: [
@@ -2959,16 +3004,20 @@ input {
                 { label: 'true', insert: 'true' }, { label: 'false', insert: 'false' },
                 { label: 'plaintext-only', insert: 'plaintext-only' }
             ]},
-            { pattern: /<[^<>]*\bscope\s*=\s*["']$/i, items: [
+            { pattern: /<th\b[^<>]*\bscope\s*=\s*["']$/i, items: [
                 { label: 'row', insert: 'row' }, { label: 'col', insert: 'col' },
                 { label: 'rowgroup', insert: 'rowgroup' }, { label: 'colgroup', insert: 'colgroup' }
             ]},
-            { pattern: /<[^<>]*\baccept\s*=\s*["']$/i, items: [
-                { label: 'image/*', insert: 'image/*' }, { label: 'audio/*', insert: 'audio/*' },
-                { label: 'video/*', insert: 'video/*' }, { label: '.pdf', insert: '.pdf' },
-                { label: '.png,.jpg,.jpeg', insert: '.png,.jpg,.jpeg' },
-                { label: '.txt,.csv', insert: '.txt,.csv' }
-            ]},
+            { pattern: /<input\b([^<>]*)\baccept\s*=\s*["']$/i, create: function (match) {
+                const typeMatch = match[1].match(/\btype\s*=\s*["']([^"']+)["']/i);
+                if (typeMatch && typeMatch[1].toLowerCase() !== 'file') return [];
+                return [
+                    { label: 'image/*', insert: 'image/*' }, { label: 'audio/*', insert: 'audio/*' },
+                    { label: 'video/*', insert: 'video/*' }, { label: '.pdf', insert: '.pdf' },
+                    { label: '.png,.jpg,.jpeg', insert: '.png,.jpg,.jpeg' },
+                    { label: '.txt,.csv', insert: '.txt,.csv' }
+                ];
+            }},
             { pattern: /<[^<>]*\binputmode\s*=\s*["']$/i, items: [
                 { label: 'none', insert: 'none' }, { label: 'text', insert: 'text' },
                 { label: 'decimal', insert: 'decimal' }, { label: 'numeric', insert: 'numeric' },
@@ -2981,15 +3030,17 @@ input {
                 { label: 'previous', insert: 'previous' }, { label: 'search', insert: 'search' },
                 { label: 'send', insert: 'send' }
             ]},
-            { pattern: /<[^<>]*\bcapture\s*=\s*["']$/i, items: [
-                { label: 'user', insert: 'user' }, { label: 'environment', insert: 'environment' }
-            ]},
-            { pattern: /<[^<>]*\bkind\s*=\s*["']$/i, items: [
+            { pattern: /<input\b([^<>]*)\bcapture\s*=\s*["']$/i, create: function (match) {
+                const typeMatch = match[1].match(/\btype\s*=\s*["']([^"']+)["']/i);
+                if (typeMatch && typeMatch[1].toLowerCase() !== 'file') return [];
+                return [{ label: 'user', insert: 'user' }, { label: 'environment', insert: 'environment' }];
+            }},
+            { pattern: /<track\b[^<>]*\bkind\s*=\s*["']$/i, items: [
                 { label: 'subtitles', insert: 'subtitles' }, { label: 'captions', insert: 'captions' },
                 { label: 'descriptions', insert: 'descriptions' }, { label: 'chapters', insert: 'chapters' },
                 { label: 'metadata', insert: 'metadata' }
             ]},
-            { pattern: /<[^<>]*\bshape\s*=\s*["']$/i, items: [
+            { pattern: /<area\b[^<>]*\bshape\s*=\s*["']$/i, items: [
                 { label: 'rect', insert: 'rect' }, { label: 'circle', insert: 'circle' },
                 { label: 'poly', insert: 'poly' }, { label: 'default', insert: 'default' }
             ]},
@@ -3045,22 +3096,38 @@ input {
             },
             {
                 pattern: /(?:^|[\n;{]\s*)(width|height|max-width|min-width|max-height|min-height)\s*$/i,
-                items: [
-                    { label: ': 100%;', insert: ': 100%;', description: 'Fill the available parent size' },
-                    { label: ': auto;', insert: ': auto;', description: 'Let the browser calculate the size' },
-                    { label: ': fit-content;', insert: ': fit-content;', description: 'Fit the content within constraints' },
-                    { label: ': 100dvh;', insert: ': 100dvh;', description: 'Use the dynamic viewport height unit' },
-                    { label: ': min(100%, 60rem);', insert: ': min(100%, 60rem);', description: 'Use a responsive maximum size' }
-                ]
+                create: function (match) {
+                    const property = match[1].toLowerCase();
+                    const valuesByProperty = {
+                        width: [': 100%;', ': auto;', ': fit-content;', ': 100dvw;', ': min(100%, 60rem);'],
+                        height: [': 100%;', ': auto;', ': fit-content;', ': 100dvh;', ': min(100%, 40rem);'],
+                        'min-width': [': 0;', ': auto;', ': min-content;', ': fit-content;', ': 100%;'],
+                        'min-height': [': 0;', ': auto;', ': min-content;', ': fit-content;', ': 100dvh;'],
+                        'max-width': [': none;', ': fit-content;', ': 100%;', ': min(100%, 60rem);'],
+                        'max-height': [': none;', ': fit-content;', ': 100%;', ': 100dvh;']
+                    };
+                    return (valuesByProperty[property] || []).map(function (value) {
+                        return { label: value, insert: value, description: 'Common valid value for ' + property };
+                    });
+                }
             },
             {
-                pattern: /(?:^|[\n;{]\s*)(margin|padding|gap|row-gap|column-gap)\s*$/i,
+                pattern: /(?:^|[\n;{]\s*)margin\s*$/i,
                 items: [
                     { label: ': 0;', insert: ': 0;', description: 'Remove spacing' },
                     { label: ': 0.5rem;', insert: ': 0.5rem;', description: 'Compact spacing' },
                     { label: ': 1rem;', insert: ': 1rem;', description: 'Standard spacing' },
                     { label: ': 1.5rem;', insert: ': 1.5rem;', description: 'Larger spacing' },
-                    { label: ': auto;', insert: ': auto;', description: 'Automatic spacing (where supported)' }
+                    { label: ': auto;', insert: ': auto;', description: 'Let the browser distribute automatic margins' }
+                ]
+            },
+            {
+                pattern: /(?:^|[\n;{]\s*)(padding|gap|row-gap|column-gap)\s*$/i,
+                items: [
+                    { label: ': 0;', insert: ': 0;', description: 'Remove spacing' },
+                    { label: ': 0.5rem;', insert: ': 0.5rem;', description: 'Compact spacing' },
+                    { label: ': 1rem;', insert: ': 1rem;', description: 'Standard spacing' },
+                    { label: ': 1.5rem;', insert: ': 1.5rem;', description: 'Larger spacing' }
                 ]
             },
             {
@@ -3333,7 +3400,7 @@ input {
             { pattern: /\bJSON$/i, items: [
                 { label: '.parse(text)', insert: '.parse(text)' }, { label: '.stringify(value, null, 2)', insert: '.stringify(value, null, 2)' }
             ]},
-            { pattern: /\b(?:map|filter|forEach|find|some|every)$/i, items: [
+            { pattern: /\.(?:map|filter|forEach|find|some|every)$/i, items: [
                 { label: '((item) => item)', insert: '((item) => item)', description: 'Pass a callback function', caret: 2 },
                 { label: '((item) => item.property)', insert: '((item) => item.property)', description: 'Access an item property', caret: 2 }
             ]},
@@ -3527,7 +3594,7 @@ input {
         { pattern: /\bDate$/i, items: [
             { label: '.now()', insert: '.now()', description: 'Get the current timestamp' },
             { label: '.parse(dateString)', insert: '.parse(dateString)', description: 'Parse a date string' },
-            { label: '()', insert: '()', description: 'Create the current date object' }
+            { label: '()', insert: '()', description: 'Call Date() to get the current date and time as a string' }
         ]},
         { pattern: /\bRegExp$/i, items: [
             { label: '(pattern, flags)', insert: '(pattern, flags)', description: 'Create a regular expression' }
@@ -5465,9 +5532,8 @@ function addBox() {
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];
-                    const common = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'transparent', 'currentColor'];
-                    const functions = data.cssFunctions || [];
-                    return filterList(values.concat(common, functions), ctx.word);
+                    const common = ['inherit', 'initial', 'unset', 'revert', 'revert-layer', 'var(--custom-property)'];
+                    return filterList(values.concat(common), ctx.word);
                 }
                 if (ctx.kind === 'jsMember') {
                     const members = (data.jsMembers || {})[ctx.root] || [];

@@ -190,6 +190,31 @@
         { label: 'class', insert: 'class Name {\n    constructor(options = {}) {\n        this.options = options;\n    }\n}', description: 'ES class with constructor', caret: 6 }
     ];
     snippets.js.push(...extraJsSnippets);
+
+    // Short triggers inspired by widely used editor snippet conventions.
+    // Labels start with the trigger so the existing prefix filter can find them.
+    snippets.js.push(
+        { label: 'clg -> console.log()', insert: 'console.log(value);', description: 'Shortcut: log a value', caret: 12 },
+        { label: 'cer -> console.error()', insert: 'console.error(error);', description: 'Shortcut: log an error', caret: 14 },
+        { label: 'cwarn -> console.warn()', insert: 'console.warn(message);', description: 'Shortcut: log a warning', caret: 13 },
+        { label: 'qs -> querySelector()', insert: "document.querySelector('.selector')", description: 'Shortcut: select one DOM element', caret: 26 },
+        { label: 'qsa -> querySelectorAll()', insert: "document.querySelectorAll('.selector')", description: 'Shortcut: select all matching elements', caret: 29 },
+        { label: 'gid -> getElementById()', insert: "document.getElementById('id')", description: 'Shortcut: select an element by ID', caret: 24 },
+        { label: 'addel -> addEventListener()', insert: "element.addEventListener('click', (event) => {\n    \n});", description: 'Shortcut: create an event listener', caret: 43 },
+        { label: 'afn -> async arrow function', insert: 'const name = async (value) => {\n    \n};', description: 'Shortcut: create an async arrow function', caret: 31 },
+        { label: 'fn -> function declaration', insert: 'function name(value) {\n    \n}', description: 'Shortcut: create a function', caret: 18 },
+        { label: 'forof -> for...of loop', insert: 'for (const item of items) {\n    \n}', description: 'Shortcut: loop over iterable values', caret: 29 },
+        { label: 'iife -> immediately invoked function', insert: '(() => {\n    \n})();', description: 'Shortcut: create an IIFE', caret: 8 },
+        { label: 'tc -> try/catch', insert: 'try {\n    \n} catch (error) {\n    console.error(error);\n}', description: 'Shortcut: handle an error', caret: 8 },
+        { label: 'pall -> Promise.all()', insert: 'const results = await Promise.all([firstTask(), secondTask()]);', description: 'Shortcut: await multiple tasks', caret: 42 },
+        { label: 'jparse -> JSON.parse()', insert: "JSON.parse(text)", description: 'Shortcut: parse JSON text', caret: 11 },
+        { label: 'jstr -> JSON.stringify()', insert: 'JSON.stringify(value, null, 2)', description: 'Shortcut: format a value as JSON', caret: 19 },
+        { label: 'ls -> localStorage.setItem()', insert: "localStorage.setItem('key', JSON.stringify(value));", description: 'Shortcut: save a JSON value in local storage', caret: 24 },
+        { label: 'raf -> requestAnimationFrame()', insert: 'requestAnimationFrame((timestamp) => {\n    \n});', description: 'Shortcut: schedule work before repaint', caret: 34 },
+        { label: 'imp -> import named export', insert: "import { name } from './module.js';", description: 'Shortcut: import a named export', caret: 9 },
+        { label: 'exp -> export named function', insert: 'export function name(value) {\n    return value;\n}', description: 'Shortcut: export a function', caret: 21 }
+    );
+
     snippets.js.push(
         { label: 'promise-all', insert: 'const results = await Promise.all([\n    firstTask(),\n    secondTask()\n]);', description: 'Run independent asynchronous tasks together', caret: 40 },
         { label: 'form-validation', insert: 'form.addEventListener(\'submit\', (event) => {\n    event.preventDefault();\n    if (!form.checkValidity()) {\n        form.reportValidity();\n        return;\n    }\n    \n});', description: 'Validate a form before handling its data', caret: 163 },

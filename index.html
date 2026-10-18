@@ -329,13 +329,13 @@
                                 <div>
                                     <p class="si-eyebrow">SAFE CODE INTAKE</p>
                                     <h2>Smart Import</h2>
-                                    <p class="si-subtitle">Paste a mixed HTML, CSS, and JavaScript document. Review the separated code before applying it to your project.</p>
+                                    <p class="si-subtitle" lang="fa" dir="rtl">کد ترکیبی HTML، CSS و JavaScript را وارد کن. پیش از اعمال خروجی‌ها، گزارش‌ها و هر سه بخش را بررسی کن.</p>
                                 </div>
                                 <span class="si-local-badge">● Local processing</span>
                             </header>
-                            <div class="si-notice" role="note">
-                                <strong>Nothing is applied automatically.</strong>
-                                The analyzer runs in this browser. Choose which results to replace, review them first, and confirm before existing files are changed.
+                            <div class="si-notice" role="note" lang="fa" dir="rtl">
+                                <strong>هیچ تغییری به‌صورت خودکار در فایل‌های اصلی اعمال نمی‌شود.</strong>
+                                تحلیل در همین مرورگر انجام می‌شود. بخش‌های موردنظر را انتخاب کن؛ پس از بررسی خروجی و تأیید نهایی، فایل‌های انتخاب‌شده جایگزین می‌شوند.
                             </div>
                             <section class="si-source-card" aria-labelledby="siSourceTitle">
                                 <div class="si-section-heading">
@@ -356,7 +356,8 @@
                                         <input type="file" id="siFileInput" accept=".html,.htm,.xhtml,.css,.js,.mjs,.txt,text/html,text/css,text/javascript,text/plain" hidden>
                                     </div>
                                 </div>
-                                <p class="si-small-note">For separate files, import them one at a time. A complete HTML file can contain both embedded style and script blocks.</p>
+                                <p class="si-small-note" lang="fa" dir="rtl">اگر HTML، CSS و JavaScript در فایل‌های جدا هستند، هر فایل را جداگانه وارد کن. یک فایل HTML کامل می‌تواند CSS و JavaScript داخلی هم داشته باشد.</p>
+                                <p class="si-small-note si-mode-help" lang="fa" dir="rtl"><strong>تفاوت دو دکمه:</strong> Analyze code فقط بررسی و گزارش می‌دهد. Clean &amp; analyze علاوه بر بررسی، فقط بلوک‌های CSS و JavaScript کاملاً یکسان را حذف می‌کند؛ کدهای مشابه اما متفاوت خودکار حذف یا ادغام نمی‌شوند.</p>
                             </section>
                             <section class="si-results" id="siResults" aria-labelledby="siResultsTitle" hidden>
                                 <div class="si-results-heading">
@@ -403,7 +404,7 @@
                                 <footer class="si-apply-footer">
                                     <div>
                                         <strong>3. Apply the selected sections</strong>
-                                        <p>Only checked languages with non-empty code are sent to the editor. Other files are left unchanged.</p>
+                                        <p lang="fa" dir="rtl">فقط بخش‌های تیک‌خورده و غیرخالی به ویرایشگر فرستاده می‌شوند؛ فایل‌های دیگر دست‌نخورده می‌مانند. اگر تعارض مهم JavaScript شناسایی شود، تیک اعمال JS به‌صورت پیش‌فرض برداشته می‌شود تا ابتدا کد را اصلاح کنی.</p>
                                         <p id="siActionStatus" class="si-action-status" role="status" aria-live="polite"></p>
                                     </div>
                                     <button type="button" class="si-button si-apply-button" id="siApply">Apply selected code to editor</button>

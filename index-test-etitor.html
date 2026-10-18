@@ -1881,6 +1881,30 @@ input {
     .si-apply-button { width:100%; }
 }
 @media (prefers-reduced-motion:reduce) { .smart-import-panel * { transition:none !important; scroll-behavior:auto !important; } }
+
+/* Persian diagnostic copy is scoped to Smart Import; control labels/buttons remain English. */
+.smart-import-panel [lang="fa"][dir="rtl"] { direction: rtl; text-align: right; unicode-bidi: plaintext; }
+.smart-import-panel .si-subtitle,
+.smart-import-panel .si-notice,
+.smart-import-panel .si-small-note,
+.smart-import-panel .si-summary,
+.smart-import-panel .si-notes,
+.smart-import-panel .si-action-status { direction: rtl; text-align: right; line-height: 1.9; }
+.si-mode-help { margin-top: 7px; padding: 9px 11px; border: 1px solid #344e63; border-radius: 8px; color: #c9d9e7; background: rgba(20,38,54,.62); }
+.si-notes { direction: rtl; }
+.si-note { direction: rtl; text-align: right; line-height: 1.9; }
+.si-note.si-note-critical { border-color: #a64752; color: #ffd6d9; background: rgba(135,35,48,.24); }
+.si-note.si-note-critical::before { content: "⛔ "; }
+.si-note.si-note-ok { direction: rtl; }
+.si-stat span { direction: rtl; text-align: right; line-height: 1.7; }
+.si-stat strong { overflow-wrap: anywhere; }
+.si-apply-footer p[lang="fa"] { direction: rtl; text-align: right; line-height: 1.9; }
+@media (max-width:620px) {
+    .si-mode-help { width: 100%; }
+    .si-summary { text-align: right; }
+}
+
+
 </style>
 </head>
 <body>
@@ -2205,13 +2229,13 @@ input {
                                 <div>
                                     <p class="si-eyebrow">SAFE CODE INTAKE</p>
                                     <h2>Smart Import</h2>
-                                    <p class="si-subtitle">Paste a mixed HTML, CSS, and JavaScript document. Review the separated code before applying it to your project.</p>
+                                    <p class="si-subtitle" lang="fa" dir="rtl">کد ترکیبی HTML، CSS و JavaScript را وارد کن. پیش از اعمال خروجی‌ها، گزارش‌ها و هر سه بخش را بررسی کن.</p>
                                 </div>
                                 <span class="si-local-badge">● Local processing</span>
                             </header>
-                            <div class="si-notice" role="note">
-                                <strong>Nothing is applied automatically.</strong>
-                                The analyzer runs in this browser. Choose which results to replace, review them first, and confirm before existing files are changed.
+                            <div class="si-notice" role="note" lang="fa" dir="rtl">
+                                <strong>هیچ تغییری به‌صورت خودکار در فایل‌های اصلی اعمال نمی‌شود.</strong>
+                                تحلیل در همین مرورگر انجام می‌شود. بخش‌های موردنظر را انتخاب کن؛ پس از بررسی خروجی و تأیید نهایی، فایل‌های انتخاب‌شده جایگزین می‌شوند.
                             </div>
                             <section class="si-source-card" aria-labelledby="siSourceTitle">
                                 <div class="si-section-heading">
@@ -2232,7 +2256,8 @@ input {
                                         <input type="file" id="siFileInput" accept=".html,.htm,.xhtml,.css,.js,.mjs,.txt,text/html,text/css,text/javascript,text/plain" hidden>
                                     </div>
                                 </div>
-                                <p class="si-small-note">For separate files, import them one at a time. A complete HTML file can contain both embedded style and script blocks.</p>
+                                <p class="si-small-note" lang="fa" dir="rtl">اگر HTML، CSS و JavaScript در فایل‌های جدا هستند، هر فایل را جداگانه وارد کن. یک فایل HTML کامل می‌تواند CSS و JavaScript داخلی هم داشته باشد.</p>
+                                <p class="si-small-note si-mode-help" lang="fa" dir="rtl"><strong>تفاوت دو دکمه:</strong> Analyze code فقط بررسی و گزارش می‌دهد. Clean &amp; analyze علاوه بر بررسی، فقط بلوک‌های CSS و JavaScript کاملاً یکسان را حذف می‌کند؛ کدهای مشابه اما متفاوت خودکار حذف یا ادغام نمی‌شوند.</p>
                             </section>
                             <section class="si-results" id="siResults" aria-labelledby="siResultsTitle" hidden>
                                 <div class="si-results-heading">
@@ -2279,7 +2304,7 @@ input {
                                 <footer class="si-apply-footer">
                                     <div>
                                         <strong>3. Apply the selected sections</strong>
-                                        <p>Only checked languages with non-empty code are sent to the editor. Other files are left unchanged.</p>
+                                        <p lang="fa" dir="rtl">فقط بخش‌های تیک‌خورده و غیرخالی به ویرایشگر فرستاده می‌شوند؛ فایل‌های دیگر دست‌نخورده می‌مانند. اگر تعارض مهم JavaScript شناسایی شود، تیک اعمال JS به‌صورت پیش‌فرض برداشته می‌شود تا ابتدا کد را اصلاح کنی.</p>
                                         <p id="siActionStatus" class="si-action-status" role="status" aria-live="polite"></p>
                                     </div>
                                     <button type="button" class="si-button si-apply-button" id="siApply">Apply selected code to editor</button>
@@ -4895,18 +4920,18 @@ function addBox() {
         window.HTMLCSJSEditor = window.HTMLCSJSEditor || {};
         window.HTMLCSJSEditor.applyImportedCode = function(codeByLanguage) {
             if (!codeByLanguage || typeof codeByLanguage !== 'object') {
-                return { applied: [], saved: false, error: 'No valid code sections were provided.' };
+                return { applied: [], saved: false, error: 'بخش کد معتبری برای اعمال ارسال نشد.' };
             }
             const requested = ['html', 'css', 'js'].filter(function(lang) {
                 return Object.prototype.hasOwnProperty.call(codeByLanguage, lang) &&
                     typeof codeByLanguage[lang] === 'string' && codeByLanguage[lang].trim().length > 0;
             });
-            if (!requested.length) return { applied: [], saved: false, error: 'Choose at least one non-empty section to apply.' };
+            if (!requested.length) return { applied: [], saved: false, error: 'برای اعمال، دست‌کم یک بخش غیرخالی انتخاب کن.' };
 
             const labels = { html: 'HTML', css: 'CSS', js: 'JavaScript' };
             const targetList = requested.map(function(lang) { return labels[lang]; }).join(', ');
-            if (!window.confirm('Smart Import will replace the current file for: ' + targetList +
-                '. Other files will remain unchanged. Continue?')) {
+            if (!window.confirm('ورودی هوشمند فایل فعلی این بخش‌ها را جایگزین می‌کند: ' + targetList +
+                '. سایر فایل‌ها بدون تغییر می‌مانند. ادامه می‌دهی؟')) {
                 return { applied: [], saved: false, cancelled: true };
             }
 
@@ -4944,8 +4969,8 @@ function addBox() {
             updatePreviewNow();
             showToast(
                 saved
-                    ? '✅ Smart Import applied to ' + applied.map(function(lang) { return labels[lang]; }).join(', ')
-                    : '⚠ Code was applied for this session, but browser storage could not save it.',
+                    ? '✅ ورودی هوشمند در بخش‌های ' + applied.map(function(lang) { return labels[lang]; }).join('، ') + ' اعمال شد.'
+                    : '⚠ کد برای این نشست اعمال شد، اما مرورگر نتوانست تغییرات را ذخیره کند.' ,
                 saved ? 'success' : 'error'
             );
             return { applied: applied, saved: saved };
@@ -7648,6 +7673,10 @@ function addBox() {
         css:  { output: byId('siResultCss'),  checkbox: byId('siApplyCss'),  count: byId('siCountCss') },
         js:   { output: byId('siResultJs'),   checkbox: byId('siApplyJs'),   count: byId('siCountJs') }
     };
+
+    [summary, actionStatus].forEach((element) => {
+        if (element) { element.lang = 'fa'; element.dir = 'rtl'; }
+    });
 
     function countMatches(source, regex) { return (source.match(regex) || []).length; }
 

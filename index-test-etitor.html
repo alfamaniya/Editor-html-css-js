@@ -2111,6 +2111,36 @@ input {
         if (key !== tag) delete htmlAttrsByTag[tag];
     });
 
+
+    // A practical subset of Emmet-style HTML abbreviations; aliases expand to real markup.
+    const htmlDocumentTemplate = '<!doctype html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title></title>\n</head>\n<body>\n    \n</body>\n</html>';
+    const htmlAbbreviations = [
+        { trigger: '!', label: '! -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
+        { trigger: 'doc', label: 'doc -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
+        { trigger: 'html:5', label: 'html:5 -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
+        { trigger: 'meta:vp', label: 'meta:vp -> viewport meta', insert: '<meta name="viewport" content="width=device-width, initial-scale=1.0">', description: 'Insert a responsive viewport meta tag' },
+        { trigger: 'meta:utf', label: 'meta:utf -> UTF-8 meta', insert: '<meta charset="UTF-8">', description: 'Declare UTF-8 character encoding' },
+        { trigger: 'link:css', label: 'link:css -> stylesheet link', insert: '<link rel="stylesheet" href="style.css">', description: 'Link a CSS stylesheet' },
+        { trigger: 'script:src', label: 'script:src -> deferred script', insert: '<script src="script.js" defer><\/script>', description: 'Link a deferred external script' },
+        { trigger: 'bq', label: 'bq -> blockquote', insert: '<blockquote></blockquote>', description: 'Insert a block quotation', caret: 12 },
+        { trigger: 'btn', label: 'btn -> button', insert: '<button type="button"></button>', description: 'Insert a semantic button', caret: 21 },
+        { trigger: 'inp', label: 'inp -> text input', insert: '<input type="text" name="" id="">', description: 'Insert a text input', caret: 24 },
+        { trigger: 'a:link', label: 'a:link -> anchor', insert: '<a href=""></a>', description: 'Insert a link with an href', caret: 9 },
+        { trigger: 'img', label: 'img -> accessible image', insert: '<img src="" alt="">', description: 'Insert an image with source and alt text', caret: 10 },
+        { trigger: 'ul+', label: 'ul+ -> unordered list', insert: '<ul>\n    <li></li>\n</ul>', description: 'Insert a list with one item', caret: 10 },
+        { trigger: 'ol+', label: 'ol+ -> ordered list', insert: '<ol>\n    <li></li>\n</ol>', description: 'Insert an ordered list with one item', caret: 10 },
+        { trigger: 'dl+', label: 'dl+ -> description list', insert: '<dl>\n    <dt></dt>\n    <dd></dd>\n</dl>', description: 'Insert a description list', caret: 10 },
+        { trigger: 'table+', label: 'table+ -> basic table', insert: '<table>\n    <thead>\n        <tr><th scope="col"></th></tr>\n    </thead>\n    <tbody>\n        <tr><td></td></tr>\n    </tbody>\n</table>', description: 'Insert a table with header and body', caret: 39 },
+        { trigger: 'form:get', label: 'form:get -> GET form', insert: '<form action="" method="get">\n    <label for="field"></label>\n    <input id="field" name="field" type="text">\n    <button type="submit">Submit</button>\n</form>', description: 'Insert a GET form with a label and submit button', caret: 47 },
+        { trigger: 'form:post', label: 'form:post -> POST form', insert: '<form action="" method="post">\n    <label for="field"></label>\n    <input id="field" name="field" type="text">\n    <button type="submit">Submit</button>\n</form>', description: 'Insert a POST form with a label and submit button', caret: 48 },
+        { trigger: '.container', label: '.container -> div class', insert: '<div class="container"></div>', description: 'Create a div with a container class', caret: 22 },
+        { trigger: '#app', label: '#app -> app root', insert: '<div id="app"></div>', description: 'Create an application root element', caret: 14 },
+        { trigger: 'div.card', label: 'div.card -> card container', insert: '<div class="card"></div>', description: 'Create a card container', caret: 19 },
+        { trigger: 'ul>li*3', label: 'ul>li*3 -> three list items', insert: '<ul>\n    <li></li>\n    <li></li>\n    <li></li>\n</ul>', description: 'Create an unordered list with three items', caret: 10 },
+        { trigger: 'video:controls', label: 'video:controls -> video element', insert: '<video controls src=""></video>', description: 'Insert a video control element', caret: 23 },
+        { trigger: 'audio:controls', label: 'audio:controls -> audio element', insert: '<audio controls src=""></audio>', description: 'Insert an audio control element', caret: 23 }
+    ];
+
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
         symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
             html: [
@@ -2127,6 +2157,7 @@ input {
             ]
         }),
 
+        htmlAbbreviations,
         htmlTags: Array.from(new Set(htmlTags)),
         htmlAttributes,
         htmlAttrsByTag

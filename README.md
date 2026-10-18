@@ -8,7 +8,8 @@
 │   └── workflows/
 │       └── build-test-editor.yml  — گردش‌کار آزمون و بررسی
 ├── scripts/
-│   └── build-test-editor.mjs      — اسکریپت آزمون پروژه
+│   ├── build-test-editor.mjs      — ساخت نسخه تک‌فایلی
+│   └── test-smart-import.mjs      — آزمون یکپارچه بازیابی ورودی هوشمند
 ├── tools/
 │   └── build-single-file.js       — ساخت نسخهٔ تک‌فایلی
 ├── index.html                    — صفحه و رابط اصلی ویرایشگر
@@ -73,7 +74,7 @@ Use **Smart Import** to paste a full HTML document or open a text-based `.html`,
 
 Review and edit the three extracted outputs, select only the languages you intend to apply, and confirm the Persian confirmation prompt before changing the editor. The current file selected for each chosen language is replaced; other project files are kept. If that language has no file yet, a new file is created. The live preview is refreshed after applying. External stylesheet links, the document's first `<base>` tag, and external script tags are preserved in the HTML output so referenced dependencies can still load in the preview. Their remote files are not downloaded or embedded; relative asset paths may still need the original site's base URL or manual adjustment.
 
-The import workflow runs in the browser and does not upload the pasted code. It remains a conservative, text-based recovery and diagnostic tool—not a full standards-compliant HTML/CSS/JavaScript parser or a guarantee of runtime correctness. The JavaScript declaration scan is heuristic and cannot detect every syntax/runtime error; some unusual valid constructs may need manual review. Always inspect the output before applying it, especially when the source contains multiple conflicting document versions. The standalone test editor is generated from the same source files by `node scripts/build-test-editor.mjs`.
+The import workflow runs in the browser and does not upload the pasted code. It remains a conservative, text-based recovery and diagnostic tool—not a full standards-compliant HTML/CSS/JavaScript parser or a guarantee of runtime correctness. The JavaScript declaration scan is heuristic and cannot detect every syntax/runtime error; some unusual valid constructs may need manual review. Always inspect the output before applying it, especially when the source contains multiple conflicting document versions. The standalone test editor is generated from the same source files by `node scripts/build-test-editor.mjs`. Run `node scripts/test-smart-import.mjs` to execute the dependency-free integration test for nested document recovery, CSS recovery, repeated top-level declarations, and the explicit latest-JavaScript-version recovery action. GitHub Actions runs this test before building the standalone editor.
 
 ## Starter example
 
@@ -87,6 +88,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
 | `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, and the narrow Smart Import bridge |
 | `smart-import.js` | Smart Import extraction, malformed/nested document recovery, top-level JavaScript conflict diagnostics, optional latest-version recovery, Persian findings/statuses, exact-duplicate cleanup, and selective application |
+| `scripts/test-smart-import.mjs` | Dependency-free integration test for malformed/nested document recovery, declaration conflicts, and manual latest-JavaScript-version selection |
 | `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |
 | `github-update.js` | Fetches the latest `main` commit timestamp from GitHub and updates the status strip |
 | `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |

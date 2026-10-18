@@ -189,9 +189,9 @@
         if (property.startsWith('--')) return ':root { ' + property + ': initial; }';
         const values = asArray((data.cssValues || {})[property]);
         const value = values.length ? completeCssValue(values[0]) : 'initial';
-        return '.example {\\n    ' + property + ': ' + value + ';\\n}';
+        return '.example {\n    ' + property + ': ' + value + ';\n}';
     }
-    function cssValueExample(property, value) { return '.example {\\n    ' + property + ': ' + completeCssValue(value) + ';\\n}'; }
+    function cssValueExample(property, value) { return '.example {\n    ' + property + ': ' + completeCssValue(value) + ';\n}'; }
     function atRuleExample(name) {
         if (name === '@charset') return '@charset "UTF-8";';
         if (name === '@import') return '@import url("./styles.css");';
@@ -200,19 +200,19 @@
         if (name === '@property') return '@property --accent { syntax: "<color>"; inherits: false; initial-value: rebeccapurple; }';
         if (name === '@container') return '@container (min-width: 400px) { .card { display: grid; } }';
         if (name === '@scope') return '@scope (.card) { .title { color: rebeccapurple; } }';
-        return name + ' (max-width: 768px) {\\n    .example { color: #2563eb; }\\n}';
+        return name + ' (max-width: 768px) {\n    .example { color: #2563eb; }\n}';
     }
     function pseudoExample(name, isElement) {
         let selector = String(name).replace(/\(\)/g, isElement ? '(.example)' : '(2)');
         if (isElement) selector = selector.replace(/^([^:])/, '::$1');
-        return '.example' + (isElement ? '' : ':') + selector + ' {\\n    color: #2563eb;\\n}';
+        return '.example' + (isElement ? '' : ':') + selector + ' {\n    color: #2563eb;\n}';
     }
     function jsWordExample(name) {
         const word = String(name);
         const samples = {
             const:'const value = 1;', let:'let value = 1;', var:'var value = 1;',
             function:'function example() { return true; }',
-            if:'if (condition) {\\n    console.log("matched");\\n}', return:'return value;',
+            if:'if (condition) {\n    console.log("matched");\n}', return:'return value;',
             await:'const data = await fetch("/api/data");', throw:'throw new Error("Something went wrong");',
             try:'try { runTask(); } catch (error) { console.error(error); }', new:'const map = new Map();',
             document:'document.querySelector("#app");', window:'window.location.href;', console:'console.log("Hello");',
@@ -221,7 +221,7 @@
             localStorage:'localStorage.setItem("key", "value");'
         };
         if (samples[word]) return samples[word];
-        if (/^[A-Z_$][\\w$]*$/.test(word)) return 'const value = ' + word + ';';
+        if (/^[A-Z_$][\w$]*$/.test(word)) return 'const value = ' + word + ';';
         return 'const ' + word.replace(/[^a-zA-Z0-9_$]/g, '_') + ' = "example";';
     }
     function symbolExample(raw, kind) {
@@ -237,7 +237,7 @@
         };
         if (samples[label]) return samples[label];
         if (kind === 'html-symbol') return String(raw.prefix || '') + String(raw.suffix || '');
-        if (kind === 'css-symbol') return '.example {\\n    ' + String(raw.prefix || '') + String(raw.suffix || '') + '\\n}';
+        if (kind === 'css-symbol') return '.example {\n    ' + String(raw.prefix || '') + String(raw.suffix || '') + '\n}';
         if (kind === 'js-symbol') return String(raw.prefix || '') + 'value' + String(raw.suffix || '');
         return String(raw.insert || label);
     }

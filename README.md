@@ -309,12 +309,19 @@ Review date: 2026-10-16.
 - Re-checked markers for the corrected autocomplete pattern, race-safe download flow, bundle CSS/JS links, recovery flow, safe generated comment labels, native file-open buttons, responsive breakpoint alignment, and next-word continuation hooks.
 - **Not performed:** interactive browser testing, cross-browser testing, or automated end-to-end testing. These should be completed before treating the changes as fully verified in runtime conditions.
 
+### Live Word Tree (2026-10-18)
+
+- Added the **Word Tree** button beside Help. Its entries are rebuilt from the currently loaded `EDITOR_INTELLISENSE_DATA` banks, including HTML elements and attributes, CSS properties and values, JavaScript words and members, snippets, quick symbols, and next-word continuation rules.
+- The tree supports search, language filtering, expand/collapse controls, and clickable entries. Each entry opens a detail window with a Persian explanation and a short code example; interface labels and controls stay in English.
+- Added `word-tree.js` to `index.html` and both standalone-build scripts so the single-file test editor includes the same feature. No separate hard-coded vocabulary copy is maintained.
+- Syntax validation passed for the controller, and a DOM smoke test successfully rendered 5,127 clickable entries across 457 branches and opened a Persian item explanation with an example. Full browser and cross-browser testing remains outstanding.
+
 ### JavaScript suggestion-bank expansion (2026-10-18)
 
 - Parsed all five application/data JavaScript files without executing the editor application: **pass**.
 - Initialized all four completion-data scripts against a test `window` object: **pass**.
 - Verified loaded JavaScript completion data: 582 words, 94 member roots, 1,304 member names, and 49 JavaScript snippets after the abbreviation expansion.
-- Current next-word data has 123 rules (37 HTML, 32 CSS, 54 JavaScript) and 390 explicit candidate items; the historical JavaScript-only expansion initially introduced 54 JavaScript rules.
+- Current next-word data has 125 rules (38 HTML, 33 CSS, 54 JavaScript) and 373 explicit candidate items; the historical JavaScript-only expansion initially introduced 54 JavaScript rules.
 - Exercised representative JavaScript continuations for `switch`, `while`, `import`, `export`, `Math`, `Object`, `URL`, `localStorage`, `navigator`, `crypto`, and `requestAnimationFrame`: **pass**.
 - Checked caret offsets in static next-word candidates and code snippets: **no out-of-range offsets found**.
 - Verified case-sensitive JavaScript names such as `Map`/`map` and `Set`/`set` are preserved as separate completion entries.
@@ -325,7 +332,7 @@ Review date: 2026-10-16.
 - Expanded HTML contextual rules for ARIA states, `autocomplete`, form encodings, `crossorigin`, referrer policy, fetch priority, image decoding, media preload, content editing, table scope, file accept filters, virtual-keyboard input mode, enter-key hints, capture, media track kinds, and related enumerated values.
 - Expanded CSS contextual rules for common value vocabularies such as overflow, flex wrapping, text alignment, font weight, text decoration, borders, object/background sizing, cursor, text wrapping, grid placement, typography, animation, transforms, containment, and color scheme; added continuations for keyframes, font faces, cascade layers, scopes, media preferences, sticky positioning, grid layouts, and reduced motion.
 - Parsed all five JavaScript files and initialized all four completion-data scripts against a test `window` object: **pass**.
-- Verified next-word data: 123 rules (37 HTML, 32 CSS, 54 JavaScript) and 390 explicitly listed candidate items, plus dynamically generated property-value candidates.
+- Verified next-word data: 125 rules (38 HTML, 33 CSS, 54 JavaScript) and 373 explicitly listed candidate items, plus dynamically generated property-value candidates.
 - Exercised representative HTML and CSS contexts including `autocomplete`, `fetchpriority`, `aria-pressed`, `inputmode`, `preload`, `enctype`, `crossorigin`, `overflow`, `text-align`, `font-weight`, `cursor`, `grid-auto-flow`, `@keyframes`, `@font-face`, color-scheme media queries, flex layout, sticky positioning, borders, and reduced-motion follow-ups: **pass**.
 - Checked completion caret offsets: **no out-of-range values found**.
 - **Not performed for this change:** interactive browser testing or cross-browser/end-to-end testing.

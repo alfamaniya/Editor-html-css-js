@@ -319,7 +319,7 @@ A static review of the HTML, CSS, main editor logic, export paths, storage flows
 
 ## Remaining limitations and recommended next work
 
-- **Runtime testing:** This repository currently has no configured automated test runner or browser-test suite. The JavaScript files can be syntax-checked without executing them, but that alone cannot validate DOM interaction, downloads, storage quotas, or browser-specific behavior. Add automated tests for project creation/renaming/deletion, corrupt-storage recovery, CDN timeouts/races, single-file output, and bundle-relative asset paths.
+- **Runtime testing:** The repository now has a dependency-free Node integration test for Smart Import document recovery and JavaScript conflict handling (`node scripts/test-smart-import.mjs`), and GitHub Actions runs it. There is still no full real-browser/end-to-end cross-browser suite for the editor; live preview, downloads, storage quotas, and browser-specific behavior need additional manual/browser testing.
 - **Large files:** Syntax highlighting and line numbers are refreshed for the full editor buffer after edits. Very large files may become slow. Possible improvements are frame-scheduled rendering, incremental line updates, a threshold-based reduced-highlighting mode, or adoption of an editor engine such as CodeMirror.
 - **Advanced language support:** Completion data is curated and context heuristics are intentionally lightweight; it is not a full parser, language server, or framework-aware completion engine.
 - **Accessibility:** File actions have native keyboard semantics and visible focus styles, but the IntelliSense popup and color picker would benefit from a dedicated screen-reader/keyboard accessibility pass.
@@ -384,7 +384,7 @@ Review date: 2026-10-16.
 - The tab supports mixed documents, local text-file reading, clipboard paste where available, analysis notes, editable outputs, and per-language apply checkboxes.
 - Cleanup removes only exact repeated inline CSS/JavaScript blocks. Multiple document wrappers and external dependency references are reported for manual review; external code is never fetched automatically.
 - Applying code requires explicit confirmation and updates only the chosen language files, preserving other project files. Browser storage failures are reported.
-- Static syntax and standalone-bundle checks are configured in the repository workflow; interactive browser and mobile testing remain manual validation steps.
+- Static syntax checks, the Smart Import integration test, and standalone-bundle generation are configured in the repository workflow; interactive browser and mobile testing remain manual validation steps.
 - Added document-candidate recovery ahead of extraction after the user-provided invitation sample showed that a full HTML page could be embedded inside another page's `<style>` block. The selector scores complete document candidates and prefers the latest on a structural tie; it avoids merging old and new page versions into three broken outputs.
 - Expanded the dependency-free Smart Import integration test to cover selection of the coherent latest document separately from repeated JavaScript declarations in a valid single document.
 

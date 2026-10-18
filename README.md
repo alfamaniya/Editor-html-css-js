@@ -15,6 +15,8 @@
 ├── index-test-etitor.html         — نسخهٔ آزمایشی ویرایشگر
 ├── style.css                     — ظاهر، چیدمان و واکنش‌گرایی
 ├── script.js                     — منطق و عملکرد ویرایشگر
+├── smart-import.js               — تحلیل و تفکیک کدهای ترکیبی واردشده
+├── smart-import.css              — ظاهر مستقل زبانه ورود هوشمند
 ├── word-tree.js                  — نمودار پویا و قابل جست‌وجوی واژه‌ها
 ├── html-suggestions.js            — پیشنهادهای کد HTML
 ├── css-suggestions.js             — پیشنهادهای کد CSS
@@ -34,6 +36,7 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 - Code completion for HTML tags/attributes, CSS properties/values/selectors/at-rules, and JavaScript keywords, members, browser APIs, and snippets.
 - Context-aware next-word predictions that can continue selected suggestions into attributes, CSS values, variable initializers, and common code patterns.
 - Live Word Tree built from the loaded HTML, CSS, and JavaScript suggestion banks; selecting an entry opens a Persian explanation and a short code example.
+- Smart Import tab to paste or open mixed HTML/CSS/JavaScript source, inspect separated code, identify repeated document wrappers and exact duplicate blocks, and selectively apply chosen sections to current project files.
 - Quick-insert symbols, automatic closing HTML tags, indentation helpers, and bracket-aware Enter behavior.
 - Project file manager with create, rename, delete/undo, search, filters, and ordering options.
 - Search within the current editor, with next/previous match navigation.
@@ -50,6 +53,14 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 
 No build command or package installation is required. The editor itself can run from local files. Network access is needed for optional library downloads and for exported code that references remote resources. Browser restrictions may differ when opening local files; testing through a small local static server can help diagnose those differences.
 
+## Smart Import tab
+
+Use **Smart Import** to paste a full HTML document or open a text-based `.html`, `.htm`, `.xhtml`, `.css`, `.js`, `.mjs`, or `.txt` file. The local analyzer separates markup, embedded style blocks, and inline JavaScript; it can also recognize common standalone CSS and JavaScript fragments. **Analyze code** reports the detected structure while **Clean & analyze** removes only exact repeated CSS/JavaScript blocks. It does not attempt broad, risky code rewrites.
+
+Review and edit the three extracted outputs, check only the languages you want to apply, and confirm the prompt before changing the editor. The current file selected for each chosen language is replaced; other project files are kept. If that language has no file yet, a new file is created. The live preview is refreshed after applying. External stylesheet and script URLs are reported but never downloaded automatically.
+
+The import workflow runs in the browser and does not upload the pasted code. It is a cautious text-based extractor rather than a full HTML/CSS/JavaScript parser: malformed or nested documents can require manual review. Always inspect the output before applying it, especially when the source contains multiple conflicting document versions. The standalone test editor is generated from the same source files by `node scripts/build-test-editor.mjs`.
+
 ## Starter example
 
 The default project is intentionally small: **10 compact boxes and 10 buttons**, each demonstrating one simple action. The examples cover a message, a color change, increment/decrement, hide/show, title change, current time, color reset, dark mode, and adding a box. The starter HTML, CSS, and JavaScript are kept short so users can understand and modify them easily.
@@ -60,7 +71,9 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 |---|---|
 | `index.html` | Editor UI, help content, preview iframe, and local asset references |
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
-| `script.js` | Editor behavior, files, storage, library catalog, preview generation, and export |
+| `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, and the narrow Smart Import bridge |
+| `smart-import.js` | Standalone local analyzer, import-file/clipboard handling, duplicate-block cleanup, result review, and selective application |
+| `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |
 | `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |
 | `html-suggestions.js` | HTML tags, global attributes, element-specific attributes, and HTML abbreviations |
 | `css-suggestions.js` | CSS property/value completion data and code snippets |
@@ -347,6 +360,14 @@ Review date: 2026-10-16.
 - **Not performed for this change:** interactive browser testing or cross-browser/end-to-end testing.
 
 
+
+### Smart Import validation (2026-10-18)
+
+- Added a separate Smart Import tab with its own `smart-import.js` and `smart-import.css` files; the primary editor stylesheet remains untouched.
+- The tab supports mixed documents, local text-file reading, clipboard paste where available, analysis notes, editable outputs, and per-language apply checkboxes.
+- Cleanup removes only exact repeated inline CSS/JavaScript blocks. Multiple document wrappers and external dependency references are reported for manual review; external code is never fetched automatically.
+- Applying code requires explicit confirmation and updates only the chosen language files, preserving other project files. Browser storage failures are reported.
+- Static syntax and standalone-bundle checks are configured in the repository workflow; interactive browser and mobile testing remain manual validation steps.
 
 ## Reference material
 

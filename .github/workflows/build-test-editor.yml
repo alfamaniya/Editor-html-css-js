@@ -25,6 +25,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Check JavaScript syntax
+        run: |
+          for file in html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js script.js word-tree.js smart-import.js scripts/build-test-editor.mjs tools/build-single-file.js; do
+            node --check "$file"
+          done
+
       - name: Build the single-file editor
         run: node scripts/build-test-editor.mjs
 

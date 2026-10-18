@@ -1,0 +1,85 @@
+/* Smart Import is isolated so the main editor stylesheet remains untouched. */
+.smart-import-panel { position: absolute; inset: 0; z-index: 3; overflow: auto; padding: clamp(12px,2vw,26px); color: #eaf1f8; background: radial-gradient(circle at 88% 0%,rgba(55,115,160,.17),transparent 34%),linear-gradient(145deg,#172435,#111a26 72%); font-family: "Segoe UI",Tahoma,Arial,sans-serif; font-size: 13px; line-height: 1.55; }
+.smart-import-panel[hidden] { display: none !important; }
+.smart-import-panel * { box-sizing: border-box; }
+.smart-import-panel button,.smart-import-panel textarea,.smart-import-panel input { font: inherit; }
+.editor-pane .tabs .tab[data-tab="smart-import"] { border-top: 2px solid #8b91df; }
+.editor-pane .tabs .tab[data-tab="smart-import"].active { color: #1d2040; background: linear-gradient(180deg,#d5d7ff,#a9b5ed); }
+.si-shell { width: min(1500px,100%); margin: 0 auto; }
+.si-header { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin:2px 0 18px; }
+.si-eyebrow { margin:0 0 5px; color:#78c7e7; font-size:10px; font-weight:800; letter-spacing:.14em; }
+.si-header h2 { margin:0; color:#f4f8fc; font-size:clamp(22px,2.4vw,30px); line-height:1.2; }
+.si-subtitle { margin:8px 0 0; max-width:750px; color:#b9c7d6; }
+.si-local-badge { flex:0 0 auto; padding:6px 10px; border:1px solid #2b8d72; border-radius:99px; color:#8ee3c5; background:rgba(23,115,88,.13); font-size:11px; font-weight:700; white-space:nowrap; }
+.si-notice { margin:0 0 16px; padding:11px 14px; border:1px solid #344c61; border-left:3px solid #4eb0da; border-radius:10px; color:#c8d8e7; background:rgba(34,61,83,.56); }
+.si-notice strong { color:#f1f7fc; }
+.si-source-card,.si-output-card { border:1px solid #344354; border-radius:13px; background:rgba(26,39,54,.88); box-shadow:0 9px 22px rgba(0,0,0,.12); }
+.si-source-card { padding:clamp(12px,1.6vw,20px); }
+.si-section-heading,.si-results-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.si-section-heading>div,.si-results-heading>div { display:flex; align-items:center; gap:9px; min-width:0; }
+.si-step { display:inline-flex; width:28px; height:28px; flex:0 0 28px; align-items:center; justify-content:center; border-radius:9px; color:#092334; background:linear-gradient(145deg,#79c9e7,#6e9fe5); font-weight:900; }
+.si-section-heading h3,.si-results-heading h3 { margin:0; color:#eff6fc; font-size:16px; }
+.si-helper { color:#849db1; font-size:11px; }
+.si-field-label { display:block; margin:0 0 6px; color:#ccdae7; font-weight:700; }
+#siSource,.si-result-code { display:block; width:100%; min-width:0; resize:vertical; border:1px solid #3b5064; border-radius:9px; padding:12px 13px; color:#e8f1fa; background:#0d1621; line-height:1.55; tab-size:2; outline:none; transition:border-color .16s ease,box-shadow .16s ease; }
+#siSource { min-height:220px; max-height:45vh; direction:ltr; text-align:left; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; }
+.si-result-code { min-height:185px; max-height:45vh; direction:ltr; text-align:left; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:11.5px; }
+#siSource::placeholder,.si-result-code::placeholder { color:#6f8396; }
+#siSource:focus,.si-result-code:focus { border-color:#72c5e8; box-shadow:0 0 0 3px rgba(74,176,218,.16); }
+.si-source-actions { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:12px; }
+.si-action-group { display:flex; gap:7px; flex-wrap:wrap; }
+.si-button { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:36px; border:1px solid #3e566d; border-radius:8px; padding:7px 12px; color:#dbe8f3; background:#24374a; font-size:12px; font-weight:750; cursor:pointer; transition:transform .14s ease,border-color .14s ease,background .14s ease; }
+.si-button:hover { border-color:#6d9fc4; background:#2c4760; }
+.si-button:active { transform:translateY(1px); }
+.si-button:focus-visible { outline:2px solid #7bd4f3; outline-offset:3px; }
+.si-primary { border-color:#3a93bc; color:#071c29; background:linear-gradient(135deg,#81dcf0,#82abea); }
+.si-primary:hover { color:#061823; background:linear-gradient(135deg,#9be6f5,#9cbbf3); }
+.si-quiet { color:#a9bdce; background:transparent; }
+.si-small-note { margin:11px 0 0; color:#8399ad; font-size:11px; }
+.si-results { margin-top:18px; padding-bottom:8px; }
+.si-results-heading { margin-bottom:12px; }
+.si-summary { margin:0; color:#b5dbea; font-size:12px; text-align:right; }
+.si-stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:0 0 12px; }
+.si-stat { min-width:0; padding:10px 11px; border:1px solid #2e4154; border-radius:10px; background:rgba(28,43,59,.7); }
+.si-stat strong { display:block; overflow-wrap:anywhere; color:#e5f5ff; font-size:16px; line-height:1.35; }
+.si-stat span { display:block; margin-top:3px; color:#8ea6bb; font-size:10px; }
+.si-notes { display:grid; gap:6px; margin:0 0 13px; padding:0; list-style:none; }
+.si-note { padding:9px 11px; border:1px solid #634c2d; border-radius:8px; color:#efcb8e; background:rgba(107,70,22,.16); }
+.si-note::before { content:"⚠ "; font-weight:900; }
+.si-note.si-note-ok { border-color:#2e6656; color:#a5d9c5; background:rgba(23,115,88,.1); }
+.si-note.si-note-ok::before { content:"✓ "; }
+.si-output-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; align-items:stretch; }
+.si-output-card { min-width:0; padding:11px; }
+.si-output-header { display:flex; align-items:center; justify-content:space-between; gap:6px; margin:0 0 9px; flex-wrap:wrap; }
+.si-output-title { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.si-apply-label { display:inline-flex; align-items:center; gap:6px; color:#ddeaf5; font-size:11px; font-weight:750; cursor:pointer; }
+.si-apply-label input { width:15px; height:15px; margin:0; accent-color:#67c9e9; }
+.si-apply-label input:disabled { cursor:not-allowed; opacity:.4; }
+.si-language-pill { display:inline-flex; align-items:center; padding:3px 7px; border-radius:5px; font-size:10px; font-weight:900; letter-spacing:.05em; }
+.si-html-pill { color:#ffc38d; background:rgba(210,108,46,.16); }
+.si-css-pill { color:#a8d0ff; background:rgba(60,126,210,.18); }
+.si-js-pill { color:#f4e59b; background:rgba(189,155,36,.17); }
+.si-char-count { color:#8499ac; font-size:10px; }
+.si-apply-footer { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:14px; padding:14px; border:1px solid #35516a; border-radius:11px; background:rgba(30,53,73,.58); }
+.si-apply-footer strong { color:#f2f7fd; font-size:14px; }
+.si-apply-footer p { margin:3px 0 0; color:#a7bbcd; font-size:11px; }
+.si-apply-footer .si-action-status { color:#8fe0c3; }
+.si-apply-button { flex:0 0 auto; min-height:42px; border-color:#3e9bc6; color:#071c29; background:linear-gradient(135deg,#7edcf0,#86a9ee); }
+.si-apply-button:hover { background:linear-gradient(135deg,#a2eafa,#a5bdf8); }
+.si-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+@media (max-width:1050px) { .si-output-grid { grid-template-columns:1fr; } .si-result-code { min-height:145px; } .si-stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width:620px) {
+    .smart-import-panel { padding:12px; }
+    .si-header { flex-direction:column; gap:10px; }
+    .si-local-badge { white-space:normal; }
+    .si-section-heading,.si-results-heading { align-items:flex-start; flex-direction:column; }
+    .si-results-heading { gap:5px; }
+    .si-summary { text-align:left; }
+    .si-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .si-source-actions { align-items:stretch; }
+    .si-action-group { width:100%; }
+    .si-action-group .si-button { flex:1 1 auto; }
+    .si-apply-footer { align-items:stretch; flex-direction:column; }
+    .si-apply-button { width:100%; }
+}
+@media (prefers-reduced-motion:reduce) { .smart-import-panel * { transition:none !important; scroll-behavior:auto !important; } }

@@ -271,8 +271,8 @@ Review date: 2026-10-16.
 
 - Parsed all five application/data JavaScript files without executing the editor application: **pass**.
 - Initialized all four completion-data scripts against a test `window` object: **pass**.
-- Verified loaded JavaScript completion data: 582 words, 94 member roots, 1,304 member names, and 30 JavaScript snippets.
-- Verified next-word data: 84 rules total (14 HTML, 16 CSS, 54 JavaScript) and 250 explicit candidate items.
+- Verified loaded JavaScript completion data: 582 words, 94 member roots, 1,304 member names, and 49 JavaScript snippets after the abbreviation expansion.
+- Current next-word data has 123 rules (37 HTML, 32 CSS, 54 JavaScript) and 390 explicit candidate items; the historical JavaScript-only expansion initially introduced 54 JavaScript rules.
 - Exercised representative JavaScript continuations for `switch`, `while`, `import`, `export`, `Math`, `Object`, `URL`, `localStorage`, `navigator`, `crypto`, and `requestAnimationFrame`: **pass**.
 - Checked caret offsets in static next-word candidates and code snippets: **no out-of-range offsets found**.
 - Verified case-sensitive JavaScript names such as `Map`/`map` and `Set`/`set` are preserved as separate completion entries.

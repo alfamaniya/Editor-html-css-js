@@ -292,7 +292,7 @@ Review date: 2026-10-16.
 
 - Added 24 Emmet-style HTML abbreviation completions, 34 CSS shorthand suggestions with 46 numeric-mapping entries, 19 JavaScript abbreviation-trigger snippets, and additional quick-insert symbols for all three languages.
 - Parsed all five JavaScript files and initialized all four suggestion-data scripts: **pass**.
-- Verified representative HTML aliases and JavaScript triggers exist in the loaded banks; checked CSS numeric shorthands including `m10`, `m10-20`, `p8-16`, `w100`, `fz16`, `fw700`, `lh1.5`, `op0.5`, and `z10` resolve to expected declarations.
+- Verified the HTML abbreviation token detector supports punctuation-based aliases including `!`, `.container`, `#app`, and the child operator in `ul>li*3`; verified JavaScript shortcut triggers exist in the loaded bank. CSS numeric shorthands including `m10`, `m10-20`, `p8-16`, `w100`, `fz16`, `fw700`, `lh1.5`, `op0.5`, and `z10` resolve to expected declarations.
 - Verified non-length shorthands such as `bgc10` are not incorrectly expanded as pixel values.
 - Checked abbreviation and snippet caret positions: **no out-of-range offsets found**.
 - **Not performed for this change:** interactive browser testing or cross-browser/end-to-end testing.

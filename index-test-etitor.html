@@ -7877,11 +7877,17 @@ function addBox() {
 
     function cleanMarkup(source) {
         let markup = source;
-        const bodyMatches = Array.from(markup.matchAll(/<body\b[^>]*>([\s\S]*?)<\/body\s*>/gi));
+        const bodyOpenings = Array.from(markup.matchAll(/<body\b[^>]*>/gi));
+        const bodyMatches = bodyOpenings.map((opening) => {
+            const closePattern = /<\/body\s*>/gi;
+            closePattern.lastIndex = opening.index + opening[0].length;
+            const closing = closePattern.exec(markup);
+            return closing ? { content: markup.slice(opening.index + opening[0].length, closing.index) } : null;
+        }).filter(Boolean);
         if (bodyMatches.length) {
-            // Prefer the last complete body when several documents were pasted together.
-            // This avoids wrapping the later, intended page inside the first malformed body.
-            markup = bodyMatches[bodyMatches.length - 1][1];
+            // Opening tags can be nested in malformed pasted documents. Match each opening
+            // independently so an inner body is not hidden by the first outer match.
+            markup = bodyMatches[bodyMatches.length - 1].content;
         } else {
             markup = markup.replace(/<head\b[^>]*>[\s\S]*?<\/head\s*>/gi, '');
             markup = markup.replace(/<head\b[^>]*>[\s\S]*?(?=<body\b|$)/gi, '');

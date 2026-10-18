@@ -1749,6 +1749,51 @@ input {
     .word-detail-example { margin: 0 13px; }
 }
 
+
+/* Latest GitHub repository update indicator */
+.github-update {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5px 9px;
+    width: 100%;
+    min-height: 29px;
+    padding: 5px 12px;
+    direction: rtl;
+    text-align: center;
+    background: linear-gradient(90deg, rgb(24 48 67 / 88%), rgb(28 57 72 / 88%));
+    border-bottom: 1px solid rgb(103 155 183 / 30%);
+    color: #b8d2e6;
+    font: 11px/1.5 Tahoma, "Segoe UI", sans-serif;
+}
+.github-update-dot {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+    border-radius: 50%;
+    background: #78d6a8;
+    box-shadow: 0 0 7px rgb(120 214 168 / 35%);
+}
+.github-update time {
+    color: #f0f7ff;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+.github-update a {
+    color: #8ec9f4;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.github-update a:hover { color: #fff; }
+.github-update a:focus-visible { outline: 2px solid #9bc8f0; outline-offset: 3px; }
+.github-update [role="status"] { overflow-wrap: anywhere; }
+
+@media (max-width: 560px) {
+    .github-update { gap: 3px 7px; padding: 6px 8px; font-size: 10px; }
+}
+
 </style>
     <style data-bundled-from="smart-import.css">
 /* Smart Import is isolated so the main editor stylesheet remains untouched. */
@@ -1861,6 +1906,13 @@ input {
         <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
     </div>
     </header>
+    <section class="github-update" aria-label="GitHub update information">
+        <span class="github-update-dot" aria-hidden="true"></span>
+        <span id="githubUpdateStatus" role="status" aria-live="polite">در حال دریافت زمان آخرین به‌روزرسانی از GitHub…</span>
+        <time id="githubUpdateTime"></time>
+        <a id="githubUpdateLink" href="https://github.com/alfamaniya/Editor-html-css-js/commits/main/" target="_blank" rel="noopener noreferrer" hidden>مشاهده کامیت</a>
+    </section>
+
     <div class="container">
 
         <div class="editor-pane">
@@ -7891,6 +7943,7 @@ function addBox() {
     });
 })();
 </script>
+    <script src="github-update.js"></script>
 
 </body>
 </html>

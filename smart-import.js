@@ -166,12 +166,34 @@
         cssParts = dedupedCss.parts;
         jsParts = dedupedJs.parts;
 
-        // Remove extracted styles and executable/external scripts; leave non-JS data scripts in the HTML output.
-        const removedScripts = inlineScriptBlocks.concat(allScriptBlocks.filter((block) => block.hasSource));
+        // Preserve runtime dependencies in the HTML output. Their source files are not downloaded or embedded.
+        const baseTagMatch = /<base\b[^>]*>/i.exec(raw);
+        const externalCssTags = [];
+        const allLinkTags = raw.match(/<link\b[^>]*>/gi) || [];
+        allLinkTags.forEach((tag) => {
+            if (/\.css(?:[?#][^"'\s>]*)?["']?/i.test(tag) ||
+                /\brel\s*=\s*["']?[^"'>]*\bstylesheet\b/i.test(tag) ||
+                /\brel\s*=\s*["']?[^"'>]*\bmodulepreload\b/i.test(tag)) {
+                externalCssTags.push(tag);
+            }
+        });
+        const externalScriptBlocks = allScriptBlocks.filter((block) => block.hasSource);
+        const externalScriptTags = externalScriptBlocks
+            .map((block) => raw.slice(block.start, block.end).trim())
+            .filter(Boolean);
+        const removedScripts = inlineScriptBlocks.concat(externalScriptBlocks);
         const markupSource = removeRanges(raw, styleBlocks.concat(removedScripts));
         const documentWrappers = /<!doctype\b|<html\b|<head\b|<body\b/i.test(markupSource);
         let html = (detectedAs === 'CSS fragment' || detectedAs === 'JavaScript fragment') ? '' : cleanMarkup(markupSource);
         if (!documentWrappers && detectedAs === 'HTML fragment') html = markupSource.trim();
+        if (detectedAs !== 'CSS fragment' && detectedAs !== 'JavaScript fragment') {
+            const preservedHeadResources = uniqueBlocks(
+                (baseTagMatch ? [baseTagMatch[0]] : []).concat(externalCssTags), true
+            ).parts;
+            const preservedScripts = uniqueBlocks(externalScriptTags, true).parts;
+            html = preservedHeadResources.concat(html.trim() ? [html.trim()] : [], preservedScripts)
+                .filter(Boolean).join('\n\n');
+        }
 
         const externalCss = [];
         const cssLinkPattern = /<link\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/gi;
@@ -193,8 +215,8 @@
         if (duplicateBlocks) warnings.push(clean
             ? duplicateBlocks + ' exact repeated CSS/JavaScript block(s) were removed.'
             : duplicateBlocks + ' exact repeated CSS/JavaScript block(s) were detected. Choose “Clean & analyze” to remove exact duplicates.');
-        if (externalCss.length) warnings.push('External stylesheet references were found (' + externalCss.length + '). Their remote code was not downloaded.');
-        if (externalJs.length) warnings.push('External script references were found (' + externalJs.length + '). Their remote code was not downloaded.');
+        if (externalCss.length) warnings.push('External stylesheet references were found (' + externalCss.length + '). Their link tags were kept in the HTML output; remote files were not downloaded or embedded.');
+        if (externalJs.length) warnings.push('External script references were found (' + externalJs.length + '). Their script tags were kept in the HTML output; remote files were not downloaded or embedded.');
         if (!html.trim() && !cssParts.length && !jsParts.length) warnings.push('No usable section was extracted. The source may use an unsupported or malformed structure.');
         if (!clean && countMatches(raw, /<(?:html|style|script)\b/gi) > 1 && !duplicateBlocks) warnings.push('Multiple structural blocks were found. Only exact duplicate CSS/JS blocks can be removed automatically; review all outputs manually.');
 

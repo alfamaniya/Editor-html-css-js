@@ -847,18 +847,18 @@ function addBox() {
         window.HTMLCSJSEditor = window.HTMLCSJSEditor || {};
         window.HTMLCSJSEditor.applyImportedCode = function(codeByLanguage) {
             if (!codeByLanguage || typeof codeByLanguage !== 'object') {
-                return { applied: [], saved: false, error: 'No valid code sections were provided.' };
+                return { applied: [], saved: false, error: 'بخش کد معتبری برای اعمال ارسال نشد.' };
             }
             const requested = ['html', 'css', 'js'].filter(function(lang) {
                 return Object.prototype.hasOwnProperty.call(codeByLanguage, lang) &&
                     typeof codeByLanguage[lang] === 'string' && codeByLanguage[lang].trim().length > 0;
             });
-            if (!requested.length) return { applied: [], saved: false, error: 'Choose at least one non-empty section to apply.' };
+            if (!requested.length) return { applied: [], saved: false, error: 'برای اعمال، دست‌کم یک بخش غیرخالی انتخاب کن.' };
 
             const labels = { html: 'HTML', css: 'CSS', js: 'JavaScript' };
             const targetList = requested.map(function(lang) { return labels[lang]; }).join(', ');
-            if (!window.confirm('Smart Import will replace the current file for: ' + targetList +
-                '. Other files will remain unchanged. Continue?')) {
+            if (!window.confirm('ورودی هوشمند فایل فعلی این بخش‌ها را جایگزین می‌کند: ' + targetList +
+                '. سایر فایل‌ها بدون تغییر می‌مانند. ادامه می‌دهی؟')) {
                 return { applied: [], saved: false, cancelled: true };
             }
 
@@ -896,8 +896,8 @@ function addBox() {
             updatePreviewNow();
             showToast(
                 saved
-                    ? '✅ Smart Import applied to ' + applied.map(function(lang) { return labels[lang]; }).join(', ')
-                    : '⚠ Code was applied for this session, but browser storage could not save it.',
+                    ? '✅ ورودی هوشمند در بخش‌های ' + applied.map(function(lang) { return labels[lang]; }).join('، ') + ' اعمال شد.'
+                    : '⚠ کد برای این نشست اعمال شد، اما مرورگر نتوانست تغییرات را ذخیره کند.' ,
                 saved ? 'success' : 'error'
             );
             return { applied: applied, saved: saved };

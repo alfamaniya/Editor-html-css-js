@@ -8,6 +8,10 @@
     const notes = byId('siNotes');
     const actionStatus = byId('siActionStatus');
     const fileInput = byId('siFileInput');
+    const jsRecovery = byId('siJsRecovery');
+    const useLatestJs = byId('siUseLatestJs');
+    let latestJsSource = '';
+    let latestWarnings = [];
     if (!sourceInput || !resultsPanel) return;
 
     const targets = {
@@ -365,6 +369,9 @@
         const duplicateBlocks = dedupedCss.removed + dedupedJs.removed;
         const declarationReport = analyzeTopLevelDeclarations(jsParts);
         const similarScripts = compareScriptSimilarity(jsParts);
+        const canOfferLatestJs = jsParts.length === 2 && similarScripts.length > 0 && declarationReport.conflicts.length > 0;
+        latestJsSource = canOfferLatestJs ? jsParts[jsParts.length - 1] : '';
+        if (jsRecovery) jsRecovery.hidden = !canOfferLatestJs;
         const warnings = [];
         if (documentCount > 1) warnings.push('در ورودی ' + documentCount + ' نشانهٔ شروع سند HTML پیدا شد. ابزار بخش body آخر را برای خروجی انتخاب کرده تا نسخه‌های تو‌در‌تو با هم ادغام نشوند؛ اگر نسخهٔ دیگری مدنظر توست، خروجی HTML را بررسی کن.');
         if (preparedStyles.some((item) => item.recovered)) warnings.push('یک بلوک style شامل نشانه‌های HTML و یک style تو‌در‌تو بود؛ CSS داخلی آن بازیابی شد. خروجی CSS را بررسی کن، چون این ورودی ساختار معتبر HTML/CSS ندارد.');
@@ -410,6 +417,7 @@
             { value: duplicateBlocks, label: 'تکرارهای دقیق' }
         ]);
         setNotes(warnings);
+        latestWarnings = warnings.slice();
         if (declarationReport.conflicts.length) targets.js.checkbox.checked = false;
         summary.textContent = declarationReport.conflicts.length
             ? 'تحلیل انجام شد؛ پیش از اعمال JavaScript، تعارض‌های گزارش‌شده را اصلاح کن.'
@@ -421,6 +429,37 @@
 
     byId('siAnalyze').addEventListener('click', () => analyze(false));
     byId('siCleanAnalyze').addEventListener('click', () => analyze(true));
+
+    if (useLatestJs) {
+        useLatestJs.addEventListener('click', () => {
+            if (!latestJsSource.trim()) return;
+            const candidate = latestJsSource.trim();
+            targets.js.output.value = candidate;
+            updateOutputState('js');
+            const report = analyzeTopLevelDeclarations([candidate]);
+            const remainingWarnings = latestWarnings.filter((message) =>
+                message.indexOf('CRITICAL:') !== 0 &&
+                message.indexOf('چند بخش JavaScript شباهت زیادی دارند') !== 0 &&
+                message.indexOf('نام‌های تابع یا متغیر تکراری دیگری پیدا شد:') !== 0
+            );
+            if (report.conflicts.length) {
+                const names = report.conflicts.map((item) => item.name).slice(0, 10).join('، ');
+                remainingWarnings.push('CRITICAL:حتی نسخهٔ آخر هم تعریف‌های متعارض دارد: ' + names + '. پیش از اعمال، این کد را دستی اصلاح کن.');
+            }
+            if (report.repeated.length) {
+                const names = report.repeated.map((item) => item.name).slice(0, 8).join('، ');
+                remainingWarnings.push('در نسخهٔ انتخاب‌شده نام‌های تکراری دیده شد: ' + names + '. بررسی دستی پیشنهاد می‌شود.');
+            }
+            setNotes(remainingWarnings);
+            targets.js.checkbox.checked = !report.conflicts.length;
+            summary.textContent = report.conflicts.length
+                ? 'نسخهٔ آخر انتخاب شد، اما هنوز تعارض وجود دارد و JavaScript برای اعمال انتخاب نشده است.'
+                : 'نسخهٔ آخر در خروجی JavaScript قرار گرفت؛ پیش از اعمال، عملکرد آن را بررسی کن.';
+            actionStatus.textContent = 'خروجی JavaScript به نسخهٔ آخر تغییر کرد؛ فایل اصلی هنوز تغییر نکرده است.';
+            if (jsRecovery) jsRecovery.hidden = true;
+        });
+    }
+
     Object.keys(targets).forEach((language) => {
         targets[language].output.addEventListener('input', () => updateOutputState(language));
         targets[language].checkbox.addEventListener('change', () => { actionStatus.textContent = ''; });

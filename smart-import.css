@@ -105,4 +105,8 @@
     .si-mode-help { width: 100%; }
     .si-summary { text-align: right; }
 }
+.si-js-recovery { display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin:0 0 10px; padding:10px; border:1px solid #74643c; border-radius:9px; background:rgba(104,82,31,.14); }
+.si-js-recovery[hidden] { display:none !important; }
+.si-js-recovery p { margin:0; color:#ead9ad; font-size:11px; line-height:1.9; }
+.si-js-recovery .si-button { align-self:flex-start; }
 

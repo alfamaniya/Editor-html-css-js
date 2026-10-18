@@ -241,7 +241,18 @@
             { label: "[ ]", prefix: "[", suffix: "]", description: "Insert an array or bracket pair" },
             { label: "/* */", prefix: "/* ", suffix: " */", description: "Insert a block comment" },
             { label: "//", prefix: "// ", suffix: "", description: "Start a single-line comment" },
-            { label: "try/catch", prefix: "try {\n    ", suffix: "\n} catch (error) {\n    console.error(error);\n}", description: "Insert error handling" }
+            { label: "try/catch", prefix: "try {\n    ", suffix: "\n} catch (error) {\n    console.error(error);\n}", description: "Insert error handling" },
+            { label: "=>", prefix: " => ", suffix: "", description: "Insert the arrow-function operator" },
+            { label: "===", prefix: " === ", suffix: "", description: "Insert strict equality" },
+            { label: "!==", prefix: " !== ", suffix: "", description: "Insert strict inequality" },
+            { label: "&&", prefix: " && ", suffix: "", description: "Insert logical AND" },
+            { label: "||", prefix: " || ", suffix: "", description: "Insert logical OR" },
+            { label: "??", prefix: " ?? ", suffix: "", description: "Insert nullish coalescing" },
+            { label: "?.", prefix: "?.", suffix: "", description: "Insert optional chaining" },
+            { label: "...", prefix: "...", suffix: "", description: "Insert the spread/rest operator" },
+            { label: "\${}", prefix: "\${", suffix: "}", description: "Insert template-literal interpolation" },
+            { label: "++", prefix: "++", suffix: "", description: "Insert increment operator" },
+            { label: "+=", prefix: " += ", suffix: "", description: "Insert addition assignment" }
             ]
         }),
 

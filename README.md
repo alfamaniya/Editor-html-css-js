@@ -1,5 +1,29 @@
 # HTML / CSS / JavaScript Editor
 
+## درخت فایل‌های مخزن
+
+```text
+.
+├── .github/
+│   └── workflows/
+│       └── build-test-editor.yml  — گردش‌کار آزمون و بررسی
+├── scripts/
+│   └── build-test-editor.mjs      — اسکریپت آزمون پروژه
+├── tools/
+│   └── build-single-file.js       — ساخت نسخهٔ تک‌فایلی
+├── index.html                    — صفحه و رابط اصلی ویرایشگر
+├── index-test-etitor.html         — نسخهٔ آزمایشی ویرایشگر
+├── style.css                     — ظاهر، چیدمان و واکنش‌گرایی
+├── script.js                     — منطق و عملکرد ویرایشگر
+├── html-suggestions.js            — پیشنهادهای کد HTML
+├── css-suggestions.js             — پیشنهادهای کد CSS
+├── js-suggestions.js              — پیشنهادهای کد JavaScript
+├── next-word-suggestions.js       — پیشنهاد واژهٔ بعدی بر اساس متن
+├── tree-world-suggestion.md       — نمایش درختی و تصویری پیشنهادها
+└── README.md                     — راهنما و مستندات مخزن
+```
+
+
 A browser-based editor for creating, editing, previewing, organizing, and exporting HTML, CSS, and JavaScript projects. The application is built with plain browser technologies; the core editor has no build step or package installation.
 
 ## Features

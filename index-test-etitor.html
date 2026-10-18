@@ -2115,9 +2115,9 @@ input {
     // A practical subset of Emmet-style HTML abbreviations; aliases expand to real markup.
     const htmlDocumentTemplate = '<!doctype html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title></title>\n</head>\n<body>\n    \n</body>\n</html>';
     const htmlAbbreviations = [
-        { trigger: '!', label: '! -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
-        { trigger: 'doc', label: 'doc -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
-        { trigger: 'html:5', label: 'html:5 -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('    \\n') + 5 },
+        { trigger: '!', label: '! -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('</body>') - 1 },
+        { trigger: 'doc', label: 'doc -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('</body>') - 1 },
+        { trigger: 'html:5', label: 'html:5 -> HTML5 document', insert: htmlDocumentTemplate, description: 'Expand an HTML5 document skeleton', caret: htmlDocumentTemplate.indexOf('</body>') - 1 },
         { trigger: 'meta:vp', label: 'meta:vp -> viewport meta', insert: '<meta name="viewport" content="width=device-width, initial-scale=1.0">', description: 'Insert a responsive viewport meta tag' },
         { trigger: 'meta:utf', label: 'meta:utf -> UTF-8 meta', insert: '<meta charset="UTF-8">', description: 'Declare UTF-8 character encoding' },
         { trigger: 'link:css', label: 'link:css -> stylesheet link', insert: '<link rel="stylesheet" href="style.css">', description: 'Link a CSS stylesheet' },
@@ -2153,7 +2153,15 @@ input {
             { label: "<ul>/<li>", prefix: "<ul>\n    <li>", suffix: "</li>\n</ul>", description: "Insert an unordered list with one item" },
             { label: "<form>", prefix: "<form action=\"#\" method=\"get\">", suffix: "</form>", description: "Insert a form" },
             { label: "<!-- -->", prefix: "<!-- ", suffix: " -->", description: "Insert an HTML comment" },
-            { label: "\"\"", prefix: "\"", suffix: "\"", description: "Wrap selected text in quotation marks" }
+            { label: "\"\"", prefix: "\"", suffix: "\"", description: "Wrap selected text in quotation marks" },
+            { label: "&nbsp;", prefix: "&nbsp;", suffix: "", description: "Insert a non-breaking space entity" },
+            { label: "&amp;", prefix: "&amp;", suffix: "", description: "Insert an ampersand entity" },
+            { label: "&lt;", prefix: "&lt;", suffix: "", description: "Insert a less-than entity" },
+            { label: "&gt;", prefix: "&gt;", suffix: "", description: "Insert a greater-than entity" },
+            { label: "&quot;", prefix: "&quot;", suffix: "", description: "Insert a quotation-mark entity" },
+            { label: "&#39;", prefix: "&#39;", suffix: "", description: "Insert an apostrophe entity" },
+            { label: "<!doctype>", prefix: "<!doctype html>\n", suffix: "", description: "Insert the HTML doctype declaration" },
+            { label: "<meta viewport>", prefix: '<meta name="viewport" content="width=device-width, initial-scale=1.0">', suffix: "", description: "Insert responsive viewport metadata" }
             ]
         }),
 

@@ -2,7 +2,7 @@
 /**
  * Build index-test-etitor.html as a standalone copy of the editor.
  *
- * Sources: index.html, style.css, smart-import.css, and the seven JavaScript files listed below.
+ * Sources: index.html, style.css, smart-import.css, and the eight JavaScript files listed below.
  * Run locally: node scripts/build-test-editor.mjs
  * GitHub Actions runs this builder on every push to main.
  */
@@ -22,7 +22,8 @@ const scriptFiles = [
     'next-word-suggestions.js',
     'script.js',
     'word-tree.js',
-    'smart-import.js'
+    'smart-import.js',
+    'github-update.js'
 ];
 
 async function readText(path) {

@@ -123,6 +123,116 @@
                 { label: 'en', insert: 'en' }, { label: 'fa', insert: 'fa' }, { label: 'ar', insert: 'ar' },
                 { label: 'fr', insert: 'fr' }, { label: 'de', insert: 'de' }, { label: 'es', insert: 'es' }
             ]},
+
+            // Standard HTML/ARIA enumerated attributes and common form/media hints.
+            { pattern: /<[^<>]*\b(?:aria-checked|aria-pressed)\s*=\s*["']$/i, items: [
+                { label: 'true', insert: 'true' }, { label: 'false', insert: 'false' },
+                { label: 'mixed', insert: 'mixed' }
+            ]},
+            { pattern: /<[^<>]*\b(?:aria-selected|aria-disabled|aria-required|aria-busy)\s*=\s*["']$/i, items: [
+                { label: 'true', insert: 'true' }, { label: 'false', insert: 'false' }
+            ]},
+            { pattern: /<[^<>]*\baria-invalid\s*=\s*["']$/i, items: [
+                { label: 'false', insert: 'false' }, { label: 'true', insert: 'true' },
+                { label: 'grammar', insert: 'grammar' }, { label: 'spelling', insert: 'spelling' }
+            ]},
+            { pattern: /<[^<>]*\baria-current\s*=\s*["']$/i, items: [
+                { label: 'page', insert: 'page' }, { label: 'step', insert: 'step' },
+                { label: 'location', insert: 'location' }, { label: 'date', insert: 'date' },
+                { label: 'time', insert: 'time' }, { label: 'true', insert: 'true' },
+                { label: 'false', insert: 'false' }
+            ]},
+            { pattern: /<[^<>]*\baria-sort\s*=\s*["']$/i, items: [
+                { label: 'ascending', insert: 'ascending' }, { label: 'descending', insert: 'descending' },
+                { label: 'none', insert: 'none' }, { label: 'other', insert: 'other' }
+            ]},
+            { pattern: /<[^<>]*\b(?:autocomplete)\s*=\s*["']$/i, items: [
+                { label: 'on', insert: 'on' }, { label: 'off', insert: 'off' },
+                { label: 'name', insert: 'name' }, { label: 'given-name', insert: 'given-name' },
+                { label: 'family-name', insert: 'family-name' }, { label: 'email', insert: 'email' },
+                { label: 'username', insert: 'username' }, { label: 'current-password', insert: 'current-password' },
+                { label: 'new-password', insert: 'new-password' }, { label: 'one-time-code', insert: 'one-time-code' },
+                { label: 'street-address', insert: 'street-address' }, { label: 'postal-code', insert: 'postal-code' },
+                { label: 'tel', insert: 'tel' }, { label: 'url', insert: 'url' }
+            ]},
+            { pattern: /<[^<>]*\b(?:enctype|formenctype)\s*=\s*["']$/i, items: [
+                { label: 'application/x-www-form-urlencoded', insert: 'application/x-www-form-urlencoded' },
+                { label: 'multipart/form-data', insert: 'multipart/form-data' },
+                { label: 'text/plain', insert: 'text/plain' }
+            ]},
+            { pattern: /<[^<>]*\b(?:crossorigin|crossorigin)\s*=\s*["']$/i, items: [
+                { label: 'anonymous', insert: 'anonymous' }, { label: 'use-credentials', insert: 'use-credentials' }
+            ]},
+            { pattern: /<[^<>]*\breferrerpolicy\s*=\s*["']$/i, items: [
+                { label: 'no-referrer', insert: 'no-referrer' },
+                { label: 'no-referrer-when-downgrade', insert: 'no-referrer-when-downgrade' },
+                { label: 'origin', insert: 'origin' },
+                { label: 'origin-when-cross-origin', insert: 'origin-when-cross-origin' },
+                { label: 'same-origin', insert: 'same-origin' },
+                { label: 'strict-origin', insert: 'strict-origin' },
+                { label: 'strict-origin-when-cross-origin', insert: 'strict-origin-when-cross-origin' },
+                { label: 'unsafe-url', insert: 'unsafe-url' }
+            ]},
+            { pattern: /<[^<>]*\b(?:fetchpriority)\s*=\s*["']$/i, items: [
+                { label: 'high', insert: 'high' }, { label: 'low', insert: 'low' }, { label: 'auto', insert: 'auto' }
+            ]},
+            { pattern: /<[^<>]*\bdecoding\s*=\s*["']$/i, items: [
+                { label: 'async', insert: 'async' }, { label: 'sync', insert: 'sync' }, { label: 'auto', insert: 'auto' }
+            ]},
+            { pattern: /<[^<>]*\bpreload\s*=\s*["']$/i, items: [
+                { label: 'none', insert: 'none' }, { label: 'metadata', insert: 'metadata' }, { label: 'auto', insert: 'auto' }
+            ]},
+            { pattern: /<[^<>]*\b(?:draggable|spellcheck)\s*=\s*["']$/i, items: [
+                { label: 'true', insert: 'true' }, { label: 'false', insert: 'false' }
+            ]},
+            { pattern: /<[^<>]*\bcontenteditable\s*=\s*["']$/i, items: [
+                { label: 'true', insert: 'true' }, { label: 'false', insert: 'false' },
+                { label: 'plaintext-only', insert: 'plaintext-only' }
+            ]},
+            { pattern: /<[^<>]*\bscope\s*=\s*["']$/i, items: [
+                { label: 'row', insert: 'row' }, { label: 'col', insert: 'col' },
+                { label: 'rowgroup', insert: 'rowgroup' }, { label: 'colgroup', insert: 'colgroup' }
+            ]},
+            { pattern: /<[^<>]*\baccept\s*=\s*["']$/i, items: [
+                { label: 'image/*', insert: 'image/*' }, { label: 'audio/*', insert: 'audio/*' },
+                { label: 'video/*', insert: 'video/*' }, { label: '.pdf', insert: '.pdf' },
+                { label: '.png,.jpg,.jpeg', insert: '.png,.jpg,.jpeg' },
+                { label: '.txt,.csv', insert: '.txt,.csv' }
+            ]},
+            { pattern: /<[^<>]*\binputmode\s*=\s*["']$/i, items: [
+                { label: 'none', insert: 'none' }, { label: 'text', insert: 'text' },
+                { label: 'decimal', insert: 'decimal' }, { label: 'numeric', insert: 'numeric' },
+                { label: 'tel', insert: 'tel' }, { label: 'search', insert: 'search' },
+                { label: 'email', insert: 'email' }, { label: 'url', insert: 'url' }
+            ]},
+            { pattern: /<[^<>]*\benterkeyhint\s*=\s*["']$/i, items: [
+                { label: 'enter', insert: 'enter' }, { label: 'done', insert: 'done' },
+                { label: 'go', insert: 'go' }, { label: 'next', insert: 'next' },
+                { label: 'previous', insert: 'previous' }, { label: 'search', insert: 'search' },
+                { label: 'send', insert: 'send' }
+            ]},
+            { pattern: /<[^<>]*\bcapture\s*=\s*["']$/i, items: [
+                { label: 'user', insert: 'user' }, { label: 'environment', insert: 'environment' }
+            ]},
+            { pattern: /<[^<>]*\bkind\s*=\s*["']$/i, items: [
+                { label: 'subtitles', insert: 'subtitles' }, { label: 'captions', insert: 'captions' },
+                { label: 'descriptions', insert: 'descriptions' }, { label: 'chapters', insert: 'chapters' },
+                { label: 'metadata', insert: 'metadata' }
+            ]},
+            { pattern: /<[^<>]*\bshape\s*=\s*["']$/i, items: [
+                { label: 'rect', insert: 'rect' }, { label: 'circle', insert: 'circle' },
+                { label: 'poly', insert: 'poly' }, { label: 'default', insert: 'default' }
+            ]},
+            { pattern: /<[^<>]*\b(?:aria-haspopup)\s*=\s*["']$/i, items: [
+                { label: 'false', insert: 'false' }, { label: 'true', insert: 'true' },
+                { label: 'menu', insert: 'menu' }, { label: 'listbox', insert: 'listbox' },
+                { label: 'tree', insert: 'tree' }, { label: 'grid', insert: 'grid' },
+                { label: 'dialog', insert: 'dialog' }
+            ]},
+            { pattern: /<[^<>]*\b(?:aria-autocomplete)\s*=\s*["']$/i, items: [
+                { label: 'none', insert: 'none' }, { label: 'inline', insert: 'inline' },
+                { label: 'list', insert: 'list' }, { label: 'both', insert: 'both' }
+            ]},
             { pattern: /<html\s*$/i, items: [
                 { label: 'lang="en"', insert: ' lang="en"', description: 'Set the document language', caret: 7 },
                 { label: 'lang="fa" dir="rtl"', insert: ' lang="fa" dir="rtl"', description: 'Set Persian language and direction', caret: 7 }

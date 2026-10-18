@@ -433,7 +433,7 @@
     // These remain lightweight text rules; they deliberately do not attempt full syntax parsing.
     const additionalJavaScriptRules = [
         { pattern: /\bswitch$/i, items: [
-            { label: ' (expression) { … }', insert: ' (expression) {\n    case value:\n        break;\n    default:\n        break;\n}', description: 'Create a switch statement', caret: 3 }
+            { label: ' (expression) { … }', insert: ' (expression) {\n    case value:\n        break;\n    default:\n        break;\n}', description: 'Create a switch statement', caret: 2 }
         ]},
         { pattern: /\bswitch\s*\(\s*$/i, items: [
             { label: 'expression', insert: 'expression' }, { label: 'value', insert: 'value' },
@@ -451,14 +451,14 @@
         ]},
         { pattern: /\belse$/i, items: [
             { label: ' { … }', insert: ' {\n    \n}', description: 'Create an else block', caret: 3 },
-            { label: ' if (condition) { … }', insert: ' if (condition) {\n    \n}', description: 'Create an else-if branch', caret: 7 }
+            { label: ' if (condition) { … }', insert: ' if (condition) {\n    \n}', description: 'Create an else-if branch', caret: 5 }
         ]},
         { pattern: /\bfinally$/i, items: [
             { label: ' { … }', insert: ' {\n    \n}', description: 'Run cleanup after try/catch', caret: 3 }
         ]},
         { pattern: /\bcase$/i, items: [
-            { label: ' value:', insert: ' value:\n    break;', description: 'Add a switch case', caret: 2 },
-            { label: ' "name":', insert: ' "name":\n    break;', description: 'Add a string switch case', caret: 3 }
+            { label: ' value:', insert: ' value:\n    break;', description: 'Add a switch case', caret: 1 },
+            { label: ' "name":', insert: ' "name":\n    break;', description: 'Add a string switch case', caret: 2 }
         ]},
         { pattern: /\bdefault$/i, items: [
             { label: ':', insert: ':\n    break;', description: 'Add the default switch branch', caret: 1 }
@@ -550,10 +550,10 @@
             { label: '.measure("name", "start", "end")', insert: '.measure("name", "start", "end")', description: 'Measure between performance marks' }
         ]},
         { pattern: /\bsetTimeout$/i, items: [
-            { label: '(() => { … }, delay)', insert: '(() => {\n    \n}, delay)', description: 'Schedule a one-time callback', caret: 7 }
+            { label: '(() => { … }, delay)', insert: '(() => {\n    \n}, delay)', description: 'Schedule a one-time callback', caret: 13 }
         ]},
         { pattern: /\bsetInterval$/i, items: [
-            { label: '(() => { … }, delay)', insert: '(() => {\n    \n}, delay)', description: 'Schedule a repeating callback', caret: 7 }
+            { label: '(() => { … }, delay)', insert: '(() => {\n    \n}, delay)', description: 'Schedule a repeating callback', caret: 13 }
         ]},
         { pattern: /\brequestAnimationFrame$/i, items: [
             { label: '((timestamp) => { … })', insert: '((timestamp) => {\n    \n})', description: 'Schedule work before the next repaint', caret: 2 }

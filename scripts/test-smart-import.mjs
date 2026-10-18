@@ -132,6 +132,7 @@ assert(!/<(?:!doctype|html|head)\b/i.test(css), 'recovered CSS output should not
 assert(js.includes('Version two') && !js.includes('Version one'), 'should extract JavaScript from the selected document and ignore the older document version');
 assert(css.includes('blue') && !css.includes('red'), 'should extract CSS from the selected document and ignore CSS in the malformed older version');
 assert(diagnostics.includes('چند نسخه یا شروع سند HTML'), 'should explain in Persian why a single coherent document was selected');
+assert(!elements.get('siApplyHtml').checked && !elements.get('siApplyCss').checked && !elements.get('siApplyJs').checked, 'should require explicit review/selection after recovering among several documents');
 
 // Now test an ordinary document with two conflicting script blocks inside that same document.
 elements.get('siSource').value = [

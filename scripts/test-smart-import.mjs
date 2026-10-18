@@ -107,14 +107,11 @@ const sampleSource = [
     '</style></head><body>',
     '<!DOCTYPE html><html lang="fa"><head><style>',
     'body { color: blue; }',
-    '</style></head><body><div id="latest-page">Latest body</div></body></html>',
-    '</body></html>',
-    '<script>',
-    firstJs,
-    '</script>',
+    '</style></head><body><div id="latest-page">Latest body</div>',
     '<script>',
     latestJs,
-    '</script>'
+    '</script></body></html>',
+    '</body></html>'
 ].join('\n');
 elements.get('siSource').value = sampleSource;
 
@@ -132,7 +129,8 @@ const diagnostics = elements.get('siNotes').children.map((item) => item.textCont
 assert(html.includes('Latest body'), 'should select the latest complete body as the HTML candidate');
 assert(!html.includes('Old embedded body'), 'should not preserve the malformed nested document as the chosen body');
 assert(!/<(?:!doctype|html|head)\b/i.test(css), 'recovered CSS output should not contain document wrapper tags');
-assert(!js.includes('Version one') && !js.includes('Version two'), 'script blocks outside the selected complete document should not be merged into it');
+assert(js.includes('Version two') && !js.includes('Version one'), 'should extract JavaScript from the selected document and ignore the older document version');
+assert(css.includes('blue') && !css.includes('red'), 'should extract CSS from the selected document and ignore CSS in the malformed older version');
 assert(diagnostics.includes('چند نسخه یا شروع سند HTML'), 'should explain in Persian why a single coherent document was selected');
 
 // Now test an ordinary document with two conflicting script blocks inside that same document.

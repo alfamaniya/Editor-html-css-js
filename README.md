@@ -54,7 +54,7 @@ The current curated banks contain approximately these unique entries after norma
 | JavaScript | 582 language/global/browser API words, 94 member roots with 1,304 distinct member names, and 30 snippets |
 | Next-word database | 84 contextual rules (14 HTML, 16 CSS, 54 JavaScript), 250 explicitly listed candidates, plus dynamically generated tag/attribute/code continuations |
 
-These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment.
+These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment. JavaScript completion preserves names that differ only by case (for example, `Map` and `map`) because they are distinct identifiers.
 
 ### How the next-word database works
 
@@ -267,6 +267,7 @@ Review date: 2026-10-16.
 - Verified next-word data: 84 rules total (14 HTML, 16 CSS, 54 JavaScript) and 250 explicit candidate items.
 - Exercised representative JavaScript continuations for `switch`, `while`, `import`, `export`, `Math`, `Object`, `URL`, `localStorage`, `navigator`, `crypto`, and `requestAnimationFrame`: **pass**.
 - Checked caret offsets in static next-word candidates and code snippets: **no out-of-range offsets found**.
+- Verified case-sensitive JavaScript names such as `Map`/`map` and `Set`/`set` are preserved as separate completion entries.
 - **Not performed for this change:** running the editor in a real browser or conducting cross-browser/end-to-end tests.
 
 

@@ -37,7 +37,7 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 - Code completion for HTML tags/attributes, CSS properties/values/selectors/at-rules, and JavaScript keywords, members, browser APIs, and snippets.
 - Context-aware next-word predictions that can continue selected suggestions into attributes, CSS values, variable initializers, and common code patterns.
 - Live Word Tree built from the loaded HTML, CSS, and JavaScript suggestion banks; selecting an entry opens a Persian explanation and a short code example.
-- Smart Import tab to paste or open mixed HTML/CSS/JavaScript source, inspect separated code, identify repeated document wrappers and exact duplicate blocks, and selectively apply chosen sections to current project files.
+- Smart Import tab to paste or open mixed HTML/CSS/JavaScript source, recover useful content from common malformed/nested document wrappers, detect repeated top-level JavaScript declarations and highly similar script versions, and selectively apply reviewed sections. Smart Import keeps controls in English and presents diagnostic explanations/status messages in Persian.
 - Live GitHub update indicator showing the latest commit date/time on `main`, formatted for Tehran time and linked to the source commit.
 - Quick-insert symbols, automatic closing HTML tags, indentation helpers, and bracket-aware Enter behavior.
 - Project file manager with create, rename, delete/undo, search, filters, and ordering options.
@@ -61,11 +61,19 @@ A compact status strip near the top of the editor requests the latest commit fro
 
 ## Smart Import tab
 
-Use **Smart Import** to paste a full HTML document or open a text-based `.html`, `.htm`, `.xhtml`, `.css`, `.js`, `.mjs`, or `.txt` file. The local analyzer separates markup, embedded style blocks, and inline JavaScript; it can also recognize common standalone CSS and JavaScript fragments. **Analyze code** reports the detected structure while **Clean & analyze** removes only exact repeated CSS/JavaScript blocks. It does not attempt broad, risky code rewrites.
+Use **Smart Import** to paste a full HTML document or open a text-based `.html`, `.htm`, `.xhtml`, `.css`, `.js`, `.mjs`, or `.txt` file. Its controls and button labels remain in English, while status messages, analysis findings, warnings, and action explanations are displayed in Persian.
 
-Review and edit the three extracted outputs, check only the languages you want to apply, and confirm the prompt before changing the editor. The current file selected for each chosen language is replaced; other project files are kept. If that language has no file yet, a new file is created. The live preview is refreshed after applying. External stylesheet links, the document's first `<base>` tag, and external script tags are preserved in the HTML output so referenced dependencies can still load in the preview. Their remote files are not downloaded or embedded; relative asset paths may still need the original site's base URL or manual adjustment.
+- **Analyze code** extracts the HTML/CSS/JavaScript sections and reports structural issues without deleting exact duplicate code blocks.
+- **Clean & analyze** performs the same analysis and additionally removes only CSS/JavaScript blocks whose normalized text is exactly identical. It does not remove near-duplicates or merge different versions automatically.
+- Opening a file now runs **Analyze code** by default. It does not silently run the cleanup operation.
+- If several `body` openings appear in malformed/nested input, the extractor independently checks each opening and selects the last available body section as the initial HTML candidate. It reports multiple document wrappers instead of silently pretending that the source is a single clean document.
+- If a `style` block contains nested document markup and a nested `style` element, the analyzer attempts to recover the inner CSS. If there is no recoverable inner style block, it skips that malformed block rather than copying document markup into the CSS output.
+- A lightweight JavaScript scan masks comments and string literals, then looks for repeated top-level `const`, `let`, `var`, `class`, and `function` declarations. Repeated lexical bindings such as `const openBtn` are reported in Persian. If likely top-level binding conflicts are found, **Apply JavaScript** is unchecked by default to help prevent accidental application of code that may fail with a `SyntaxError`.
+- Similar JavaScript blocks and repeated function/variable names are reported rather than automatically deleted, because similar versions may contain meaningful differences. Only exact repeated blocks are removed by **Clean & analyze**.
 
-The import workflow runs in the browser and does not upload the pasted code. It is a cautious text-based extractor rather than a full HTML/CSS/JavaScript parser: malformed or nested documents can require manual review. Always inspect the output before applying it, especially when the source contains multiple conflicting document versions. The standalone test editor is generated from the same source files by `node scripts/build-test-editor.mjs`.
+Review and edit the three extracted outputs, select only the languages you intend to apply, and confirm the Persian confirmation prompt before changing the editor. The current file selected for each chosen language is replaced; other project files are kept. If that language has no file yet, a new file is created. The live preview is refreshed after applying. External stylesheet links, the document's first `<base>` tag, and external script tags are preserved in the HTML output so referenced dependencies can still load in the preview. Their remote files are not downloaded or embedded; relative asset paths may still need the original site's base URL or manual adjustment.
+
+The import workflow runs in the browser and does not upload the pasted code. It remains a conservative, text-based recovery and diagnostic tool—not a full standards-compliant HTML/CSS/JavaScript parser or a guarantee of runtime correctness. The JavaScript declaration scan is heuristic and cannot detect every syntax/runtime error; some unusual valid constructs may need manual review. Always inspect the output before applying it, especially when the source contains multiple conflicting document versions. The standalone test editor is generated from the same source files by `node scripts/build-test-editor.mjs`.
 
 ## Starter example
 
@@ -78,7 +86,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `index.html` | Editor UI, help content, preview iframe, and local asset references |
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
 | `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, and the narrow Smart Import bridge |
-| `smart-import.js` | Standalone local analyzer, import-file/clipboard handling, duplicate-block cleanup, result review, and selective application |
+| `smart-import.js` | Smart Import extraction, malformed/nested document recovery, top-level JavaScript conflict diagnostics, Persian findings/statuses, exact-duplicate cleanup, and selective application |
 | `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |
 | `github-update.js` | Fetches the latest `main` commit timestamp from GitHub and updates the status strip |
 | `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |

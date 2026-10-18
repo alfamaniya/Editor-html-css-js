@@ -20,7 +20,7 @@ const assets = [
   { tag: /<script\s+src=["']next-word-suggestions\.js["']\s*>\s*<\/script>/i, file: 'next-word-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']script\.js["']\s*>\s*<\/script>/i, file: 'script.js', type: 'script' },
   { tag: /<script\s+src=["']word-tree\.js["']\s*>\s*<\/script>/i, file: 'word-tree.js', type: 'script' },
-  { tag: /<script\s+src=["']smart-import\.js["']\s*>\s*<\/script>/i, file: 'smart-import.js', type: 'script' }
+  { tag: /<script\s+src=["']smart-import\.js["']\s*>\s*<\/script>/i, file: 'smart-import.js', type: 'script' },
   { tag: /<script\s+src=["']github-update\.js["']\s*>\s*<\/script>/i, file: 'github-update.js', type: 'script' }
 ];
 

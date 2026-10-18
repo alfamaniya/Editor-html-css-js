@@ -1816,6 +1816,7 @@ function addBox() {
                 if (!values.length || values.join('-').toLowerCase() !== match[2].toLowerCase()) return null;
                 const multiValueProperties = new Set(['margin', 'padding', 'border-radius', 'border-width', 'border-style', 'border-color', 'gap']);
                 if (values.length > 1 && !multiValueProperties.has(property)) return null;
+                if (property === 'gap' && values.length > 2) return null;
 
                 const unitlessProperties = new Set(['opacity', 'z-index', 'font-weight', 'line-height', 'order', 'flex-grow', 'flex-shrink']);
                 const lengthProperties = new Set([

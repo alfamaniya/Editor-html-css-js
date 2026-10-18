@@ -17,6 +17,7 @@
 ├── script.js                     — منطق و عملکرد ویرایشگر
 ├── smart-import.js               — تحلیل و تفکیک کدهای ترکیبی واردشده
 ├── smart-import.css              — ظاهر مستقل زبانه ورود هوشمند
+├── github-update.js               — دریافت زمان آخرین کامیت شاخه main از GitHub
 ├── word-tree.js                  — نمودار پویا و قابل جست‌وجوی واژه‌ها
 ├── html-suggestions.js            — پیشنهادهای کد HTML
 ├── css-suggestions.js             — پیشنهادهای کد CSS
@@ -37,6 +38,7 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 - Context-aware next-word predictions that can continue selected suggestions into attributes, CSS values, variable initializers, and common code patterns.
 - Live Word Tree built from the loaded HTML, CSS, and JavaScript suggestion banks; selecting an entry opens a Persian explanation and a short code example.
 - Smart Import tab to paste or open mixed HTML/CSS/JavaScript source, inspect separated code, identify repeated document wrappers and exact duplicate blocks, and selectively apply chosen sections to current project files.
+- Live GitHub update indicator showing the latest commit date/time on `main`, formatted for Tehran time and linked to the source commit.
 - Quick-insert symbols, automatic closing HTML tags, indentation helpers, and bracket-aware Enter behavior.
 - Project file manager with create, rename, delete/undo, search, filters, and ordering options.
 - Search within the current editor, with next/previous match navigation.
@@ -52,6 +54,10 @@ A browser-based editor for creating, editing, previewing, organizing, and export
 3. Open `index.html` in a modern browser.
 
 No build command or package installation is required. The editor itself can run from local files. Network access is needed for optional library downloads and for exported code that references remote resources. Browser restrictions may differ when opening local files; testing through a small local static server can help diagnose those differences.
+
+## GitHub update timestamp
+
+A compact status strip near the top of the editor requests the latest commit from the public GitHub API for the repository's `main` branch. It displays the commit timestamp in the `Asia/Tehran` time zone and links to that commit. The time is the latest repository commit time, not a guarantee that GitHub Pages deployment has finished; Pages publication can lag behind a commit. This feature needs network access and can show an unavailable message if GitHub's API cannot be reached or its rate limit is exceeded.
 
 ## Smart Import tab
 
@@ -74,6 +80,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, and the narrow Smart Import bridge |
 | `smart-import.js` | Standalone local analyzer, import-file/clipboard handling, duplicate-block cleanup, result review, and selective application |
 | `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |
+| `github-update.js` | Fetches the latest `main` commit timestamp from GitHub and updates the status strip |
 | `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |
 | `html-suggestions.js` | HTML tags, global attributes, element-specific attributes, and HTML abbreviations |
 | `css-suggestions.js` | CSS property/value completion data and code snippets |
@@ -391,3 +398,11 @@ The completion banks are curated against browser-language references and should 
 ## License
 
 No license file is currently present in this repository. Confirm the repository owner's licensing terms before redistribution.
+
+
+### GitHub update indicator validation (2026-10-18)
+
+- Added a compact, responsive status strip that reads the latest commit on the repository's `main` branch through the public GitHub API.
+- The timestamp is formatted for `Asia/Tehran`, and the displayed link opens the corresponding commit.
+- Added the new script to both standalone-editor builders and to the GitHub Actions JavaScript syntax-check step.
+- Network/API availability and the final GitHub Pages deployment time are separate from the latest commit timestamp; interactive browser verification remains a manual check.

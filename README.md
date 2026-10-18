@@ -59,14 +59,14 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 | `index.html` | Editor UI, help content, preview iframe, and local asset references |
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
 | `script.js` | Editor behavior, files, storage, library catalog, preview generation, and export |
-| `html-suggestions.js` | HTML tag, global-attribute, and tag-specific attribute completion data |
+| `html-suggestions.js` | HTML tags, global attributes, element-specific attributes, and HTML abbreviations |
 | `css-suggestions.js` | CSS property/value completion data and code snippets |
 | `js-suggestions.js` | JavaScript words, member lists, and snippets |
 | `next-word-suggestions.js` | Context-sensitive next-token continuation rules for HTML, CSS, and JavaScript |
 | `tree-world-suggestion.md` | Visual-only branching tree of the current HTML, CSS, and JavaScript next-word rules; not loaded by the application |
 | `README.md` | Project documentation, usage, audit notes, and validation status |
 
-The completion bank is split into four JavaScript data files. The HTML bank includes contextual attributes and embedded SVG/MathML elements. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language and standard built-in names, browser API interfaces and members, object methods, and reusable snippets. Its vocabulary and continuations are curated against the ECMAScript specification and MDN references; newer or permission-gated browser APIs may not exist in every runtime. There is no `intellisense-data.js` file in the current repository.
+The completion bank is split into four JavaScript data files. The HTML bank separates global attributes from element-specific attributes, includes contextual value rules, and supports embedded SVG/MathML elements. The CSS bank includes properties, per-property values, at-rules, pseudo-classes, pseudo-elements, functions, units, and reusable snippets. The JavaScript bank includes language and standard built-in names, browser API interfaces and members, object methods, and reusable snippets. Its vocabulary and continuations are curated against the ECMAScript specification and MDN references; newer or permission-gated browser APIs may not exist in every runtime. There is no `intellisense-data.js` file in the current repository.
 
 ## Suggestion-bank coverage and next-word prediction
 
@@ -74,12 +74,20 @@ The current curated banks contain approximately these unique entries after norma
 
 | Bank | Coverage currently loaded by the editor |
 |---|---|
-| HTML | 200 element names (including SVG and MathML), 231 common attributes, 61 tag-specific attribute groups, 24 Emmet-style abbreviation triggers, and 18 quick-insert symbols |
+| HTML | 200 element names (including SVG and MathML), 185 global-attribute suggestions, 68 tag-specific attribute groups, 24 Emmet-style abbreviation triggers, and 18 quick-insert symbols |
 | CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, 13 core snippets, 34 shorthand candidates backed by 46 abbreviation mappings, and 18 quick-insert symbols |
 | JavaScript | 582 language/global/browser API words, 94 member roots with 1,304 distinct member names, 49 snippets (including 19 shorthand triggers), and 21 quick-insert symbols |
-| Next-word database | 123 contextual rules (37 HTML, 32 CSS, 54 JavaScript), 390 explicitly listed candidates, plus dynamically generated tag/attribute/property-value and code continuations |
+| Next-word database | 125 contextual rules (38 HTML, 33 CSS, 54 JavaScript), 373 explicitly listed candidates, plus dynamically generated tag/attribute/property-value and code continuations |
 
 These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment. JavaScript completion preserves names that differ only by case (for example, `Map` and `map`) because they are distinct identifiers.
+
+### Validation of suggestion spelling, context, and category
+
+The suggestion banks were reviewed for spelling, capitalization, language/category placement, and context. HTML global attributes are separated from element-specific attributes; value completions for `type`, `rel`, `target`, `loading`, `method`, `crossorigin`, `fetchpriority`, `decoding`, `preload`, `scope`, `accept`, `capture`, `kind`, and `shape` are restricted to relevant elements. Empty SVG/MathML nodes now get an empty-element continuation instead of an HTML-style paired tag.
+
+CSS next-word suggestions distinguish width and height viewport units and do not offer `auto` for `padding` or `gap` properties. CSS value completion no longer appends every function and generic value to every property; it uses the selected property's own value map plus CSS-wide keywords and a custom-property reference. The non-standard unprefixed `font-smooth` entry was removed in favor of explicitly named vendor-prefixed smoothing properties.
+
+JavaScript next-word continuation for array methods now requires member-access syntax such as `items.map`, instead of triggering after a plain identifier named `map`. This remains a curated completion dictionary, not a full parser or a guarantee of runtime support; experimental APIs and browser-version differences still need testing in the target environment.
 
 ### How the next-word database works
 

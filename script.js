@@ -1866,9 +1866,8 @@ function addBox() {
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];
-                    const common = ['inherit', 'initial', 'unset', 'revert', 'auto', 'none', 'normal', 'transparent', 'currentColor'];
-                    const functions = data.cssFunctions || [];
-                    return filterList(values.concat(common, functions), ctx.word);
+                    const common = ['inherit', 'initial', 'unset', 'revert', 'revert-layer', 'var(--custom-property)'];
+                    return filterList(values.concat(common), ctx.word);
                 }
                 if (ctx.kind === 'jsMember') {
                     const members = (data.jsMembers || {})[ctx.root] || [];

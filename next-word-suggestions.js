@@ -7,6 +7,13 @@
         'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
         'link', 'meta', 'param', 'source', 'track', 'wbr'
     ]);
+    const emptyForeignTags = new Set([
+        'path', 'circle', 'ellipse', 'rect', 'line', 'polyline', 'polygon', 'stop', 'feBlend',
+        'feColorMatrix', 'feComposite', 'feConvolveMatrix', 'feDisplacementMap', 'feDropShadow',
+        'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage',
+        'feMergeNode', 'feMorphology', 'feOffset', 'fePointLight', 'feDistantLight', 'feSpotLight',
+        'feTile', 'feTurbulence', 'mspace', 'mprescripts', 'mglyph', 'image'
+    ].map(function (tag) { return tag.toLowerCase(); }));
 
     const htmlAttributePriority = {
         a: ['href', 'target', 'rel', 'title'],
@@ -47,6 +54,8 @@
         if (htmlVoidTags.has(normalizedTag)) {
             items.push({ label: 'Finish tag with >', insert: '>', description: 'Finish the void element', caret: 1 });
             items.push({ label: 'Finish tag with />', insert: ' />', description: 'Finish with a self-closing slash', caret: 3 });
+        } else if (emptyForeignTags.has(normalizedTag)) {
+            items.push({ label: 'Finish empty SVG/MathML element', insert: ' />', description: 'Close this empty foreign-content element', caret: 3 });
         } else {
             const insert = '>\n    \n</' + tag + '>';
             items.push({
@@ -78,15 +87,23 @@
                 { label: 'header', insert: 'header', description: 'Header ID' },
                 { label: 'footer', insert: 'footer', description: 'Footer ID' }
             ]},
-            { pattern: /<([a-z][\w:-]*)\s+\btype\s*=\s*["']$/i, create: function (match) {
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\btype\s*=\s*["']$/i, create: function (match) {
                 const tag = match[1].toLowerCase();
-                const values = tag === 'input'
-                    ? 'text email password number checkbox radio submit button reset date datetime-local file hidden image month search tel time url week color range'.split(/\s+/)
-                    : (tag === 'button' ? ['button', 'submit', 'reset']
-                    : (tag === 'script' ? ['text/javascript', 'module', 'importmap', 'application/json']
-                    : (tag === 'link' ? ['stylesheet', 'icon', 'preconnect', 'modulepreload']
-                    : ['text/plain', 'application/json'])));
-                return values.map(function (value) { return { label: value, insert: value, description: 'Value for the ' + tag + ' type attribute' }; });
+                const valuesByTag = {
+                    input: 'text email password number checkbox radio submit button reset date datetime-local file hidden image month search tel time url week color range'.split(/\s+/),
+                    button: ['button', 'submit', 'reset'],
+                    script: ['text/javascript', 'module', 'importmap', 'application/json'],
+                    style: ['text/css'],
+                    link: ['text/css', 'image/svg+xml', 'image/png', 'image/jpeg', 'image/webp', 'application/manifest+json', 'application/pdf'],
+                    source: ['image/avif', 'image/webp', 'image/jpeg', 'image/png', 'video/mp4', 'audio/mpeg'],
+                    embed: ['application/pdf', 'image/svg+xml', 'image/png', 'image/jpeg', 'text/html'],
+                    object: ['application/pdf', 'image/svg+xml', 'image/png', 'image/jpeg', 'text/html'],
+                    a: ['text/plain', 'text/html', 'application/pdf', 'application/json', 'image/svg+xml'],
+                    area: ['text/plain', 'text/html', 'application/pdf', 'application/json']
+                };
+                return (valuesByTag[tag] || []).map(function (value) {
+                    return { label: value, insert: value, description: 'Value for the ' + tag + ' type attribute' };
+                });
             }},
             { pattern: /<[^<>]*\brole\s*=\s*["']$/i, items: [
                 { label: 'button', insert: 'button' }, { label: 'dialog', insert: 'dialog' },
@@ -101,21 +118,40 @@
             { pattern: /<[^<>]*\baria-live\s*=\s*["']$/i, items: [
                 { label: 'polite', insert: 'polite' }, { label: 'assertive', insert: 'assertive' }, { label: 'off', insert: 'off' }
             ]},
-            { pattern: /<[^<>]*\btarget\s*=\s*["']$/i, items: [
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\btarget\s*=\s*["']$/i, create: function (match) {
+                const tag = match[1].toLowerCase();
+                const values = ['a', 'area', 'base', 'form'].includes(tag)
+                    ? ['_self', '_blank', '_parent', '_top'] : [];
+                return values.map(function (value) { return { label: value, insert: value }; });
+            }},
+            { pattern: /<(button|input)\b[^<>]*\bformtarget\s*=\s*["']$/i, items: [
                 { label: '_self', insert: '_self' }, { label: '_blank', insert: '_blank' },
                 { label: '_parent', insert: '_parent' }, { label: '_top', insert: '_top' }
             ]},
-            { pattern: /<[^<>]*\brel\s*=\s*["']$/i, items: [
-                { label: 'noopener noreferrer', insert: 'noopener noreferrer' },
-                { label: 'stylesheet', insert: 'stylesheet' }, { label: 'icon', insert: 'icon' },
-                { label: 'preconnect', insert: 'preconnect' }, { label: 'modulepreload', insert: 'modulepreload' }
-            ]},
-            { pattern: /<[^<>]*\bloading\s*=\s*["']$/i, items: [
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\brel\s*=\s*["']$/i, create: function (match) {
+                const tag = match[1].toLowerCase();
+                const valuesByTag = {
+                    link: ['stylesheet', 'icon', 'preconnect', 'preload', 'modulepreload', 'manifest', 'alternate', 'canonical', 'dns-prefetch', 'prefetch', 'next', 'prev'],
+                    a: ['noopener noreferrer', 'nofollow', 'external', 'help', 'license', 'next', 'prev', 'search', 'tag', 'author', 'opener'],
+                    area: ['noopener noreferrer', 'nofollow', 'external', 'help', 'license', 'next', 'prev', 'search'],
+                    form: ['noopener noreferrer', 'nofollow', 'external', 'help', 'license', 'next', 'prev', 'search', 'opener']
+                };
+                return (valuesByTag[tag] || []).map(function (value) {
+                    return { label: value, insert: value, description: 'Valid rel value for <' + tag + '>' };
+                });
+            }},
+            { pattern: /<(img|iframe)\b[^<>]*\bloading\s*=\s*["']$/i, items: [
                 { label: 'lazy', insert: 'lazy' }, { label: 'eager', insert: 'eager' }
             ]},
-            { pattern: /<[^<>]*\bmethod\s*=\s*["']$/i, items: [
-                { label: 'get', insert: 'get' }, { label: 'post', insert: 'post' }, { label: 'dialog', insert: 'dialog' }
-            ]},
+            { pattern: /<([a-z][\w:-]*)\b[^<>]*\b(method|formmethod)\s*=\s*["']$/i, create: function (match) {
+                const tag = match[1].toLowerCase();
+                const attribute = match[2].toLowerCase();
+                const isValid = (attribute === 'method' && tag === 'form') ||
+                    (attribute === 'formmethod' && ['button', 'input'].includes(tag));
+                return (isValid ? ['get', 'post', 'dialog'] : []).map(function (value) {
+                    return { label: value, insert: value, description: 'Valid ' + attribute + ' value' };
+                });
+            }},
             { pattern: /<[^<>]*\bdir\s*=\s*["']$/i, items: [
                 { label: 'ltr', insert: 'ltr' }, { label: 'rtl', insert: 'rtl' }, { label: 'auto', insert: 'auto' }
             ]},
@@ -160,10 +196,10 @@
                 { label: 'multipart/form-data', insert: 'multipart/form-data' },
                 { label: 'text/plain', insert: 'text/plain' }
             ]},
-            { pattern: /<[^<>]*\bcrossorigin\s*=\s*["']$/i, items: [
+            { pattern: /<(audio|video|img|link|script)\b[^<>]*\bcrossorigin\s*=\s*["']$/i, items: [
                 { label: 'anonymous', insert: 'anonymous' }, { label: 'use-credentials', insert: 'use-credentials' }
             ]},
-            { pattern: /<[^<>]*\breferrerpolicy\s*=\s*["']$/i, items: [
+            { pattern: /<(a|area|img|iframe|link|script)\b[^<>]*\breferrerpolicy\s*=\s*["']$/i, items: [
                 { label: 'no-referrer', insert: 'no-referrer' },
                 { label: 'no-referrer-when-downgrade', insert: 'no-referrer-when-downgrade' },
                 { label: 'origin', insert: 'origin' },
@@ -173,13 +209,13 @@
                 { label: 'strict-origin-when-cross-origin', insert: 'strict-origin-when-cross-origin' },
                 { label: 'unsafe-url', insert: 'unsafe-url' }
             ]},
-            { pattern: /<[^<>]*\b(?:fetchpriority)\s*=\s*["']$/i, items: [
+            { pattern: /<(img|link|script)\b[^<>]*\bfetchpriority\s*=\s*["']$/i, items: [
                 { label: 'high', insert: 'high' }, { label: 'low', insert: 'low' }, { label: 'auto', insert: 'auto' }
             ]},
-            { pattern: /<[^<>]*\bdecoding\s*=\s*["']$/i, items: [
+            { pattern: /<img\b[^<>]*\bdecoding\s*=\s*["']$/i, items: [
                 { label: 'async', insert: 'async' }, { label: 'sync', insert: 'sync' }, { label: 'auto', insert: 'auto' }
             ]},
-            { pattern: /<[^<>]*\bpreload\s*=\s*["']$/i, items: [
+            { pattern: /<(audio|video)\b[^<>]*\bpreload\s*=\s*["']$/i, items: [
                 { label: 'none', insert: 'none' }, { label: 'metadata', insert: 'metadata' }, { label: 'auto', insert: 'auto' }
             ]},
             { pattern: /<[^<>]*\b(?:draggable|spellcheck)\s*=\s*["']$/i, items: [
@@ -189,16 +225,20 @@
                 { label: 'true', insert: 'true' }, { label: 'false', insert: 'false' },
                 { label: 'plaintext-only', insert: 'plaintext-only' }
             ]},
-            { pattern: /<[^<>]*\bscope\s*=\s*["']$/i, items: [
+            { pattern: /<th\b[^<>]*\bscope\s*=\s*["']$/i, items: [
                 { label: 'row', insert: 'row' }, { label: 'col', insert: 'col' },
                 { label: 'rowgroup', insert: 'rowgroup' }, { label: 'colgroup', insert: 'colgroup' }
             ]},
-            { pattern: /<[^<>]*\baccept\s*=\s*["']$/i, items: [
-                { label: 'image/*', insert: 'image/*' }, { label: 'audio/*', insert: 'audio/*' },
-                { label: 'video/*', insert: 'video/*' }, { label: '.pdf', insert: '.pdf' },
-                { label: '.png,.jpg,.jpeg', insert: '.png,.jpg,.jpeg' },
-                { label: '.txt,.csv', insert: '.txt,.csv' }
-            ]},
+            { pattern: /<input\b([^<>]*)\baccept\s*=\s*["']$/i, create: function (match) {
+                const typeMatch = match[1].match(/\btype\s*=\s*["']([^"']+)["']/i);
+                if (typeMatch && typeMatch[1].toLowerCase() !== 'file') return [];
+                return [
+                    { label: 'image/*', insert: 'image/*' }, { label: 'audio/*', insert: 'audio/*' },
+                    { label: 'video/*', insert: 'video/*' }, { label: '.pdf', insert: '.pdf' },
+                    { label: '.png,.jpg,.jpeg', insert: '.png,.jpg,.jpeg' },
+                    { label: '.txt,.csv', insert: '.txt,.csv' }
+                ];
+            }},
             { pattern: /<[^<>]*\binputmode\s*=\s*["']$/i, items: [
                 { label: 'none', insert: 'none' }, { label: 'text', insert: 'text' },
                 { label: 'decimal', insert: 'decimal' }, { label: 'numeric', insert: 'numeric' },
@@ -211,15 +251,17 @@
                 { label: 'previous', insert: 'previous' }, { label: 'search', insert: 'search' },
                 { label: 'send', insert: 'send' }
             ]},
-            { pattern: /<[^<>]*\bcapture\s*=\s*["']$/i, items: [
-                { label: 'user', insert: 'user' }, { label: 'environment', insert: 'environment' }
-            ]},
-            { pattern: /<[^<>]*\bkind\s*=\s*["']$/i, items: [
+            { pattern: /<input\b([^<>]*)\bcapture\s*=\s*["']$/i, create: function (match) {
+                const typeMatch = match[1].match(/\btype\s*=\s*["']([^"']+)["']/i);
+                if (typeMatch && typeMatch[1].toLowerCase() !== 'file') return [];
+                return [{ label: 'user', insert: 'user' }, { label: 'environment', insert: 'environment' }];
+            }},
+            { pattern: /<track\b[^<>]*\bkind\s*=\s*["']$/i, items: [
                 { label: 'subtitles', insert: 'subtitles' }, { label: 'captions', insert: 'captions' },
                 { label: 'descriptions', insert: 'descriptions' }, { label: 'chapters', insert: 'chapters' },
                 { label: 'metadata', insert: 'metadata' }
             ]},
-            { pattern: /<[^<>]*\bshape\s*=\s*["']$/i, items: [
+            { pattern: /<area\b[^<>]*\bshape\s*=\s*["']$/i, items: [
                 { label: 'rect', insert: 'rect' }, { label: 'circle', insert: 'circle' },
                 { label: 'poly', insert: 'poly' }, { label: 'default', insert: 'default' }
             ]},
@@ -275,22 +317,38 @@
             },
             {
                 pattern: /(?:^|[\n;{]\s*)(width|height|max-width|min-width|max-height|min-height)\s*$/i,
-                items: [
-                    { label: ': 100%;', insert: ': 100%;', description: 'Fill the available parent size' },
-                    { label: ': auto;', insert: ': auto;', description: 'Let the browser calculate the size' },
-                    { label: ': fit-content;', insert: ': fit-content;', description: 'Fit the content within constraints' },
-                    { label: ': 100dvh;', insert: ': 100dvh;', description: 'Use the dynamic viewport height unit' },
-                    { label: ': min(100%, 60rem);', insert: ': min(100%, 60rem);', description: 'Use a responsive maximum size' }
-                ]
+                create: function (match) {
+                    const property = match[1].toLowerCase();
+                    const valuesByProperty = {
+                        width: [': 100%;', ': auto;', ': fit-content;', ': 100dvw;', ': min(100%, 60rem);'],
+                        height: [': 100%;', ': auto;', ': fit-content;', ': 100dvh;', ': min(100%, 40rem);'],
+                        'min-width': [': 0;', ': auto;', ': min-content;', ': fit-content;', ': 100%;'],
+                        'min-height': [': 0;', ': auto;', ': min-content;', ': fit-content;', ': 100dvh;'],
+                        'max-width': [': none;', ': fit-content;', ': 100%;', ': min(100%, 60rem);'],
+                        'max-height': [': none;', ': fit-content;', ': 100%;', ': 100dvh;']
+                    };
+                    return (valuesByProperty[property] || []).map(function (value) {
+                        return { label: value, insert: value, description: 'Common valid value for ' + property };
+                    });
+                }
             },
             {
-                pattern: /(?:^|[\n;{]\s*)(margin|padding|gap|row-gap|column-gap)\s*$/i,
+                pattern: /(?:^|[\n;{]\s*)margin\s*$/i,
                 items: [
                     { label: ': 0;', insert: ': 0;', description: 'Remove spacing' },
                     { label: ': 0.5rem;', insert: ': 0.5rem;', description: 'Compact spacing' },
                     { label: ': 1rem;', insert: ': 1rem;', description: 'Standard spacing' },
                     { label: ': 1.5rem;', insert: ': 1.5rem;', description: 'Larger spacing' },
-                    { label: ': auto;', insert: ': auto;', description: 'Automatic spacing (where supported)' }
+                    { label: ': auto;', insert: ': auto;', description: 'Let the browser distribute automatic margins' }
+                ]
+            },
+            {
+                pattern: /(?:^|[\n;{]\s*)(padding|gap|row-gap|column-gap)\s*$/i,
+                items: [
+                    { label: ': 0;', insert: ': 0;', description: 'Remove spacing' },
+                    { label: ': 0.5rem;', insert: ': 0.5rem;', description: 'Compact spacing' },
+                    { label: ': 1rem;', insert: ': 1rem;', description: 'Standard spacing' },
+                    { label: ': 1.5rem;', insert: ': 1.5rem;', description: 'Larger spacing' }
                 ]
             },
             {
@@ -563,7 +621,7 @@
             { pattern: /\bJSON$/i, items: [
                 { label: '.parse(text)', insert: '.parse(text)' }, { label: '.stringify(value, null, 2)', insert: '.stringify(value, null, 2)' }
             ]},
-            { pattern: /\b(?:map|filter|forEach|find|some|every)$/i, items: [
+            { pattern: /\.(?:map|filter|forEach|find|some|every)$/i, items: [
                 { label: '((item) => item)', insert: '((item) => item)', description: 'Pass a callback function', caret: 2 },
                 { label: '((item) => item.property)', insert: '((item) => item.property)', description: 'Access an item property', caret: 2 }
             ]},
@@ -757,7 +815,7 @@
         { pattern: /\bDate$/i, items: [
             { label: '.now()', insert: '.now()', description: 'Get the current timestamp' },
             { label: '.parse(dateString)', insert: '.parse(dateString)', description: 'Parse a date string' },
-            { label: '()', insert: '()', description: 'Create the current date object' }
+            { label: '()', insert: '()', description: 'Call Date() to get the current date and time as a string' }
         ]},
         { pattern: /\bRegExp$/i, items: [
             { label: '(pattern, flags)', insert: '(pattern, flags)', description: 'Create a regular expression' }

@@ -5,7 +5,7 @@
         'a abbr address area article aside audio b base bdi bdo blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd label legend li link main map mark menu meta meter nav noscript object ol optgroup option output p param picture pre progress q rp rt ruby s samp script search section select slot small source span strong style sub summary sup table tbody td template textarea tfoot th thead time title tr track u ul var video wbr'
     ).split(/\s+/);
     const htmlAttributes = (
-        'accept accept-charset accesskey action align allow allowfullscreen alt async autocapitalize autocomplete autofocus autoplay capture cellpadding cellspacing challenge charset checked cite class cols colspan content contenteditable controls coords crossorigin data datetime decoding default defer dir dirname disabled download draggable enctype enterkeyhint for form formaction formenctype formmethod formnovalidate formtarget headers height hidden high href hreflang http-equiv id inert inputmode integrity is itemid itemprop itemref itemscope itemtype kind label lang list loading loop low max maxlength media method min minlength multiple muted name nomodule nonce open optimum pattern placeholder playsinline poster preload readonly referrerpolicy rel required reversed role rows rowspan sandbox scope selected shape size sizes slot span spellcheck src srcdoc srclang srcset start step style tabindex target title translate type usemap value width wrap'
+        'accesskey autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover role slot spellcheck style tabindex title translate virtualkeyboardpolicy writingsuggestions aria-activedescendant aria-atomic aria-autocomplete aria-busy aria-checked aria-colcount aria-colindex aria-colspan aria-controls aria-current aria-describedby aria-description aria-details aria-disabled aria-errormessage aria-expanded aria-flowto aria-haspopup aria-hidden aria-invalid aria-keyshortcuts aria-label aria-labelledby aria-level aria-live aria-modal aria-multiline aria-multiselectable aria-orientation aria-owns aria-placeholder aria-posinset aria-pressed aria-readonly aria-relevant aria-required aria-roledescription aria-rowcount aria-rowindex aria-rowspan aria-selected aria-setsize aria-sort aria-valuemax aria-valuemin aria-valuenow aria-valuetext data-testid data-state data-id data-value'
     ).split(/\s+/);
     const htmlAttrsByTag = {
         a:'href target rel download hreflang type referrerpolicy',
@@ -45,14 +45,14 @@
         object:'data form height name type usemap width',
         embed:'height src type width',
         track:'default kind label src srclang',
-        table:'align bgcolor border cellpadding cellspacing frame rules summary width'
+        table:''
     };
     // Current global attributes cross-checked against MDN's HTML reference.
-    const modernGlobalAttributes = 'accesskey anchor autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover slot spellcheck style tabindex title translate'.split(/\s+/);
+    const modernGlobalAttributes = 'accesskey autocapitalize autocorrect autofocus class contenteditable dir draggable enterkeyhint exportparts hidden id inert inputmode is itemid itemprop itemref itemscope itemtype lang nonce part popover slot spellcheck style tabindex title translate virtualkeyboardpolicy writingsuggestions'.split(/\s+/);
     htmlAttributes.splice(0, htmlAttributes.length, ...Array.from(new Set(htmlAttributes.concat(modernGlobalAttributes))).filter(function (attr) { return !/^(align|bgcolor|cellpadding|cellspacing|frame|rules|summary)$/.test(attr); }));
     Object.keys(htmlAttrsByTag).forEach(function (tag) {
         // Keep tag-specific attributes as arrays; the completion engine combines arrays.
-        htmlAttrsByTag[tag] = Array.from(new Set(htmlAttrsByTag[tag].split(/\s+/).filter(function (attr) {
+        htmlAttrsByTag[tag] = Array.from(new Set(htmlAttrsByTag[tag].split(/\s+/).filter(Boolean).filter(function (attr) {
             return !/^(align|bgcolor|border|cellpadding|cellspacing|frame|rules|summary)$/.test(attr);
         })));
     });
@@ -68,21 +68,28 @@
 
     // Modern global and event-handler attributes commonly used in browser code.
     const extendedGlobalAttributes = (
-        'autocorrect writingsuggestions virtualkeyboardpolicy popover popovertarget popovertargetaction command commandfor part exportparts slot onabort onanimationcancel onanimationend onanimationiteration onanimationstart onauxclick onbeforeinput onbeforematch onbeforetoggle onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncopy oncuechange oncut ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended onerror onfocus onformdata ongotpointercapture onhashchange oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart onmessage onmousedown onmouseenter onmouseleave onmousemove onmouseout onmouseover onmouseup onoffline ononline onpagehide onpageshow onpaste onpause onplay onplaying onpointercancel onpointerdown onpointerenter onpointerleave onpointermove onpointerout onpointerover onpointerup onpopstate onprogress onratechange onreset onresize onscroll onscrollend onsecuritypolicyviolation onseeked onseeking onselect onselectionchange onselectstart onslotchange onstalled onsubmit onsuspend ontimeupdate ontoggle ontouchcancel ontouchend ontouchmove ontouchstart ontransitioncancel ontransitionend ontransitionrun ontransitionstart onunhandledrejection onunload onvolumechange onwaiting onwheel'
+        'autocorrect writingsuggestions virtualkeyboardpolicy popover part exportparts slot onabort onanimationcancel onanimationend onanimationiteration onanimationstart onauxclick onbeforeinput onbeforematch onbeforetoggle onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncopy oncuechange oncut ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended onerror onfocus onformdata ongotpointercapture onhashchange oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart onmessage onmousedown onmouseenter onmouseleave onmousemove onmouseout onmouseover onmouseup onoffline ononline onpagehide onpageshow onpaste onpause onplay onplaying onpointercancel onpointerdown onpointerenter onpointerleave onpointermove onpointerout onpointerover onpointerup onpopstate onprogress onratechange onreset onresize onscroll onscrollend onsecuritypolicyviolation onseeked onseeking onselect onselectionchange onselectstart onslotchange onstalled onsubmit onsuspend ontimeupdate ontoggle ontouchcancel ontouchend ontouchmove ontouchstart ontransitioncancel ontransitionend ontransitionrun ontransitionstart onunhandledrejection onunload onvolumechange onwaiting onwheel'
     ).split(/\s+/);
     htmlAttributes.splice(0, htmlAttributes.length, ...Array.from(new Set(htmlAttributes.concat(extendedGlobalAttributes))).filter(function (attr) {
         return !/^(align|bgcolor|cellpadding|cellspacing|frame|rules|summary)$/.test(attr);
     }));
 
     const additionalAttrsByTag = {
-        a: 'attributionsrc',
+        a: 'attributionsrc ping',
         audio: 'autoplay controls controlslist crossorigin loop muted preload src',
         button: 'command commandfor popovertarget popovertargetaction',
+        base: 'href target',
+        blockquote: 'cite',
+        del: 'cite datetime',
+        ins: 'cite datetime',
+        optgroup: 'disabled label',
+        param: 'name value',
+        q: 'cite',
         dialog: 'closedby',
         form: 'rel',
         iframe: 'allowpaymentrequest credentialless csp',
         img: 'fetchpriority ismap usemap',
-        input: 'alpha dirname enterkeyhint formaction formenctype formmethod formnovalidate formtarget',
+        input: 'alpha dirname enterkeyhint formaction formenctype formmethod formnovalidate formtarget popovertarget popovertargetaction',
         link: 'blocking imagesizes imagesrcset',
         meta: 'media',
         script: 'blocking fetchpriority',

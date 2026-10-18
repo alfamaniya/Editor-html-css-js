@@ -52,7 +52,7 @@ The current curated banks contain approximately these unique entries after norma
 | HTML | 200 element names (including SVG and MathML), 231 common attributes including event handlers/ARIA/data attributes, and 61 tag-specific attribute groups |
 | CSS | 482 property/custom-property names, 145 property value maps, 17 at-rules, 67 pseudo-classes, 22 pseudo-elements, 71 value functions, 40 unit names, and 13 snippets |
 | JavaScript | 582 language/global/browser API words, 94 member roots with 1,304 distinct member names, and 30 snippets |
-| Next-word database | 84 contextual rules (14 HTML, 16 CSS, 54 JavaScript), 250 explicitly listed candidates, plus dynamically generated tag/attribute/code continuations |
+| Next-word database | 123 contextual rules (37 HTML, 32 CSS, 54 JavaScript), 390 explicitly listed candidates, plus dynamically generated tag/attribute/property-value and code continuations |
 
 These banks are maintained locally in the repository; no runtime network request or model service is used for suggestions. Suggestions are curated rather than exhaustive: the browser platform evolves, APIs may differ by browser, and a suggestion does not guarantee that a property, method, or feature is supported in the user's target environment. JavaScript completion preserves names that differ only by case (for example, `Map` and `map`) because they are distinct identifiers.
 
@@ -60,11 +60,11 @@ These banks are maintained locally in the repository; no runtime network request
 
 After a completion is accepted, the editor checks the text before the caret against ordered, language-specific rules. A matching rule can offer a continuation without replacing the word already accepted. Examples include:
 
-- HTML: after accepting a tag name, offer common attributes or a paired opening/closing element.
-- CSS: after accepting a property such as display or position, offer common values; after selecting a flex/grid display value, offer related alignment and gap declarations.
+- HTML: after accepting a tag name, offer common attributes or a paired opening/closing element; after selecting attributes such as `autocomplete`, `inputmode`, `fetchpriority`, ARIA states, and media/form attributes, offer relevant enumerated values.
+- CSS: after accepting a property such as display, overflow, text-align, font-weight, cursor, grid-auto-flow, or object-fit, offer common values; after layout declarations, offer related flex/grid, sticky-positioning, typography, border, and reduced-motion continuations. Common at-rules now include `@import`, `@keyframes`, `@font-face`, `@layer`, `@scope`, and relevant preference media queries.
 - JavaScript: after const/let/var, suggest an assignment; after the assignment, suggest common initializer types; after identifiers such as document or console, suggest common members and call patterns.
 
-The next-word database is a deterministic, hand-maintained rule/sequence list with 84 contexts and 250 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The JavaScript rules now include additional control-flow and module continuations, standard built-in methods, browser storage/navigation APIs, cryptography/performance helpers, and timer patterns. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
+The next-word database is a deterministic, hand-maintained rule/sequence list with 123 contexts and 390 explicitly listed candidate continuations before dynamic candidates; it is not a trained language model. The HTML rules cover additional ARIA state values, autocomplete tokens, input hints, image/media loading options, form encodings, referrer policies, and related attributes. The CSS rules cover more property values, common at-rules, responsive layout follow-ups, and reduced-motion patterns. JavaScript rules also include expanded control-flow, modules, built-in methods, and browser API continuations. Predictions are skipped inside JavaScript strings/comments and CSS strings/comments, and are shown only for known contexts. Dismiss the popup with Escape to keep typing normally.
 
 ## Basic use
 
@@ -270,6 +270,16 @@ Review date: 2026-10-16.
 - Verified case-sensitive JavaScript names such as `Map`/`map` and `Set`/`set` are preserved as separate completion entries.
 - **Not performed for this change:** running the editor in a real browser or conducting cross-browser/end-to-end tests.
 
+### HTML/CSS next-word expansion (2026-10-18)
+
+- Expanded HTML contextual rules for ARIA states, `autocomplete`, form encodings, `crossorigin`, referrer policy, fetch priority, image decoding, media preload, content editing, table scope, file accept filters, virtual-keyboard input mode, enter-key hints, capture, media track kinds, and related enumerated values.
+- Expanded CSS contextual rules for common value vocabularies such as overflow, flex wrapping, text alignment, font weight, text decoration, borders, object/background sizing, cursor, text wrapping, grid placement, typography, animation, transforms, containment, and color scheme; added continuations for keyframes, font faces, cascade layers, scopes, media preferences, sticky positioning, grid layouts, and reduced motion.
+- Parsed all five JavaScript files and initialized all four completion-data scripts against a test `window` object: **pass**.
+- Verified next-word data: 123 rules (37 HTML, 32 CSS, 54 JavaScript) and 390 explicitly listed candidate items, plus dynamically generated property-value candidates.
+- Exercised representative HTML and CSS contexts including `autocomplete`, `fetchpriority`, `aria-pressed`, `inputmode`, `preload`, `enctype`, `crossorigin`, `overflow`, `text-align`, `font-weight`, `cursor`, `grid-auto-flow`, `@keyframes`, `@font-face`, color-scheme media queries, flex layout, sticky positioning, borders, and reduced-motion follow-ups: **pass**.
+- Checked completion caret offsets: **no out-of-range values found**.
+- **Not performed for this change:** interactive browser testing or cross-browser/end-to-end testing.
+
 
 
 ## Reference material
@@ -279,6 +289,11 @@ The completion banks are curated against browser-language references and should 
 - [MDN HTML reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference)
 - [MDN HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements)
 - [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)
+- [MDN HTML attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes)
+- [MDN HTML global attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes)
+- [MDN CSS properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties)
+- [MDN CSS values](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values)
+- [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/)
 - [MDN JavaScript reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference)
 - [MDN JavaScript standard built-in objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects)
 - [MDN Web API reference](https://developer.mozilla.org/en-US/docs/Web/API)

@@ -61,7 +61,7 @@ while ((match = tagRe.exec(source))) {
   const closing = /^<\s*\//.test(token);
   const selfClosing = /\/\s*>$/.test(token);
   if (!closing && !selfClosing && (name === 'script' || name === 'style')) {
-    const closeRe = new RegExp('<\\\\/\\\\s*' + name + '\\\\s*>', 'ig');
+    const closeRe = new RegExp('</\\s*' + name + '\\s*>', 'ig');
     closeRe.lastIndex = tagRe.lastIndex;
     const close = closeRe.exec(source);
     if (!close) { fail('missing closing tag for <' + name + '>', match.index); continue; }

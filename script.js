@@ -4,82 +4,13 @@
         // ==========================================
         //  ثابت‌ها
         // ==========================================
-        const DEFAULT_HTML = `<main class="code-gallery">
-  <header class="gallery-header">
-    <div>
-      <p class="eyebrow">HTML · CSS · JAVASCRIPT</p>
-      <h1>200 Code Boxes</h1>
-      <p>Compact code samples displayed directly on each box.</p>
-    </div>
-    <span class="box-count" id="boxCount">200 boxes</span>
-  </header>
-  <section class="code-grid" id="codeGrid" aria-label="200 HTML CSS and JavaScript code boxes"></section>
-</main>`;
-
-        const DEFAULT_CSS = `* { box-sizing: border-box; }
-:root { color-scheme: light; }
-body { margin: 0; padding: 8px; background: #f3f6f4; color: #172a30; font: 12px/1.4 Arial, sans-serif; }
-.code-gallery { width: 100%; max-width: 1800px; margin: 0 auto; }
-.gallery-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px; padding: 7px 9px; border: 1px solid #c5d6d1; border-radius: 7px; background: #fff; }
-.gallery-header h1 { margin: 0; font-size: 17px; line-height: 1.2; }
-.gallery-header p { margin: 3px 0 0; color: #59716c; font-size: 10px; }
-.gallery-header .eyebrow { margin: 0 0 3px; font-size: 8px; font-weight: 700; letter-spacing: .1em; color: #3b7468; }
-.box-count { flex: 0 0 auto; padding: 4px 7px; border-radius: 20px; background: #e3f1ec; color: #285e53; font: 700 9px/1.3 Arial, sans-serif; white-space: nowrap; }
-.code-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 112px), 1fr)); gap: 5px; align-items: stretch; }
-.code-card { min-width: 0; overflow: hidden; padding: 6px; border: 1px solid hsl(var(--card-hue, 165) 23% 47% / .82); border-radius: 6px; background: hsl(var(--card-hue, 165) 32% 91%); color: #1b3436; box-shadow: 0 1px 3px rgb(25 55 49 / 8%); }
-.code-card h2 { margin: 0 0 4px; padding-bottom: 3px; border-bottom: 1px solid rgb(32 74 67 / 20%); color: hsl(var(--card-hue, 165) 35% 22%); font-size: 9px; line-height: 1.2; letter-spacing: .03em; }
-.code-line { min-width: 0; margin-top: 4px; padding-top: 3px; border-top: 1px solid rgb(32 74 67 / 14%); }
-.code-line-label { display: block; margin-bottom: 2px; color: #426a63; font: 700 7px/1.15 Arial, sans-serif; letter-spacing: .05em; }
-.code-line code { display: block; min-width: 0; color: #192f33; font: 7.5px/1.35 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
-@media (min-width: 900px) { .code-grid { gap: 5px; } }
-@media (max-width: 420px) { body { padding: 5px; } .gallery-header { align-items: flex-start; } .gallery-header h1 { font-size: 15px; } .code-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 105px), 1fr)); gap: 4px; } .code-card { padding: 5px; } .code-line code { font-size: 7px; } }`;
-
-        const DEFAULT_JS = `const grid = document.getElementById("codeGrid");
-const boxCount = document.getElementById("boxCount");
-const totalBoxes = 200;
-
-function addCodeLine(card, language, source) {
-  const line = document.createElement("div");
-  line.className = "code-line";
-
-  const label = document.createElement("span");
-  label.className = "code-line-label";
-  label.textContent = language;
-
-  const code = document.createElement("code");
-  code.textContent = source;
-
-  line.append(label, code);
-  card.appendChild(line);
-}
-
-for (let index = 1; index <= totalBoxes; index++) {
-  const number = String(index).padStart(3, "0");
-  const className = "box-" + number;
-  const hue = (index * 37) % 360;
-  const padding = 4 + (index % 7);
-  const radius = 2 + (index % 8);
-
-  const card = document.createElement("article");
-  card.className = "code-card";
-  card.style.setProperty("--card-hue", hue);
-
-  const title = document.createElement("h2");
-  title.textContent = "BOX " + number;
-  card.appendChild(title);
-
-  const htmlCode = '<div class="' + className + '">Box ' + index + '</div>';
-  const cssCode = "." + className + " { padding: " + padding + "px; border-radius: " + radius + "px; }";
-  const jsCode = 'const box' + number + ' = document.querySelector(".' + className + '");';
-
-  addCodeLine(card, "HTML", htmlCode);
-  addCodeLine(card, "CSS", cssCode);
-  addCodeLine(card, "JAVASCRIPT", jsCode);
-
-  grid.appendChild(card);
-}
-
-boxCount.textContent = grid.children.length + " boxes";`;
+        const STARTER_GALLERY = window.EDITOR_STARTER_GALLERY;
+        if (!STARTER_GALLERY || !STARTER_GALLERY.html || !STARTER_GALLERY.css || !STARTER_GALLERY.js) {
+            throw new Error('starter-gallery.js must load before script.js');
+        }
+        const DEFAULT_HTML = STARTER_GALLERY.html;
+        const DEFAULT_CSS = STARTER_GALLERY.css;
+        const DEFAULT_JS = STARTER_GALLERY.js;
 
         // ==========================================
         //  کتابخانه‌های آماده (Presets)
@@ -246,133 +177,29 @@ boxCount.textContent = grid.children.length + " boxes";`;
         // ==========================================
         //  Project
         // ==========================================
-        const LEGACY_STARTER_DEFAULTS = {
-            html: [
-                '<h1>Hello, World!</h1>',
-                '<div class="card">',
-                '    <p>This is a sample card.</p>',
-                '    <button id="btn">Click Me</button>',
-                '</div>'
-            ].join('\n'),
-            css: [
-                'body {',
-                '    font-family: Tahoma, sans-serif;',
-                '    padding: 30px;',
-                '    background-color: #f4f4f4;',
-                '}',
-                '',
-                'h1 {',
-                '    color: #2c3e50;',
-                '    text-align: center;',
-                '}',
-                '',
-                '.card {',
-                '    background: white;',
-                '    padding: 20px;',
-                '    border-radius: 10px;',
-                '    box-shadow: 0 4px 10px rgba(0,0,0,0.1);',
-                '    max-width: 400px;',
-                '    margin: 20px auto;',
-                '}',
-                '',
-                'button {',
-                '    background: #3498db;',
-                '    color: white;',
-                '    border: none;',
-                '    padding: 10px 20px;',
-                '    border-radius: 5px;',
-                '    cursor: pointer;',
-                '}',
-                '',
-                'button:hover {',
-                '    background: #2980b9;',
-                '}'
-            ].join('\n'),
-            js: [
-                "document.getElementById('btn').addEventListener('click', function () {",
-                "    alert('It works!');",
-                '});'
-            ].join('\n')
-        };
-
-        const PREVIOUS_DEFAULTS = {
-            html: `<main class="demo">
-  <h1 id="title">10 Small Boxes, 10 Buttons</h1>
-  <p>Simple HTML, CSS, and JavaScript examples.</p>
-  <p id="message">Click any button to try it.</p>
-  <div class="grid" id="boxGrid">
-    <section class="box"><h2>Box 1</h2><button onclick="showMessage()">Show message</button></section>
-    <section class="box"><h2>Box 2</h2><button onclick="changeColor()">Change color</button></section>
-    <section class="box"><h2>Box 3</h2><button onclick="increase()">Count +1</button><strong id="count">0</strong></section>
-    <section class="box"><h2>Box 4</h2><button onclick="decrease()">Count -1</button></section>
-    <section class="box"><h2>Box 5</h2><button onclick="toggleText()">Hide/show text</button></section>
-    <section class="box"><h2>Box 6</h2><button onclick="changeTitle()">Change title</button></section>
-    <section class="box"><h2>Box 7</h2><button onclick="showTime()">Show time</button></section>
-    <section class="box"><h2>Box 8</h2><button onclick="resetColors()">Reset colors</button></section>
-    <section class="box"><h2>Box 9</h2><button onclick="toggleDark()">Dark mode</button></section>
-    <section class="box"><h2>Box 10</h2><button onclick="addBox()">Add a box</button></section>
-  </div>
-</main>`,
-            css: `* { box-sizing: border-box; }
-body { margin: 0; padding: 24px; font: 16px Arial, sans-serif; background: #f3f4f6; color: #222; }
-.demo { max-width: 900px; margin: auto; }
-h1 { font-size: 28px; }
-#message { min-height: 24px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-.box { min-height: 125px; padding: 14px; border: 1px solid #ddd; border-radius: 10px; background: white; }
-.box h2 { margin: 0 0 12px; font-size: 18px; }
-button { padding: 8px 10px; border: 0; border-radius: 6px; background: #2563eb; color: white; cursor: pointer; }
-button:hover { background: #1d4ed8; }
-strong { display: block; margin-top: 8px; }
-body.dark { background: #111827; color: #f9fafb; }
-body.dark .box { background: #1f2937; border-color: #374151; }
-@media (max-width: 480px) { body { padding: 12px; } }`,
-            js: `let count = 0;
-function showMessage() {
-  document.querySelector("#message").textContent = "Hello! The first button works.";
-}
-function changeColor() {
-  document.querySelectorAll(".box")[1].style.background = "#fef3c7";
-}
-function increase() {
-  document.querySelector("#count").textContent = ++count;
-}
-function decrease() {
-  document.querySelector("#count").textContent = --count;
-}
-function toggleText() {
-  const message = document.querySelector("#message");
-  message.hidden = !message.hidden;
-}
-function changeTitle() {
-  document.querySelector("#title").textContent = "You changed the title!";
-}
-function showTime() {
-  document.querySelector("#message").textContent = new Date().toLocaleTimeString();
-}
-function resetColors() {
-  document.querySelectorAll(".box").forEach(box => box.style.background = "");
-}
-function toggleDark() {
-  document.body.classList.toggle("dark");
-}
-function addBox() {
-  const box = document.createElement("section");
-  box.className = "box";
-  box.textContent = "New box";
-  document.querySelector("#boxGrid").append(box);
-}`
-        };
-
         function isUntouchedLegacyStarter(files) {
             const names = { html: 'index.html', css: 'style.css', js: 'script.js' };
-            const defaults = [LEGACY_STARTER_DEFAULTS, PREVIOUS_DEFAULTS];
-            return defaults.some(function(sample) {
-                return ['html', 'css', 'js'].every(function(lang) {
-                    const file = files.find(function(item) { return item.type === lang; });
-                    return !!file && file.name === names[lang] && file.content === sample[lang];
-                });
-            });
+            const get = function(type) { return files.find(function(file) { return file.type === type; }); };
+            const htmlFile = get('html');
+            const cssFile = get('css');
+            const jsFile = get('js');
+            if (!htmlFile || !cssFile || !jsFile ||
+                htmlFile.name !== names.html || cssFile.name !== names.css || jsFile.name !== names.js) return false;
+
+            // Upgrade only known untouched starter signatures. Do not replace user-authored files.
+            const oldSingleCard = htmlFile.content.includes('<h1>Hello, World!</h1>') &&
+                htmlFile.content.includes('<button id="btn">Click Me</button>') &&
+                jsFile.content.includes("alert('It works!');");
+            const oldTenButtons = htmlFile.content.includes('10 Small Boxes, 10 Buttons') &&
+                htmlFile.content.includes('id="boxGrid"') &&
+                jsFile.content.includes('function showMessage()') &&
+                jsFile.content.includes('function addBox()');
+            const oldTwoHundredCodeCards = htmlFile.content.includes('id="codeGrid"') &&
+                htmlFile.content.includes('200 Code Boxes') &&
+                cssFile.content.includes('.code-card') &&
+                jsFile.content.includes('const totalBoxes = 200') &&
+                jsFile.content.includes('boxCount.textContent = grid.children.length + " boxes"');
+            return oldSingleCard || oldTenButtons || oldTwoHundredCodeCards;
         }
 
         function createDefaultProject() {

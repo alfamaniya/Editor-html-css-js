@@ -18,6 +18,7 @@ const assets = [
   { tag: /<script\s+src=["']css-suggestions\.js["']\s*>\s*<\/script>/i, file: 'css-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']js-suggestions\.js["']\s*>\s*<\/script>/i, file: 'js-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']next-word-suggestions\.js["']\s*>\s*<\/script>/i, file: 'next-word-suggestions.js', type: 'script' },
+  { tag: /<script\s+src=["']starter-gallery\.js["']\s*>\s*<\/script>/i, file: 'starter-gallery.js', type: 'script' },
   { tag: /<script\s+src=["']script\.js["']\s*>\s*<\/script>/i, file: 'script.js', type: 'script' },
   { tag: /<script\s+src=["']word-tree\.js["']\s*>\s*<\/script>/i, file: 'word-tree.js', type: 'script' },
   { tag: /<script\s+src=["']smart-import\.js["']\s*>\s*<\/script>/i, file: 'smart-import.js', type: 'script' },

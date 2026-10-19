@@ -88,8 +88,9 @@ The default project now opens with **200 compact code cards** arranged in a resp
 - Moved the starter project's HTML, CSS, and JavaScript templates out of `script.js` into the standalone `starter-gallery.js` module. `index.html` loads it before `script.js`, and both single-file builders bundle it in the same order.
 - The starter generates 200 compact cards using real HTML elements, including containers, text semantics, links, buttons, inputs, forms, lists, tables, media, SVG, canvas, and disclosure elements. Each card has distinct CSS custom properties for accent color, border, radius, and spacing.
 - Every card displays its HTML, CSS, and JavaScript examples as code text and has an interaction such as changing text/style, reading a form control, updating a progress indicator, adding a list/table row, changing an image tint, drawing on canvas, or reporting an action. Card code snippets are displayed with `textContent` rather than interpreted as markup.
+- Every card has its own active `:hover` CSS rule. The applied rule is printed verbatim in that card's `CSS · HOVER` code area; each hover style varies by movement, scale, rotation, border, background, outline, or shadow. Every card also displays a right-to-left Persian description of its HTML tag, click behavior, and hover effect.
 - On load, only recognized untouched starter projects (the earlier single-card, 10-button, or 200-code-card demo) are upgraded. The migration does not overwrite projects whose standard files have been edited.
-- Added `scripts/test-starter-gallery.mjs` to verify the separate module, expected UI templates, interaction handlers, and generated JavaScript syntax. GitHub Actions runs this test alongside the Smart Import test before building the standalone editor.
+- Added `scripts/test-starter-gallery.mjs` to verify the separate module, expected UI templates, interaction handlers, generated JavaScript syntax, the 200 registered hover rules, exact matching between each displayed and applied hover rule, and 200 Persian explanations. GitHub Actions runs this test alongside the Smart Import test before building the standalone editor.
 
 ## Project files
 

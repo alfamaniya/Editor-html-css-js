@@ -9,7 +9,8 @@
 │       └── build-test-editor.yml  — گردش‌کار آزمون و بررسی
 ├── scripts/
 │   ├── build-test-editor.mjs      — ساخت نسخه تک‌فایلی
-│   └── test-smart-import.mjs      — آزمون یکپارچه بازیابی ورودی هوشمند
+│   ├── test-smart-import.mjs      — آزمون بازیابی ورودی هوشمند
+│   └── test-starter-gallery.mjs   — آزمون ۲۰۰ باکس نمونه
 ├── tools/
 │   └── build-single-file.js       — ساخت نسخهٔ تک‌فایلی
 ├── index.html                    — صفحه و رابط اصلی ویرایشگر
@@ -86,7 +87,7 @@ The default project now opens with **200 compact code cards** arranged in a resp
 - Replaced the old starter demo with a compact responsive grid of 200 code cards. Every card shows example HTML, CSS, and JavaScript as visible text, not active markup or code inside the card.
 - Cards use a tight auto-filling CSS grid, small monospace snippets, and subtle tinted backgrounds so as many cards as practical appear side-by-side within the preview pane.
 - Added a guarded migration for the exact, untouched previous 10-card starter. It automatically updates only when all three standard files still exactly match the previous defaults; user-edited projects are not silently overwritten.
-- Added a dependency-free test that executes the starter JavaScript against a minimal DOM mock and verifies that 200 cards are generated, with three visible code snippets each.
+- Added `scripts/test-starter-gallery.mjs`, a dependency-free test that executes the starter JavaScript against a minimal DOM mock and verifies that 200 cards are generated, with three visible code snippets each. GitHub Actions syntax-checks and runs both Smart Import and starter-gallery tests before building the standalone editor.
 
 ## Project files
 
@@ -97,6 +98,7 @@ The default project now opens with **200 compact code cards** arranged in a resp
 | `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, the Smart Import bridge, and the new 200-card HTML/CSS/JavaScript starter example |
 | `smart-import.js` | Smart Import extraction, malformed/nested document recovery, top-level JavaScript conflict diagnostics, optional latest-version recovery, Persian findings/statuses, exact-duplicate cleanup, and selective application |
 | `scripts/test-smart-import.mjs` | Dependency-free integration test for malformed/nested document recovery, declaration conflicts, and manual latest-JavaScript-version selection |
+| `scripts/test-starter-gallery.mjs` | Runs the default starter JavaScript against a tiny DOM mock and checks the 200 cards, 600 code snippets, compact responsive grid, and migration markers |
 | `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |
 | `github-update.js` | Fetches the latest `main` commit timestamp from GitHub and updates the status strip |
 | `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |

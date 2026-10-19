@@ -161,8 +161,8 @@
         '  const grid = document.getElementById("tagGrid");\n' +
         '  const count = document.getElementById("galleryCount");\n' +
         '  const examples = ' + JSON.stringify(examples) + ';\n' +
-        '  const colors = ["#267c63", "#356ac3", "#b45b38", "#8a58a6", "#9a7625", "#287d91"];
-  const dynamicStyles = document.createElement("style"); document.head.appendChild(dynamicStyles);\n' +
+        '  const colors = ["#267c63", "#356ac3", "#b45b38", "#8a58a6", "#9a7625", "#287d91"];\n' +
+        '  const dynamicStyles = document.createElement("style"); document.head.appendChild(dynamicStyles);\n' +
         '  function escapeHTML(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }\n' +
         '  function makeCard(example, index) {\n' +
         '    const card = document.createElement("article"); card.className = "tag-card";\n' +

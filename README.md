@@ -10,14 +10,12 @@
 ├── scripts/
 │   ├── build-test-editor.mjs      — ساخت نسخه تک‌فایلی
 │   ├── test-smart-import.mjs      — آزمون بازیابی ورودی هوشمند
-│   └── test-starter-gallery.mjs   — آزمون ۲۰۰ باکس نمونه
 ├── tools/
 │   └── build-single-file.js       — ساخت نسخهٔ تک‌فایلی
 ├── index.html                    — صفحه و رابط اصلی ویرایشگر
 ├── index-test-etitor.html         — نسخهٔ آزمایشی ویرایشگر
 ├── style.css                     — ظاهر، چیدمان و واکنش‌گرایی
 ├── script.js                     — منطق و عملکرد ویرایشگر
-├── starter-gallery.js             — نمونهٔ مستقل ۲۰۰ باکس تعاملی و کدهای HTML/CSS/JS
 ├── smart-import.js               — تحلیل و تفکیک کدهای ترکیبی واردشده
 ├── smart-import.css              — ظاهر مستقل زبانه ورود هوشمند
 ├── github-update.js               — دریافت زمان آخرین کامیت شاخه main از GitHub
@@ -78,19 +76,15 @@ Review and edit the three extracted outputs, select only the languages you inten
 
 The import workflow runs in the browser and does not upload the pasted code. It remains a conservative, text-based recovery and diagnostic tool—not a full standards-compliant HTML/CSS/JavaScript parser or a guarantee of runtime correctness. The document candidate selector and JavaScript declaration scan are heuristic, not full standards-compliant parsers; they cannot detect every syntax/runtime error, and unusual valid constructs may need manual review. When several document versions are present, check the selected HTML/CSS/JS output carefully before applying because the chosen version may not be the one you intended. Always inspect the output before applying it, especially when the source contains multiple conflicting document versions. The standalone test editor is generated from the same source files by `node scripts/build-test-editor.mjs`. Run `node scripts/test-smart-import.mjs` to execute the dependency-free integration test for nested document recovery, CSS recovery, repeated top-level declarations, and the explicit latest-JavaScript-version recovery action. GitHub Actions runs this test before building the standalone editor.
 
-## Starter example
+## Starter code
 
-The default project now opens with **200 compact code cards** arranged in a responsive, tightly spaced grid. Each card visibly shows one HTML snippet, one CSS rule, and one JavaScript line, with a small box label and a subtle individual tint. The code is rendered as text rather than executed as markup inside the cards; the sample demonstrates creating DOM elements, responsive CSS grid layout, and safe `textContent` rendering. The previous untouched 10-box/10-button starter is automatically upgraded on load, while any user-edited project is preserved.
+The editor opens with one simple line in each code tab:
 
+- HTML: `<h1>Hello, world!</h1>`
+- CSS: `body { font-family: sans-serif; }`
+- JavaScript: `console.log("Hello, world!");`
 
-### Interactive tag-gallery starter (2026-10-19)
-
-- Moved the starter project's HTML, CSS, and JavaScript templates out of `script.js` into the standalone `starter-gallery.js` module. `index.html` loads it before `script.js`, and both single-file builders bundle it in the same order.
-- The starter generates 200 compact cards using real HTML elements, including containers, text semantics, links, buttons, inputs, forms, lists, tables, media, SVG, canvas, and disclosure elements. Each card has distinct CSS custom properties for accent color, border, radius, and spacing.
-- Every card displays its HTML, CSS, and JavaScript examples as code text and has an interaction such as changing text/style, reading a form control, updating a progress indicator, adding a list/table row, changing an image tint, drawing on canvas, or reporting an action. Card code snippets are displayed with `textContent` rather than interpreted as markup.
-- Every card has its own active `:hover` CSS rule. The applied rule is printed verbatim in that card's `CSS · HOVER` code area; each hover style varies by movement, scale, rotation, border, background, outline, or shadow. Every card also displays a right-to-left Persian description of its HTML tag, click behavior, and hover effect.
-- On load, only recognized untouched starter projects (the earlier single-card, 10-button, or 200-code-card demo) are upgraded. The migration does not overwrite projects whose standard files have been edited.
-- Added `scripts/test-starter-gallery.mjs` to verify the separate module, expected UI templates, interaction handlers, generated JavaScript syntax, the 200 registered hover rules, exact matching between each displayed and applied hover rule, and 200 Persian explanations. GitHub Actions runs this test alongside the Smart Import test before building the standalone editor.
+The previous interactive demo gallery and its dedicated test files have been removed. Known untouched legacy demo projects are replaced by this minimal starter when loaded; user-edited projects are preserved.
 
 ## Project files
 
@@ -98,11 +92,9 @@ The default project now opens with **200 compact code cards** arranged in a resp
 |---|---|
 | `index.html` | Editor UI, help content, preview iframe, and local asset references |
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
-| `starter-gallery.js` | Separate source for the default HTML, CSS, and JavaScript; creates 200 compact cards with varied real HTML elements, per-card styles, visible source snippets, and interactive behaviors |
-| `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, and the Smart Import bridge; loads starter defaults from `starter-gallery.js` |
+| `script.js` | Editor behavior, files, storage, library catalog, minimal starter defaults, preview generation, export, and the Smart Import bridge |
 | `smart-import.js` | Smart Import extraction, malformed/nested document recovery, top-level JavaScript conflict diagnostics, optional latest-version recovery, Persian findings/statuses, exact-duplicate cleanup, and selective application |
 | `scripts/test-smart-import.mjs` | Dependency-free integration test for malformed/nested document recovery, declaration conflicts, and manual latest-JavaScript-version selection |
-| `scripts/test-starter-gallery.mjs` | Checks the separate starter module, responsive grid, interaction handlers, displayed source snippets, and generated JavaScript syntax |
 | `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |
 | `github-update.js` | Fetches the latest `main` commit timestamp from GitHub and updates the status strip |
 | `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |

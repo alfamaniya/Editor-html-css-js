@@ -20,7 +20,6 @@ const scriptFiles = [
     'css-suggestions.js',
     'js-suggestions.js',
     'next-word-suggestions.js',
-    'starter-gallery.js',
     'script.js',
     'word-tree.js',
     'smart-import.js',

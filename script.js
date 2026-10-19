@@ -4,13 +4,9 @@
         // ==========================================
         //  ثابت‌ها
         // ==========================================
-        const STARTER_GALLERY = window.EDITOR_STARTER_GALLERY;
-        if (!STARTER_GALLERY || !STARTER_GALLERY.html || !STARTER_GALLERY.css || !STARTER_GALLERY.js) {
-            throw new Error('starter-gallery.js must load before script.js');
-        }
-        const DEFAULT_HTML = STARTER_GALLERY.html;
-        const DEFAULT_CSS = STARTER_GALLERY.css;
-        const DEFAULT_JS = STARTER_GALLERY.js;
+        const DEFAULT_HTML = '<h1>Hello, world!</h1>';
+        const DEFAULT_CSS = 'body { font-family: sans-serif; }';
+        const DEFAULT_JS = 'console.log("Hello, world!");';
 
         // ==========================================
         //  کتابخانه‌های آماده (Presets)
@@ -199,7 +195,9 @@
                 cssFile.content.includes('.code-card') &&
                 jsFile.content.includes('const totalBoxes = 200') &&
                 jsFile.content.includes('boxCount.textContent = grid.children.length + " boxes"');
-            return oldSingleCard || oldTenButtons || oldTwoHundredCodeCards;
+            const oldTagGallery = htmlFile.content.includes('200 Interactive Tag Samples') ||
+                htmlFile.content.includes('id="tagGrid"');
+            return oldSingleCard || oldTenButtons || oldTwoHundredCodeCards || oldTagGallery;
         }
 
         function createDefaultProject() {

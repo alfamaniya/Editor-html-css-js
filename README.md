@@ -78,7 +78,15 @@ The import workflow runs in the browser and does not upload the pasted code. It 
 
 ## Starter example
 
-The default project is intentionally small: **10 compact boxes and 10 buttons**, each demonstrating one simple action. The examples cover a message, a color change, increment/decrement, hide/show, title change, current time, color reset, dark mode, and adding a box. The starter HTML, CSS, and JavaScript are kept short so users can understand and modify them easily.
+The default project now opens with **200 compact code cards** arranged in a responsive, tightly spaced grid. Each card visibly shows one HTML snippet, one CSS rule, and one JavaScript line, with a small box label and a subtle individual tint. The code is rendered as text rather than executed as markup inside the cards; the sample demonstrates creating DOM elements, responsive CSS grid layout, and safe `textContent` rendering. The previous untouched 10-box/10-button starter is automatically upgraded on load, while any user-edited project is preserved.
+
+
+### 200-card code-gallery starter (2026-10-19)
+
+- Replaced the old starter demo with a compact responsive grid of 200 code cards. Every card shows example HTML, CSS, and JavaScript as visible text, not active markup or code inside the card.
+- Cards use a tight auto-filling CSS grid, small monospace snippets, and subtle tinted backgrounds so as many cards as practical appear side-by-side within the preview pane.
+- Added a guarded migration for the exact, untouched previous 10-card starter. It automatically updates only when all three standard files still exactly match the previous defaults; user-edited projects are not silently overwritten.
+- Added a dependency-free test that executes the starter JavaScript against a minimal DOM mock and verifies that 200 cards are generated, with three visible code snippets each.
 
 ## Project files
 
@@ -86,7 +94,7 @@ The default project is intentionally small: **10 compact boxes and 10 buttons**,
 |---|---|
 | `index.html` | Editor UI, help content, preview iframe, and local asset references |
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
-| `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, and the narrow Smart Import bridge |
+| `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, the Smart Import bridge, and the new 200-card HTML/CSS/JavaScript starter example |
 | `smart-import.js` | Smart Import extraction, malformed/nested document recovery, top-level JavaScript conflict diagnostics, optional latest-version recovery, Persian findings/statuses, exact-duplicate cleanup, and selective application |
 | `scripts/test-smart-import.mjs` | Dependency-free integration test for malformed/nested document recovery, declaration conflicts, and manual latest-JavaScript-version selection |
 | `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |

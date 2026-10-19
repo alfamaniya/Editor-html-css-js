@@ -437,3 +437,18 @@ The workflow `.github/workflows/check-index.yml` validates the main `index.html`
 - The editor's JavaScript files pass Node.js syntax checks.
 
 This is a lightweight structural and asset-reference check, not a full HTML validator or browser end-to-end test. Open **GitHub → Actions → Check index file** to inspect the run and its logs. A failed check identifies missing structure, missing local files, or JavaScript syntax errors.
+
+
+### GitHub Actions: index tag and delimiter integrity check
+
+The workflow `.github/workflows/check-index-integrity.yml` runs when `index.html` or its checker changes, on pull requests targeting `main`, and when manually triggered from GitHub Actions. It runs `scripts/check-index-integrity.mjs` to check:
+
+- Opening and closing HTML tags for missing, extra, or mismatched tags.
+- Balanced parentheses, braces, and square brackets in inline JavaScript and CSS blocks.
+- Inline JavaScript syntax using Node.js.
+- Unclosed strings and comments detected by the lightweight scanner.
+- Counts of semicolons and commas encountered in scanned code.
+
+This is a lightweight checker, not a full HTML/CSS parser. Semicolon and comma counts are reported for inspection; the checker does not claim that every punctuation mark is semantically correct. Complex JavaScript template literals and unusual markup may need manual review. Run the site in a browser for complete validation.
+
+Open **GitHub → Actions → Check index syntax and delimiters** to see the results and any reported line numbers.

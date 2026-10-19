@@ -173,7 +173,7 @@
         '    const code = document.createElement("div"); code.className = "tag-code";\n' +
         '    const htmlLabel = document.createElement("b"); htmlLabel.textContent = "HTML"; code.appendChild(htmlLabel); const htmlCode = document.createElement("code"); htmlCode.textContent = example.markup; code.appendChild(htmlCode);\n' +
         '    const cssLabel = document.createElement("b"); cssLabel.textContent = "CSS"; code.appendChild(cssLabel); const cssCode = document.createElement("code"); cssCode.textContent = ".card-" + (index + 1) + " { padding: " + pad + "px; border-radius: " + radius + "px; --accent: " + accent + "; }"; code.appendChild(cssCode);\n' +
-        '    const jsLabel = document.createElement("b"); jsLabel.textContent = "JAVASCRIPT"; code.appendChild(jsLabel); const jsCode = document.createElement("code"); jsCode.textContent = "/* " + example.js + " */\\ncard.addEventListener(\\"click\\", () => act(card))" code.appendChild(jsCode); card.appendChild(code);\n' +
+        '    const jsLabel = document.createElement("b"); jsLabel.textContent = "JAVASCRIPT"; code.appendChild(jsLabel); const jsCode = document.createElement("code"); jsCode.textContent = "/* " + example.js + " */\\ncard.addEventListener(\\"click\\", () => act(card))"; code.appendChild(jsCode); card.appendChild(code);\n' +
         '    card.classList.add("card-" + (index + 1)); card.dataset.action = example.action; card.dataset.index = String(index);\n' +
         '    card._demo = demo; card._result = result; card._example = example; card.addEventListener("click", () => act(card)); return card;\n' +
         '  }\n' +

@@ -425,3 +425,15 @@ No license file is currently present in this repository. Confirm the repository 
 - The timestamp is formatted for `Asia/Tehran`, and the displayed link opens the corresponding commit.
 - Added the new script to both standalone-editor builders and to the GitHub Actions JavaScript syntax-check step.
 - Network/API availability and the final GitHub Pages deployment time are separate from the latest commit timestamp; interactive browser verification remains a manual check.
+
+
+### GitHub Actions: index.html check
+
+The workflow `.github/workflows/check-index.yml` validates the main `index.html` file on relevant pushes to `main`, pull requests targeting `main`, and manual runs from the Actions tab. It checks that:
+
+- `index.html` exists and is not empty.
+- Basic HTML document structure is present (doctype, `html`, `head`, and `body`).
+- Relative local CSS, JavaScript, and other linked assets referenced from `index.html` exist in the repository.
+- The editor's JavaScript files pass Node.js syntax checks.
+
+This is a lightweight structural and asset-reference check, not a full HTML validator or browser end-to-end test. Open **GitHub → Actions → Check index file** to inspect the run and its logs. A failed check identifies missing structure, missing local files, or JavaScript syntax errors.

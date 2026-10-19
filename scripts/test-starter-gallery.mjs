@@ -21,7 +21,7 @@ assert(starter.html.includes('200 Interactive Tag Samples'), 'HTML should descri
 assert(starter.css.includes('repeat(auto-fill'), 'CSS should use a responsive auto-filling grid');
 assert(starter.css.includes('var(--radius)'), 'card styles should use per-card custom properties');
 assert(starter.js.includes('while (grid.children.length < 200)'), 'JavaScript should create exactly 200 cards');
-assert(starter.js.includes('grid.addEventListener("click"'), 'cards should have working click behavior');
+assert(starter.js.includes('card.addEventListener("click", () => act(card))'), 'cards should have working click behavior');
 assert(starter.js.includes('case "read"'), 'form controls should expose their live values');
 assert(starter.js.includes('case "progress"'), 'progress and meter samples should respond to interaction');
 assert(starter.js.includes('case "canvas"'), 'canvas sample should draw when activated');

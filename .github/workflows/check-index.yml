@@ -1,0 +1,128 @@
+name: Check index file
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "style.css"
+      - "script.js"
+      - "smart-import.css"
+      - "smart-import.js"
+      - "word-tree.js"
+      - "github-update.js"
+      - "html-suggestions.js"
+      - "css-suggestions.js"
+      - "js-suggestions.js"
+      - "next-word-suggestions.js"
+      - ".github/workflows/check-index.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "style.css"
+      - "script.js"
+      - "smart-import.css"
+      - "smart-import.js"
+      - "word-tree.js"
+      - "github-update.js"
+      - "html-suggestions.js"
+      - "css-suggestions.js"
+      - "js-suggestions.js"
+      - "next-word-suggestions.js"
+      - ".github/workflows/check-index.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-index:
+    name: Validate index.html
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify index file exists and is not empty
+        run: |
+          test -f index.html
+          test -s index.html
+
+      - name: Check required document structure
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+
+          const html = readFileSync('index.html', 'utf8');
+          const required = [
+            ['HTML doctype', /<!doctype\s+html\s*>/i],
+            ['opening html element', /<html\b/i],
+            ['head element', /<head\b/i],
+            ['body element', /<body\b/i],
+            ['closing body element', /<\/body\s*>/i],
+            ['closing html element', /<\/html\s*>/i],
+          ];
+
+          const missing = required
+            .filter(([, pattern]) => !pattern.test(html))
+            .map(([label]) => label);
+
+          if (missing.length) {
+            console.error('index.html is missing required structure:');
+            for (const item of missing) console.error(`- ${item}`);
+            process.exit(1);
+          }
+
+          console.log('index.html contains the required document structure.');
+          NODE
+
+      - name: Verify local CSS and JavaScript references
+        run: |
+          node --input-type=module <<'NODE'
+          import { existsSync, readFileSync } from 'node:fs';
+          import { resolve } from 'node:path';
+
+          const html = readFileSync('index.html', 'utf8');
+          const references = [];
+          const patterns = [
+            /<script\b[^>]*\bsrc\s*=\s*["']([^"'#?]+)(?:[?#][^"']*)?["'][^>]*>/gi,
+            /<link\b[^>]*\bhref\s*=\s*["']([^"'#?]+)(?:[?#][^"']*)?["'][^>]*>/gi,
+          ];
+
+          for (const pattern of patterns) {
+            for (const match of html.matchAll(pattern)) {
+              const reference = match[1].trim();
+              if (!reference || /^(?:[a-z]+:|\/\/|#)/i.test(reference) || reference.startsWith('/')) continue;
+              references.push(reference);
+            }
+          }
+
+          const missing = [...new Set(references)].filter((reference) => {
+            const cleanPath = decodeURIComponent(reference).replaceAll('\\', '/');
+            return !existsSync(resolve(process.cwd(), cleanPath));
+          });
+
+          if (missing.length) {
+            console.error('index.html references missing local assets:');
+            for (const file of missing) console.error(`- ${file}`);
+            process.exit(1);
+          }
+
+          console.log(`Checked ${new Set(references).size} local asset reference(s); all exist.`);
+          NODE
+
+      - name: Check JavaScript syntax used by the index page
+        run: |
+          for file in script.js smart-import.js word-tree.js github-update.js html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js; do
+            if [ -f "$file" ]; then
+              node --check "$file"
+            fi
+          done

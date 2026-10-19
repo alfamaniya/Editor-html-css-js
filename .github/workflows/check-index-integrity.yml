@@ -1,0 +1,38 @@
+name: Check index syntax and delimiters
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "scripts/check-index-integrity.mjs"
+      - ".github/workflows/check-index-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "scripts/check-index-integrity.mjs"
+      - ".github/workflows/check-index-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  index-integrity:
+    name: Check HTML tags and code delimiters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check checker script syntax
+        run: node --check scripts/check-index-integrity.mjs
+
+      - name: Check index.html tags, delimiters, and inline JavaScript
+        run: node scripts/check-index-integrity.mjs

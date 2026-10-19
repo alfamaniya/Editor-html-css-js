@@ -173,9 +173,9 @@
         '    const code = document.createElement("div"); code.className = "tag-code";\n' +
         '    const htmlLabel = document.createElement("b"); htmlLabel.textContent = "HTML"; code.appendChild(htmlLabel); const htmlCode = document.createElement("code"); htmlCode.textContent = example.markup; code.appendChild(htmlCode);\n' +
         '    const cssLabel = document.createElement("b"); cssLabel.textContent = "CSS"; code.appendChild(cssLabel); const cssCode = document.createElement("code"); cssCode.textContent = ".card-" + (index + 1) + " { padding: " + pad + "px; border-radius: " + radius + "px; --accent: " + accent + "; }"; code.appendChild(cssCode);\n' +
-        '    const jsLabel = document.createElement("b"); jsLabel.textContent = "JAVASCRIPT"; code.appendChild(jsLabel); const jsCode = document.createElement("code"); jsCode.textContent = "/* " + example.js + " */\\\ncard.addEventListener(\\\"click\\\", handle" + example.action[0].toUpperCase() + example.action.slice(1) + ");"; code.appendChild(jsCode); card.appendChild(code);\n' +
+        '    const jsLabel = document.createElement("b"); jsLabel.textContent = "JAVASCRIPT"; code.appendChild(jsLabel); const jsCode = document.createElement("code"); jsCode.textContent = "/* " + example.js + " */\\ncard.addEventListener(\\"click\\", () => act(card))" code.appendChild(jsCode); card.appendChild(code);\n' +
         '    card.classList.add("card-" + (index + 1)); card.dataset.action = example.action; card.dataset.index = String(index);\n' +
-        '    card._demo = demo; card._result = result; card._example = example; return card;\n' +
+        '    card._demo = demo; card._result = result; card._example = example; card.addEventListener("click", () => act(card)); return card;\n' +
         '  }\n' +
         '  function act(card) {\n' +
         '    const demo = card._demo, result = card._result, example = card._example; const target = demo.querySelector("button, input, textarea, select, output, progress, meter, details, summary, img, canvas, svg, a, p, h2, span, li, td, figcaption, time, abbr, data, code, pre, blockquote, address, footer, header, main, section, article, aside, q, cite, dfn, kbd, samp, var, ruby, bdi, bdo, del, ins, s, u, b, i, mark, small, strong, em, sup, sub, hr, audio, video, iframe, dialog, fieldset, form, nav, figure, table, dl, ul, ol");\n' +
@@ -207,7 +207,7 @@
         '  }\n' +
         '  examples.forEach((example, index) => grid.appendChild(makeCard(example, index % examples.length)));\n' +
         '  while (grid.children.length < 200) { const index = grid.children.length; grid.appendChild(makeCard(examples[index % examples.length], index)); }\n' +
-        '  grid.addEventListener("click", event => { const card = event.target.closest(".tag-card"); if (card && grid.contains(card)) act(card); });\n' +
+        '' +
         '  grid.addEventListener("submit", event => { event.preventDefault(); const card = event.target.closest(".tag-card"); if (card) act(card); });\n' +
         '  grid.addEventListener("change", event => { const card = event.target.closest(".tag-card"); if (card && card._result) { const input = event.target; card._result.textContent = input.type === "password" ? "Password length: " + input.value.length : input.type === "file" ? (input.files[0]?.name || "No file selected") : input.type === "checkbox" || input.type === "radio" ? (input.checked ? "Selected" : "Not selected") : "Value: " + (input.value || "(empty)"); } });\n' +
         '  count.textContent = grid.children.length + " examples";\n' +

@@ -17,6 +17,7 @@
 ├── index-test-etitor.html         — نسخهٔ آزمایشی ویرایشگر
 ├── style.css                     — ظاهر، چیدمان و واکنش‌گرایی
 ├── script.js                     — منطق و عملکرد ویرایشگر
+├── starter-gallery.js             — نمونهٔ مستقل ۲۰۰ باکس تعاملی و کدهای HTML/CSS/JS
 ├── smart-import.js               — تحلیل و تفکیک کدهای ترکیبی واردشده
 ├── smart-import.css              — ظاهر مستقل زبانه ورود هوشمند
 ├── github-update.js               — دریافت زمان آخرین کامیت شاخه main از GitHub
@@ -82,12 +83,13 @@ The import workflow runs in the browser and does not upload the pasted code. It 
 The default project now opens with **200 compact code cards** arranged in a responsive, tightly spaced grid. Each card visibly shows one HTML snippet, one CSS rule, and one JavaScript line, with a small box label and a subtle individual tint. The code is rendered as text rather than executed as markup inside the cards; the sample demonstrates creating DOM elements, responsive CSS grid layout, and safe `textContent` rendering. The previous untouched 10-box/10-button starter is automatically upgraded on load, while any user-edited project is preserved.
 
 
-### 200-card code-gallery starter (2026-10-19)
+### Interactive tag-gallery starter (2026-10-19)
 
-- Replaced the old starter demo with a compact responsive grid of 200 code cards. Every card shows example HTML, CSS, and JavaScript as visible text, not active markup or code inside the card.
-- Cards use a tight auto-filling CSS grid, small monospace snippets, and subtle tinted backgrounds so as many cards as practical appear side-by-side within the preview pane.
-- Added a guarded migration for the exact, untouched previous 10-card starter. It automatically updates only when all three standard files still exactly match the previous defaults; user-edited projects are not silently overwritten.
-- Added `scripts/test-starter-gallery.mjs`, a dependency-free test that executes the starter JavaScript against a minimal DOM mock and verifies that 200 cards are generated, with three visible code snippets each. GitHub Actions syntax-checks and runs both Smart Import and starter-gallery tests before building the standalone editor.
+- Moved the starter project's HTML, CSS, and JavaScript templates out of `script.js` into the standalone `starter-gallery.js` module. `index.html` loads it before `script.js`, and both single-file builders bundle it in the same order.
+- The starter generates 200 compact cards using real HTML elements, including containers, text semantics, links, buttons, inputs, forms, lists, tables, media, SVG, canvas, and disclosure elements. Each card has distinct CSS custom properties for accent color, border, radius, and spacing.
+- Every card displays its HTML, CSS, and JavaScript examples as code text and has an interaction such as changing text/style, reading a form control, updating a progress indicator, adding a list/table row, changing an image tint, drawing on canvas, or reporting an action. Card code snippets are displayed with `textContent` rather than interpreted as markup.
+- On load, only recognized untouched starter projects (the earlier single-card, 10-button, or 200-code-card demo) are upgraded. The migration does not overwrite projects whose standard files have been edited.
+- Added `scripts/test-starter-gallery.mjs` to verify the separate module, expected UI templates, interaction handlers, and generated JavaScript syntax. GitHub Actions runs this test alongside the Smart Import test before building the standalone editor.
 
 ## Project files
 
@@ -95,10 +97,11 @@ The default project now opens with **200 compact code cards** arranged in a resp
 |---|---|
 | `index.html` | Editor UI, help content, preview iframe, and local asset references |
 | `style.css` | Editor layout, theme, responsive rules, focus styles, and component styling |
-| `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, the Smart Import bridge, and the new 200-card HTML/CSS/JavaScript starter example |
+| `starter-gallery.js` | Separate source for the default HTML, CSS, and JavaScript; creates 200 compact cards with varied real HTML elements, per-card styles, visible source snippets, and interactive behaviors |
+| `script.js` | Editor behavior, files, storage, library catalog, preview generation, export, and the Smart Import bridge; loads starter defaults from `starter-gallery.js` |
 | `smart-import.js` | Smart Import extraction, malformed/nested document recovery, top-level JavaScript conflict diagnostics, optional latest-version recovery, Persian findings/statuses, exact-duplicate cleanup, and selective application |
 | `scripts/test-smart-import.mjs` | Dependency-free integration test for malformed/nested document recovery, declaration conflicts, and manual latest-JavaScript-version selection |
-| `scripts/test-starter-gallery.mjs` | Runs the default starter JavaScript against a tiny DOM mock and checks the 200 cards, 600 code snippets, compact responsive grid, and migration markers |
+| `scripts/test-starter-gallery.mjs` | Checks the separate starter module, responsive grid, interaction handlers, displayed source snippets, and generated JavaScript syntax |
 | `smart-import.css` | Scoped layout, responsive styling, and keyboard-focus styles for Smart Import |
 | `github-update.js` | Fetches the latest `main` commit timestamp from GitHub and updates the status strip |
 | `word-tree.js` | Dynamic searchable word tree, contextual rule branches, Persian item explanations, and example snippets |

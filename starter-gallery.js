@@ -161,12 +161,13 @@
         '  const grid = document.getElementById("tagGrid");\n' +
         '  const count = document.getElementById("galleryCount");\n' +
         '  const examples = ' + JSON.stringify(examples) + ';\n' +
-        '  const colors = ["#267c63", "#356ac3", "#b45b38", "#8a58a6", "#9a7625", "#287d91"];\n' +
+        '  const colors = ["#267c63", "#356ac3", "#b45b38", "#8a58a6", "#9a7625", "#287d91"];
+  const dynamicStyles = document.createElement("style"); document.head.appendChild(dynamicStyles);\n' +
         '  function escapeHTML(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }\n' +
         '  function makeCard(example, index) {\n' +
         '    const card = document.createElement("article"); card.className = "tag-card";\n' +
         '    const accent = colors[index % colors.length]; const radius = 3 + (index % 9); const pad = 4 + (index % 5);\n' +
-        '    card.style.setProperty("--accent", accent); card.style.setProperty("--edge", accent + "88"); card.style.setProperty("--ink", accent); card.style.setProperty("--wash", accent + "18"); card.style.setProperty("--active-wash", accent + "35"); card.style.setProperty("--radius", radius + "px"); card.style.padding = pad + "px";\n' +
+        '    card.style.setProperty("--accent", accent); card.style.setProperty("--edge", accent + "88"); card.style.setProperty("--ink", accent); card.style.setProperty("--wash", accent + "18"); card.style.setProperty("--active-wash", accent + "35"); card.style.setProperty("--radius", radius + "px"); dynamicStyles.sheet.insertRule(".card-" + (index + 1) + " { padding: " + pad + "px; border-radius: " + radius + "px; --accent: " + accent + "; }");\n' +
         '    const title = document.createElement("h2"); title.textContent = String(index + 1).padStart(3, "0") + " · <" + example.tag + "> — " + example.label; card.appendChild(title);\n' +
         '    const demo = document.createElement("div"); demo.className = "tag-demo"; demo.innerHTML = example.markup; card.appendChild(demo);\n' +
         '    const result = document.createElement("p"); result.className = "tag-result"; result.setAttribute("aria-live", "polite"); card.appendChild(result);\n' +

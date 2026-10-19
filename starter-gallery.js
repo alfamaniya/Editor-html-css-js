@@ -157,60 +157,60 @@
         { tag:'meter', label:'Battery meter', markup:'<meter min="0" max="100" value="80"></meter>', action:'progress', js:'Decrease the meter level' }
     ];
 
-    const js = '(function () {\\n' +
-        '  const grid = document.getElementById("tagGrid");\\n' +
-        '  const count = document.getElementById("galleryCount");\\n' +
-        '  const examples = ' + JSON.stringify(examples) + ';\\n' +
-        '  const colors = ["#267c63", "#356ac3", "#b45b38", "#8a58a6", "#9a7625", "#287d91"];\\n' +
-        '  function escapeHTML(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }\\n' +
-        '  function makeCard(example, index) {\\n' +
-        '    const card = document.createElement("article"); card.className = "tag-card";\\n' +
-        '    const accent = colors[index % colors.length]; const radius = 3 + (index % 9); const pad = 4 + (index % 5);\\n' +
-        '    card.style.setProperty("--accent", accent); card.style.setProperty("--edge", accent + "88"); card.style.setProperty("--ink", accent); card.style.setProperty("--wash", accent + "18"); card.style.setProperty("--active-wash", accent + "35"); card.style.setProperty("--radius", radius + "px"); card.style.padding = pad + "px";\\n' +
-        '    const title = document.createElement("h2"); title.textContent = String(index + 1).padStart(3, "0") + " · <" + example.tag + "> — " + example.label; card.appendChild(title);\\n' +
-        '    const demo = document.createElement("div"); demo.className = "tag-demo"; demo.innerHTML = example.markup; card.appendChild(demo);\\n' +
-        '    const result = document.createElement("p"); result.className = "tag-result"; result.setAttribute("aria-live", "polite"); card.appendChild(result);\\n' +
-        '    const code = document.createElement("div"); code.className = "tag-code";\\n' +
-        '    const htmlLabel = document.createElement("b"); htmlLabel.textContent = "HTML"; code.appendChild(htmlLabel); const htmlCode = document.createElement("code"); htmlCode.textContent = example.markup; code.appendChild(htmlCode);\\n' +
-        '    const cssLabel = document.createElement("b"); cssLabel.textContent = "CSS"; code.appendChild(cssLabel); const cssCode = document.createElement("code"); cssCode.textContent = ".card-" + (index + 1) + " { padding: " + pad + "px; border-radius: " + radius + "px; --accent: " + accent + "; }"; code.appendChild(cssCode);\\n' +
-        '    const jsLabel = document.createElement("b"); jsLabel.textContent = "JAVASCRIPT"; code.appendChild(jsLabel); const jsCode = document.createElement("code"); jsCode.textContent = "/* " + example.js + " */\\\\ncard.addEventListener(\\\\"click\\\\", handle" + example.action[0].toUpperCase() + example.action.slice(1) + ");"; code.appendChild(jsCode); card.appendChild(code);\\n' +
-        '    card.classList.add("card-" + (index + 1)); card.dataset.action = example.action; card.dataset.index = String(index);\\n' +
-        '    card._demo = demo; card._result = result; card._example = example; return card;\\n' +
-        '  }\\n' +
-        '  function act(card) {\\n' +
-        '    const demo = card._demo, result = card._result, example = card._example; const target = demo.querySelector("button, input, textarea, select, output, progress, meter, details, summary, img, canvas, svg, a, p, h2, span, li, td, figcaption, time, abbr, data, code, pre, blockquote, address, footer, header, main, section, article, aside, q, cite, dfn, kbd, samp, var, ruby, bdi, bdo, del, ins, s, u, b, i, mark, small, strong, em, sup, sub, hr, audio, video, iframe, dialog, fieldset, form, nav, figure, table, dl, ul, ol");\\n' +
-        '    const firstInput = demo.querySelector("input, textarea, select"); const button = demo.querySelector("button"); const current = target || demo.firstElementChild || demo;\\n' +
-        '    switch (example.action) {\\n' +
-        '      case "count": { const n = Number(current.dataset.count || current.textContent.match(/-?\\\\d+/)?.[0] || 0) + 1; current.dataset.count = n; if (current.tagName === "OUTPUT") current.value = n; else current.textContent = "Count: " + n; break; }\\n' +
-        '      case "text": current.textContent = "Updated: " + example.label; break;\\n' +
-        '      case "toggle": card.classList.toggle("is-active"); if (current.style) current.style.fontWeight = current.style.fontWeight === "700" ? "" : "700"; if (current.tagName === "DETAILS" || current.tagName === "DIALOG") current.open = !current.open; if (current.tagName === "AUDIO" || current.tagName === "VIDEO") current.controls = !current.controls; if (current.tagName === "IFRAME") current.hidden = !current.hidden; if (current.tagName === "HR") current.style.borderTop = current.style.borderTop ? "" : "3px dashed " + card.style.getPropertyValue("--accent"); break;\\n' +
-        '      case "color": { const color = colors[(colors.indexOf(card.style.getPropertyValue("--accent")) + 1) % colors.length]; card.style.setProperty("--accent", color); card.style.setProperty("--ink", color); card.style.setProperty("--edge", color + "88"); card.style.setProperty("--wash", color + "18"); const svg = demo.querySelector("circle"); if (svg) svg.setAttribute("fill", color); break; }\\n' +
-        '      case "read": { const input = firstInput || current; if (input.type === "password") result.textContent = "Password length: " + input.value.length; else if (input.type === "file") result.textContent = input.files[0]?.name || "No file selected"; else if (input.type === "checkbox" || input.type === "radio") result.textContent = input.checked ? "Selected" : "Not selected"; else if (input.type === "range" || input.type === "number") result.textContent = "Value: " + input.value; else if (input.type === "color") result.textContent = "Color: " + input.value; else if (input.type === "email") result.textContent = input.checkValidity() ? "Valid email" : "Please check the email"; else result.textContent = "Value: " + (input.value || "(empty)"); break; }\\n' +
-        '      case "progress": { const meter = demo.querySelector("progress, meter"); if (meter) meter.value = (Number(meter.value) + 10) > Number(meter.max) ? 0 : Number(meter.value) + 10; result.textContent = "Value: " + meter.value + " / " + meter.max; break; }\\n' +
-        '      case "add": { const list = demo.querySelector("ul, ol, tbody, table"); if (list) { if (list.tagName === "TABLE") { const row = list.insertRow(); row.insertCell().textContent = "New"; row.insertCell().textContent = String(list.rows.length); } else if (list.tagName === "TBODY") { const row = list.insertRow(); row.insertCell().textContent = "New"; } else { const li = document.createElement("li"); li.textContent = "Added item"; (list.tagName === "TABLE" ? list.tBodies[0] : list).appendChild(li); } } else { const span = document.createElement("span"); span.textContent = " + added"; demo.appendChild(span); } break; }\\n' +
-        '      case "form": { const form = demo.querySelector("form"); if (form) { const input = form.querySelector("input"); result.textContent = input && input.value.trim() ? "Ready to submit: " + input.value : "Enter a name first"; } break; }\\n' +
-        '      case "link": result.textContent = "Target: " + ((demo.querySelector("a") || {}).getAttribute("href") || "#"); break;\\n' +
-        '      case "time": { const t = demo.querySelector("time"); if (t) t.textContent = new Date().toLocaleTimeString(); else result.textContent = new Date().toLocaleTimeString(); break; }\\n' +
-        '      case "image": { const img = demo.querySelector("img"); if (img) { img.style.filter = img.style.filter ? "" : "hue-rotate(150deg)"; } break; }\\n' +
-        '      case "canvas": { let canvas = demo.querySelector("canvas"); if (canvas) { const ctx = canvas.getContext("2d"); ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)]; ctx.fillRect(0, 0, canvas.width, canvas.height); } break; }\\n' +
-        '      case "copy": result.textContent = "Sample: " + (current.textContent || example.label); break;\\n' +
-        '      case "reset": { const fresh = makeCard(example, Number(card.dataset.index)); card.replaceWith(fresh); break; }\\n' +
-        '      case "disable": if (button) button.disabled = !button.disabled; break;\\n' +
-        '      case "hide": current.hidden = !current.hidden; break;\\n' +
-        '      case "focus": { const input = demo.querySelector("input"); if (input) input.focus(); else result.textContent = "This example has no input to focus."; break; }\\n' +
-        '      case "pressed": if (button) { const pressed = button.getAttribute("aria-pressed") !== "true"; button.setAttribute("aria-pressed", String(pressed)); button.style.opacity = pressed ? ".55" : "1"; result.textContent = pressed ? "Pressed" : "Released"; } break;\\n' +
-        '      case "confirm": result.textContent = "Confirmed: " + example.label; break;\\n' +
-        '      case "random": result.textContent = "Random number: " + Math.floor(Math.random() * 100); break;\\n' +
-        '      case "calculate": { const out = demo.querySelector("output"); if (out) out.value = Number(out.value || out.textContent || 1) * 2; break; }\\n' +
-        '      default: result.textContent = "Action: " + example.js;\\n' +
-        '    }\\n' +
-        '  }\\n' +
-        '  examples.forEach((example, index) => grid.appendChild(makeCard(example, index % examples.length)));\\n' +
-        '  while (grid.children.length < 200) { const index = grid.children.length; grid.appendChild(makeCard(examples[index % examples.length], index)); }\\n' +
-        '  grid.addEventListener("click", event => { const card = event.target.closest(".tag-card"); if (card && grid.contains(card)) act(card); });\\n' +
-        '  grid.addEventListener("submit", event => { event.preventDefault(); const card = event.target.closest(".tag-card"); if (card) act(card); });\\n' +
-        '  grid.addEventListener("change", event => { const card = event.target.closest(".tag-card"); if (card && card._result) { const input = event.target; card._result.textContent = input.type === "password" ? "Password length: " + input.value.length : input.type === "file" ? (input.files[0]?.name || "No file selected") : input.type === "checkbox" || input.type === "radio" ? (input.checked ? "Selected" : "Not selected") : "Value: " + (input.value || "(empty)"); } });\\n' +
-        '  count.textContent = grid.children.length + " examples";\\n' +
+    const js = '(function () {\n' +
+        '  const grid = document.getElementById("tagGrid");\n' +
+        '  const count = document.getElementById("galleryCount");\n' +
+        '  const examples = ' + JSON.stringify(examples) + ';\n' +
+        '  const colors = ["#267c63", "#356ac3", "#b45b38", "#8a58a6", "#9a7625", "#287d91"];\n' +
+        '  function escapeHTML(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }\n' +
+        '  function makeCard(example, index) {\n' +
+        '    const card = document.createElement("article"); card.className = "tag-card";\n' +
+        '    const accent = colors[index % colors.length]; const radius = 3 + (index % 9); const pad = 4 + (index % 5);\n' +
+        '    card.style.setProperty("--accent", accent); card.style.setProperty("--edge", accent + "88"); card.style.setProperty("--ink", accent); card.style.setProperty("--wash", accent + "18"); card.style.setProperty("--active-wash", accent + "35"); card.style.setProperty("--radius", radius + "px"); card.style.padding = pad + "px";\n' +
+        '    const title = document.createElement("h2"); title.textContent = String(index + 1).padStart(3, "0") + " · <" + example.tag + "> — " + example.label; card.appendChild(title);\n' +
+        '    const demo = document.createElement("div"); demo.className = "tag-demo"; demo.innerHTML = example.markup; card.appendChild(demo);\n' +
+        '    const result = document.createElement("p"); result.className = "tag-result"; result.setAttribute("aria-live", "polite"); card.appendChild(result);\n' +
+        '    const code = document.createElement("div"); code.className = "tag-code";\n' +
+        '    const htmlLabel = document.createElement("b"); htmlLabel.textContent = "HTML"; code.appendChild(htmlLabel); const htmlCode = document.createElement("code"); htmlCode.textContent = example.markup; code.appendChild(htmlCode);\n' +
+        '    const cssLabel = document.createElement("b"); cssLabel.textContent = "CSS"; code.appendChild(cssLabel); const cssCode = document.createElement("code"); cssCode.textContent = ".card-" + (index + 1) + " { padding: " + pad + "px; border-radius: " + radius + "px; --accent: " + accent + "; }"; code.appendChild(cssCode);\n' +
+        '    const jsLabel = document.createElement("b"); jsLabel.textContent = "JAVASCRIPT"; code.appendChild(jsLabel); const jsCode = document.createElement("code"); jsCode.textContent = "/* " + example.js + " */\\\ncard.addEventListener(\\\"click\\\", handle" + example.action[0].toUpperCase() + example.action.slice(1) + ");"; code.appendChild(jsCode); card.appendChild(code);\n' +
+        '    card.classList.add("card-" + (index + 1)); card.dataset.action = example.action; card.dataset.index = String(index);\n' +
+        '    card._demo = demo; card._result = result; card._example = example; return card;\n' +
+        '  }\n' +
+        '  function act(card) {\n' +
+        '    const demo = card._demo, result = card._result, example = card._example; const target = demo.querySelector("button, input, textarea, select, output, progress, meter, details, summary, img, canvas, svg, a, p, h2, span, li, td, figcaption, time, abbr, data, code, pre, blockquote, address, footer, header, main, section, article, aside, q, cite, dfn, kbd, samp, var, ruby, bdi, bdo, del, ins, s, u, b, i, mark, small, strong, em, sup, sub, hr, audio, video, iframe, dialog, fieldset, form, nav, figure, table, dl, ul, ol");\n' +
+        '    const firstInput = demo.querySelector("input, textarea, select"); const button = demo.querySelector("button"); const current = target || demo.firstElementChild || demo;\n' +
+        '    switch (example.action) {\n' +
+        '      case "count": { const n = Number(current.dataset.count || current.textContent.match(/-?\\\\d+/)?.[0] || 0) + 1; current.dataset.count = n; if (current.tagName === "OUTPUT") current.value = n; else current.textContent = "Count: " + n; break; }\n' +
+        '      case "text": current.textContent = "Updated: " + example.label; break;\n' +
+        '      case "toggle": card.classList.toggle("is-active"); if (current.style) current.style.fontWeight = current.style.fontWeight === "700" ? "" : "700"; if (current.tagName === "DETAILS" || current.tagName === "DIALOG") current.open = !current.open; if (current.tagName === "AUDIO" || current.tagName === "VIDEO") current.controls = !current.controls; if (current.tagName === "IFRAME") current.hidden = !current.hidden; if (current.tagName === "HR") current.style.borderTop = current.style.borderTop ? "" : "3px dashed " + card.style.getPropertyValue("--accent"); break;\n' +
+        '      case "color": { const color = colors[(colors.indexOf(card.style.getPropertyValue("--accent")) + 1) % colors.length]; card.style.setProperty("--accent", color); card.style.setProperty("--ink", color); card.style.setProperty("--edge", color + "88"); card.style.setProperty("--wash", color + "18"); const svg = demo.querySelector("circle"); if (svg) svg.setAttribute("fill", color); break; }\n' +
+        '      case "read": { const input = firstInput || current; if (input.type === "password") result.textContent = "Password length: " + input.value.length; else if (input.type === "file") result.textContent = input.files[0]?.name || "No file selected"; else if (input.type === "checkbox" || input.type === "radio") result.textContent = input.checked ? "Selected" : "Not selected"; else if (input.type === "range" || input.type === "number") result.textContent = "Value: " + input.value; else if (input.type === "color") result.textContent = "Color: " + input.value; else if (input.type === "email") result.textContent = input.checkValidity() ? "Valid email" : "Please check the email"; else result.textContent = "Value: " + (input.value || "(empty)"); break; }\n' +
+        '      case "progress": { const meter = demo.querySelector("progress, meter"); if (meter) meter.value = (Number(meter.value) + 10) > Number(meter.max) ? 0 : Number(meter.value) + 10; result.textContent = "Value: " + meter.value + " / " + meter.max; break; }\n' +
+        '      case "add": { const list = demo.querySelector("ul, ol, tbody, table"); if (list) { if (list.tagName === "TABLE") { const row = list.insertRow(); row.insertCell().textContent = "New"; row.insertCell().textContent = String(list.rows.length); } else if (list.tagName === "TBODY") { const row = list.insertRow(); row.insertCell().textContent = "New"; } else { const li = document.createElement("li"); li.textContent = "Added item"; (list.tagName === "TABLE" ? list.tBodies[0] : list).appendChild(li); } } else { const span = document.createElement("span"); span.textContent = " + added"; demo.appendChild(span); } break; }\n' +
+        '      case "form": { const form = demo.querySelector("form"); if (form) { const input = form.querySelector("input"); result.textContent = input && input.value.trim() ? "Ready to submit: " + input.value : "Enter a name first"; } break; }\n' +
+        '      case "link": result.textContent = "Target: " + ((demo.querySelector("a") || {}).getAttribute("href") || "#"); break;\n' +
+        '      case "time": { const t = demo.querySelector("time"); if (t) t.textContent = new Date().toLocaleTimeString(); else result.textContent = new Date().toLocaleTimeString(); break; }\n' +
+        '      case "image": { const img = demo.querySelector("img"); if (img) { img.style.filter = img.style.filter ? "" : "hue-rotate(150deg)"; } break; }\n' +
+        '      case "canvas": { let canvas = demo.querySelector("canvas"); if (canvas) { const ctx = canvas.getContext("2d"); ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)]; ctx.fillRect(0, 0, canvas.width, canvas.height); } break; }\n' +
+        '      case "copy": result.textContent = "Sample: " + (current.textContent || example.label); break;\n' +
+        '      case "reset": { const fresh = makeCard(example, Number(card.dataset.index)); card.replaceWith(fresh); break; }\n' +
+        '      case "disable": if (button) button.disabled = !button.disabled; break;\n' +
+        '      case "hide": current.hidden = !current.hidden; break;\n' +
+        '      case "focus": { const input = demo.querySelector("input"); if (input) input.focus(); else result.textContent = "This example has no input to focus."; break; }\n' +
+        '      case "pressed": if (button) { const pressed = button.getAttribute("aria-pressed") !== "true"; button.setAttribute("aria-pressed", String(pressed)); button.style.opacity = pressed ? ".55" : "1"; result.textContent = pressed ? "Pressed" : "Released"; } break;\n' +
+        '      case "confirm": result.textContent = "Confirmed: " + example.label; break;\n' +
+        '      case "random": result.textContent = "Random number: " + Math.floor(Math.random() * 100); break;\n' +
+        '      case "calculate": { const out = demo.querySelector("output"); if (out) out.value = Number(out.value || out.textContent || 1) * 2; break; }\n' +
+        '      default: result.textContent = "Action: " + example.js;\n' +
+        '    }\n' +
+        '  }\n' +
+        '  examples.forEach((example, index) => grid.appendChild(makeCard(example, index % examples.length)));\n' +
+        '  while (grid.children.length < 200) { const index = grid.children.length; grid.appendChild(makeCard(examples[index % examples.length], index)); }\n' +
+        '  grid.addEventListener("click", event => { const card = event.target.closest(".tag-card"); if (card && grid.contains(card)) act(card); });\n' +
+        '  grid.addEventListener("submit", event => { event.preventDefault(); const card = event.target.closest(".tag-card"); if (card) act(card); });\n' +
+        '  grid.addEventListener("change", event => { const card = event.target.closest(".tag-card"); if (card && card._result) { const input = event.target; card._result.textContent = input.type === "password" ? "Password length: " + input.value.length : input.type === "file" ? (input.files[0]?.name || "No file selected") : input.type === "checkbox" || input.type === "radio" ? (input.checked ? "Selected" : "Not selected") : "Value: " + (input.value || "(empty)"); } });\n' +
+        '  count.textContent = grid.children.length + " examples";\n' +
         '})();';
 
     global.EDITOR_STARTER_GALLERY = Object.freeze({ html: html, css: css, js: js });

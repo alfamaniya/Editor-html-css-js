@@ -66,7 +66,7 @@ while ((match = tagRe.exec(source))) {
     const close = closeRe.exec(source);
     if (!close) { fail('missing closing tag for <' + name + '>', match.index); continue; }
     checkCode(source.slice(tagRe.lastIndex, close.index), tagRe.lastIndex, name === 'script' ? 'JavaScript' : 'CSS');
-    tagRe.lastIndex = close.index;
+    tagRe.lastIndex = close.index + close[0].length;
     continue;
   }
   if (voidTags.has(name) || selfClosing) {

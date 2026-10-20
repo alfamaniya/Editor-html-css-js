@@ -63,7 +63,7 @@
 | `index-test-etitor.html` | نسخهٔ تک‌فایلی تولیدشده برای آزمایش و توزیع |
 | `scripts/build-test-editor.mjs` | سازندهٔ اصلی نسخهٔ تک‌فایلی که GitHub Actions از آن استفاده می‌کند |
 | `scripts/check-index-integrity.mjs` | بررسی ساختار تگ‌ها و جداکننده‌های کد در `index.html` |
-| `tools/build-single-file.js` | سازندهٔ جایگزین؛ گردش‌کار اصلی مخزن از سازندهٔ فایل `.mjs` استفاده می‌کند |
+| `tools/build-single-file.js` | فرمان سازگاری که سازندهٔ اصلی `.mjs` را اجرا می‌کند تا دو منطق ساخت مستقل از هم منحرف نشوند |
 | `.github/workflows/build-test-editor.yml` | بررسی نحو JavaScript و ساخت نسخهٔ تک‌فایلی |
 | `.github/workflows/check-index-integrity.yml` | اجرای بررسی تگ‌ها، جداکننده‌ها و JavaScript درون‌خطی |
 | `.github/workflows/check-index.yml` | بررسی ساختار `index.html`، ارجاع فایل‌های محلی و موارد پایهٔ اعتبارسنجی |
@@ -80,6 +80,9 @@ node scripts/check-index-integrity.mjs
 
 # ساخت دوبارهٔ نسخهٔ تک‌فایلی
 node scripts/build-test-editor.mjs
+
+# بررسی ساختار HTML و JavaScript در خروجی تک‌فایلی
+node scripts/check-index-integrity.mjs index-test-etitor.html
 ```
 
 برای بررسی نحوی یک فایل JavaScript به‌تنهایی:
@@ -92,7 +95,7 @@ node --check script.js
 
 ## کنترل‌های خودکار GitHub Actions
 
-- **Build standalone test editor:** نحو فایل‌های JavaScript منتخب را بررسی می‌کند و `index-test-etitor.html` را می‌سازد؛ در صورت تغییر خروجی، آن را Commit می‌کند.
+- **Build standalone test editor:** نحو فایل‌های منبع را بررسی می‌کند، نسخهٔ تک‌فایلی را می‌سازد، ساختار HTML و JavaScript درون‌گذاری‌شده را اعتبارسنجی می‌کند و فقط در صورت تغییر خروجی، آن را Commit می‌کند.
 - **Check index syntax and delimiters:** ساختار تگ‌های `index.html` و توازن جداکننده‌ها را بررسی می‌کند و نحو JavaScript درون‌خطی را با Node.js می‌سنجد.
 - **Check index file:** ساختار پایهٔ HTML و وجود فایل‌های محلی ارجاع‌شده را بررسی می‌کند.
 

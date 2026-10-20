@@ -27,12 +27,15 @@ jobs:
 
       - name: Check JavaScript syntax
         run: |
-          for file in html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js script.js word-tree.js github-update.js scripts/build-test-editor.mjs tools/build-single-file.js; do
+          for file in html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js script.js word-tree.js github-update.js scripts/build-test-editor.mjs scripts/check-index-integrity.mjs tools/build-single-file.js; do
             node --check "$file"
           done
 
       - name: Build the single-file editor
         run: node scripts/build-test-editor.mjs
+
+      - name: Validate standalone HTML and embedded JavaScript
+        run: node scripts/check-index-integrity.mjs index-test-etitor.html
 
       - name: Commit the updated bundle when it changed
         run: |

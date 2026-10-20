@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-const file = 'index.html';
+const file = process.argv[2] || 'index.html';
 const source = readFileSync(file, 'utf8');
 const errors = [];
 const counts = { tags: 0, parens: 0, braces: 0, brackets: 0, semicolons: 0, commas: 0 };

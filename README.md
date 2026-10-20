@@ -27,7 +27,8 @@
 │       └── check-index.yml
 ├── scripts/
 │   ├── build-test-editor.mjs
-│   └── check-index-integrity.mjs
+│   ├── check-index-integrity.mjs
+│   └── check-standalone-editor.mjs
 ├── tools/
 │   └── build-single-file.js
 ├── index.html
@@ -62,7 +63,8 @@
 | `tree-world-suggestion.md` | مستند متنی درخت قواعد پیشنهاد؛ در زمان اجرا بارگذاری نمی‌شود |
 | `index-test-etitor.html` | نسخهٔ تک‌فایلی تولیدشده برای آزمایش و توزیع |
 | `scripts/build-test-editor.mjs` | سازندهٔ اصلی نسخهٔ تک‌فایلی که GitHub Actions از آن استفاده می‌کند |
-| `scripts/check-index-integrity.mjs` | بررسی ساختار تگ‌ها و جداکننده‌های کد در `index.html` |
+| `scripts/check-index-integrity.mjs` | بررسی ساختار تگ‌ها و جداکننده‌های کد در فایل HTML منبع یا فایل مشخص‌شده |
+| `scripts/check-standalone-editor.mjs` | تطبیق خروجی تک‌فایلی با منابع، بررسی ساختار HTML، CSS و نحو JavaScript درون‌گذاری‌شده |
 | `tools/build-single-file.js` | فرمان سازگاری که سازندهٔ اصلی `.mjs` را اجرا می‌کند تا دو منطق ساخت مستقل از هم منحرف نشوند |
 | `.github/workflows/build-test-editor.yml` | بررسی نحو JavaScript و ساخت نسخهٔ تک‌فایلی |
 | `.github/workflows/check-index-integrity.yml` | اجرای بررسی تگ‌ها، جداکننده‌ها و JavaScript درون‌خطی |
@@ -81,8 +83,8 @@ node scripts/check-index-integrity.mjs
 # ساخت دوبارهٔ نسخهٔ تک‌فایلی
 node scripts/build-test-editor.mjs
 
-# بررسی ساختار HTML و JavaScript در خروجی تک‌فایلی
-node scripts/check-index-integrity.mjs index-test-etitor.html
+# بررسی تطابق منابع و ساختار نسخهٔ تک‌فایلی
+node scripts/check-standalone-editor.mjs
 ```
 
 برای بررسی نحوی یک فایل JavaScript به‌تنهایی:
@@ -95,7 +97,7 @@ node --check script.js
 
 ## کنترل‌های خودکار GitHub Actions
 
-- **Build standalone test editor:** نحو فایل‌های منبع را بررسی می‌کند، نسخهٔ تک‌فایلی را می‌سازد، ساختار HTML و JavaScript درون‌گذاری‌شده را اعتبارسنجی می‌کند و فقط در صورت تغییر خروجی، آن را Commit می‌کند.
+- **Build standalone test editor:** نحو فایل‌های منبع را بررسی می‌کند، نسخهٔ تک‌فایلی را می‌سازد، تطابق منابع با خروجی و ساختار HTML/CSS و نحو JavaScript درون‌گذاری‌شده را اعتبارسنجی می‌کند و فقط در صورت تغییر خروجی، آن را Commit می‌کند.
 - **Check index syntax and delimiters:** ساختار تگ‌های `index.html` و توازن جداکننده‌ها را بررسی می‌کند و نحو JavaScript درون‌خطی را با Node.js می‌سنجد.
 - **Check index file:** ساختار پایهٔ HTML و وجود فایل‌های محلی ارجاع‌شده را بررسی می‌کند.
 

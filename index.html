@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML / CSS / JS Editor</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="smart-import.css">
 </head>
 <body>
 
@@ -44,7 +43,6 @@
                 <button type="button" class="tab active" id="tab-html" data-tab="html" role="tab" aria-controls="panel-html" aria-selected="true">HTML</button>
                 <button type="button" class="tab" id="tab-css" data-tab="css" role="tab" aria-controls="panel-css" aria-selected="false">CSS</button>
                 <button type="button" class="tab" id="tab-js" data-tab="js" role="tab" aria-controls="panel-js" aria-selected="false">JavaScript</button>
-                <button type="button" class="tab" id="tab-smart-import" data-tab="smart-import" role="tab" aria-controls="smartImportPanel" aria-selected="false">🧩 Smart Import</button>
             </div>
 
 
@@ -323,99 +321,6 @@
                             </div>
                     </section>
 
-                    <section class="smart-import-panel" id="smartImportPanel" role="tabpanel" aria-labelledby="tab-smart-import" hidden>
-                        <div class="si-shell">
-                            <header class="si-header">
-                                <div>
-                                    <p class="si-eyebrow">SAFE CODE INTAKE</p>
-                                    <h2>Smart Import</h2>
-                                    <p class="si-subtitle" lang="fa" dir="rtl">کد ترکیبی HTML، CSS و JavaScript را وارد کن. پیش از اعمال خروجی‌ها، گزارش‌ها و هر سه بخش را بررسی کن.</p>
-                                </div>
-                                <span class="si-local-badge">● Local processing</span>
-                            </header>
-                            <div class="si-notice" role="note" lang="fa" dir="rtl">
-                                <strong>هیچ تغییری به‌صورت خودکار در فایل‌های اصلی اعمال نمی‌شود.</strong>
-                                تحلیل در همین مرورگر انجام می‌شود. بخش‌های موردنظر را انتخاب کن؛ پس از بررسی خروجی و تأیید نهایی، فایل‌های انتخاب‌شده جایگزین می‌شوند.
-                            </div>
-                            <section class="si-source-card" aria-labelledby="siSourceTitle">
-                                <div class="si-section-heading">
-                                    <div><span class="si-step">1</span><h3 id="siSourceTitle">Paste code or open a file</h3></div>
-                                    <span class="si-helper">HTML · CSS · JavaScript</span>
-                                </div>
-                                <label class="si-field-label" for="siSource">Complete or mixed source code</label>
-                                <textarea id="siSource" dir="auto" spellcheck="false" autocomplete="off" placeholder="Paste a complete HTML document here — including any embedded &lt;style&gt; and &lt;script&gt; blocks…"></textarea>
-                                <div class="si-source-actions">
-                                    <div class="si-action-group">
-                                        <button type="button" class="si-button si-primary" id="siAnalyze">Analyze code</button>
-                                        <button type="button" class="si-button si-secondary" id="siCleanAnalyze">Clean &amp; analyze</button>
-                                    </div>
-                                    <div class="si-action-group">
-                                        <button type="button" class="si-button si-secondary" id="siPaste">Paste clipboard</button>
-                                        <button type="button" class="si-button si-secondary" id="siChooseFile">Open file</button>
-                                        <button type="button" class="si-button si-quiet" id="siClear">Clear</button>
-                                        <input type="file" id="siFileInput" accept=".html,.htm,.xhtml,.css,.js,.mjs,.txt,text/html,text/css,text/javascript,text/plain" hidden>
-                                    </div>
-                                </div>
-                                <p class="si-small-note" lang="fa" dir="rtl">اگر HTML، CSS و JavaScript در فایل‌های جدا هستند، هر فایل را جداگانه وارد کن. یک فایل HTML کامل می‌تواند CSS و JavaScript داخلی هم داشته باشد.</p>
-                                <p class="si-small-note si-mode-help" lang="fa" dir="rtl"><strong>تفاوت دو دکمه:</strong> Analyze code فقط بررسی و گزارش می‌دهد. Clean &amp; analyze علاوه بر بررسی، فقط بلوک‌های CSS و JavaScript کاملاً یکسان را حذف می‌کند؛ کدهای مشابه اما متفاوت خودکار حذف یا ادغام نمی‌شوند.</p>
-                            </section>
-                            <section class="si-results" id="siResults" aria-labelledby="siResultsTitle" hidden>
-                                <div class="si-results-heading">
-                                    <div><span class="si-step">2</span><h3 id="siResultsTitle">Review extracted code</h3></div>
-                                    <p id="siSummary" class="si-summary" role="status" aria-live="polite"></p>
-                                </div>
-                                <div class="si-stats" id="siStats"></div>
-                                <ul class="si-notes" id="siNotes" aria-live="polite"></ul>
-                                <div class="si-output-grid">
-                                    <article class="si-output-card">
-                                        <div class="si-output-header">
-                                            <div class="si-output-title">
-                                                <label class="si-apply-label" for="siApplyHtml"><input type="checkbox" id="siApplyHtml" disabled> Apply HTML</label>
-                                                <span class="si-language-pill si-html-pill">HTML</span>
-                                            </div>
-                                            <span class="si-char-count" id="siCountHtml">0 chars</span>
-                                        </div>
-                                        <label class="si-sr-only" for="siResultHtml">Extracted HTML code</label>
-                                        <textarea id="siResultHtml" class="si-result-code" dir="auto" spellcheck="false" autocomplete="off" placeholder="HTML markup will appear here."></textarea>
-                                    </article>
-                                    <article class="si-output-card">
-                                        <div class="si-output-header">
-                                            <div class="si-output-title">
-                                                <label class="si-apply-label" for="siApplyCss"><input type="checkbox" id="siApplyCss" disabled> Apply CSS</label>
-                                                <span class="si-language-pill si-css-pill">CSS</span>
-                                            </div>
-                                            <span class="si-char-count" id="siCountCss">0 chars</span>
-                                        </div>
-                                        <label class="si-sr-only" for="siResultCss">Extracted CSS code</label>
-                                        <textarea id="siResultCss" class="si-result-code" dir="auto" spellcheck="false" autocomplete="off" placeholder="CSS rules will appear here."></textarea>
-                                    </article>
-                                    <article class="si-output-card">
-                                        <div class="si-output-header">
-                                            <div class="si-output-title">
-                                                <label class="si-apply-label" for="siApplyJs"><input type="checkbox" id="siApplyJs" disabled> Apply JavaScript</label>
-                                                <span class="si-language-pill si-js-pill">JS</span>
-                                            </div>
-                                            <span class="si-char-count" id="siCountJs">0 chars</span>
-                                        </div>
-                                        <div class="si-js-recovery" id="siJsRecovery" hidden>
-                                            <button type="button" class="si-button si-secondary" id="siUseLatestJs">Use latest JS version</button>
-                                            <p id="siLatestJsHelp" lang="fa" dir="rtl">اگر دو بخش JavaScript نسخه‌های متفاوت یک کد باشند، می‌توانی نسخهٔ آخر را جداگانه بررسی کنی. این انتخاب فقط خروجی پیشنهادی را تغییر می‌دهد و هنوز چیزی در فایل اصلی اعمال نمی‌کند.</p>
-                                        </div>
-                                        <label class="si-sr-only" for="siResultJs">Extracted JavaScript code</label>
-                                        <textarea id="siResultJs" class="si-result-code" dir="auto" spellcheck="false" autocomplete="off" placeholder="JavaScript code will appear here."></textarea>
-                                    </article>
-                                </div>
-                                <footer class="si-apply-footer">
-                                    <div>
-                                        <strong>3. Apply the selected sections</strong>
-                                        <p lang="fa" dir="rtl">فقط بخش‌های تیک‌خورده و غیرخالی به ویرایشگر فرستاده می‌شوند؛ فایل‌های دیگر دست‌نخورده می‌مانند. اگر تعارض مهم JavaScript شناسایی شود، تیک اعمال JS به‌صورت پیش‌فرض برداشته می‌شود تا ابتدا کد را اصلاح کنی.</p>
-                                        <p id="siActionStatus" class="si-action-status" role="status" aria-live="polite"></p>
-                                    </div>
-                                    <button type="button" class="si-button si-apply-button" id="siApply">Apply selected code to editor</button>
-                                </footer>
-                            </section>
-                        </div>
-                    </section>
                 </div>
             </div>
         </div>
@@ -503,7 +408,6 @@
     <script src="next-word-suggestions.js"></script>
         <script src="script.js"></script>
     <script src="word-tree.js"></script>
-    <script src="smart-import.js"></script>
     <script src="github-update.js"></script>
 
 </body>

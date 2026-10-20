@@ -13,14 +13,12 @@ let html = fs.readFileSync(sourcePath, 'utf8');
 
 const assets = [
   { tag: /<link\s+rel=["']stylesheet["']\s+href=["']style\.css["']\s*\/?>/i, file: 'style.css', type: 'style' },
-  { tag: /<link\s+rel=["']stylesheet["']\s+href=["']smart-import\.css["']\s*\/?>/i, file: 'smart-import.css', type: 'style' },
   { tag: /<script\s+src=["']html-suggestions\.js["']\s*>\s*<\/script>/i, file: 'html-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']css-suggestions\.js["']\s*>\s*<\/script>/i, file: 'css-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']js-suggestions\.js["']\s*>\s*<\/script>/i, file: 'js-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']next-word-suggestions\.js["']\s*>\s*<\/script>/i, file: 'next-word-suggestions.js', type: 'script' },
   { tag: /<script\s+src=["']script\.js["']\s*>\s*<\/script>/i, file: 'script.js', type: 'script' },
   { tag: /<script\s+src=["']word-tree\.js["']\s*>\s*<\/script>/i, file: 'word-tree.js', type: 'script' },
-  { tag: /<script\s+src=["']smart-import\.js["']\s*>\s*<\/script>/i, file: 'smart-import.js', type: 'script' },
   { tag: /<script\s+src=["']github-update\.js["']\s*>\s*<\/script>/i, file: 'github-update.js', type: 'script' }
 ];
 

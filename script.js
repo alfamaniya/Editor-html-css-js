@@ -114,7 +114,6 @@
         const tabButtons  = Array.from(document.querySelectorAll('.tab'));
         const dirtyBadge  = document.getElementById('dirtyBadge');
         const libsPanel   = document.getElementById('libsPanel');
-        const smartImportPanel = document.getElementById('smartImportPanel');
         const editors     = {};
 
         const STORAGE_KEY = 'html-editor-code-v2';
@@ -703,7 +702,7 @@
         }
 
         function activateTab(lang) {
-            if (lang !== 'libs' && lang !== 'help' && lang !== 'smart-import' && !editors[lang]) lang = 'html';
+            if (lang !== 'libs' && lang !== 'help' && !editors[lang]) lang = 'html';
             picker.close();
             IntelliSense.hide();
             activeTab = lang;
@@ -712,12 +711,9 @@
             LANGS.forEach(function(l) { editors[l].wrap.hidden = true; });
             libsPanel.hidden = true;
             document.getElementById('helpPanel').hidden = true;
-            if (smartImportPanel) smartImportPanel.hidden = true;
             if (lang === 'libs') libsPanel.hidden = false;
             else if (lang === 'help') document.getElementById('helpPanel').hidden = false;
-            else if (lang === 'smart-import') {
-                if (smartImportPanel) smartImportPanel.hidden = false;
-            } else if (editors[lang]) editors[lang].wrap.hidden = false;
+            else if (editors[lang]) editors[lang].wrap.hidden = false;
 
             tabButtons.forEach(function(b) {
                 const on = b.dataset.tab === lang;
@@ -741,72 +737,13 @@
         }
 
         function switchTab(lang) {
-            if (lang === 'libs' || lang === 'help' || lang === 'smart-import') { activateTab(lang); return; }
+            if (lang === 'libs' || lang === 'help') { activateTab(lang); return; }
             const file = getFileForLang(lang);
             if (file) openFile(file.id);
             else activateTab(lang);
         }
 
-        // Narrow bridge used by the isolated Smart Import panel after the user reviews its outputs.
-        window.HTMLCSJSEditor = window.HTMLCSJSEditor || {};
-        window.HTMLCSJSEditor.applyImportedCode = function(codeByLanguage) {
-            if (!codeByLanguage || typeof codeByLanguage !== 'object') {
-                return { applied: [], saved: false, error: 'بخش کد معتبری برای اعمال ارسال نشد.' };
-            }
-            const requested = ['html', 'css', 'js'].filter(function(lang) {
-                return Object.prototype.hasOwnProperty.call(codeByLanguage, lang) &&
-                    typeof codeByLanguage[lang] === 'string' && codeByLanguage[lang].trim().length > 0;
-            });
-            if (!requested.length) return { applied: [], saved: false, error: 'برای اعمال، دست‌کم یک بخش غیرخالی انتخاب کن.' };
-
-            const labels = { html: 'HTML', css: 'CSS', js: 'JavaScript' };
-            const targetList = requested.map(function(lang) { return labels[lang]; }).join(', ');
-            if (!window.confirm('ورودی هوشمند فایل فعلی این بخش‌ها را جایگزین می‌کند: ' + targetList +
-                '. سایر فایل‌ها بدون تغییر می‌مانند. ادامه می‌دهی؟')) {
-                return { applied: [], saved: false, cancelled: true };
-            }
-
-            const defaultNames = { html: 'index.html', css: 'style.css', js: 'script.js' };
-            const applied = [];
-            requested.forEach(function(lang) {
-                let file = getFileForLang(lang);
-                if (!file) {
-                    const base = defaultNames[lang];
-                    const extension = base.slice(base.lastIndexOf('.'));
-                    const stem = base.slice(0, -extension.length);
-                    let name = base;
-                    let suffix = 2;
-                    while (project.files.some(function(existing) { return existing.name.toLowerCase() === name.toLowerCase(); })) {
-                        name = stem + '-' + suffix++ + extension;
-                    }
-                    file = { id: makeId(), name: name, type: lang, content: '' };
-                    project.files.push(file);
-                    project.lastActiveByLang[lang] = file.id;
-                }
-                file.content = codeByLanguage[lang];
-                project.lastActiveByLang[lang] = file.id;
-                const editor = editors[lang];
-                if (editor) { editor.ta.value = file.content; editor.refresh(); }
-                dirtyFileIds.add(file.id);
-                applied.push(lang);
-            });
-
-            const primaryLanguage = applied.includes('html') ? 'html' : applied[0];
-            activateTab(primaryLanguage);
-            renderFileExplorer();
-            const saved = saveProject();
-            if (saved) setDirty(false);
-            else setDirty(true);
-            updatePreviewNow();
-            showToast(
-                saved
-                    ? '✅ ورودی هوشمند در بخش‌های ' + applied.map(function(lang) { return labels[lang]; }).join('، ') + ' اعمال شد.'
-                    : '⚠ کد برای این نشست اعمال شد، اما مرورگر نتوانست تغییرات را ذخیره کند.' ,
-                saved ? 'success' : 'error'
-            );
-            return { applied: applied, saved: saved };
-        };
-
+        
         tabButtons.forEach(function(b) {
             b.addEventListener('click', function() { switchTab(b.dataset.tab); });
         });

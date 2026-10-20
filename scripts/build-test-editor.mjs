@@ -2,7 +2,7 @@
 /**
  * Build index-test-etitor.html as a standalone copy of the editor.
  *
- * Sources: index.html, style.css, smart-import.css, and the eight JavaScript files listed below.
+ * Sources: index.html, style.css, and the seven JavaScript files listed below.
  * Run locally: node scripts/build-test-editor.mjs
  * GitHub Actions runs this builder on every push to main.
  */
@@ -14,7 +14,6 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outputPath = resolve(root, 'index-test-etitor.html');
 const htmlPath = resolve(root, 'index.html');
 const cssPath = resolve(root, 'style.css');
-const smartImportCssPath = resolve(root, 'smart-import.css');
 const scriptFiles = [
     'html-suggestions.js',
     'css-suggestions.js',
@@ -22,7 +21,6 @@ const scriptFiles = [
     'next-word-suggestions.js',
     'script.js',
     'word-tree.js',
-    'smart-import.js',
     'github-update.js'
 ];
 
@@ -53,7 +51,6 @@ function escapeInlineStyle(source) {
 async function build() {
     let html = await readText(htmlPath);
     const css = await readText(cssPath);
-    const smartImportCss = await readText(smartImportCssPath);
 
     // Add the generator banner while index.html is still pure markup.
     // JavaScript strings may contain sample DOCTYPE text after scripts are inlined.
@@ -72,12 +69,6 @@ async function build() {
         'stylesheet reference to style.css'
     );
 
-    html = replaceExactlyOnce(
-        html,
-        /<link\b[^>]*href=["']smart-import\.css["'][^>]*>/i,
-        '<style data-bundled-from="smart-import.css">\n' + escapeInlineStyle(smartImportCss) + '\n</style>',
-        'stylesheet reference to smart-import.css'
-    );
 
     for (const filename of scriptFiles) {
         const script = await readText(resolve(root, filename));

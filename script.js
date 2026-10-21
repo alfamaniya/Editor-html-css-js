@@ -1102,7 +1102,7 @@
             if (!preserveDocument) return template.innerHTML;
             // DOMParser preserves document-level elements that template.innerHTML would discard.
             // Always emit a doctype for a complete document to keep standards mode.
-            return '<!DOCTYPE html>\\n' + parsedDocument.documentElement.outerHTML;
+            return '<!DOCTYPE html>\n' + parsedDocument.documentElement.outerHTML;
         }
 
         // Keep user-controlled file and library names inside generated comments.
@@ -1148,7 +1148,7 @@
                 'window.addEventListener("error",function(e){ parent.postMessage({editorError:true,message:String(e.message)},"*"); });',
                 'window.addEventListener("unhandledrejection",function(e){ var r=e.reason; parent.postMessage({editorError:true,message:"Promise: "+String(r&&r.message?r.message:r)},"*"); });',
                 'window.addEventListener("keydown",function(e){ if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="s"){ e.preventDefault(); parent.postMessage({editorSave:true},"*"); } });',
-                '<\\/script>'
+                '<\/script>'
             ].join('\n');
 
             const safeTitle = String(project.documentTitle || 'My Page')
@@ -1174,10 +1174,10 @@
                 let output = html.replace(/<\/head\s*>/i, headParts.filter(Boolean).join('\n') + '\n</head>');
                 const bodyParts = [];
                 if (externalAssetBaseName) {
-                    bodyParts.push('<script src="' + escHtml(externalAssetBaseName) + '.js"><\\/script>');
+                    bodyParts.push('<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>');
                 } else {
-                    if (libJs) bodyParts.push('<script>\n' + libJs + '\n<\\/script>');
-                    bodyParts.push('<script>\n' + js + '\n<\\/script>');
+                    if (libJs) bodyParts.push('<script>\n' + libJs + '\n<\/script>');
+                    bodyParts.push('<script>\n' + js + '\n<\/script>');
                 }
                 output = output.replace(/<\/body\s*>/i, bodyParts.join('\n') + '\n</body>');
                 return output;
@@ -1194,9 +1194,9 @@
                     : '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n') +
                 '</head>\n<body>\n' + html + '\n' +
                 (externalAssetBaseName
-                    ? '<script src="' + escHtml(externalAssetBaseName) + '.js"><\\/script>\n'
-                    : (libJs ? '<script>\n' + libJs + '\n<\\/script>\n' : '') +
-                      '<script>\n' + js + '\n<\\/script>\n') +
+                    ? '<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>\n'
+                    : (libJs ? '<script>\n' + libJs + '\n<\/script>\n' : '') +
+                      '<script>\n' + js + '\n<\/script>\n') +
                 '</body>\n</html>';
         }
 

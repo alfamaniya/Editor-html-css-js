@@ -2420,48 +2420,8 @@
                 syncScroll();
             }
 
-            ta.addEventListener('paste', function(e) {
-                if (lang !== 'html' || !e.clipboardData) return;
-                // Prefer plain text so code copied from GitHub is not mistaken for clipboard formatting markup.
-                const pasted = e.clipboardData.getData('text/plain') || e.clipboardData.getData('text/html');
-                if (!pasted || !(/<!doctype\s+html\b|<html\b|<head\b|<body\b/i).test(pasted)) return;
-
-                let parsed;
-                try {
-                    parsed = new DOMParser().parseFromString(pasted, 'text/html');
-                    if (!parsed || !parsed.documentElement || !parsed.body) return;
-                } catch (error) {
-                    showToast('⚠️ HTML document could not be parsed; pasted text was left unchanged.', 'warning');
-                    return;
-                }
-
-                e.preventDefault();
-                const title = parsed.querySelector('head > title');
-                project.documentTitle = title ? title.textContent.trim().slice(0, 200) || 'My Page' : 'My Page';
-                const headNodes = Array.from(parsed.head ? parsed.head.children : []);
-                const extras = [];
-                const styles = [];
-                headNodes.forEach(function(node) {
-                    const tag = node.tagName.toLowerCase();
-                    if (tag === 'title' || tag === 'style') {
-                        if (tag === 'style' && node.textContent.trim()) styles.push(node.textContent.trim());
-                        return;
-                    }
-                    if (tag === 'meta' && (node.hasAttribute('charset') ||
-                        (node.getAttribute('name') || '').toLowerCase() === 'viewport')) return;
-                    extras.push(node.outerHTML);
-                });
-                project.headExtras = extras.join('\n');
-
-                const cssEditor = editors.css && editors.css.ta;
-                if (styles.length && cssEditor) {
-                    cssEditor.value = [cssEditor.value.trim(), styles.join('\n\n')].filter(Boolean).join('\n\n');
-                    cssEditor.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-                ta.value = parsed.body.innerHTML;
-                ta.dispatchEvent(new Event('input', { bubbles: true }));
-                showToast('✅ Full HTML document normalized. Body, title, styles, and supported head elements were retained.', 'success');
-            });
+            // Keep native paste behavior: complete HTML documents must remain intact in the HTML editor.
+            // The preview/export pipeline already supports full documents as well as body fragments.
 
             ta.addEventListener('input', function(e) {
                 const wasDirty = dirty;

@@ -4940,11 +4940,16 @@ input {
 
         // Remove local asset references when the same files are embedded below.
         // Keep remote URLs and local files that are not part of this project bundle.
-        function stripBundledAssetReferences(markup, cssFiles, jsFiles) {
+        function stripBundledAssetReferences(markup, cssFiles, jsFiles, preserveDocument) {
+            const source = String(markup || '');
             const cssNames = new Set(cssFiles.map(function(file) { return String(file.name || '').toLowerCase(); }));
             const jsNames = new Set(jsFiles.map(function(file) { return String(file.name || '').toLowerCase(); }));
-            const template = document.createElement('template');
-            template.innerHTML = String(markup || '');
+            const template = preserveDocument ? null : document.createElement('template');
+            const parsedDocument = preserveDocument
+                ? new DOMParser().parseFromString(source, 'text/html')
+                : null;
+            const root = preserveDocument ? parsedDocument : template.content;
+            if (!preserveDocument) template.innerHTML = source;
 
             function getLocalFilename(url) {
                 const value = String(url || '').trim();
@@ -4959,13 +4964,17 @@ input {
                 catch (error) { return filename.toLowerCase(); }
             }
 
-            template.content.querySelectorAll('script[src], link[rel~="stylesheet"][href]').forEach(function(node) {
+            root.querySelectorAll('script[src], link[rel~="stylesheet"][href]').forEach(function(node) {
                 const isScript = node.tagName.toLowerCase() === 'script';
                 const filename = getLocalFilename(node.getAttribute(isScript ? 'src' : 'href'));
                 const bundledNames = isScript ? jsNames : cssNames;
                 if (filename && bundledNames.has(filename)) node.remove();
             });
-            return template.innerHTML;
+
+            if (!preserveDocument) return template.innerHTML;
+            // DOMParser preserves document-level elements that template.innerHTML would discard.
+            // Always emit a doctype for a complete document to keep standards mode.
+            return '<!DOCTYPE html>\\n' + parsedDocument.documentElement.outerHTML;
         }
 
         // Keep user-controlled file and library names inside generated comments.
@@ -4984,7 +4993,11 @@ input {
             const cssFiles  = project.files.filter(function(f) { return f.type === 'css'; });
             const jsFiles   = project.files.filter(function(f) { return f.type === 'js'; });
 
-            const html = stripBundledAssetReferences(htmlFiles.map(function(f) { return f.content; }).join('\n'), cssFiles, jsFiles);
+            const sourceHtml = htmlFiles.map(function(f) { return f.content; }).join('\n');
+            // A full HTML document must not be wrapped inside a second html/head/body structure.
+            const isFullHtmlDocument = /<!doctype\s+html\b/i.test(sourceHtml) ||
+                /^\s*(?:<!--[\s\S]*?-->\s*)*<html(?:\s|>)/i.test(sourceHtml);
+            const html = stripBundledAssetReferences(sourceHtml, cssFiles, jsFiles, isFullHtmlDocument);
             const css  = cssFiles.map(function(f) { return '/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content; })
                                  .join('\n\n')
                                  .replace(/<\/style/gi, '<\\/style');
@@ -5007,11 +5020,41 @@ input {
                 'window.addEventListener("error",function(e){ parent.postMessage({editorError:true,message:String(e.message)},"*"); });',
                 'window.addEventListener("unhandledrejection",function(e){ var r=e.reason; parent.postMessage({editorError:true,message:"Promise: "+String(r&&r.message?r.message:r)},"*"); });',
                 'window.addEventListener("keydown",function(e){ if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="s"){ e.preventDefault(); parent.postMessage({editorSave:true},"*"); } });',
-                '<\/script>'
+                '<\\/script>'
             ].join('\n');
 
             const safeTitle = String(project.documentTitle || 'My Page')
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            if (isFullHtmlDocument) {
+                const headParts = [];
+                if (!/<meta\b[^>]*\bcharset\s*=/i.test(html)) headParts.push('<meta charset="UTF-8">');
+                if (!/<meta\b[^>]*\bname\s*=\s*["']viewport["']/i.test(html)) {
+                    headParts.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+                }
+                if (!/<title\b/i.test(html)) headParts.push('<title>' + safeTitle + '</title>');
+                const extraHead = stripBundledAssetReferences(project.headExtras || '', cssFiles, jsFiles);
+                if (extraHead.trim()) headParts.push(extraHead);
+                if (errorHook) headParts.push(errorHook);
+
+                if (externalAssetBaseName) {
+                    headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
+                } else {
+                    headParts.push('<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>');
+                }
+
+                let output = html.replace(/<\/head\s*>/i, headParts.filter(Boolean).join('\n') + '\n</head>');
+                const bodyParts = [];
+                if (externalAssetBaseName) {
+                    bodyParts.push('<script src="' + escHtml(externalAssetBaseName) + '.js"><\\/script>');
+                } else {
+                    if (libJs) bodyParts.push('<script>\n' + libJs + '\n<\\/script>');
+                    bodyParts.push('<script>\n' + js + '\n<\\/script>');
+                }
+                output = output.replace(/<\/body\s*>/i, bodyParts.join('\n') + '\n</body>');
+                return output;
+            }
+
             return '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n' +
                 '<meta charset="UTF-8">\n' +
                 '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
@@ -5023,9 +5066,9 @@ input {
                     : '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n') +
                 '</head>\n<body>\n' + html + '\n' +
                 (externalAssetBaseName
-                    ? '<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>\n'
-                    : (libJs ? '<script>\n' + libJs + '\n<\/script>\n' : '') +
-                      '<script>\n' + js + '\n<\/script>\n') +
+                    ? '<script src="' + escHtml(externalAssetBaseName) + '.js"><\\/script>\n'
+                    : (libJs ? '<script>\n' + libJs + '\n<\\/script>\n' : '') +
+                      '<script>\n' + js + '\n<\\/script>\n') +
                 '</body>\n</html>';
         }
 
@@ -6377,16 +6420,39 @@ input {
         }
 
         function downloadFile(content, filename, mime) {
-            const blob = new Blob([content], { type: mime || 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
+            let url = '';
+            let anchor = null;
+            try {
+                if (!window.URL || typeof window.URL.createObjectURL !== 'function') {
+                    throw new Error('This browser does not support file downloads from the editor.');
+                }
+                const blob = new Blob([content], { type: mime || 'text/plain;charset=utf-8' });
+                url = URL.createObjectURL(blob);
+                anchor = document.createElement('a');
+                anchor.href = url;
+                anchor.download = filename;
+                anchor.rel = 'noopener';
+                anchor.style.position = 'fixed';
+                anchor.style.left = '-10000px';
+                anchor.style.top = '0';
+                document.body.appendChild(anchor);
+                anchor.click();
+
+                // Some browsers need the object URL to remain available after the click.
+                setTimeout(function() {
+                    if (anchor && anchor.parentNode) anchor.parentNode.removeChild(anchor);
+                    if (url) URL.revokeObjectURL(url);
+                }, 60000);
+                return true;
+            } catch (error) {
+                if (anchor && anchor.parentNode) anchor.parentNode.removeChild(anchor);
+                if (url) {
+                    try { URL.revokeObjectURL(url); } catch (revokeError) {}
+                }
+                throw error;
+            }
         }
+
         function sanitizeFilename(name) {
             let s = String(name || 'my-project').trim();
             s = s.replace(/[\\/:*?"<>|]+/g, '-');
@@ -6433,8 +6499,12 @@ input {
         }
         function downloadSingle(name) {
             const safe = sanitizeFilename(name);
-            downloadFile(buildDocument(true), safe + '.html', 'text/html;charset=utf-8');
-            showToast('⬇ File ' + safe + '.html downloaded', 'info');
+            try {
+                downloadFile(buildDocument(true), safe + '.html', 'text/html;charset=utf-8');
+                showToast('Download requested for ' + safe + '.html. If it does not appear, check the browser downloads list and site download permissions.', 'info');
+            } catch (error) {
+                showToast('Could not create the download: ' + String(error && error.message ? error.message : error), 'error');
+            }
         }
         function downloadBundle(name) {
             const safe = sanitizeFilename(name);
@@ -6444,10 +6514,18 @@ input {
                 { content: buildAllJsCombined(),  filename: safe + '.js',       mime: 'text/javascript;charset=utf-8' },
                 { content: buildLibsTextFile(),   filename: safe + '.libs.txt', mime: 'text/plain;charset=utf-8' }
             ];
+            let requested = 0;
             files.forEach(function(f, i) {
-                setTimeout(function() { downloadFile(f.content, f.filename, f.mime); }, i * 250);
+                setTimeout(function() {
+                    try {
+                        downloadFile(f.content, f.filename, f.mime);
+                        requested++;
+                    } catch (error) {
+                        showToast('Could not create ' + f.filename + ': ' + String(error && error.message ? error.message : error), 'error');
+                    }
+                }, i * 300);
             });
-            showToast('⬇ 4 files named “' + safe + '” will be downloaded', 'success');
+            showToast('Download requests sent for 4 files. Your browser may ask permission for multiple downloads.', 'info');
         }
 
         const nameModal = document.getElementById('nameModal');

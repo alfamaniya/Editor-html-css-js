@@ -329,7 +329,7 @@
                 }
                 customBank.appendChild(cat);
             });
-            tree.appendChild(customBank);
+            if (customBank.children.length > 1) tree.appendChild(customBank);
         }
         if (!tree.children.length) tree.innerHTML = '<p class="sm-empty">نتیجه‌ای پیدا نشد.</p>';
         modal.querySelector('#smResultCount').textContent = resultCount + ' نتیجه';

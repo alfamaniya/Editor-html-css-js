@@ -417,3 +417,90 @@
 @media (max-width: 600px) {
     .settings-quickinsert-item-actions { flex-wrap: wrap; justify-content: flex-end; }
 }
+
+
+/* پنجرهٔ مستقل مدیریت فهرست درج سریع؛ استایل‌ها فقط به همین پنجره محدودند. */
+.settings-quickinsert-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    display: grid;
+    place-items: center;
+    padding: clamp(10px, 2.2vh, 28px);
+    background: rgb(4 9 17 / 76%);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    direction: rtl;
+}
+.settings-quickinsert-modal-overlay[hidden] { display: none !important; }
+.settings-quickinsert-modal-card {
+    width: min(1280px, 100%);
+    height: min(92vh, 960px);
+    height: min(92dvh, 960px);
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-color: rgb(130 159 194 / 34%);
+    box-shadow: 0 28px 90px rgb(0 0 0 / 52%);
+}
+.settings-quickinsert-modal-card > .settings-card-header {
+    flex: 0 0 auto;
+    gap: 14px;
+    background: linear-gradient(115deg, rgb(27 47 72 / 99%), rgb(20 32 50 / 99%));
+}
+.settings-quickinsert-modal-card > .settings-quickinsert-intro,
+.settings-quickinsert-modal-card > .settings-quickinsert-form { flex: 0 0 auto; }
+.settings-quickinsert-modal-card > .settings-quickinsert-list-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+.settings-quickinsert-modal-close {
+    display: inline-grid;
+    flex: 0 0 38px;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin-right: auto;
+    border: 1px solid rgb(160 184 215 / 35%);
+    border-radius: 10px;
+    background: rgb(10 21 35 / 55%);
+    color: #eaf3ff;
+    font: 400 27px/1 Tahoma, sans-serif;
+    cursor: pointer;
+}
+.settings-quickinsert-modal-close:hover { background: rgb(65 95 133 / 55%); }
+.settings-quickinsert-modal-close:focus-visible {
+    outline: 3px solid #a8d3ff;
+    outline-offset: 3px;
+}
+@media (max-width: 680px) {
+    .settings-quickinsert-modal-overlay {
+        padding: 7px;
+        place-items: stretch;
+    }
+    .settings-quickinsert-modal-card {
+        width: 100%;
+        height: 96vh;
+        height: 96dvh;
+        max-height: none;
+        border-radius: 12px;
+    }
+    .settings-quickinsert-modal-card > .settings-card-header {
+        gap: 8px;
+        padding: 12px;
+    }
+    .settings-quickinsert-modal-card .settings-card-icon { flex-basis: 32px; width: 32px; height: 32px; }
+    .settings-quickinsert-modal-card .settings-card-header h2 { font-size: 12px; }
+    .settings-quickinsert-modal-card .settings-card-header p { font-size: 9px; }
+    .settings-quickinsert-modal-card .settings-proposed { display: none; }
+    .settings-quickinsert-modal-card .settings-quickinsert-intro { padding: 10px 12px 0; }
+    .settings-quickinsert-modal-card .settings-quickinsert-form { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px; }
+    .settings-quickinsert-modal-card .settings-quickinsert-code-field { grid-column: auto; }
+    .settings-quickinsert-modal-card .settings-quickinsert-list-wrap { padding: 0 12px 12px; }
+    .settings-quickinsert-modal-card .settings-quickinsert-item { align-items: flex-start; flex-direction: column; }
+    .settings-quickinsert-modal-card .settings-quickinsert-item-actions { align-self: flex-start; }
+}

@@ -1,11 +1,6 @@
 name: Build standalone test editor
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - index-test-etitor.html
   workflow_dispatch:
 
 permissions:

@@ -22,7 +22,7 @@ jobs:
 
       - name: Check JavaScript syntax
         run: |
-          for file in html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js script.js word-tree.js github-update.js scripts/build-test-editor.mjs scripts/check-index-integrity.mjs scripts/check-standalone-editor.mjs tools/build-single-file.js; do
+          for file in html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js script.js settings.js word-tree.js github-update.js scripts/build-test-editor.mjs scripts/check-index-integrity.mjs scripts/check-standalone-editor.mjs tools/build-single-file.js; do
             node --check "$file"
           done
 

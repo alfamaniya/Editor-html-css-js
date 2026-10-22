@@ -1794,6 +1794,595 @@ input {
     .github-update { gap: 3px 7px; padding: 6px 8px; font-size: 10px; }
 }
 
+
+
+
+/* =========================================================
+   تنظیمات ظاهری فعال: پوسته، رنگ تأکیدی و تراکم رابط کاربری
+   این قواعد روی محیط ویرایشگر اعمال می‌شوند، نه خروجی iframe.
+   ========================================================= */
+:root {
+    color-scheme: dark;
+    --accent-color: #56a5ff;
+    --accent-strong: #2674ca;
+    --accent-soft: rgb(86 165 255 / 18%);
+    --accent-border: #528fcf;
+    --accent-shadow: rgb(86 165 255 / 24%);
+    --editor-line-height: 1.5;
+}
+
+:root[data-accent="blue"] {
+    --accent-color: #56a5ff;
+    --accent-strong: #2674ca;
+    --accent-soft: rgb(86 165 255 / 18%);
+    --accent-border: #528fcf;
+    --accent-shadow: rgb(86 165 255 / 24%);
+    --blue-accent: #8ab9e8;
+    --blue-border: #527da8;
+    --blue-shadow: rgb(138 185 232 / 25%);
+}
+:root[data-accent="green"] {
+    --accent-color: #53d3a0;
+    --accent-strong: #167d5a;
+    --accent-soft: rgb(83 211 160 / 18%);
+    --accent-border: #3d8d70;
+    --accent-shadow: rgb(83 211 160 / 24%);
+    --blue-accent: #53d3a0;
+    --blue-border: #3d8d70;
+    --blue-shadow: rgb(83 211 160 / 24%);
+}
+:root[data-accent="violet"] {
+    --accent-color: #aa8cff;
+    --accent-strong: #7451bb;
+    --accent-soft: rgb(170 140 255 / 18%);
+    --accent-border: #8267c5;
+    --blue-accent: #aa8cff;
+    --blue-border: #8267c5;
+    --blue-shadow: rgb(170 140 255 / 24%);
+}
+:root[data-accent="orange"] {
+    --accent-color: #ffad65;
+    --accent-strong: #bb641e;
+    --accent-soft: rgb(255 173 101 / 18%);
+    --accent-border: #c47b3d;
+    --accent-shadow: rgb(255 173 101 / 24%);
+    --blue-accent: #ffad65;
+    --blue-border: #c47b3d;
+    --blue-shadow: rgb(255 173 101 / 24%);
+}
+
+/* رنگ انتخاب‌شده روی اجزای فعال، فوکوس و کنترل‌های اصلی قابل مشاهده است. */
+:root .toolbar button:hover,
+:root .toolbar button:focus-visible,
+:root .symbol-toolbar button:hover,
+:root .symbol-toolbar button:focus-visible,
+:root .search-bar button:hover:not(:disabled),
+:root .fe-add-btn:hover,
+:root .fe-new-actions button.primary {
+    border-color: var(--accent-border);
+    box-shadow: 0 3px 13px var(--accent-shadow);
+}
+:root .tab.active {
+    border-color: var(--accent-border);
+    box-shadow: inset 0 2px 0 var(--accent-color);
+}
+:root .fe-item.active {
+    background: linear-gradient(180deg, var(--accent-soft), transparent);
+    border-color: var(--accent-border);
+    color: var(--blue-text);
+    box-shadow: 0 0 8px var(--accent-shadow);
+}
+:root .intellisense-item.selected {
+    background: linear-gradient(180deg, var(--accent-color), var(--accent-strong));
+    color: #fff;
+}
+
+/* پوستهٔ روشن: اجزای اصلی محیط برنامه و پنل تنظیمات */
+:root[data-theme="light"] {
+    color-scheme: light;
+    --blue-bg-1: #edf3fa;
+    --blue-bg-2: #e5edf6;
+    --blue-bg-3: #f7faff;
+    --blue-bg-4: #d8e4f1;
+    --blue-text: #263b52;
+    --editor-navy: #f8fbff;
+    --editor-gutter: #eaf1f8;
+    --editor-border: #c5d3e1;
+}
+:root[data-theme="light"] body {
+    background: #f1f5fa;
+    color: #24364b;
+}
+:root[data-theme="light"] .settings-header,
+:root[data-theme="light"] .pane-label,
+:root[data-theme="light"] .tabs,
+:root[data-theme="light"] .fe-header {
+    background: linear-gradient(180deg, #f8fbff, #e6edf6);
+    color: #263b52;
+    border-color: #bdcddd;
+    box-shadow: 0 2px 9px rgb(30 54 80 / 8%);
+}
+:root[data-theme="light"] .toolbar button,
+:root[data-theme="light"] .arrow-btn,
+:root[data-theme="light"] .symbol-toolbar button,
+:root[data-theme="light"] .search-bar button,
+:root[data-theme="light"] .fe-toggle-btn,
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .fe-new-actions button,
+:root[data-theme="light"] .tab {
+    background: linear-gradient(180deg, #f9fbfe, #dfe8f2);
+    color: #29415b;
+    border-color: #afc2d6;
+}
+:root[data-theme="light"] .toolbar button:hover,
+:root[data-theme="light"] .arrow-btn:hover,
+:root[data-theme="light"] .symbol-toolbar button:hover,
+:root[data-theme="light"] .search-bar button:hover:not(:disabled),
+:root[data-theme="light"] .fe-add-btn:hover,
+:root[data-theme="light"] .fe-new-actions button:hover {
+    background: var(--accent-soft);
+    color: #20364d;
+}
+:root[data-theme="light"] .tab.active {
+    background: #fff;
+    color: #193955;
+    border-color: var(--accent-border);
+}
+:root[data-theme="light"] .dirty { color: #8d5a00; }
+:root[data-theme="light"] .github-update {
+    background: linear-gradient(90deg, #e8f1fa, #e4eef5);
+    border-color: #bfd2e4;
+    color: #435a70;
+}
+:root[data-theme="light"] .github-update time { color: #203d59; }
+:root[data-theme="light"] .github-update a { color: var(--accent-strong); }
+:root[data-theme="light"] .file-explorer {
+    background: #f4f8fc;
+    border-color: #c4d2e0;
+    color: #283b50;
+}
+:root[data-theme="light"] .fe-controls,
+:root[data-theme="light"] .fe-new-form {
+    background: #edf3f9;
+    border-color: #c6d3e0;
+}
+:root[data-theme="light"] .fe-controls input,
+:root[data-theme="light"] .fe-controls select,
+:root[data-theme="light"] .fe-new-form input,
+:root[data-theme="light"] .fe-new-form select,
+:root[data-theme="light"] .fe-rename-input,
+:root[data-theme="light"] .search-input,
+:root[data-theme="light"] .search-tools-row input,
+:root[data-theme="light"] .search-tools-row select {
+    background: #fff;
+    color: #24384e;
+    border-color: #b9c9d9;
+}
+:root[data-theme="light"] .fe-title,
+:root[data-theme="light"] .fe-item,
+:root[data-theme="light"] .fe-empty,
+:root[data-theme="light"] .fe-help,
+:root[data-theme="light"] .fe-rename,
+:root[data-theme="light"] .fe-del { color: #425a72; }
+:root[data-theme="light"] .fe-item:hover {
+    background: #e4edf6;
+    border-color: #c2d1e0;
+}
+:root[data-theme="light"] .fe-item.active {
+    background: var(--accent-soft);
+    color: #213a53;
+    border-color: var(--accent-border);
+}
+:root[data-theme="light"] .editors,
+:root[data-theme="light"] .editor-wrap {
+    background: #f8fbff;
+}
+:root[data-theme="light"] .line-numbers {
+    background: #eaf1f8;
+    color: #7b8da1;
+    border-right: 1px solid #d0dce7;
+}
+:root[data-theme="light"] .highlight { color: #27384b; }
+:root[data-theme="light"] .input { caret-color: #20384f; }
+:root[data-theme="light"] .input::selection,
+:root[data-theme="light"] .input::-moz-selection { background: var(--accent-soft); }
+:root[data-theme="light"] .hl-tag { color: #b4235c; }
+:root[data-theme="light"] .hl-attr { color: #276b35; }
+:root[data-theme="light"] .hl-string { color: #8b5810; }
+:root[data-theme="light"] .hl-comment { color: #687b8b; }
+:root[data-theme="light"] .hl-doctype { color: #087b91; }
+:root[data-theme="light"] .hl-num { color: #7049b8; }
+:root[data-theme="light"] .search-results {
+    background: #edf3f9;
+    color: #293d53;
+    border-color: #c6d4e2;
+}
+:root[data-theme="light"] .libs-panel {
+    background: #f7faff;
+    color: #24384e;
+}
+:root[data-theme="light"] .intellisense {
+    background: #fff;
+    border-color: var(--accent-border);
+    box-shadow: 0 10px 28px rgb(0 0 0 / 16%);
+}
+:root[data-theme="light"] .intellisense-item { color: #273a50; }
+:root[data-theme="light"] .intellisense-item:hover { color: #1b2e44; }
+:root[data-theme="light"] .modal-box,
+:root[data-theme="light"] .word-tree-dialog,
+:root[data-theme="light"] .word-detail-dialog {
+    background: #f8fbff;
+    color: #24384e;
+    border-color: #c4d2e0;
+}
+:root[data-theme="light"] .modal-title,
+:root[data-theme="light"] .word-tree-dialog h2,
+:root[data-theme="light"] .word-tree-dialog h3,
+:root[data-theme="light"] .word-detail-dialog h2,
+:root[data-theme="light"] .word-detail-dialog h3 { color: #223a52; }
+
+/* تراکم روی فاصله‌ها و ارتفاع خطوط کد اثر می‌گذارد؛ پیش‌نمایش ثابت می‌ماند. */
+:root[data-density="compact"] { --editor-line-height: 1.32; }
+:root[data-density="normal"] { --editor-line-height: 1.5; }
+:root[data-density="comfortable"] { --editor-line-height: 1.72; }
+
+:root[data-density="compact"] .settings-header { padding: 3px 2px 4px; }
+:root[data-density="compact"] .pane-label { min-height: 34px; padding: 3px 8px; gap: 4px; }
+:root[data-density="compact"] .toolbar { gap: 3px; }
+:root[data-density="compact"] .toolbar button,
+:root[data-density="compact"] .symbol-toolbar button { padding: 3px 7px; min-height: 26px; }
+:root[data-density="compact"] .tabs { gap: 2px; padding: 3px 5px 0; }
+:root[data-density="compact"] .tab { padding: 4px 5px; }
+:root[data-density="compact"] .search-tools-row { padding: 2px 4px; gap: 2px; }
+:root[data-density="compact"] .fe-header { padding: 3px 5px; min-height: 30px; }
+:root[data-density="compact"] .fe-item { padding: 2px 4px; gap: 3px; }
+:root[data-density="compact"] .fe-controls { padding: 4px; gap: 3px; }
+:root[data-density="comfortable"] .settings-header { padding: 9px 6px 11px; }
+:root[data-density="comfortable"] .pane-label { min-height: 46px; padding: 8px 14px; gap: 9px; }
+:root[data-density="comfortable"] .toolbar { gap: 7px; }
+:root[data-density="comfortable"] .toolbar button,
+:root[data-density="comfortable"] .symbol-toolbar button { padding: 8px 13px; min-height: 34px; }
+:root[data-density="comfortable"] .tabs { gap: 6px; padding: 8px 10px 0; }
+:root[data-density="comfortable"] .tab { padding: 9px 8px; }
+:root[data-density="comfortable"] .search-tools-row { padding: 7px 9px; gap: 6px; }
+:root[data-density="comfortable"] .fe-header { padding: 9px; min-height: 40px; }
+:root[data-density="comfortable"] .fe-item { padding: 7px 8px; gap: 6px; }
+:root[data-density="comfortable"] .fe-controls { padding: 8px; gap: 6px; }
+.line-numbers,
+.highlight,
+.input { line-height: var(--editor-line-height, 1.5); }
+
+</style>
+    <style data-bundled-from="settings.css">
+/* استایل مستقل پنل تنظیمات و گزینه‌های ظاهری ویرایشگر */
+
+/* پنل تمام‌صفحهٔ تنظیمات؛ گزینه‌های ظاهر برنامه فعال هستند. */
+.settings-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    overscroll-behavior: contain;
+    background:
+        radial-gradient(ellipse at 10% 0%, rgb(45 96 143 / 23%), transparent 42%),
+        #0f1725;
+    color: #e7eef9;
+    font-family: Tahoma, "Segoe UI", sans-serif;
+}
+.settings-screen[hidden] { display: none !important; }
+.settings-shell {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    min-height: 100%;
+    direction: rtl;
+}
+.settings-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 24px clamp(16px, 4vw, 56px);
+    border-bottom: 1px solid rgb(129 164 205 / 24%);
+    background: linear-gradient(115deg, rgb(27 47 72 / 97%), rgb(20 32 50 / 97%));
+    box-shadow: 0 8px 30px rgb(0 0 0 / 17%);
+}
+.settings-heading { min-width: 0; }
+.settings-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #8ebdf5;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .2px;
+}
+.settings-heading h1 { color: #f4f8ff; font-size: clamp(23px, 3vw, 31px); line-height: 1.45; }
+.settings-heading p { margin-top: 5px; color: #aabbd1; font-size: 12px; line-height: 1.9; }
+.settings-save-return {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    max-width: 100%;
+    min-height: 48px;
+    padding: 12px 18px;
+    border: 1px solid #65a7f4;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2674ca, #1f5da8);
+    color: #fff;
+    box-shadow: 0 8px 22px rgb(30 101 182 / 28%);
+    font: 700 12px/1.7 Tahoma, "Segoe UI", sans-serif;
+    text-align: center;
+    white-space: normal;
+    cursor: pointer;
+    transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+.settings-save-return:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 10px 26px rgb(30 101 182 / 38%); }
+.settings-save-return:active { transform: translateY(0); }
+.settings-save-return:focus-visible { outline: 3px solid #a8d3ff; outline-offset: 3px; }
+.settings-layout {
+    display: grid;
+    grid-template-columns: minmax(185px, 225px) minmax(0, 1fr);
+    align-items: start;
+    gap: 22px;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px clamp(14px, 3.2vw, 48px) 40px;
+}
+.settings-sidebar {
+    position: sticky;
+    top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    border: 1px solid rgb(130 159 194 / 22%);
+    border-radius: 16px;
+    background: rgb(26 38 57 / 88%);
+    box-shadow: 0 12px 34px rgb(0 0 0 / 12%);
+}
+.settings-sidebar-title { padding: 3px 8px 12px; color: #a6bad4; font-size: 11px; font-weight: 700; }
+.settings-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    padding: 10px 11px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: #d8e4f4;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.settings-nav-item:first-of-type { border-color: rgb(89 153 226 / 28%); background: rgb(53 102 157 / 22%); color: #c9e2ff; }
+.settings-nav-item > span:first-child { width: 23px; text-align: center; font-size: 16px; }
+.settings-sidebar-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 12px 10px 2px;
+    border-top: 1px solid rgb(130 159 194 / 18%);
+    color: #95aac4;
+    font-size: 10px;
+    line-height: 1.8;
+}
+.settings-status-dot { flex: 0 0 7px; width: 7px; height: 7px; margin-top: 5px; border-radius: 50%; background: #e7b768; box-shadow: 0 0 8px rgb(231 183 104 / 34%); }
+.settings-content { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.settings-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px 17px;
+    border: 1px solid rgb(112 159 214 / 27%);
+    border-radius: 13px;
+    background: rgb(41 73 111 / 28%);
+    color: #d9e7f8;
+}
+.settings-notice-icon { display: grid; flex: 0 0 22px; place-items: center; width: 22px; height: 22px; border: 1px solid #76b6f1; border-radius: 50%; color: #91c8ff; font: 700 13px/1 Tahoma, sans-serif; }
+.settings-notice strong { display: block; margin: 1px 0 5px; color: #f1f7ff; font-size: 12px; }
+.settings-notice p { color: #b9cce2; font-size: 11px; line-height: 1.9; }
+.settings-card {
+    overflow: hidden;
+    border: 1px solid rgb(130 159 194 / 22%);
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgb(26 39 58 / 97%), rgb(20 31 47 / 97%));
+    box-shadow: 0 12px 30px rgb(0 0 0 / 10%);
+}
+.settings-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 19px;
+    border-bottom: 1px solid rgb(130 159 194 / 18%);
+}
+.settings-card-icon { display: grid; flex: 0 0 39px; place-items: center; width: 39px; height: 39px; border: 1px solid rgb(111 167 230 / 28%); border-radius: 11px; background: rgb(47 89 137 / 28%); font-size: 18px; }
+.settings-card-header h2 { color: #edf4ff; font-size: 14px; line-height: 1.7; }
+.settings-card-header p { margin-top: 2px; color: #9eb1c9; font-size: 10px; line-height: 1.8; }
+.settings-proposed { margin-right: auto; padding: 4px 8px; border: 1px solid rgb(131 160 195 / 20%); border-radius: 20px; background: rgb(85 112 146 / 13%); color: #b4c6dd; font-size: 9px; white-space: nowrap; }
+.settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 15px 19px;
+}
+.settings-row + .settings-row { border-top: 1px solid rgb(130 159 194 / 14%); }
+.settings-row-info { flex: 0 1 245px; min-width: 150px; }
+.settings-row-info h3 { color: #dce8f7; font-size: 11px; line-height: 1.9; }
+.settings-row-info p { margin-top: 2px; color: #93a7c0; font-size: 10px; line-height: 1.9; }
+.settings-options { display: flex; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-start; gap: 7px; }
+.settings-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 35px;
+    padding: 8px 12px;
+    border: 1px solid rgb(136 160 190 / 28%);
+    border-radius: 9px;
+    background: #202f44;
+    color: #c5d4e7;
+    font: 500 10px/1.5 Tahoma, "Segoe UI", sans-serif;
+    white-space: nowrap;
+    opacity: 1;
+    cursor: not-allowed;
+}
+.settings-option.is-selected { border-color: #518acb; background: rgb(48 101 163 / 25%); color: #e4f1ff; box-shadow: inset 0 0 0 1px rgb(81 138 203 / 10%); }
+.settings-option:disabled { opacity: 1; }
+.settings-color-dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 0 2px rgb(255 255 255 / 9%); }
+.settings-color-dot.color-blue { background: #56a5ff; }
+.settings-color-dot.color-green { background: #53d3a0; }
+.settings-color-dot.color-violet { background: #aa8cff; }
+.settings-color-dot.color-orange { background: #ffad65; }
+.settings-option.settings-reset-option { border-color: rgb(219 126 126 / 30%); background: rgb(139 54 54 / 15%); color: #f0bcbc; }
+.settings-bottom-note { padding: 3px 4px 0; color: #8ea3be; font-size: 10px; line-height: 1.9; text-align: center; }
+
+@media (max-width: 900px) {
+    .settings-topbar { align-items: flex-start; flex-direction: column; gap: 17px; padding: 20px 18px; }
+    .settings-save-return { width: 100%; }
+    .settings-layout { grid-template-columns: 1fr; gap: 15px; padding: 15px 12px 28px; }
+    .settings-sidebar { position: static; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px; padding: 10px; }
+    .settings-sidebar-title { flex: 0 0 100%; padding: 2px 5px 7px; }
+    .settings-nav-item { flex: 1 1 125px; min-height: 37px; padding: 8px; }
+    .settings-sidebar-note { flex: 1 1 100%; margin-top: 6px; padding: 9px 5px 1px; }
+}
+@media (max-width: 600px) {
+    .settings-heading h1 { font-size: 23px; }
+    .settings-heading p { font-size: 11px; }
+    .settings-card-header { gap: 9px; padding: 13px 12px; }
+    .settings-card-icon { flex-basis: 33px; width: 33px; height: 33px; font-size: 16px; }
+    .settings-card-header h2 { font-size: 12px; }
+    .settings-row { align-items: stretch; flex-direction: column; gap: 11px; padding: 13px 12px; }
+    .settings-row-info { flex-basis: auto; min-width: 0; }
+    .settings-options { justify-content: flex-start; }
+    .settings-option { padding: 7px 10px; font-size: 10px; white-space: normal; }
+    .settings-proposed { font-size: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .settings-save-return { transition: none; }
+}
+
+:root .settings-option.is-selected {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--blue-text);
+    box-shadow: inset 0 0 0 1px var(--accent-soft);
+}
+:root .settings-save-return {
+    border-color: var(--accent-border);
+    background: linear-gradient(135deg, var(--accent-strong), var(--accent-border));
+}
+:root .settings-option:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+:root .settings-option:not(:disabled) {
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .15s ease;
+}
+:root .settings-option:not(:disabled):hover {
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+.settings-active {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--accent-color);
+}
+.settings-apply-status {
+    margin: 0;
+    padding: 10px 18px 13px;
+    color: #9bb4cf;
+    font-size: 10px;
+    line-height: 1.9;
+}
+:root[data-theme="light"] .settings-apply-status { color: #4d647c; }
+
+:root[data-theme="light"] .settings-screen {
+    background: radial-gradient(ellipse at 10% 0%, rgb(70 132 194 / 10%), transparent 42%), #f1f5fa;
+    color: #26394f;
+}
+:root[data-theme="light"] .settings-topbar {
+    background: linear-gradient(115deg, #f9fbff, #e7eef7);
+    border-color: #c7d5e3;
+    box-shadow: 0 8px 30px rgb(40 65 90 / 8%);
+}
+:root[data-theme="light"] .settings-heading h1,
+:root[data-theme="light"] .settings-card-header h2,
+:root[data-theme="light"] .settings-row-info h3,
+:root[data-theme="light"] .settings-notice strong { color: #243950; }
+:root[data-theme="light"] .settings-eyebrow,
+:root[data-theme="light"] .settings-heading p,
+:root[data-theme="light"] .settings-sidebar-title,
+:root[data-theme="light"] .settings-sidebar-note,
+:root[data-theme="light"] .settings-card-header p,
+:root[data-theme="light"] .settings-row-info p,
+:root[data-theme="light"] .settings-bottom-note { color: #566d84; }
+:root[data-theme="light"] .settings-sidebar,
+:root[data-theme="light"] .settings-card {
+    background: linear-gradient(145deg, #fff, #f0f5fa);
+    border-color: #cbd8e4;
+    box-shadow: 0 8px 24px rgb(34 59 83 / 7%);
+}
+:root[data-theme="light"] .settings-nav-item { color: #3c536b; }
+:root[data-theme="light"] .settings-nav-item:first-of-type {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: #263e56;
+}
+:root[data-theme="light"] .settings-notice {
+    background: #eaf3fb;
+    border-color: #c0d7ec;
+    color: #2e4964;
+}
+:root[data-theme="light"] .settings-notice strong { color: #24415c; }
+:root[data-theme="light"] .settings-notice p { color: #4a647d; }
+:root[data-theme="light"] .settings-card-header,
+:root[data-theme="light"] .settings-row + .settings-row { border-color: #d9e2eb; }
+:root[data-theme="light"] .settings-card-icon {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+}
+:root[data-theme="light"] .settings-proposed {
+    background: #edf2f8;
+    border-color: #d0dce7;
+    color: #536a80;
+}
+:root[data-theme="light"] .settings-option {
+    background: #fff;
+    border-color: #c4d2df;
+    color: #334a61;
+}
+:root[data-theme="light"] .settings-option.is-selected {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: #233a52;
+}
+:root[data-theme="light"] .settings-option.settings-reset-option {
+    background: #fff0f0;
+    color: #973e3e;
+    border-color: #e6b6b6;
+}
+:root[data-theme="light"] .settings-status-dot { background: var(--accent-color); }
+
+:root[data-density="compact"] .settings-row { padding-top: 10px; padding-bottom: 10px; }
+:root[data-density="compact"] .settings-card-header { padding-top: 12px; padding-bottom: 12px; }
+
+:root[data-density="comfortable"] .settings-row { padding-top: 19px; padding-bottom: 19px; }
+:root[data-density="comfortable"] .settings-card-header { padding-top: 20px; padding-bottom: 20px; }
+
+/* هماهنگی دکمهٔ ذخیره با رنگ تأکیدی ویرایشگر */
+:root .settings-save-return {
+    border-color: var(--accent-border);
+    box-shadow: 0 3px 13px var(--accent-shadow);
+    background: linear-gradient(135deg, var(--accent-strong), var(--accent-border));
+}
+
 </style>
 </head>
 <body>
@@ -1814,6 +2403,7 @@ input {
             <button id="btnFontInc"  title="Increase Font Size">A+</button>
             <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
             <button type="button" id="btnWordTree" title="Open the live word tree">🌳 Word Tree</button>
+            <button type="button" id="btnSettings" title="تنظیمات ویرایشگر" aria-controls="settingsScreen" aria-haspopup="dialog" aria-expanded="false">⚙ تنظیمات</button>
         </div>
         <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
         <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
@@ -2189,6 +2779,187 @@ input {
             </div>
         </div>
     </div>
+
+    <section id="settingsScreen" class="settings-screen" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" lang="fa" dir="rtl" hidden>
+        <div class="settings-shell">
+            <header class="settings-topbar">
+                <div class="settings-heading">
+                    <span class="settings-eyebrow">محیط شخصی‌سازی ویرایشگر</span>
+                    <h1 id="settingsTitle">تنظیمات برنامه</h1>
+                    <p>ظاهر محیط را شخصی‌سازی کنید؛ انتخاب‌ها فوراً اعمال می‌شوند و در همین مرورگر می‌مانند.</p>
+                </div>
+                <button type="button" id="btnSettingsSaveReturn" class="settings-save-return">
+                    <span aria-hidden="true">💾</span>
+                    ذخیره ظاهر و بازگشت به کدنویسی
+                </button>
+            </header>
+
+            <div class="settings-layout">
+                <aside class="settings-sidebar" aria-label="دسته‌بندی تنظیمات">
+                    <p class="settings-sidebar-title">دسته‌بندی تنظیمات</p>
+                    <div class="settings-nav-item"><span aria-hidden="true">🎨</span><span>ظاهر برنامه</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">⌨️</span><span>ویرایشگر کد</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">🪟</span><span>نمایش زنده</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">▥</span><span>چیدمان محیط</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></div>
+                    <div class="settings-sidebar-note">
+                        <span class="settings-status-dot" aria-hidden="true"></span>
+                        <span>سکشن ظاهر برنامه فعال است؛ سایر سکشن‌ها در مراحل بعد تکمیل می‌شوند</span>
+                    </div>
+                </aside>
+
+                <main class="settings-content">
+                    <div class="settings-notice" role="note">
+                        <span class="settings-notice-icon" aria-hidden="true">✓</span>
+                        <div>
+                            <strong>تنظیمات ظاهر فعال است</strong>
+                            <p>پوسته، رنگ تأکیدی و تراکم رابط کاربری همین حالا روی محیط برنامه اعمال و در مرورگر ذخیره می‌شوند. بخش‌های دیگر در مراحل بعد فعال خواهند شد.</p>
+                        </div>
+                    </div>
+
+                    <section id="settingsAppearanceCard" class="settings-card" aria-labelledby="settingsAppearanceTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">🎨</span>
+                            <div><h2 id="settingsAppearanceTitle">ظاهر برنامه</h2><p>رنگ‌ها و چگونگی نمایش محیط کار</p></div>
+                            <span class="settings-proposed settings-active">فعال</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>پوستهٔ برنامه</h3><p>انتخاب زمینهٔ کلی محیط</p></div>
+                            <div class="settings-options" role="group" aria-label="گزینه‌های پوسته">
+                                <button type="button" class="settings-option is-selected" data-setting="theme" data-value="dark" aria-pressed="true">تیره</button>
+                                <button type="button" class="settings-option" data-setting="theme" data-value="light" aria-pressed="false">روشن</button>
+                                <button type="button" class="settings-option" data-setting="theme" data-value="system" aria-pressed="false">مطابق سیستم</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>رنگ تأکیدی</h3><p>رنگ دکمه‌ها و بخش‌های برجسته</p></div>
+                            <div class="settings-options" role="group" aria-label="رنگ تأکیدی">
+                                <button type="button" class="settings-option settings-color-option is-selected" data-setting="accentColor" data-value="blue" aria-pressed="true"><span class="settings-color-dot color-blue" aria-hidden="true"></span>آبی</button>
+                                <button type="button" class="settings-option settings-color-option" data-setting="accentColor" data-value="green" aria-pressed="false"><span class="settings-color-dot color-green" aria-hidden="true"></span>سبز</button>
+                                <button type="button" class="settings-option settings-color-option" data-setting="accentColor" data-value="violet" aria-pressed="false"><span class="settings-color-dot color-violet" aria-hidden="true"></span>بنفش</button>
+                                <button type="button" class="settings-option settings-color-option" data-setting="accentColor" data-value="orange" aria-pressed="false"><span class="settings-color-dot color-orange" aria-hidden="true"></span>نارنجی</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>تراکم رابط کاربری</h3><p>فاصلهٔ میان دکمه‌ها و بخش‌ها</p></div>
+                            <div class="settings-options" role="group" aria-label="تراکم رابط کاربری">
+                                <button type="button" class="settings-option" data-setting="density" data-value="compact" aria-pressed="false">فشرده</button>
+                                <button type="button" class="settings-option is-selected" data-setting="density" data-value="normal" aria-pressed="true">معمولی</button>
+                                <button type="button" class="settings-option" data-setting="density" data-value="comfortable" aria-pressed="false">بازتر</button>
+                            </div>
+                        </div>
+                        <p class="settings-apply-status" id="settingsAppearanceStatus" role="status" aria-live="polite">تغییرات این بخش بلافاصله اعمال و در مرورگر ذخیره می‌شوند.</p>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsEditorTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">⌨️</span>
+                            <div><h2 id="settingsEditorTitle">ویرایشگر کد</h2><p>خوانایی و امکانات هنگام نوشتن کد</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>اندازهٔ قلم کد</h3><p>تنظیم اندازهٔ نوشته‌ها در پنل‌های کدنویسی</p></div>
+                            <div class="settings-options" role="group" aria-label="اندازه قلم کد">
+                                <button type="button" class="settings-option" disabled>کوچک</button>
+                                <button type="button" class="settings-option is-selected" disabled>متوسط</button>
+                                <button type="button" class="settings-option" disabled>بزرگ</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>شمارهٔ خطوط</h3><p>نمایش شماره کنار هر خط کد</p></div>
+                            <div class="settings-options" role="group" aria-label="نمایش شماره خطوط">
+                                <button type="button" class="settings-option is-selected" disabled>نمایش</button>
+                                <button type="button" class="settings-option" disabled>عدم نمایش</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>شکستن خطوط طولانی</h3><p>نمایش ادامهٔ خط در ردیف بعدی</p></div>
+                            <div class="settings-options" role="group" aria-label="شکستن خطوط طولانی">
+                                <button type="button" class="settings-option" disabled>فعال</button>
+                                <button type="button" class="settings-option is-selected" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>پیشنهاد خودکار کد</h3><p>نمایش پیشنهادها هنگام تایپ</p></div>
+                            <div class="settings-options" role="group" aria-label="پیشنهاد خودکار کد">
+                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
+                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsPreviewTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">🪟</span>
+                            <div><h2 id="settingsPreviewTitle">نمایش زنده</h2><p>رفتار پیش‌نمایش خروجی کد</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>به‌روزرسانی خودکار</h3><p>به‌روزرسانی پیش‌نمایش پس از ویرایش کد</p></div>
+                            <div class="settings-options" role="group" aria-label="به روزرسانی خودکار">
+                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
+                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>وقفهٔ پیش‌نمایش</h3><p>فاصلهٔ زمانی پس از تایپ تا به‌روزرسانی</p></div>
+                            <div class="settings-options" role="group" aria-label="وقفه پیش نمایش">
+                                <button type="button" class="settings-option" disabled>۳۰۰ میلی‌ثانیه</button>
+                                <button type="button" class="settings-option is-selected" disabled>۶۰۰ میلی‌ثانیه</button>
+                                <button type="button" class="settings-option" disabled>۱ ثانیه</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsLayoutTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">▥</span>
+                            <div><h2 id="settingsLayoutTitle">چیدمان محیط</h2><p>نسبت فضای کدنویسی به نمایش زنده</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>نسبت دو پنل</h3><p>تعیین سهم هر پنل از عرض صفحه</p></div>
+                            <div class="settings-options" role="group" aria-label="نسبت پنل‌ها">
+                                <button type="button" class="settings-option is-selected" disabled>۵۰٪ / ۵۰٪</button>
+                                <button type="button" class="settings-option" disabled>۶۰٪ / ۴۰٪</button>
+                                <button type="button" class="settings-option" disabled>۷۰٪ / ۳۰٪</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>جهت نمایش پنل‌ها</h3><p>چیدمان ویرایشگر و پیش‌نمایش</p></div>
+                            <div class="settings-options" role="group" aria-label="جهت نمایش پنل‌ها">
+                                <button type="button" class="settings-option is-selected" disabled>کنار هم</button>
+                                <button type="button" class="settings-option" disabled>روی هم</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsStorageTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">💾</span>
+                            <div><h2 id="settingsStorageTitle">ذخیره‌سازی و بازیابی</h2><p>رفتار ذخیره‌سازی و بازگردانی تنظیمات</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>ذخیرهٔ خودکار تنظیمات</h3><p>نگهداری تنظیمات در مرورگر</p></div>
+                            <div class="settings-options" role="group" aria-label="ذخیره خودکار تنظیمات">
+                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
+                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>بازنشانی تنظیمات</h3><p>برگرداندن گزینه‌ها به مقادیر اولیه</p></div>
+                            <div class="settings-options">
+                                <button type="button" class="settings-option settings-reset-option" disabled>بازگردانی پیش‌فرض‌ها</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <p class="settings-bottom-note">سکشن «ظاهر برنامه» فعال شد؛ بخش‌های دیگر در مراحل بعدی تکمیل می‌شوند.</p>
+                </main>
+            </div>
+        </div>
+    </section>
 
     <div class="toast" id="toast"></div>
 
@@ -7541,8 +8312,168 @@ input {
             }
         }
 
+
     })();
     
+
+</script>
+    <script data-bundled-from="settings.js">
+/* منطق مستقل سکشن «ظاهر برنامه» در پنل تنظیمات */
+(function () {
+    'use strict';
+
+    const settingsButton = document.getElementById('btnSettings');
+    const settingsScreen = document.getElementById('settingsScreen');
+    const settingsSaveReturnButton = document.getElementById('btnSettingsSaveReturn');
+    const settingsAppearanceStatus = document.getElementById('settingsAppearanceStatus');
+    const appearanceStorageKey = 'html-editor-appearance-v1';
+    const allowedValues = {
+        theme: ['dark', 'light', 'system'],
+        accentColor: ['blue', 'green', 'violet', 'orange'],
+        density: ['compact', 'normal', 'comfortable']
+    };
+    const defaults = { theme: 'dark', accentColor: 'blue', density: 'normal' };
+    let appearanceSettings = loadAppearanceSettings();
+    let systemThemeMedia = null;
+    let toastTimer = null;
+
+    function storageGet(key) {
+        try { return window.localStorage.getItem(key); }
+        catch (error) { return null; }
+    }
+
+    function storageSet(key, value) {
+        try { window.localStorage.setItem(key, value); return true; }
+        catch (error) { return false; }
+    }
+
+    function loadAppearanceSettings() {
+        let saved = null;
+        try { saved = JSON.parse(storageGet(appearanceStorageKey) || 'null'); }
+        catch (error) { saved = null; }
+
+        const settings = {};
+        Object.keys(defaults).forEach(function (key) {
+            settings[key] = saved && allowedValues[key].includes(saved[key])
+                ? saved[key]
+                : defaults[key];
+        });
+        return settings;
+    }
+
+    try {
+        if (typeof window.matchMedia === 'function') {
+            systemThemeMedia = window.matchMedia('(prefers-color-scheme: light)');
+        }
+    } catch (error) {
+        systemThemeMedia = null;
+    }
+
+    function applyAppearanceSettings() {
+        const root = document.documentElement;
+        const effectiveTheme = appearanceSettings.theme === 'system'
+            ? (systemThemeMedia && systemThemeMedia.matches ? 'light' : 'dark')
+            : appearanceSettings.theme;
+
+        root.dataset.theme = effectiveTheme;
+        root.dataset.themePreference = appearanceSettings.theme;
+        root.dataset.accent = appearanceSettings.accentColor;
+        root.dataset.density = appearanceSettings.density;
+        root.style.colorScheme = effectiveTheme;
+
+        if (settingsScreen) {
+            settingsScreen.querySelectorAll('[data-setting][data-value]').forEach(function (button) {
+                const selected = appearanceSettings[button.dataset.setting] === button.dataset.value;
+                button.classList.toggle('is-selected', selected);
+                button.setAttribute('aria-pressed', String(selected));
+            });
+        }
+    }
+
+    function showSettingsToast(message, type) {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        toast.replaceChildren();
+        const node = document.createElement('span');
+        node.textContent = message;
+        toast.appendChild(node);
+        toast.className = 'toast show ' + (type || '');
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(function () {
+            toast.className = 'toast ' + (type || '');
+        }, 2500);
+    }
+
+    function saveAppearanceSettings() {
+        applyAppearanceSettings();
+        const saved = storageSet(appearanceStorageKey, JSON.stringify(appearanceSettings));
+        if (!saved) {
+            if (settingsAppearanceStatus) {
+                settingsAppearanceStatus.textContent =
+                    'ذخیره‌سازی در مرورگر در دسترس نیست؛ تغییرات فقط تا زمان باز بودن صفحه اعمال شده‌اند.';
+            }
+            showSettingsToast('⚠ ذخیرهٔ تنظیمات ظاهر ناموفق بود؛ دسترسی به حافظهٔ مرورگر را بررسی کنید.', 'error');
+            return false;
+        }
+        if (settingsAppearanceStatus) {
+            settingsAppearanceStatus.textContent = 'تنظیمات ظاهر در همین مرورگر ذخیره شده است.';
+        }
+        return true;
+    }
+
+    function openSettingsScreen() {
+        settingsScreen.hidden = false;
+        settingsButton.setAttribute('aria-expanded', 'true');
+        settingsSaveReturnButton.focus();
+    }
+
+    function returnToCodingScreen() {
+        settingsScreen.hidden = true;
+        settingsButton.setAttribute('aria-expanded', 'false');
+        settingsButton.focus();
+    }
+
+    applyAppearanceSettings();
+    if (!settingsButton || !settingsScreen || !settingsSaveReturnButton) return;
+
+    settingsButton.addEventListener('click', openSettingsScreen);
+    settingsScreen.querySelectorAll('[data-setting][data-value]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const key = button.dataset.setting;
+            const value = button.dataset.value;
+            if (!allowedValues[key] || !allowedValues[key].includes(value)) return;
+            appearanceSettings[key] = value;
+            const saved = saveAppearanceSettings();
+            if (saved && settingsAppearanceStatus) {
+                settingsAppearanceStatus.textContent = 'تغییر اعمال شد و در مرورگر ذخیره شد.';
+            }
+        });
+    });
+
+    settingsSaveReturnButton.addEventListener('click', function () {
+        if (!saveAppearanceSettings()) return;
+        returnToCodingScreen();
+        showSettingsToast('✅ تنظیمات ظاهر ذخیره شد و اعمال شده است.', 'success');
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !settingsScreen.hidden) {
+            event.preventDefault();
+            returnToCodingScreen();
+        }
+    });
+
+    if (systemThemeMedia) {
+        const handleSystemThemeChange = function () {
+            if (appearanceSettings.theme === 'system') applyAppearanceSettings();
+        };
+        if (typeof systemThemeMedia.addEventListener === 'function') {
+            systemThemeMedia.addEventListener('change', handleSystemThemeChange);
+        } else if (typeof systemThemeMedia.addListener === 'function') {
+            systemThemeMedia.addListener(handleSystemThemeChange);
+        }
+    }
+})();
 
 </script>
     <script data-bundled-from="word-tree.js">

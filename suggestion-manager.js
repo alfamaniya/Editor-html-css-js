@@ -329,7 +329,8 @@
                 var target = modal.querySelector('#smBankTarget').value.trim() || defaultTarget(lang);
                 if (!name) { setStatus('نام بانک الزامی است.', true); return; }
                 if (banks.some(function (other, index) { return index !== node.bankIndex && other.name.toLowerCase() === name.toLowerCase(); })) { setStatus('بانکی با این نام وجود دارد.', true); return; }
-                if (!targetList(target)) { setStatus('مسیر منبع معتبر نیست؛ از یک آرایهٔ پیشنهاد موجود استفاده کنید.', true); return; }
+                var targetMatchesLanguage = (lang === 'html' && (/^html/.test(target) || target === 'snippets.html')) || (lang === 'css' && (/^css/.test(target) || target === 'snippets.css')) || (lang === 'js' && (/^js/.test(target) || target === 'snippets.js'));
+                if (!targetMatchesLanguage || !targetList(target)) { setStatus('مسیر منبع باید با زبان بانک سازگار و به یک آرایهٔ پیشنهاد معتبر متصل باشد.', true); return; }
                 bank.name = name; bank.lang = lang; bank.target = target;
                 writeCustomBanks(banks); renderTree(); editNode(node);
             }, function () {
@@ -510,7 +511,8 @@
         markDirty('تغییرات بانک سفارشی ذخیره‌نشده است.');
     }
     function addCategory() {
-        var lang = selected && selected.lang || 'html';
+        var selectedBanks = selected && (selected.kind === 'customBank' || selected.kind === 'customWord') ? readCustomBanks() : [];
+        var lang = selected && selected.lang || (selectedBanks[selected.bankIndex] && selectedBanks[selected.bankIndex].lang) || 'html';
         var name = window.prompt('عنوان دسته‌بندی جدید را وارد کنید:');
         if (!name || !name.trim()) return;
         name = name.trim();
@@ -524,7 +526,8 @@
         if (!name || !name.trim()) return;
         var banks = readCustomBanks();
         if (banks.some(function (bank) { return bank.name.toLowerCase() === name.trim().toLowerCase(); })) { setStatus('نام این بانک از قبل وجود دارد.', true); return; }
-        var lang = selected && selected.lang || 'html';
+        var selectedBank = selected && (selected.kind === 'customBank' || selected.kind === 'customWord') ? banks[selected.bankIndex] : null;
+        var lang = selected && selected.lang || (selectedBank && selectedBank.lang) || 'html';
         banks.push({ id: 'custom-' + Date.now().toString(36), name: name.trim(), lang: lang, target: defaultTarget(lang), words: [] });
         writeCustomBanks(banks); renderTree(); setStatus('بانک سفارشی ایجاد شد؛ برای افزودن کلمه، از گزینهٔ افزودن داخل همان بانک استفاده کنید.');
     }

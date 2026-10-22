@@ -9,7 +9,7 @@
     var languageLabels = { html: 'HTML', css: 'CSS', js: 'JavaScript' };
     var categories = { html: [], css: [], js: [] };
     var dirty = false, selected = null, expanded = {}, baseline = '', modal = null;
-    var customBanks = [], resizeObserver = null, previousFocus = null;
+    var customBanks = [], categoryLabels = {}, previousFocus = null;
     var UI_STORAGE_KEY = 'html-editor-suggestion-manager-ui-v1';
 
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
@@ -62,7 +62,7 @@
         });
     }
     function getBaseline() {
-        return JSON.stringify({ data: getSnapshot(), customBanks: customBanks });
+        return JSON.stringify({ data: getSnapshot(), customBanks: customBanks, categoryLabels: categoryLabels });
     }
     function markDirty(message) {
         dirty = true;
@@ -78,6 +78,7 @@
             if (saved && saved.version === 1 && saved.data) {
                 applySnapshot(saved.data);
                 customBanks = Array.isArray(saved.customBanks) ? clone(saved.customBanks) : [];
+                categoryLabels = saved.categoryLabels && typeof saved.categoryLabels === 'object' ? clone(saved.categoryLabels) : {};
             }
         } catch (error) { console.warn('بارگذاری بانک پیشنهادها انجام نشد.', error); }
         syncCustomBanks();
@@ -227,7 +228,7 @@
                 if (query && !filtered.length && !categoryMatch) return;
                 resultCount += typeFilter === 'category' ? 1 : filtered.length;
                 var category = document.createElement('details'); category.open = !!query || expanded[group.key] !== false;
-                var summary = document.createElement('summary'); summary.textContent = group.key + ' (' + entries.length + ')'; category.appendChild(summary);
+                var summary = document.createElement('summary'); summary.textContent = (categoryLabels[group.key] || group.key) + ' (' + entries.length + ')'; category.appendChild(summary);
                 summary.addEventListener('click', function () {
                     expanded[group.key] = !category.open;
                     selected = { kind: 'category', lang: lang, key: group.key };
@@ -254,10 +255,11 @@
             if (bank.children.length > 1) tree.appendChild(bank);
         });
         var custom = readCustomBanks();
-        if (langFilter === 'all' && typeFilter !== 'category' && custom.length) {
+        if (typeFilter !== 'category' && custom.some(function (bank) { return langFilter === 'all' || bank.lang === langFilter; })) {
             var customBank = document.createElement('details'); customBank.open = true;
             var sum = document.createElement('summary'); sum.textContent = 'بانک‌های سفارشی (' + custom.length + ')'; customBank.appendChild(sum);
             custom.forEach(function (bank, bi) {
+                if (langFilter !== 'all' && bank.lang !== langFilter) return;
                 var words = bank.words || [];
                 var matching = words.map(function (word, wi) { return { word: word, index: wi }; }).filter(function (item) {
                     return !query || (bank.name + ' ' + bank.id + ' ' + bank.lang + ' ' + bank.target + ' ' + item.word.label + ' ' + item.word.insert + ' ' + (item.word.description || '')).toLowerCase().indexOf(query) !== -1;
@@ -287,6 +289,11 @@
     }
     function editNode(node) {
         selected = node;
+        var workspace = modal.querySelector('.sm-workspace');
+        if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches && workspace) {
+            workspace.dataset.mobileView = 'details';
+            modal.querySelectorAll('[data-sm-view]').forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.smView === 'details')); });
+        }
         var editor = modal.querySelector('#smEditor'), title = modal.querySelector('#smEditorTitle');
         editor.textContent = '';
         if (node.kind === 'customBank') {
@@ -349,9 +356,10 @@
             var categoryKey = node.key;
             title.textContent = 'مشخصات دسته‌بندی';
             editor.appendChild(renderField('شناسهٔ فنی دسته‌بندی', 'smCategoryKey', categoryKey));
-            editor.appendChild(renderField('نام نمایشی', 'smCategoryLabel', categoryKey));
+            editor.appendChild(renderField('نام نمایشی', 'smCategoryLabel', categoryLabels[categoryKey] || categoryKey));
             addEditorButtons(editor, function () {
                 var nextKey = modal.querySelector('#smCategoryKey').value.trim();
+                var nextLabel = modal.querySelector('#smCategoryLabel').value.trim() || nextKey;
                 if (!nextKey || nextKey === 'snippets' || nextKey.indexOf(' ') !== -1) { setStatus('شناسه فنی معتبر وارد کنید.', true); return; }
                 if (nextKey !== categoryKey && data[nextKey] !== undefined) { setStatus('این شناسه قبلاً استفاده شده است.', true); return; }
                 if (nextKey !== categoryKey) {
@@ -361,9 +369,12 @@
                         data[parts[0]][nextKey] = data[parts[0]][parts[1]];
                         delete data[parts[0]][parts[1]];
                     } else { data[nextKey] = data[categoryKey]; delete data[categoryKey]; }
+                    if (categoryLabels[categoryKey]) { categoryLabels[nextKey] = categoryLabels[categoryKey]; delete categoryLabels[categoryKey]; }
                     node.key = nextKey; categoryKey = nextKey;
                 }
-                markDirty('شناسه دسته‌بندی تغییر کرد؛ ذخیره کنید تا باقی بماند.');
+                if (nextLabel && nextLabel !== categoryKey) categoryLabels[categoryKey] = nextLabel;
+                else if (nextLabel === categoryKey) delete categoryLabels[categoryKey];
+                markDirty('مشخصات دسته‌بندی تغییر کرد؛ ذخیره کنید تا باقی بماند.');
                 renderTree(); editNode(node);
             }, function () {
                 var direct = categoryList.filter(function (entry) { return !(entry && entry.__suggestionManagerBankId); }).length;
@@ -372,6 +383,7 @@
                 if (parts.length === 2 && ['cssValues','htmlAttrsByTag','jsMembers','snippets'].indexOf(parts[0]) !== -1) {
                     if (data[parts[0]]) delete data[parts[0]][parts[1]];
                 } else delete data[categoryKey];
+                delete categoryLabels[categoryKey];
                 selected = null; markDirty('دسته‌بندی حذف شد؛ ذخیره کنید تا نهایی شود.'); renderTree();
                 editor.innerHTML = '<p class="sm-empty">دسته‌بندی حذف شد.</p>';
             });
@@ -382,13 +394,16 @@
         editor.appendChild(renderField('نام / متن نمایشی', 'smLabel', entry == null ? '' : labelForEntry(entry)));
         var objectEntry = entry && typeof entry === 'object';
         if (objectEntry) {
-            editor.appendChild(renderField('متن یا پیشوند درج‌شونده', 'smPrefix', entry.prefix !== undefined ? entry.prefix : entry.insert !== undefined ? entry.insert : '', true));
-            editor.appendChild(renderField('پسوند درج‌شونده', 'smSuffix', entry.suffix || '', true));
+            editor.appendChild(renderField('متن درج‌شونده', 'smPrefix', entry.insert !== undefined ? entry.insert : entry.prefix !== undefined ? entry.prefix : labelForEntry(entry), true));
+            editor.appendChild(renderField('پسوند درج‌شونده (برای قالب‌ها)', 'smSuffix', entry.suffix || '', true));
             editor.appendChild(renderField('توضیحات', 'smDescription', entry.description || '', true));
         } else {
             editor.appendChild(renderField('توضیحات اختیاری', 'smDescription', '', true));
             editor.appendChild(renderField('متن درج‌شونده (در صورت تفاوت با نام)', 'smInsert', entry == null ? '' : entry, true));
         }
+        var activeWrap = document.createElement('label'); activeWrap.className = 'sm-check-field';
+        var activeCheck = document.createElement('input'); activeCheck.type = 'checkbox'; activeCheck.id = 'smBaseActive'; activeCheck.checked = !(entry && typeof entry === 'object' && (entry.active === false || entry.enabled === false));
+        activeWrap.appendChild(activeCheck); activeWrap.appendChild(document.createTextNode('فعال در پیشنهادهای ویرایشگر')); editor.appendChild(activeWrap);
         addEditorButtons(editor, function () {
             var label = modal.querySelector('#smLabel').value.trim();
             if (!label) { setStatus('نام کلمه الزامی است.', true); return; }
@@ -399,9 +414,10 @@
                 else if ('insert' in result) result.insert = modal.querySelector('#smPrefix').value;
                 if ('suffix' in result) result.suffix = modal.querySelector('#smSuffix').value;
                 if ('description' in result) result.description = modal.querySelector('#smDescription').value;
+                result.active = activeCheck.checked;
             } else {
                 var insert = modal.querySelector('#smInsert').value;
-                result = node.index >= 0 && !insert ? label : (insert && insert !== label ? { label: label, prefix: insert, suffix: '', description: modal.querySelector('#smDescription').value } : label);
+                result = node.index >= 0 && !insert && activeCheck.checked ? label : (insert && insert !== label || !activeCheck.checked ? { label: label, insert: insert || label, description: modal.querySelector('#smDescription').value, active: activeCheck.checked } : label);
             }
             if (node.index < 0) { if (list.some(function (item) { return labelForEntry(item) === label; })) { setStatus('کلمه‌ای با این نام از قبل وجود دارد.', true); return; } list.push(result); node.index = list.length - 1; }
             else list[node.index] = result;
@@ -500,7 +516,7 @@
     function saveChanges() {
         try {
             var snapshot = getSnapshot();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, data: snapshot, customBanks: readCustomBanks() }));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, data: snapshot, customBanks: readCustomBanks(), categoryLabels: categoryLabels }));
             baseline = getBaseline(); dirty = false;
             var save = modal && modal.querySelector('#smSave');
             if (save) save.disabled = true;
@@ -523,6 +539,7 @@
                 var saved = JSON.parse(baseline);
                 applySnapshot(saved.data || {});
                 customBanks = Array.isArray(saved.customBanks) ? clone(saved.customBanks) : [];
+                categoryLabels = saved.categoryLabels && typeof saved.categoryLabels === 'object' ? clone(saved.categoryLabels) : {};
                 syncCustomBanks();
             } catch (error) { setStatus('بازگردانی تغییرات ناموفق بود؛ پنجره باز می‌ماند.', true); return; }
             dirty = false;

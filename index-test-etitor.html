@@ -1798,8 +1798,8 @@ input {
 </head>
 <body>
 
-    <header class="page-symbol-header" aria-label="Symbol suggestions">
-        <div class="symbol-toolbar" id="symbolToolbar" role="toolbar" aria-label="Quick code symbols"></div>
+    <header class="page-symbol-header" aria-label="Popular code quick inserts">
+        <div class="symbol-toolbar" id="symbolToolbar" role="toolbar" aria-label="Quick inserts for the active language"></div>
     
     </header>
     <header class="settings-header" aria-label="Editor settings">
@@ -2357,24 +2357,126 @@ input {
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
         symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
             html: [
-            { label: "<div>", prefix: "<div>", suffix: "</div>", description: "Insert a div container" },
-            { label: "<section>", prefix: "<section>", suffix: "</section>", description: "Insert a semantic section" },
-            { label: "<article>", prefix: "<article>", suffix: "</article>", description: "Insert a self-contained article" },
-            { label: "<a>", prefix: "<a href=\"\">", suffix: "</a>", description: "Insert a link" },
-            { label: "<button>", prefix: "<button type=\"button\">", suffix: "</button>", description: "Insert a button" },
-            { label: "<img>", prefix: "<img src=\"\" alt=\"\">", suffix: "", description: "Insert an image with source and accessible alt text" },
-            { label: "<ul>/<li>", prefix: "<ul>\n    <li>", suffix: "</li>\n</ul>", description: "Insert an unordered list with one item" },
-            { label: "<form>", prefix: "<form action=\"#\" method=\"get\">", suffix: "</form>", description: "Insert a form" },
-            { label: "<!-- -->", prefix: "<!-- ", suffix: " -->", description: "Insert an HTML comment" },
-            { label: "\"\"", prefix: "\"", suffix: "\"", description: "Wrap selected text in quotation marks" },
-            { label: "&nbsp;", prefix: "&nbsp;", suffix: "", description: "Insert a non-breaking space entity" },
-            { label: "&amp;", prefix: "&amp;", suffix: "", description: "Insert an ampersand entity" },
-            { label: "&lt;", prefix: "&lt;", suffix: "", description: "Insert a less-than entity" },
-            { label: "&gt;", prefix: "&gt;", suffix: "", description: "Insert a greater-than entity" },
-            { label: "&quot;", prefix: "&quot;", suffix: "", description: "Insert a quotation-mark entity" },
-            { label: "&#39;", prefix: "&#39;", suffix: "", description: "Insert an apostrophe entity" },
-            { label: "<!doctype>", prefix: "<!doctype html>\n", suffix: "", description: "Insert the HTML doctype declaration" },
-            { label: "<meta viewport>", prefix: '<meta name="viewport" content="width=device-width, initial-scale=1.0">', suffix: "", description: "Insert responsive viewport metadata" }
+                {
+                    "label": "<!doctype>",
+                    "prefix": "<!DOCTYPE html>\n",
+                    "suffix": "",
+                    "description": "Insert the HTML5 doctype declaration"
+                },
+                {
+                    "label": "<div>",
+                    "prefix": "<div>",
+                    "suffix": "</div>",
+                    "description": "Insert a generic container"
+                },
+                {
+                    "label": "<p>",
+                    "prefix": "<p>",
+                    "suffix": "</p>",
+                    "description": "Insert a paragraph"
+                },
+                {
+                    "label": "<h1>",
+                    "prefix": "<h1>",
+                    "suffix": "</h1>",
+                    "description": "Insert a level-one heading"
+                },
+                {
+                    "label": "<a href=\"\">",
+                    "prefix": "<a href=\"",
+                    "suffix": "\">link</a>",
+                    "description": "Insert a hyperlink; caret starts inside href"
+                },
+                {
+                    "label": "<img>",
+                    "prefix": "<img src=\"",
+                    "suffix": "\" alt=\"\">",
+                    "description": "Insert an image with src and alt attributes"
+                },
+                {
+                    "label": "<button>",
+                    "prefix": "<button type=\"button\">",
+                    "suffix": "</button>",
+                    "description": "Insert a button"
+                },
+                {
+                    "label": "<input>",
+                    "prefix": "<input type=\"text\" name=\"",
+                    "suffix": "\">",
+                    "description": "Insert a text input; caret starts inside name"
+                },
+                {
+                    "label": "<label>",
+                    "prefix": "<label for=\"",
+                    "suffix": "\">Label</label>",
+                    "description": "Insert a label associated with a form control"
+                },
+                {
+                    "label": "<form>",
+                    "prefix": "<form action=\"\" method=\"post\">\n    ",
+                    "suffix": "\n</form>",
+                    "description": "Insert a form block"
+                },
+                {
+                    "label": "<ul><li>",
+                    "prefix": "<ul>\n    <li>",
+                    "suffix": "</li>\n</ul>",
+                    "description": "Insert an unordered list with one item"
+                },
+                {
+                    "label": "<ol><li>",
+                    "prefix": "<ol>\n    <li>",
+                    "suffix": "</li>\n</ol>",
+                    "description": "Insert an ordered list with one item"
+                },
+                {
+                    "label": "<section>",
+                    "prefix": "<section>",
+                    "suffix": "</section>",
+                    "description": "Insert a semantic section"
+                },
+                {
+                    "label": "<main>",
+                    "prefix": "<main>",
+                    "suffix": "</main>",
+                    "description": "Insert the main content landmark"
+                },
+                {
+                    "label": "<header>",
+                    "prefix": "<header>",
+                    "suffix": "</header>",
+                    "description": "Insert a section or page header"
+                },
+                {
+                    "label": "<footer>",
+                    "prefix": "<footer>",
+                    "suffix": "</footer>",
+                    "description": "Insert a section or page footer"
+                },
+                {
+                    "label": "<table>",
+                    "prefix": "<table>\n    <thead>\n        <tr><th scope=\"col\">Heading</th></tr>\n    </thead>\n    <tbody>\n        <tr><td>Value</td></tr>\n    </tbody>\n</table>",
+                    "suffix": "",
+                    "description": "Insert an accessible table skeleton"
+                },
+                {
+                    "label": "<textarea>",
+                    "prefix": "<textarea name=\"",
+                    "suffix": "\" rows=\"4\"></textarea>",
+                    "description": "Insert a multi-line text field"
+                },
+                {
+                    "label": "<script>",
+                    "prefix": "<script>\n    ",
+                    "suffix": "\n<\/script>",
+                    "description": "Insert an inline script block"
+                },
+                {
+                    "label": "<!-- -->",
+                    "prefix": "<!-- ",
+                    "suffix": " -->",
+                    "description": "Insert an HTML comment"
+                }
             ]
         }),
 
@@ -2681,24 +2783,132 @@ input {
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
         symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
             css: [
-            { label: "{ }", prefix: "{", suffix: "}", description: "Insert a CSS rule block" },
-            { label: ": ;", prefix: ": ", suffix: ";", description: "Insert a CSS declaration" },
-            { label: "var(--)", prefix: "var(--", suffix: ")", description: "Reference a CSS custom property" },
-            { label: "()", prefix: "(", suffix: ")", description: "Insert paired parentheses" },
-            { label: "/* */", prefix: "/* ", suffix: " */", description: "Insert a CSS comment" },
-            { label: "@media", prefix: "@media (max-width: 768px) {\n    ", suffix: "\n}", description: "Insert a responsive media query" },
-            { label: "calc()", prefix: "calc(", suffix: ")", description: "Insert a CSS calculation" },
-            { label: "linear-gradient()", prefix: "linear-gradient(", suffix: ")", description: "Insert a gradient function" },
-            { label: "!important", prefix: " !important", suffix: "", description: "Append important priority to a declaration" },
-            { label: "#color", prefix: "#", suffix: "", description: "Start a hexadecimal color value" },
-            { label: ":hover", prefix: ":hover {\n    ", suffix: "\n}", description: "Create a hover state rule" },
-            { label: ":focus-visible", prefix: ":focus-visible {\n    ", suffix: "\n}", description: "Create an accessible keyboard-focus rule" },
-            { label: "::before", prefix: "::before {\n    content: \"\";\n    ", suffix: "\n}", description: "Create a before pseudo-element with content" },
-            { label: "::after", prefix: "::after {\n    content: \"\";\n    ", suffix: "\n}", description: "Create an after pseudo-element with content" },
-            { label: "@supports", prefix: "@supports (display: grid) {\n    ", suffix: "\n}", description: "Create a feature support query" },
-            { label: "@keyframes", prefix: "@keyframes fade-in {\n    from { opacity: 0; }\n    to { opacity: 1; }\n}", suffix: "", description: "Insert a keyframes animation" },
-            { label: "clamp()", prefix: "clamp(", suffix: ")", description: "Insert a responsive clamp() value" },
-            { label: "minmax()", prefix: "minmax(", suffix: ")", description: "Insert a CSS grid minmax() value" }
+                {
+                    "label": "display",
+                    "prefix": "display: ",
+                    "suffix": ";",
+                    "description": "Insert a display declaration"
+                },
+                {
+                    "label": "color",
+                    "prefix": "color: ",
+                    "suffix": ";",
+                    "description": "Insert a text color declaration"
+                },
+                {
+                    "label": "background",
+                    "prefix": "background: ",
+                    "suffix": ";",
+                    "description": "Insert a background declaration"
+                },
+                {
+                    "label": "margin",
+                    "prefix": "margin: ",
+                    "suffix": ";",
+                    "description": "Insert a margin declaration"
+                },
+                {
+                    "label": "padding",
+                    "prefix": "padding: ",
+                    "suffix": ";",
+                    "description": "Insert a padding declaration"
+                },
+                {
+                    "label": "width",
+                    "prefix": "width: ",
+                    "suffix": ";",
+                    "description": "Insert a width declaration"
+                },
+                {
+                    "label": "max-width",
+                    "prefix": "max-width: ",
+                    "suffix": ";",
+                    "description": "Insert a responsive maximum width"
+                },
+                {
+                    "label": "height",
+                    "prefix": "height: ",
+                    "suffix": ";",
+                    "description": "Insert a height declaration"
+                },
+                {
+                    "label": "font-size",
+                    "prefix": "font-size: ",
+                    "suffix": ";",
+                    "description": "Insert a font size declaration"
+                },
+                {
+                    "label": "font-family",
+                    "prefix": "font-family: ",
+                    "suffix": ";",
+                    "description": "Insert a font family declaration"
+                },
+                {
+                    "label": "border",
+                    "prefix": "border: ",
+                    "suffix": ";",
+                    "description": "Insert a border declaration"
+                },
+                {
+                    "label": "border-radius",
+                    "prefix": "border-radius: ",
+                    "suffix": ";",
+                    "description": "Insert rounded corners"
+                },
+                {
+                    "label": "gap",
+                    "prefix": "gap: ",
+                    "suffix": ";",
+                    "description": "Insert spacing between flex or grid items"
+                },
+                {
+                    "label": "flex layout",
+                    "prefix": "display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: ",
+                    "suffix": ";",
+                    "description": "Insert a common flexbox layout"
+                },
+                {
+                    "label": "grid layout",
+                    "prefix": "display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n    gap: ",
+                    "suffix": ";",
+                    "description": "Insert a responsive grid layout"
+                },
+                {
+                    "label": "position",
+                    "prefix": "position: ",
+                    "suffix": ";",
+                    "description": "Insert a position declaration"
+                },
+                {
+                    "label": "box-shadow",
+                    "prefix": "box-shadow: ",
+                    "suffix": ";",
+                    "description": "Insert a box shadow"
+                },
+                {
+                    "label": "transition",
+                    "prefix": "transition: ",
+                    "suffix": ";",
+                    "description": "Insert a transition declaration"
+                },
+                {
+                    "label": ":hover",
+                    "prefix": ":hover {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a hover state rule after a selector"
+                },
+                {
+                    "label": ":focus-visible",
+                    "prefix": ":focus-visible {\n    outline: 2px solid currentColor;\n    outline-offset: 2px;\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a visible keyboard-focus rule"
+                },
+                {
+                    "label": "@media",
+                    "prefix": "@media (max-width: 768px) {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a responsive media query"
+                }
             ]
         }),
 
@@ -2951,27 +3161,126 @@ input {
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
         symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
             js: [
-            { label: "console.log()", prefix: "console.log(", suffix: ");", description: "Log a value to the console" },
-            { label: "querySelector()", prefix: "document.querySelector('", suffix: "')", description: "Select an element with a CSS selector" },
-            { label: "addEventListener", prefix: "addEventListener('click', () => {\n    ", suffix: "\n});", description: "Add a click event handler" },
-            { label: "() => { }", prefix: "() => {", suffix: "}", description: "Insert an arrow function body" },
-            { label: "if ( )", prefix: "if (", suffix: ") {\n    \n}", description: "Insert an if statement" },
-            { label: "{ }", prefix: "{", suffix: "}", description: "Insert paired braces" },
-            { label: "[ ]", prefix: "[", suffix: "]", description: "Insert an array or bracket pair" },
-            { label: "/* */", prefix: "/* ", suffix: " */", description: "Insert a block comment" },
-            { label: "//", prefix: "// ", suffix: "", description: "Start a single-line comment" },
-            { label: "try/catch", prefix: "try {\n    ", suffix: "\n} catch (error) {\n    console.error(error);\n}", description: "Insert error handling" },
-            { label: "=>", prefix: " => ", suffix: "", description: "Insert the arrow-function operator" },
-            { label: "===", prefix: " === ", suffix: "", description: "Insert strict equality" },
-            { label: "!==", prefix: " !== ", suffix: "", description: "Insert strict inequality" },
-            { label: "&&", prefix: " && ", suffix: "", description: "Insert logical AND" },
-            { label: "||", prefix: " || ", suffix: "", description: "Insert logical OR" },
-            { label: "??", prefix: " ?? ", suffix: "", description: "Insert nullish coalescing" },
-            { label: "?.", prefix: "?.", suffix: "", description: "Insert optional chaining" },
-            { label: "...", prefix: "...", suffix: "", description: "Insert the spread/rest operator" },
-            { label: "\${}", prefix: "\${", suffix: "}", description: "Insert template-literal interpolation" },
-            { label: "++", prefix: "++", suffix: "", description: "Insert increment operator" },
-            { label: "+=", prefix: " += ", suffix: "", description: "Insert addition assignment" }
+                {
+                    "label": "console.log()",
+                    "prefix": "console.log(",
+                    "suffix": ");",
+                    "description": "Log a value to the console"
+                },
+                {
+                    "label": "const",
+                    "prefix": "const ",
+                    "suffix": " = ",
+                    "description": "Declare a constant; caret starts at the variable name"
+                },
+                {
+                    "label": "let",
+                    "prefix": "let ",
+                    "suffix": " = ",
+                    "description": "Declare a block-scoped variable"
+                },
+                {
+                    "label": "if",
+                    "prefix": "if (",
+                    "suffix": ") {\n    \n}",
+                    "description": "Insert an if statement"
+                },
+                {
+                    "label": "if / else",
+                    "prefix": "if (",
+                    "suffix": ") {\n    \n} else {\n    \n}",
+                    "description": "Insert an if/else branch"
+                },
+                {
+                    "label": "function",
+                    "prefix": "function ",
+                    "suffix": "() {\n    \n}",
+                    "description": "Insert a function declaration"
+                },
+                {
+                    "label": "arrow function",
+                    "prefix": "() => {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert an arrow function body"
+                },
+                {
+                    "label": "addEventListener",
+                    "prefix": "document.addEventListener('click', () => {\n    ",
+                    "suffix": "\n});",
+                    "description": "Insert a click event listener"
+                },
+                {
+                    "label": "querySelector()",
+                    "prefix": "document.querySelector('",
+                    "suffix": "')",
+                    "description": "Select one element by CSS selector"
+                },
+                {
+                    "label": "querySelectorAll()",
+                    "prefix": "document.querySelectorAll('",
+                    "suffix": "')",
+                    "description": "Select all matching elements"
+                },
+                {
+                    "label": "for...of",
+                    "prefix": "for (const item of items) {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a for...of loop"
+                },
+                {
+                    "label": "return",
+                    "prefix": "return ",
+                    "suffix": ";",
+                    "description": "Insert a return statement"
+                },
+                {
+                    "label": "try / catch",
+                    "prefix": "try {\n    ",
+                    "suffix": "\n} catch (error) {\n    console.error(error);\n}",
+                    "description": "Insert error handling"
+                },
+                {
+                    "label": "fetch()",
+                    "prefix": "fetch('",
+                    "suffix": "').then(response => response.json()).then(data => {\n    \n}).catch(error => console.error(error));",
+                    "description": "Insert a basic fetch request chain"
+                },
+                {
+                    "label": "async / await",
+                    "prefix": "async function ",
+                    "suffix": "() {\n    const response = await fetch('');\n    const data = await response.json();\n    \n}",
+                    "description": "Insert an async function using await"
+                },
+                {
+                    "label": "setTimeout()",
+                    "prefix": "setTimeout(() => {\n    ",
+                    "suffix": "\n}, 1000);",
+                    "description": "Insert a delayed callback"
+                },
+                {
+                    "label": "JSON.parse()",
+                    "prefix": "JSON.parse('",
+                    "suffix": "')",
+                    "description": "Parse a JSON string"
+                },
+                {
+                    "label": "JSON.stringify()",
+                    "prefix": "JSON.stringify(",
+                    "suffix": ")",
+                    "description": "Convert a value to JSON text"
+                },
+                {
+                    "label": "===",
+                    "prefix": " === ",
+                    "suffix": "",
+                    "description": "Insert strict equality comparison"
+                },
+                {
+                    "label": "// comment",
+                    "prefix": "// ",
+                    "suffix": "",
+                    "description": "Insert a single-line comment"
+                }
             ]
         }),
 
@@ -5545,15 +5854,24 @@ input {
             }
         }
 
-        // Quick symbol toolbar: remember the active editor selection even when a toolbar
+        // Quick-insert toolbar: keep the active editor selection while a toolbar
         // button temporarily takes focus (especially on touch/mobile browsers).
         const symbolToolbar = document.getElementById('symbolToolbar');
         function renderSymbolToolbar(language) {
             if (!symbolToolbar) return;
             const header = symbolToolbar.closest('.page-symbol-header');
             const supportedLanguage = LANGS.includes(language);
-            if (header) header.hidden = !supportedLanguage;
+            const labels = {
+                html: { header: 'Popular HTML tags and elements', toolbar: 'Quick-insert HTML tags' },
+                css: { header: 'Popular CSS properties and patterns', toolbar: 'Quick-insert CSS properties and patterns' },
+                js: { header: 'Popular JavaScript snippets', toolbar: 'Quick-insert JavaScript snippets' }
+            };
+            if (header) {
+                header.hidden = !supportedLanguage;
+                if (supportedLanguage) header.setAttribute('aria-label', labels[language].header);
+            }
             if (!supportedLanguage) return;
+            symbolToolbar.setAttribute('aria-label', labels[language].toolbar);
 
             const data = window.EDITOR_INTELLISENSE_DATA || {};
             const items = data.symbols && data.symbols[language];

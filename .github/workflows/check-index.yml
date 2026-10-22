@@ -20,6 +20,7 @@ on:
       - "next-word-suggestions.js"
       - ".github/workflows/check-index.yml"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/check-settings-dialog-keyboard.mjs"
   pull_request:
     branches:
       - main
@@ -39,6 +40,7 @@ on:
       - "next-word-suggestions.js"
       - ".github/workflows/check-index.yml"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/check-settings-dialog-keyboard.mjs"
   workflow_dispatch:
 
 permissions:
@@ -127,6 +129,9 @@ jobs:
 
       - name: Test HTML paste processing
         run: node scripts/check-editor-code-processing.mjs
+
+      - name: Test nested settings dialog keyboard handling
+        run: node scripts/check-settings-dialog-keyboard.mjs
 
       - name: Check JavaScript syntax used by the index page
         run: |

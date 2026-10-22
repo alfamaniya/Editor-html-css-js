@@ -680,7 +680,7 @@
     });
 
     document.addEventListener('keydown', function (event) {
-        if (settingsScreen.hidden) return;
+        if (settingsScreen.hidden || event.defaultPrevented) return;
 
         /* اگر فوکوس داخل پنجرهٔ تو‌در‌تو است، مدیریت صفحه‌کلید را به همان پنجره بسپار. */
         const activeDialog = document.activeElement &&

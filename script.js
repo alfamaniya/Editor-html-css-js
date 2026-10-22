@@ -3362,56 +3362,120 @@
 
 
         // ==========================================
-        //  نمونهٔ اولیهٔ پنل تنظیمات
-        //  گزینه‌های داخل پنل عمداً بدون رویداد و غیرفعال هستند.
+        //  تنظیمات ظاهر برنامه
+        //  فقط پوسته، رنگ تأکیدی و تراکم در این مرحله فعال هستند.
         // ==========================================
         const settingsButton = document.getElementById('btnSettings');
         const settingsScreen = document.getElementById('settingsScreen');
         const settingsSaveReturnButton = document.getElementById('btnSettingsSaveReturn');
+        const settingsAppearanceStatus = document.getElementById('settingsAppearanceStatus');
+        const APPEARANCE_STORAGE_KEY = 'html-editor-appearance-v1';
+        const APPEARANCE_ALLOWED_VALUES = {
+            theme: ['dark', 'light', 'system'],
+            accentColor: ['blue', 'green', 'violet', 'orange'],
+            density: ['compact', 'normal', 'comfortable']
+        };
+        const APPEARANCE_DEFAULTS = { theme: 'dark', accentColor: 'blue', density: 'normal' };
+
+        function loadAppearanceSettings() {
+            let saved = null;
+            try {
+                saved = JSON.parse(storageGet(APPEARANCE_STORAGE_KEY) || 'null');
+            } catch (error) {
+                saved = null;
+            }
+
+            const settings = {};
+            Object.keys(APPEARANCE_DEFAULTS).forEach(function(key) {
+                const allowed = APPEARANCE_ALLOWED_VALUES[key];
+                settings[key] = saved && allowed.includes(saved[key]) ? saved[key] : APPEARANCE_DEFAULTS[key];
+            });
+            return settings;
+        }
+
+        let appearanceSettings = loadAppearanceSettings();
+        let systemThemeMedia = null;
+        try {
+            if (typeof window.matchMedia === 'function') {
+                systemThemeMedia = window.matchMedia('(prefers-color-scheme: light)');
+            }
+        } catch (error) {
+            systemThemeMedia = null;
+        }
+
+        function applyAppearanceSettings() {
+            const root = document.documentElement;
+            const effectiveTheme = appearanceSettings.theme === 'system'
+                ? (systemThemeMedia && systemThemeMedia.matches ? 'light' : 'dark')
+                : appearanceSettings.theme;
+
+            root.dataset.theme = effectiveTheme;
+            root.dataset.themePreference = appearanceSettings.theme;
+            root.dataset.accent = appearanceSettings.accentColor;
+            root.dataset.density = appearanceSettings.density;
+            root.style.colorScheme = effectiveTheme;
+
+            if (settingsScreen) {
+                settingsScreen.querySelectorAll('[data-setting][data-value]').forEach(function(button) {
+                    const isSelected = appearanceSettings[button.dataset.setting] === button.dataset.value;
+                    button.classList.toggle('is-selected', isSelected);
+                    button.setAttribute('aria-pressed', String(isSelected));
+                });
+            }
+        }
+
+        function saveAppearanceSettings() {
+            applyAppearanceSettings();
+            const saved = storageSet(APPEARANCE_STORAGE_KEY, JSON.stringify(appearanceSettings));
+            if (!saved) {
+                if (settingsAppearanceStatus) {
+                    settingsAppearanceStatus.textContent = 'ذخیره‌سازی در مرورگر در دسترس نیست؛ تغییرات فقط تا زمان باز بودن صفحه اعمال شده‌اند.';
+                }
+                showToast('⚠ ذخیرهٔ تنظیمات ظاهر ناموفق بود؛ دسترسی به حافظهٔ مرورگر را بررسی کنید.', 'error');
+                return false;
+            }
+            if (settingsAppearanceStatus) {
+                settingsAppearanceStatus.textContent = 'تنظیمات ظاهر در همین مرورگر ذخیره شده است.';
+            }
+            return true;
+        }
+
+        function openSettingsScreen() {
+            settingsScreen.hidden = false;
+            settingsButton.setAttribute('aria-expanded', 'true');
+            settingsSaveReturnButton.focus();
+        }
+
+        function returnToCodingScreen() {
+            settingsScreen.hidden = true;
+            settingsButton.setAttribute('aria-expanded', 'false');
+            settingsButton.focus();
+        }
+
+        applyAppearanceSettings();
 
         if (settingsButton && settingsScreen && settingsSaveReturnButton) {
-            function openSettingsScreen() {
-                settingsScreen.hidden = false;
-                settingsButton.setAttribute('aria-expanded', 'true');
-                settingsSaveReturnButton.focus();
-            }
-
-            function returnToCodingScreen() {
-                settingsScreen.hidden = true;
-                settingsButton.setAttribute('aria-expanded', 'false');
-                settingsButton.focus();
-            }
-
             settingsButton.addEventListener('click', openSettingsScreen);
 
-            settingsSaveReturnButton.addEventListener('click', function() {
-                // تنها یک پیش‌نویس از مقادیر پیشنهادی ذخیره می‌شود؛
-                // این مقادیر هنوز روی رفتار واقعی ویرایشگر اعمال نمی‌شوند.
-                const settingsDraft = {
-                    prototypeOnly: true,
-                    savedAt: new Date().toISOString(),
-                    proposedValues: {
-                        theme: 'dark',
-                        accentColor: 'blue',
-                        density: 'normal',
-                        editorFontSize: 15,
-                        showLineNumbers: true,
-                        wordWrap: false,
-                        autocomplete: true,
-                        livePreview: true,
-                        previewDelayMs: 600,
-                        paneRatio: '50/50',
-                        autoSaveSettings: true
+            settingsScreen.querySelectorAll('[data-setting][data-value]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const settingName = button.dataset.setting;
+                    const settingValue = button.dataset.value;
+                    const allowedValues = APPEARANCE_ALLOWED_VALUES[settingName];
+                    if (!allowedValues || !allowedValues.includes(settingValue)) return;
+
+                    appearanceSettings[settingName] = settingValue;
+                    const saved = saveAppearanceSettings();
+                    if (saved && settingsAppearanceStatus) {
+                        settingsAppearanceStatus.textContent = 'تغییر اعمال شد و در مرورگر ذخیره شد.';
                     }
-                };
+                });
+            });
 
-                if (!storageSet('editor-settings-prototype-draft', JSON.stringify(settingsDraft))) {
-                    showToast('⚠ پیش‌نویس تنظیمات ذخیره نشد؛ دسترسی به حافظهٔ مرورگر ممکن نیست.', 'error');
-                    return;
-                }
-
+            settingsSaveReturnButton.addEventListener('click', function() {
+                if (!saveAppearanceSettings()) return;
                 returnToCodingScreen();
-                showToast('✅ پیش‌نویس تنظیمات در مرورگر ذخیره شد؛ گزینه‌ها هنوز غیرفعال‌اند.', 'success');
+                showToast('✅ تنظیمات ظاهر ذخیره شد و اعمال شده است.', 'success');
             });
 
             document.addEventListener('keydown', function(event) {
@@ -3420,6 +3484,17 @@
                     returnToCodingScreen();
                 }
             });
+
+            if (systemThemeMedia) {
+                const handleSystemThemeChange = function() {
+                    if (appearanceSettings.theme === 'system') applyAppearanceSettings();
+                };
+                if (typeof systemThemeMedia.addEventListener === 'function') {
+                    systemThemeMedia.addEventListener('change', handleSystemThemeChange);
+                } else if (typeof systemThemeMedia.addListener === 'function') {
+                    systemThemeMedia.addListener(handleSystemThemeChange);
+                }
+            }
         }
 
     })();

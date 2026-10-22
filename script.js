@@ -3360,5 +3360,67 @@
             }
         }
 
+
+        // ==========================================
+        //  نمونهٔ اولیهٔ پنل تنظیمات
+        //  گزینه‌های داخل پنل عمداً بدون رویداد و غیرفعال هستند.
+        // ==========================================
+        const settingsButton = document.getElementById('btnSettings');
+        const settingsScreen = document.getElementById('settingsScreen');
+        const settingsSaveReturnButton = document.getElementById('btnSettingsSaveReturn');
+
+        if (settingsButton && settingsScreen && settingsSaveReturnButton) {
+            function openSettingsScreen() {
+                settingsScreen.hidden = false;
+                settingsButton.setAttribute('aria-expanded', 'true');
+                settingsSaveReturnButton.focus();
+            }
+
+            function returnToCodingScreen() {
+                settingsScreen.hidden = true;
+                settingsButton.setAttribute('aria-expanded', 'false');
+                settingsButton.focus();
+            }
+
+            settingsButton.addEventListener('click', openSettingsScreen);
+
+            settingsSaveReturnButton.addEventListener('click', function() {
+                // تنها یک پیش‌نویس از مقادیر پیشنهادی ذخیره می‌شود؛
+                // این مقادیر هنوز روی رفتار واقعی ویرایشگر اعمال نمی‌شوند.
+                const settingsDraft = {
+                    prototypeOnly: true,
+                    savedAt: new Date().toISOString(),
+                    proposedValues: {
+                        theme: 'dark',
+                        accentColor: 'blue',
+                        density: 'normal',
+                        editorFontSize: 15,
+                        showLineNumbers: true,
+                        wordWrap: false,
+                        autocomplete: true,
+                        livePreview: true,
+                        previewDelayMs: 600,
+                        paneRatio: '50/50',
+                        autoSaveSettings: true
+                    }
+                };
+
+                if (!storageSet('editor-settings-prototype-draft', JSON.stringify(settingsDraft))) {
+                    showToast('⚠ پیش‌نویس تنظیمات ذخیره نشد؛ دسترسی به حافظهٔ مرورگر ممکن نیست.', 'error');
+                    return;
+                }
+
+                returnToCodingScreen();
+                showToast('✅ پیش‌نویس تنظیمات در مرورگر ذخیره شد؛ گزینه‌ها هنوز غیرفعال‌اند.', 'success');
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && !settingsScreen.hidden) {
+                    event.preventDefault();
+                    returnToCodingScreen();
+                }
+            });
+        }
+
     })();
     

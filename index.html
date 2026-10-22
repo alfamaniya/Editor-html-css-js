@@ -6,6 +6,7 @@
     <title>HTML / CSS / JS Editor</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="suggestion-manager.css">
 </head>
 <body>
 
@@ -425,6 +426,7 @@
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsLayoutCard"><span aria-hidden="true">▥</span><span>چیدمان محیط</span></button>
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsStorageCard"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></button>
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsQuickInsertCard"><span aria-hidden="true">⚡</span><span>مدیریت فهرست درج سریع</span></button>
+                    <button type="button" class="settings-nav-item" id="btnSuggestionManager" aria-haspopup="dialog"><span aria-hidden="true">🧩</span><span>مدیریت کلمات پیشنهادی</span></button>
                     <div class="settings-sidebar-note">
                         <span class="settings-status-dot" aria-hidden="true"></span>
                         <span>هر شش سکشن تنظیمات فعال است؛ گزینه‌ها و فهرست درج سریع به رفتار ویرایشگر متصل‌اند.</span>
@@ -632,6 +634,7 @@
     <script src="html-suggestions.js"></script>
     <script src="css-suggestions.js"></script>
     <script src="js-suggestions.js"></script>
+    <script src="suggestion-manager.js"></script>
     <script src="next-word-suggestions.js"></script>
         <script src="script.js"></script>
     <script src="settings.js"></script>

@@ -12,6 +12,7 @@
     const legacyAppearanceKey = 'html-editor-appearance-v1';
     const splitStorageKey = 'html-editor-split-pos';
     const fontStorageKey = 'html-editor-font';
+    const quickInsertStorageKey = 'html-editor-quick-insert-v1';
 
     /* وضعیت ذخیره‌سازی قبل از اعمال سایر گزینه‌ها به script.js ارسال شود. */
     const defaults = {
@@ -279,6 +280,117 @@
             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
+
+    /* مدیریت فهرست درج سریع؛ داده‌ها برای هر زبان مستقل و در همین مرورگر ذخیره می‌شوند. */
+    (function initQuickInsertManager() {
+        const tabSelect = document.getElementById('quickInsertTab');
+        const labelInput = document.getElementById('quickInsertLabel');
+        const codeInput = document.getElementById('quickInsertCode');
+        const addButton = document.getElementById('btnQuickInsertAdd');
+        const list = document.getElementById('quickInsertList');
+        const emptyMessage = document.getElementById('quickInsertEmpty');
+        const status = document.getElementById('quickInsertStatus');
+        if (!tabSelect || !labelInput || !codeInput || !addButton || !list || !emptyMessage || !status) return;
+
+        function readQuickInsertItems() {
+            try {
+                const parsed = JSON.parse(storageGet(quickInsertStorageKey) || '{}');
+                const result = {};
+                ['html', 'css', 'js'].forEach(function (language) {
+                    result[language] = Array.isArray(parsed[language]) ? parsed[language].filter(function (item) {
+                        return item && typeof item.id === 'string' && typeof item.label === 'string' &&
+                            typeof item.prefix === 'string' && typeof item.suffix === 'string';
+                    }).slice(0, 100) : [];
+                });
+                return result;
+            } catch (error) {
+                return { html: [], css: [], js: [] };
+            }
+        }
+
+        function saveQuickInsertItems(items) {
+            return storageSet(quickInsertStorageKey, JSON.stringify(items));
+        }
+
+        function renderQuickInsertList() {
+            const language = tabSelect.value;
+            const items = readQuickInsertItems()[language];
+            list.replaceChildren();
+            items.forEach(function (item) {
+                const row = document.createElement('li');
+                row.className = 'settings-quickinsert-item';
+                const details = document.createElement('div');
+                details.className = 'settings-quickinsert-item-details';
+                const title = document.createElement('strong');
+                title.textContent = item.label;
+                const preview = document.createElement('code');
+                preview.textContent = item.prefix.length > 100 ? item.prefix.slice(0, 100) + '…' : item.prefix;
+                details.append(title, preview);
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'settings-quickinsert-remove';
+                remove.dataset.quickInsertRemove = item.id;
+                remove.textContent = 'حذف';
+                remove.setAttribute('aria-label', 'حذف آیتم ' + item.label);
+                row.append(details, remove);
+                list.appendChild(row);
+            });
+            emptyMessage.hidden = items.length > 0;
+        }
+
+        tabSelect.addEventListener('change', renderQuickInsertList);
+        addButton.addEventListener('click', function () {
+            const label = labelInput.value.trim();
+            const code = codeInput.value;
+            if (!label || !code.trim()) {
+                status.textContent = 'عنوان و کد درج‌شونده را وارد کنید.';
+                return;
+            }
+            const items = readQuickInsertItems();
+            const languageItems = items[tabSelect.value];
+            if (languageItems.length >= 100) {
+                status.textContent = 'برای هر تب حداکثر ۱۰۰ آیتم سفارشی مجاز است.';
+                return;
+            }
+            if (languageItems.some(function (item) { return item.label.toLocaleLowerCase() === label.toLocaleLowerCase(); })) {
+                status.textContent = 'این عنوان در فهرست همین تب وجود دارد؛ عنوان دیگری انتخاب کنید.';
+                return;
+            }
+            languageItems.push({
+                id: 'custom-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8),
+                label: label,
+                prefix: code,
+                suffix: '',
+                description: label
+            });
+            if (!saveQuickInsertItems(items)) {
+                status.textContent = 'ذخیره‌سازی مرورگر در دسترس نیست؛ آیتم ثبت نشد.';
+                return;
+            }
+            labelInput.value = '';
+            codeInput.value = '';
+            renderQuickInsertList();
+            status.textContent = 'آیتم به فهرست ' + tabSelect.options[tabSelect.selectedIndex].text + ' اضافه و ذخیره شد.';
+            window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: tabSelect.value } }));
+        });
+
+        list.addEventListener('click', function (event) {
+            const button = event.target.closest('button[data-quick-insert-remove]');
+            if (!button) return;
+            const items = readQuickInsertItems();
+            const language = tabSelect.value;
+            items[language] = items[language].filter(function (item) { return item.id !== button.dataset.quickInsertRemove; });
+            if (!saveQuickInsertItems(items)) {
+                status.textContent = 'حذف انجام نشد؛ ذخیره‌سازی مرورگر در دسترس نیست.';
+                return;
+            }
+            renderQuickInsertList();
+            status.textContent = 'آیتم از فهرست همین تب حذف شد.';
+            window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: language } }));
+        });
+
+        renderQuickInsertList();
+    })();
 
     const previewNowButton = document.getElementById('btnSettingsPreviewNow');
     if (previewNowButton) {

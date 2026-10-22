@@ -346,3 +346,56 @@
 :root[data-theme="light"] .settings-general-status { color: #4d647c; }
 .settings-card { scroll-margin-top: 18px; }
 .settings-reset-option:not(:disabled) { cursor: pointer; }
+
+
+/* سکشن مدیریت فهرست درج سریع */
+.settings-quickinsert-intro { padding: 14px 19px 0; }
+.settings-quickinsert-intro p { color: #aebfd3; font-size: 11px; line-height: 1.9; }
+.settings-quickinsert-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 13px; padding: 16px 19px; }
+.settings-quickinsert-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.settings-quickinsert-field label { color: #dce8f7; font-size: 11px; font-weight: 700; }
+.settings-quickinsert-field input,
+.settings-quickinsert-field select,
+.settings-quickinsert-field textarea {
+    width: 100%; min-width: 0; padding: 10px 11px; border: 1px solid rgb(136 160 190 / 32%);
+    border-radius: 9px; background: #172538; color: #e4edf8; font: 12px/1.8 Tahoma, "Segoe UI", sans-serif;
+}
+.settings-quickinsert-field textarea { min-height: 110px; resize: vertical; white-space: pre; }
+.settings-quickinsert-field input:focus-visible,
+.settings-quickinsert-field select:focus-visible,
+.settings-quickinsert-field textarea:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.settings-quickinsert-code-field { grid-column: 1 / -1; }
+.settings-quickinsert-actions { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.settings-quickinsert-add, .settings-quickinsert-remove {
+    border: 1px solid var(--accent-border); border-radius: 9px; background: var(--accent-soft); color: #eaf4ff;
+    padding: 9px 13px; font: 700 11px/1.6 Tahoma, "Segoe UI", sans-serif; cursor: pointer;
+}
+.settings-quickinsert-actions span { color: #9fb4cb; font-size: 10px; line-height: 1.8; }
+.settings-quickinsert-list-wrap { padding: 0 19px 18px; }
+.settings-quickinsert-list-wrap h3 { margin-bottom: 10px; color: #dce8f7; font-size: 12px; }
+.settings-quickinsert-list { display: grid; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.settings-quickinsert-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid rgb(130 159 194 / 18%); border-radius: 10px; background: rgb(14 25 40 / 45%); }
+.settings-quickinsert-item-details { display: grid; gap: 5px; min-width: 0; }
+.settings-quickinsert-item-details strong { color: #e0ebf8; font-size: 11px; }
+.settings-quickinsert-item-details code { overflow-wrap: anywhere; color: #9fb7d1; font: 10px/1.7 Consolas, monospace; white-space: pre-wrap; }
+.settings-quickinsert-remove { flex: 0 0 auto; border-color: rgb(224 123 123 / 35%); background: rgb(139 54 54 / 17%); color: #f1bcbc; }
+.settings-quickinsert-empty { padding: 12px 0 2px; color: #93a7c0; font-size: 10px; }
+:root[data-theme="light"] .settings-quickinsert-intro p,
+:root[data-theme="light"] .settings-quickinsert-actions span,
+:root[data-theme="light"] .settings-quickinsert-empty { color: #526a82; }
+:root[data-theme="light"] .settings-quickinsert-field label,
+:root[data-theme="light"] .settings-quickinsert-list-wrap h3,
+:root[data-theme="light"] .settings-quickinsert-item-details strong { color: #263d54; }
+:root[data-theme="light"] .settings-quickinsert-field input,
+:root[data-theme="light"] .settings-quickinsert-field select,
+:root[data-theme="light"] .settings-quickinsert-field textarea { background: #fff; border-color: #c4d2df; color: #253b51; }
+:root[data-theme="light"] .settings-quickinsert-item { background: #f8fbff; border-color: #d2dee9; }
+:root[data-theme="light"] .settings-quickinsert-item-details code { color: #526b83; }
+:root[data-theme="light"] .settings-quickinsert-add { color: #253d55; }
+@media (max-width: 600px) {
+    .settings-quickinsert-form { grid-template-columns: minmax(0, 1fr); padding: 14px 12px; }
+    .settings-quickinsert-code-field, .settings-quickinsert-actions { grid-column: 1; }
+    .settings-quickinsert-intro { padding: 12px 12px 0; }
+    .settings-quickinsert-list-wrap { padding: 0 12px 14px; }
+    .settings-quickinsert-item { align-items: flex-start; }
+}

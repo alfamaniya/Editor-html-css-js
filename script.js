@@ -1699,8 +1699,20 @@
             symbolToolbar.setAttribute('aria-label', labels[language].toolbar);
 
             const data = window.EDITOR_INTELLISENSE_DATA || {};
-            const items = data.symbols && data.symbols[language];
-            if (!Array.isArray(items)) {
+            const defaultItems = data.symbols && data.symbols[language];
+            let customItems = [];
+            try {
+                const saved = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-v1') || '{}');
+                if (saved && Array.isArray(saved[language])) {
+                    customItems = saved[language].filter(function(item) {
+                        return item && typeof item.label === 'string' && typeof item.prefix === 'string' && typeof item.suffix === 'string';
+                    });
+                }
+            } catch (error) {
+                customItems = [];
+            }
+            const items = (Array.isArray(defaultItems) ? defaultItems : []).concat(customItems);
+            if (!items.length) {
                 symbolToolbar.replaceChildren();
                 return;
             }
@@ -1713,6 +1725,11 @@
                     '">' + escHtml(item.label || 'Symbol') + '</button>';
             }).join('');
         }
+
+        window.addEventListener('editor-quick-insert-change', function(event) {
+            const language = event.detail && event.detail.language;
+            if (language === activeTab) renderSymbolToolbar(activeTab);
+        });
 
         if (symbolToolbar) {
             // Prevent mouse focus transfer where supported, but also retain a saved range

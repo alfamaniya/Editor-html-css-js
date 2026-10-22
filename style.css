@@ -2043,3 +2043,73 @@ input {
 .line-numbers,
 .highlight,
 .input { line-height: var(--editor-line-height, 1.5); }
+
+
+/* تنظیمات اجرایی پنل‌ها و خوانایی کد؛ مقادیر از settings.js کنترل می‌شوند. */
+:root { --editor-pane-ratio: 50%; }
+
+:root[data-line-numbers="off"] .line-numbers {
+    display: none !important;
+}
+
+:root[data-wrap-lines="on"] .code-wrap .highlight,
+:root[data-wrap-lines="on"] .code-wrap .input {
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    overflow-x: hidden !important;
+}
+
+:root[data-wrap-lines="off"] .code-wrap .highlight,
+:root[data-wrap-lines="off"] .code-wrap .input {
+    white-space: pre !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    overflow-x: auto !important;
+}
+
+/* دو پنل می‌توانند کنار هم یا روی هم قرار بگیرند؛ نسبت با متغیر مشترک کنترل می‌شود. */
+:root[data-layout="side-by-side"] .container {
+    flex-direction: row !important;
+}
+:root[data-layout="side-by-side"] .editor-pane {
+    width: var(--editor-pane-ratio, 50%) !important;
+    height: 100% !important;
+    border-left: 2px solid #1e1e1e;
+    border-bottom: 0;
+}
+:root[data-layout="side-by-side"] .preview-pane {
+    width: auto !important;
+    height: 100% !important;
+    flex: 1 1 0 !important;
+}
+:root[data-layout="stacked"] .container {
+    flex-direction: column !important;
+}
+:root[data-layout="stacked"] .editor-pane {
+    width: 100% !important;
+    height: var(--editor-pane-ratio, 50%) !important;
+    border-left: 0;
+    border-bottom: 2px solid #1e1e1e;
+}
+:root[data-layout="stacked"] .preview-pane {
+    width: 100% !important;
+    height: calc(100% - var(--editor-pane-ratio, 50%) - 6px) !important;
+    flex: 0 0 auto !important;
+}
+:root[data-layout="stacked"] .divider {
+    display: block;
+    width: 100%;
+    height: 6px;
+    flex: 0 0 6px;
+    cursor: row-resize;
+}
+:root[data-layout="stacked"] .divider::before {
+    width: 44px;
+    height: 2px;
+}
+:root[data-layout="stacked"] .divider:hover::before,
+:root[data-layout="stacked"] .divider.dragging::before {
+    width: 70px;
+    height: 2px;
+}

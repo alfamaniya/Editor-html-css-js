@@ -381,6 +381,9 @@
 .settings-quickinsert-list { display: grid; gap: 8px; padding: 0; margin: 0; list-style: none; }
 .settings-quickinsert-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid rgb(130 159 194 / 18%); border-radius: 10px; background: rgb(14 25 40 / 45%); }
 .settings-quickinsert-item-details { display: grid; gap: 5px; min-width: 0; }
+.settings-quickinsert-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+.settings-quickinsert-type { display: inline-flex; align-items: center; padding: 2px 6px; border: 1px solid rgb(121 163 211 / 28%); border-radius: 999px; color: #9fc7f3; font: 700 9px/1.5 Tahoma, "Segoe UI", sans-serif; }
+:root[data-theme="light"] .settings-quickinsert-type { color: #315e8b; border-color: #c4d7eb; background: #edf5fd; }
 .settings-quickinsert-item-details strong { color: #e0ebf8; font-size: 11px; }
 .settings-quickinsert-item-details code { overflow-wrap: anywhere; color: #9fb7d1; font: 10px/1.7 Consolas, monospace; white-space: pre-wrap; }
 .settings-quickinsert-remove { flex: 0 0 auto; border-color: rgb(224 123 123 / 35%); background: rgb(139 54 54 / 17%); color: #f1bcbc; }

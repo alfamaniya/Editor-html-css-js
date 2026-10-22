@@ -102,7 +102,6 @@
     font-size: 12px;
     line-height: 1.5;
 }
-.settings-nav-item:first-of-type { border-color: rgb(89 153 226 / 28%); background: rgb(53 102 157 / 22%); color: #c9e2ff; }
 .settings-nav-item > span:first-child { width: 23px; text-align: center; font-size: 16px; }
 .settings-sidebar-note {
     display: flex;
@@ -275,11 +274,7 @@
     box-shadow: 0 8px 24px rgb(34 59 83 / 7%);
 }
 :root[data-theme="light"] .settings-nav-item { color: #3c536b; }
-:root[data-theme="light"] .settings-nav-item:first-of-type {
-    background: var(--accent-soft);
-    border-color: var(--accent-border);
-    color: #263e56;
-}
+:root[data-theme="light"] .settings-nav-item.is-active { color: var(--accent-color); }
 :root[data-theme="light"] .settings-notice {
     background: #eaf3fb;
     border-color: #c0d7ec;

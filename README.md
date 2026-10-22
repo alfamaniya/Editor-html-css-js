@@ -83,7 +83,17 @@ node scripts/check-standalone-editor.mjs
 
 ## GitHub Actions و آزمون‌ها
 
-- **Build standalone test editor:** فقط دستی از مسیر **Actions → Build standalone test editor → Run workflow** اجرا می‌شود؛ خروجی را می‌سازد و اعتبارسنجی می‌کند و در صورت تغییر، آن را کامیت می‌کند.
+## قانون مهم: ساخت فایل HTML تک‌فایلی
+
+- اکشن **Build standalone test editor** به‌صورت پیش‌فرض غیرفعال است.
+- بدون دستور صریح و مستقیم کاربر، این اکشن را فعال، اجرا یا بازفعال نکنید.
+- اجرای دستی از صفحهٔ GitHub Actions نیز تا زمان دریافت اجازهٔ صریح کاربر مجاز نیست.
+- فقط پس از درخواست مستقیم کاربر می‌توان قفل ایمنی این Workflow را برداشت و ساخت فایل تک‌فایلی را اجرا کرد.
+- تغییرات فایل خروجی `index-test-etitor.html` و کامیت خودکار آن نیز مشمول همین قانون هستند.
+
+## GitHub Actions و آزمون‌ها
+
+- **Build standalone test editor:** به‌دلیل قفل ایمنی، فعلاً اجرا نمی‌شود؛ برای فعال‌سازی به دستور صریح کاربر نیاز است.
 - **Check index syntax and delimiters:** ساختار تگ‌ها، جداکننده‌ها و نحو JavaScript درون‌خطی را بررسی می‌کند.
 - **Check index file:** ساختار پایهٔ HTML و ارجاع‌های محلی را بررسی می‌کند.
 

@@ -2326,7 +2326,18 @@
                     const shorthand = resolveCssAbbreviation(ctx.word, data);
                     if (shorthand) return [shorthand];
                     const snippets = (data.snippets && data.snippets.css) || [];
-                    return filterList(snippets.concat(data.cssAbbreviations || [], data.cssProperties || CSS_PROPS), ctx.word);
+                    const properties = data.cssProperties || CSS_PROPS;
+                    const propertyNames = new Set(properties.map(function (item) {
+                        return typeof item === 'string' ? item : String(item && item.label || '');
+                    }));
+                    const normalizedSnippets = snippets.map(function (item) {
+                        if (item && typeof item === 'object' && typeof item.insert !== 'string' &&
+                            typeof item.prefix === 'string' && propertyNames.has(String(item.label || ''))) {
+                            return Object.assign({}, item, { insert: String(item.label), caret: null });
+                        }
+                        return item;
+                    });
+                    return filterList(normalizedSnippets.concat(data.cssAbbreviations || [], properties), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];

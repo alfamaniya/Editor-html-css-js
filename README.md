@@ -25,6 +25,8 @@
 ```bash
 node --check suggestion-manager.js
 node --check script.js
+node scripts/check-editor-code-processing.mjs
+node scripts/check-settings-dialog-keyboard.mjs
 node scripts/check-index-integrity.mjs
 node scripts/check-standalone-editor.mjs
 ```
@@ -66,7 +68,9 @@ node scripts/check-standalone-editor.mjs
 │   └── check-index.yml
 ├── scripts/
 │   ├── build-test-editor.mjs
+│   ├── check-editor-code-processing.mjs
 │   ├── check-index-integrity.mjs
+│   ├── check-settings-dialog-keyboard.mjs
 │   └── check-standalone-editor.mjs
 ├── tools/build-single-file.js
 ├── index.html
@@ -102,7 +106,7 @@ node scripts/check-standalone-editor.mjs
 
 - **Build standalone test editor:** این Workflow فقط دستی قابل اجراست؛ بدون دستور صریح کاربر آن را فعال یا اجرا نکنید. ساخت فایل تک‌فایلی و کامیت خودکار خروجی نیز مشمول همین محدودیت است.
 - **Check index syntax and delimiters:** ساختار تگ‌ها، جداکننده‌ها و نحو JavaScript درون‌خطی را بررسی می‌کند.
-- **Check index file:** ساختار پایهٔ HTML و ارجاع‌های محلی را بررسی می‌کند.
+- **Check index file:** ساختار پایهٔ HTML، ارجاع‌های محلی، پردازش پیست، مدیریت صفحه‌کلید دیالوگ‌های تو‌در‌تو و نحو JavaScript منابع اصلی را بررسی می‌کند.
 
 گزارش اجراها در زبانهٔ **Actions** مخزن قرار دارد. نام `index-test-etitor.html` مطابق نام فعلی پروژه است و اسکریپت‌های ساخت به آن وابسته‌اند.
 

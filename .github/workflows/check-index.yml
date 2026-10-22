@@ -10,14 +10,18 @@ on:
       - "script.js"
       - "settings.css"
       - "settings.js"
+      - "suggestion-manager.js"
+      - "suggestion-manager.css"
       - "word-tree.js"
       - "github-update.js"
       - "html-suggestions.js"
       - "css-suggestions.js"
       - "js-suggestions.js"
       - "next-word-suggestions.js"
+      - "README.md"
       - ".github/workflows/check-index.yml"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/check-settings-dialog-keyboard.mjs"
   pull_request:
     branches:
       - main
@@ -27,14 +31,18 @@ on:
       - "script.js"
       - "settings.css"
       - "settings.js"
+      - "suggestion-manager.js"
+      - "suggestion-manager.css"
       - "word-tree.js"
       - "github-update.js"
       - "html-suggestions.js"
       - "css-suggestions.js"
       - "js-suggestions.js"
       - "next-word-suggestions.js"
+      - "README.md"
       - ".github/workflows/check-index.yml"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/check-settings-dialog-keyboard.mjs"
   workflow_dispatch:
 
 permissions:
@@ -124,9 +132,12 @@ jobs:
       - name: Test HTML paste processing
         run: node scripts/check-editor-code-processing.mjs
 
+      - name: Test nested settings dialog keyboard handling
+        run: node scripts/check-settings-dialog-keyboard.mjs
+
       - name: Check JavaScript syntax used by the index page
         run: |
-          for file in script.js settings.js word-tree.js github-update.js html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js; do
+          for file in script.js settings.js suggestion-manager.js word-tree.js github-update.js html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js; do
             if [ -f "$file" ]; then
               node --check "$file"
             fi

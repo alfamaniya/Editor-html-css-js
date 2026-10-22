@@ -651,6 +651,11 @@
     document.addEventListener('keydown', function (event) {
         if (settingsScreen.hidden) return;
 
+        /* اگر فوکوس داخل پنجرهٔ تو‌در‌تو است، مدیریت صفحه‌کلید را به همان پنجره بسپار. */
+        const activeDialog = document.activeElement &&
+            document.activeElement.closest('[role="dialog"][aria-modal="true"]');
+        if (activeDialog && activeDialog !== settingsScreen) return;
+
         if (event.key === 'Escape') {
             event.preventDefault();
             returnToCodingScreen();

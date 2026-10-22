@@ -10,6 +10,8 @@ on:
       - "script.js"
       - "settings.css"
       - "settings.js"
+      - "suggestion-manager.js"
+      - "suggestion-manager.css"
       - "word-tree.js"
       - "github-update.js"
       - "html-suggestions.js"
@@ -27,6 +29,8 @@ on:
       - "script.js"
       - "settings.css"
       - "settings.js"
+      - "suggestion-manager.js"
+      - "suggestion-manager.css"
       - "word-tree.js"
       - "github-update.js"
       - "html-suggestions.js"
@@ -126,7 +130,7 @@ jobs:
 
       - name: Check JavaScript syntax used by the index page
         run: |
-          for file in script.js settings.js word-tree.js github-update.js html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js; do
+          for file in script.js settings.js suggestion-manager.js word-tree.js github-update.js html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js; do
             if [ -f "$file" ]; then
               node --check "$file"
             fi

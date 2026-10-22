@@ -271,6 +271,10 @@
             const target = document.getElementById(button.dataset.settingsNav);
             if (!target) return;
             updateNavigation(target.id);
+            if (target.id === 'settingsQuickInsertCard') {
+                window.dispatchEvent(new CustomEvent('editor-open-quick-insert-manager'));
+                return;
+            }
             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
@@ -285,11 +289,74 @@
         const list = document.getElementById('quickInsertList');
         const emptyMessage = document.getElementById('quickInsertEmpty');
         const status = document.getElementById('quickInsertStatus');
-        if (!tabSelect || !labelInput || !codeInput || !addButton || !cancelButton || !list || !emptyMessage || !status) return;
+        const managerCard = document.getElementById('settingsQuickInsertCard');
+        if (!tabSelect || !labelInput || !codeInput || !addButton || !cancelButton || !list || !emptyMessage || !status || !managerCard) return;
 
         const builtinStorageKey = 'html-editor-quick-insert-builtins-v1';
         let editingItemId = null;
         let editingItemType = null;
+        let returnFocusTarget = null;
+
+        /* همان بخش و همان کنترل‌ها داخل یک پنجرهٔ مستقل نمایش داده می‌شوند؛ منطق داده تغییر نمی‌کند. */
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'settings-quickinsert-modal-overlay';
+        modalOverlay.hidden = true;
+        modalOverlay.setAttribute('aria-hidden', 'true');
+        const cardHeader = managerCard.querySelector('.settings-card-header');
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'settings-quickinsert-modal-close';
+        closeButton.setAttribute('aria-label', 'بستن پنجره مدیریت فهرست درج سریع');
+        closeButton.title = 'بستن پنجره';
+        closeButton.textContent = '×';
+        if (cardHeader) cardHeader.appendChild(closeButton);
+        managerCard.classList.add('settings-quickinsert-modal-card');
+        managerCard.setAttribute('role', 'dialog');
+        managerCard.setAttribute('aria-modal', 'true');
+        managerCard.setAttribute('aria-labelledby', 'settingsQuickInsertTitle');
+        managerCard.setAttribute('tabindex', '-1');
+        modalOverlay.appendChild(managerCard);
+        settingsScreen.appendChild(modalOverlay);
+
+        function hasUnsavedQuickInsertChanges() {
+            return Boolean(editingItemId || labelInput.value.trim() || codeInput.value.trim());
+        }
+
+        function openQuickInsertModal() {
+            if (!modalOverlay.hidden) return;
+            returnFocusTarget = settingsScreen.querySelector('[data-settings-nav="settingsQuickInsertCard"]');
+            modalOverlay.hidden = false;
+            modalOverlay.setAttribute('aria-hidden', 'false');
+            renderQuickInsertList();
+            managerCard.focus();
+        }
+
+        function closeQuickInsertModal() {
+            if (modalOverlay.hidden) return;
+            if (hasUnsavedQuickInsertChanges() &&
+                !window.confirm('فرم شامل تغییرات ذخیره‌نشده است. بدون ذخیره از پنجره خارج شوید؟')) {
+                return;
+            }
+            if (hasUnsavedQuickInsertChanges()) {
+                resetQuickInsertEditor();
+                status.textContent = 'تغییرات ذخیره‌نشده کنار گذاشته شد.';
+            }
+            modalOverlay.hidden = true;
+            modalOverlay.setAttribute('aria-hidden', 'true');
+            if (returnFocusTarget) returnFocusTarget.focus();
+        }
+
+        closeButton.addEventListener('click', closeQuickInsertModal);
+        modalOverlay.addEventListener('click', function (event) {
+            if (event.target === modalOverlay) closeQuickInsertModal();
+        });
+        window.addEventListener('editor-open-quick-insert-manager', openQuickInsertModal);
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !modalOverlay.hidden) {
+                event.preventDefault();
+                closeQuickInsertModal();
+            }
+        });
 
         function resetQuickInsertEditor() {
             editingItemId = null;

@@ -65,7 +65,7 @@
         return JSON.stringify({ data: getSnapshot(), customBanks: customBanks });
     }
     function markDirty(message) {
-        markDirty();
+        dirty = true;
         if (modal) {
             var save = modal.querySelector('#smSave');
             if (save) save.disabled = false;
@@ -198,12 +198,6 @@
                     active: word.active !== false, __suggestionManagerBankId: bank.id, __suggestionManagerWordId: word.id || '' });
             });
         });
-    }
-    function readCustomBanks() { return clone(customBanks); }
-    function writeCustomBanks(banks) {
-        customBanks = clone(banks);
-        syncCustomBanks();
-        markDirty('تغییرات بانک سفارشی ذخیره‌نشده است.');
     }
     function renderTree() {
         if (!modal) return;
@@ -425,13 +419,11 @@
         if (onDelete) { var del = document.createElement('button'); del.type = 'button'; del.className = 'danger'; del.textContent = 'حذف'; del.addEventListener('click', onDelete); actions.appendChild(del); }
         editor.appendChild(actions);
     }
-    function readCustomBanks() {
-        try { var value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); return Array.isArray(value.customBanks) ? value.customBanks : []; }
-        catch (error) { return []; }
-    }
+    function readCustomBanks() { return clone(customBanks); }
     function writeCustomBanks(banks) {
-        try { var value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); value.version = 1; value.customBanks = banks; localStorage.setItem(STORAGE_KEY, JSON.stringify(value)); }
-        catch (error) { setStatus('ذخیرهٔ بانک سفارشی در مرورگر ناموفق بود.', true); }
+        customBanks = clone(banks);
+        syncCustomBanks();
+        markDirty('تغییرات بانک سفارشی ذخیره‌نشده است.');
     }
     function addCategory() {
         var lang = selected && selected.lang || 'html';

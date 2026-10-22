@@ -168,7 +168,7 @@ node --check script.js
 
 سه گردش‌کار در شاخهٔ `main` تعریف شده‌اند:
 
-- **Build standalone test editor:** با Node.js 20 نحو فایل‌های JavaScript را بررسی می‌کند، خروجی تک‌فایلی را می‌سازد و اعتبارسنجی می‌کند؛ اگر خروجی تغییر کرده باشد، آن را با حساب GitHub Actions کامیت و Push می‌کند.
+- **Build standalone test editor:** فقط با اجرای دستی از بخش **Actions → Build standalone test editor → Run workflow** اجرا می‌شود؛ به‌صورت خودکار با `push` اجرا نمی‌شود. با Node.js 20 نحو فایل‌های JavaScript را بررسی می‌کند، خروجی تک‌فایلی را می‌سازد و اعتبارسنجی می‌کند؛ اگر خروجی تغییر کرده باشد، آن را با حساب GitHub Actions کامیت و Push می‌کند.
 - **Check index syntax and delimiters:** در Push و Pull Requestهای مرتبط، تگ‌های `index.html`، جداکننده‌های کد و نحو JavaScript درون‌خطی را بررسی می‌کند.
 - **Check index file:** ساختار ابتدایی سند و وجود فایل‌های محلی ارجاع‌شده را بررسی می‌کند.
 

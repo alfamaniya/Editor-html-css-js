@@ -46,10 +46,19 @@ vm.runInNewContext(parentRegistration, {
 });
 assert.equal(typeof parentHandler, 'function', 'Parent keyboard handler was not registered.');
 
-function sendParentKey(key, dialog) {
+function sendParentKey(key, dialog, initiallyPrevented = false) {
     let prevented = false;
     parentDocument.activeElement = { closest() { return dialog; } };
-    parentHandler({ key, shiftKey: false, preventDefault() { prevented = true; } });
+    const event = {
+        key,
+        shiftKey: false,
+        defaultPrevented: initiallyPrevented,
+        preventDefault() {
+            prevented = true;
+            this.defaultPrevented = true;
+        }
+    };
+    parentHandler(event);
     return prevented;
 }
 
@@ -66,6 +75,10 @@ assert.equal(sendParentKey('Escape', settingsScreen), true,
     'Escape in the settings screen should remain available to close settings.');
 assert.equal(parentCloseCount, 1,
     'Escape in the settings screen should close it exactly once.');
+assert.equal(sendParentKey('Escape', settingsScreen, true), false,
+    'The parent must ignore Escape already consumed by a child dialog.');
+assert.equal(parentCloseCount, 1,
+    'An already-consumed Escape must not close the parent after child focus returns.');
 
 let childHandler;
 let childCloseCount = 0;
@@ -120,4 +133,4 @@ assert.equal(sendChildKey('Escape', managerCard), true,
     'Escape inside the quick-insert dialog should be consumed by that dialog.');
 assert.equal(childCloseCount, 1, 'Escape should request closing the child dialog exactly once.');
 
-console.log('Passed 6 nested-dialog keyboard regression checks.');
+console.log('Passed 7 nested-dialog keyboard regression scenarios.');

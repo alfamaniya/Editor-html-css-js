@@ -2330,14 +2330,16 @@
                     const propertyNames = new Set(properties.map(function (item) {
                         return typeof item === 'string' ? item : String(item && item.label || '');
                     }));
-                    const normalizedSnippets = snippets.map(function (item) {
+                    function preservePropertyName(item) {
                         if (item && typeof item === 'object' && typeof item.insert !== 'string' &&
                             typeof item.prefix === 'string' && propertyNames.has(String(item.label || ''))) {
                             return Object.assign({}, item, { insert: String(item.label), caret: null });
                         }
                         return item;
-                    });
-                    return filterList(normalizedSnippets.concat(data.cssAbbreviations || [], properties), ctx.word);
+                    }
+                    const normalizedSnippets = snippets.map(preservePropertyName);
+                    const normalizedProperties = properties.map(preservePropertyName);
+                    return filterList(normalizedSnippets.concat(data.cssAbbreviations || [], normalizedProperties), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];

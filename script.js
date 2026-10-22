@@ -125,6 +125,11 @@
         const SPLIT_KEY   = 'html-editor-split-pos';
 
         let previewTimer = null;
+        let autoPreviewEnabled = true;
+        let previewDelayMs = 600;
+        let autocompleteEnabled = true;
+        let settingsAutoSaveEnabled = true;
+        let currentSplitRatio = 50;
         let autoSaveTimer = null;
         let dirtyResetTimer = null;
         let project = null;
@@ -1651,7 +1656,8 @@
         }
         function schedulePreview() {
             clearTimeout(previewTimer);
-            previewTimer = setTimeout(updatePreviewNow, 300);
+            if (!autoPreviewEnabled) return;
+            previewTimer = setTimeout(updatePreviewNow, previewDelayMs);
         }
 
         window.addEventListener('message', function (e) {
@@ -2904,7 +2910,8 @@
                 if (addedDirtyFile && wasDirty) renderFileExplorer();
                 scheduleSaveProject();
                 schedulePreview();
-                IntelliSense.onInput(ta, lang, e);
+                if (autocompleteEnabled) IntelliSense.onInput(ta, lang, e);
+                else IntelliSense.hide();
                 picker.onInput(ta, lang, e);
             });
 
@@ -2917,7 +2924,8 @@
             ta.addEventListener('keydown', function(e) {
                 if (e.isComposing) return;
 
-                if (IntelliSense.onKeyDown(e)) return;
+                if (autocompleteEnabled && IntelliSense.onKeyDown(e)) return;
+                if (!autocompleteEnabled) IntelliSense.hide();
                 picker.close();
 
                 if (e.key === 'Tab' && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -3139,11 +3147,14 @@
             toastTimer = setTimeout(function() { toast.className = 'toast ' + (type || ''); }, actionLabel ? 6000 : 2500);
         }
         let fontSize = parseInt(storageGet(FONT_KEY), 10) || 15;
-        function applyFontSize() {
+        function applyFontSize(persist, notify) {
             fontSize = Math.max(10, Math.min(30, fontSize));
             document.documentElement.style.setProperty('--editor-font', fontSize + 'px');
-            storageSet(FONT_KEY, fontSize);
+            if (persist !== false && settingsAutoSaveEnabled) storageSet(FONT_KEY, fontSize);
             if (editors[activeTab]) editors[activeTab].syncScroll();
+            if (notify !== false) {
+                window.dispatchEvent(new CustomEvent('editor-font-size-change', { detail: { value: fontSize } }));
+            }
         }
 
         // ==========================================
@@ -3153,11 +3164,17 @@
         const editorPane  = document.querySelector('.editor-pane');
         const containerEl = document.querySelector('.container');
 
+        function applySplitRatio(value, persist) {
+            const ratio = Number(value);
+            if (!Number.isFinite(ratio)) return;
+            currentSplitRatio = Math.max(15, Math.min(85, ratio));
+            document.documentElement.style.setProperty('--editor-pane-ratio', currentSplitRatio + '%');
+            if (persist !== false && settingsAutoSaveEnabled) storageSet(SPLIT_KEY, currentSplitRatio);
+        }
+
         (function initDivider() {
             const saved = parseFloat(storageGet(SPLIT_KEY));
-            if (!isNaN(saved) && saved >= 15 && saved <= 85) {
-                editorPane.style.width = saved + '%';
-            }
+            if (!isNaN(saved) && saved >= 15 && saved <= 85) applySplitRatio(saved, false);
 
             let dragging = false;
 
@@ -3166,17 +3183,20 @@
                 dragging = true;
                 divider.classList.add('dragging');
                 document.body.style.userSelect = 'none';
-                document.body.style.cursor = 'col-resize';
+                const stacked = document.documentElement.dataset.layout === 'stacked';
+                document.body.style.cursor = stacked ? 'row-resize' : 'col-resize';
                 try { divider.setPointerCapture(e.pointerId); } catch (err) {}
             });
 
             divider.addEventListener('pointermove', function(e) {
                 if (!dragging) return;
                 const rect = containerEl.getBoundingClientRect();
-                if (rect.width <= 0) return;
-                let pct = ((e.clientX - rect.left) / rect.width) * 100;
+                const stacked = document.documentElement.dataset.layout === 'stacked';
+                const extent = stacked ? rect.height : rect.width;
+                if (extent <= 0) return;
+                let pct = ((stacked ? e.clientY - rect.top : e.clientX - rect.left) / extent) * 100;
                 pct = Math.max(15, Math.min(85, pct));
-                editorPane.style.width = pct + '%';
+                applySplitRatio(pct, false);
             });
 
             function endDrag(e) {
@@ -3186,12 +3206,52 @@
                 document.body.style.userSelect = '';
                 document.body.style.cursor = '';
                 try { divider.releasePointerCapture(e.pointerId); } catch (err) {}
-                const pct = parseFloat(editorPane.style.width);
-                if (!isNaN(pct)) storageSet(SPLIT_KEY, pct);
+                if (settingsAutoSaveEnabled) storageSet(SPLIT_KEY, currentSplitRatio);
+                window.dispatchEvent(new CustomEvent('editor-split-ratio-change', {
+                    detail: { value: currentSplitRatio }
+                }));
             }
             divider.addEventListener('pointerup', endDrag);
             divider.addEventListener('pointercancel', endDrag);
         })();
+
+        window.addEventListener('editor-settings-change', function(event) {
+            const detail = event.detail || {};
+            const key = detail.key;
+            const value = String(detail.value);
+            const root = document.documentElement;
+
+            if (key === 'autoSaveSettings') {
+                settingsAutoSaveEnabled = value === 'on';
+            } else if (key === 'fontSize') {
+                fontSize = Number(value) || 15;
+                applyFontSize(settingsAutoSaveEnabled, false);
+            } else if (key === 'lineNumbers') {
+                root.dataset.lineNumbers = value;
+            } else if (key === 'wrapLines') {
+                root.dataset.wrapLines = value;
+                document.querySelectorAll('.editor-wrap .input').forEach(function(ta) {
+                    ta.wrap = value === 'on' ? 'soft' : 'off';
+                });
+            } else if (key === 'autocomplete') {
+                autocompleteEnabled = value === 'on';
+                if (!autocompleteEnabled) IntelliSense.hide();
+            } else if (key === 'autoPreview') {
+                autoPreviewEnabled = value === 'on';
+                clearTimeout(previewTimer);
+                if (autoPreviewEnabled) schedulePreview();
+            } else if (key === 'previewDelay') {
+                previewDelayMs = Math.max(100, Number(value) || 600);
+                if (autoPreviewEnabled) schedulePreview();
+            } else if (key === 'splitRatio') {
+                applySplitRatio(value, false);
+            } else if (key === 'layout') {
+                root.dataset.layout = value;
+                applySplitRatio(currentSplitRatio, false);
+            }
+        });
+
+        window.addEventListener('editor-refresh-preview', updatePreviewNow);
 
         // ==========================================
         //  Buttons

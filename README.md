@@ -9,7 +9,7 @@
 - پیشنهادهای زمینه‌ای کد و ابزار **Word Tree**؛ این امکانات جایگزین IDE یا تحلیل‌گر کامل زبان نیستند.
 - مدیریت فایل‌های مجازی و کتابخانه‌های CSS/JavaScript.
 - ذخیره‌سازی در `localStorage` و امکان دریافت نسخهٔ بازیابی در برخی خطاها.
-- سکشن «ظاهر برنامه» در تنظیمات؛ استایل و منطق آن در `settings.css` و `settings.js` نگهداری می‌شوند.
+- پنج سکشن تنظیمات فعال‌اند: ظاهر برنامه، ویرایشگر کد، نمایش زنده، چیدمان محیط و ذخیره‌سازی/بازیابی؛ ظاهر و منطق تنظیمات در `settings.css` و `settings.js` جدا شده‌اند.
 - خروجی به‌صورت یک فایل HTML مستقل یا بستهٔ چهار‌فایلی.
 
 ## اجرا
@@ -22,11 +22,10 @@
 
 ```bash
 node scripts/check-index-integrity.mjs
-node scripts/build-test-editor.mjs
 node scripts/check-standalone-editor.mjs
 ```
 
-فایل `index-test-etitor.html` خروجی تولیدشده است؛ فایل‌های منبع را ویرایش کنید و خروجی را دوباره بسازید.
+فایل `index-test-etitor.html` خروجی تولیدشده است. ساخت یا به‌روزرسانی این فایل را بدون دستور صریح کاربر اجرا نکنید.
 
 ## راهنمای کوتاه
 
@@ -74,7 +73,7 @@ node scripts/check-standalone-editor.mjs
 | فایل | کاربرد |
 |---|---|
 | `index.html`، `style.css`، `script.js` | ساختار صفحه، ظاهر و منطق اصلی ویرایشگر |
-| `settings.css`، `settings.js` | استایل پنل تنظیمات و منطق سکشن ظاهر برنامه |
+| `settings.css`، `settings.js` | استایل پنل تنظیمات و منطق پنج سکشن تنظیمات |
 | `html-suggestions.js`، `css-suggestions.js`، `js-suggestions.js` | بانک پیشنهادهای زبان‌ها |
 | `next-word-suggestions.js`، `word-tree.js` | پیشنهاد ادامهٔ کد و نمایش Word Tree |
 | `github-update.js` | نمایش زمان آخرین کامیت GitHub |
@@ -83,17 +82,7 @@ node scripts/check-standalone-editor.mjs
 
 ## GitHub Actions و آزمون‌ها
 
-## قانون مهم: ساخت فایل HTML تک‌فایلی
-
-- اکشن **Build standalone test editor** به‌صورت پیش‌فرض غیرفعال است.
-- بدون دستور صریح و مستقیم کاربر، این اکشن را فعال، اجرا یا بازفعال نکنید.
-- اجرای دستی از صفحهٔ GitHub Actions نیز تا زمان دریافت اجازهٔ صریح کاربر مجاز نیست.
-- فقط پس از درخواست مستقیم کاربر می‌توان قفل ایمنی این Workflow را برداشت و ساخت فایل تک‌فایلی را اجرا کرد.
-- تغییرات فایل خروجی `index-test-etitor.html` و کامیت خودکار آن نیز مشمول همین قانون هستند.
-
-## GitHub Actions و آزمون‌ها
-
-- **Build standalone test editor:** به‌دلیل قفل ایمنی، فعلاً اجرا نمی‌شود؛ برای فعال‌سازی به دستور صریح کاربر نیاز است.
+- **Build standalone test editor:** این Workflow فقط دستی قابل اجراست؛ بدون دستور صریح کاربر آن را فعال یا اجرا نکنید. ساخت فایل تک‌فایلی و کامیت خودکار خروجی نیز مشمول همین محدودیت است.
 - **Check index syntax and delimiters:** ساختار تگ‌ها، جداکننده‌ها و نحو JavaScript درون‌خطی را بررسی می‌کند.
 - **Check index file:** ساختار پایهٔ HTML و ارجاع‌های محلی را بررسی می‌کند.
 

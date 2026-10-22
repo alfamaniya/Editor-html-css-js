@@ -408,25 +408,25 @@
                 <div class="settings-heading">
                     <span class="settings-eyebrow">محیط شخصی‌سازی ویرایشگر</span>
                     <h1 id="settingsTitle">تنظیمات برنامه</h1>
-                    <p>ظاهر محیط را شخصی‌سازی کنید؛ انتخاب‌ها فوراً اعمال می‌شوند و در همین مرورگر می‌مانند.</p>
+                    <p>تنظیمات هر بخش را تغییر دهید؛ تغییرات فوراً اعمال می‌شوند و می‌توانید ذخیره‌سازی خودکار را کنترل کنید.</p>
                 </div>
                 <button type="button" id="btnSettingsSaveReturn" class="settings-save-return">
                     <span aria-hidden="true">💾</span>
-                    ذخیره ظاهر و بازگشت به کدنویسی
+                    ذخیره تنظیمات و بازگشت به کدنویسی
                 </button>
             </header>
 
             <div class="settings-layout">
                 <aside class="settings-sidebar" aria-label="دسته‌بندی تنظیمات">
                     <p class="settings-sidebar-title">دسته‌بندی تنظیمات</p>
-                    <div class="settings-nav-item"><span aria-hidden="true">🎨</span><span>ظاهر برنامه</span></div>
-                    <div class="settings-nav-item"><span aria-hidden="true">⌨️</span><span>ویرایشگر کد</span></div>
-                    <div class="settings-nav-item"><span aria-hidden="true">🪟</span><span>نمایش زنده</span></div>
-                    <div class="settings-nav-item"><span aria-hidden="true">▥</span><span>چیدمان محیط</span></div>
-                    <div class="settings-nav-item"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></div>
+                    <button type="button" class="settings-nav-item is-active" data-settings-nav="settingsAppearanceCard" aria-current="location"><span aria-hidden="true">🎨</span><span>ظاهر برنامه</span></button>
+                    <button type="button" class="settings-nav-item" data-settings-nav="settingsEditorCard"><span aria-hidden="true">⌨️</span><span>ویرایشگر کد</span></button>
+                    <button type="button" class="settings-nav-item" data-settings-nav="settingsPreviewCard"><span aria-hidden="true">🪟</span><span>نمایش زنده</span></button>
+                    <button type="button" class="settings-nav-item" data-settings-nav="settingsLayoutCard"><span aria-hidden="true">▥</span><span>چیدمان محیط</span></button>
+                    <button type="button" class="settings-nav-item" data-settings-nav="settingsStorageCard"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></button>
                     <div class="settings-sidebar-note">
                         <span class="settings-status-dot" aria-hidden="true"></span>
-                        <span>سکشن ظاهر برنامه فعال است؛ سایر سکشن‌ها در مراحل بعد تکمیل می‌شوند</span>
+                        <span>هر پنج سکشن فعال است و گزینه‌ها مستقیماً به ویرایشگر متصل‌اند.</span>
                     </div>
                 </aside>
 
@@ -434,8 +434,9 @@
                     <div class="settings-notice" role="note">
                         <span class="settings-notice-icon" aria-hidden="true">✓</span>
                         <div>
-                            <strong>تنظیمات ظاهر فعال است</strong>
-                            <p>پوسته، رنگ تأکیدی و تراکم رابط کاربری همین حالا روی محیط برنامه اعمال و در مرورگر ذخیره می‌شوند. بخش‌های دیگر در مراحل بعد فعال خواهند شد.</p>
+                            <strong>تنظیمات فعال و قابل اعمال</strong>
+                            <p>گزینه‌ها رفتار واقعی ویرایشگر، پیش‌نمایش، چیدمان پنل‌ها و شیوهٔ ذخیره‌سازی را کنترل می‌کنند.</p>
+                            <p class="settings-general-status" id="settingsGeneralStatus" role="status" aria-live="polite">تغییرات پس از انتخاب اعمال می‌شوند.</p>
                         </div>
                     </div>
 
@@ -470,119 +471,122 @@
                                 <button type="button" class="settings-option" data-setting="density" data-value="comfortable" aria-pressed="false">بازتر</button>
                             </div>
                         </div>
-                        <p class="settings-apply-status" id="settingsAppearanceStatus" role="status" aria-live="polite">تغییرات این بخش بلافاصله اعمال و در مرورگر ذخیره می‌شوند.</p>
+                        <p class="settings-apply-status" id="settingsAppearanceStatus" role="status" aria-live="polite">تنظیمات ظاهر اعمال و در مرورگر ذخیره می‌شوند.</p>
                     </section>
 
-                    <section class="settings-card" aria-labelledby="settingsEditorTitle">
+                    <section id="settingsEditorCard" class="settings-card" aria-labelledby="settingsEditorTitle">
                         <header class="settings-card-header">
                             <span class="settings-card-icon" aria-hidden="true">⌨️</span>
                             <div><h2 id="settingsEditorTitle">ویرایشگر کد</h2><p>خوانایی و امکانات هنگام نوشتن کد</p></div>
-                            <span class="settings-proposed">پیشنهادی</span>
+                            <span class="settings-proposed settings-active">فعال</span>
                         </header>
                         <div class="settings-row">
                             <div class="settings-row-info"><h3>اندازهٔ قلم کد</h3><p>تنظیم اندازهٔ نوشته‌ها در پنل‌های کدنویسی</p></div>
                             <div class="settings-options" role="group" aria-label="اندازه قلم کد">
-                                <button type="button" class="settings-option" disabled>کوچک</button>
-                                <button type="button" class="settings-option is-selected" disabled>متوسط</button>
-                                <button type="button" class="settings-option" disabled>بزرگ</button>
+                                <button type="button" class="settings-option" data-setting="fontSize" data-value="13" aria-pressed="false">کوچک</button>
+                                <button type="button" class="settings-option is-selected" data-setting="fontSize" data-value="15" aria-pressed="true">متوسط</button>
+                                <button type="button" class="settings-option" data-setting="fontSize" data-value="18" aria-pressed="false">بزرگ</button>
                             </div>
                         </div>
                         <div class="settings-row">
-                            <div class="settings-row-info"><h3>شمارهٔ خطوط</h3><p>نمایش شماره کنار هر خط کد</p></div>
+                            <div class="settings-row-info"><h3>شمارهٔ خطوط</h3><p>نمایش یا پنهان کردن شماره کنار هر خط کد</p></div>
                             <div class="settings-options" role="group" aria-label="نمایش شماره خطوط">
-                                <button type="button" class="settings-option is-selected" disabled>نمایش</button>
-                                <button type="button" class="settings-option" disabled>عدم نمایش</button>
+                                <button type="button" class="settings-option is-selected" data-setting="lineNumbers" data-value="on" aria-pressed="true">نمایش</button>
+                                <button type="button" class="settings-option" data-setting="lineNumbers" data-value="off" aria-pressed="false">عدم نمایش</button>
                             </div>
                         </div>
                         <div class="settings-row">
-                            <div class="settings-row-info"><h3>شکستن خطوط طولانی</h3><p>نمایش ادامهٔ خط در ردیف بعدی</p></div>
+                            <div class="settings-row-info"><h3>شکستن خطوط طولانی</h3><p>نمایش ادامهٔ خط در ردیف بعدی، بدون اسکرول افقی</p></div>
                             <div class="settings-options" role="group" aria-label="شکستن خطوط طولانی">
-                                <button type="button" class="settings-option" disabled>فعال</button>
-                                <button type="button" class="settings-option is-selected" disabled>غیرفعال</button>
+                                <button type="button" class="settings-option" data-setting="wrapLines" data-value="on" aria-pressed="false">فعال</button>
+                                <button type="button" class="settings-option is-selected" data-setting="wrapLines" data-value="off" aria-pressed="true">غیرفعال</button>
                             </div>
                         </div>
                         <div class="settings-row">
-                            <div class="settings-row-info"><h3>پیشنهاد خودکار کد</h3><p>نمایش پیشنهادها هنگام تایپ</p></div>
+                            <div class="settings-row-info"><h3>پیشنهاد خودکار کد</h3><p>نمایش پیشنهادهای زمینه‌ای هنگام تایپ</p></div>
                             <div class="settings-options" role="group" aria-label="پیشنهاد خودکار کد">
-                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
-                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                                <button type="button" class="settings-option is-selected" data-setting="autocomplete" data-value="on" aria-pressed="true">فعال</button>
+                                <button type="button" class="settings-option" data-setting="autocomplete" data-value="off" aria-pressed="false">غیرفعال</button>
                             </div>
                         </div>
                     </section>
 
-                    <section class="settings-card" aria-labelledby="settingsPreviewTitle">
+                    <section id="settingsPreviewCard" class="settings-card" aria-labelledby="settingsPreviewTitle">
                         <header class="settings-card-header">
                             <span class="settings-card-icon" aria-hidden="true">🪟</span>
                             <div><h2 id="settingsPreviewTitle">نمایش زنده</h2><p>رفتار پیش‌نمایش خروجی کد</p></div>
-                            <span class="settings-proposed">پیشنهادی</span>
+                            <span class="settings-proposed settings-active">فعال</span>
                         </header>
                         <div class="settings-row">
                             <div class="settings-row-info"><h3>به‌روزرسانی خودکار</h3><p>به‌روزرسانی پیش‌نمایش پس از ویرایش کد</p></div>
-                            <div class="settings-options" role="group" aria-label="به روزرسانی خودکار">
-                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
-                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                            <div class="settings-options" role="group" aria-label="به‌روزرسانی خودکار">
+                                <button type="button" class="settings-option is-selected" data-setting="autoPreview" data-value="on" aria-pressed="true">فعال</button>
+                                <button type="button" class="settings-option" data-setting="autoPreview" data-value="off" aria-pressed="false">غیرفعال</button>
                             </div>
                         </div>
                         <div class="settings-row">
                             <div class="settings-row-info"><h3>وقفهٔ پیش‌نمایش</h3><p>فاصلهٔ زمانی پس از تایپ تا به‌روزرسانی</p></div>
-                            <div class="settings-options" role="group" aria-label="وقفه پیش نمایش">
-                                <button type="button" class="settings-option" disabled>۳۰۰ میلی‌ثانیه</button>
-                                <button type="button" class="settings-option is-selected" disabled>۶۰۰ میلی‌ثانیه</button>
-                                <button type="button" class="settings-option" disabled>۱ ثانیه</button>
+                            <div class="settings-options" role="group" aria-label="وقفه پیش‌نمایش">
+                                <button type="button" class="settings-option" data-setting="previewDelay" data-value="300" aria-pressed="false">۳۰۰ میلی‌ثانیه</button>
+                                <button type="button" class="settings-option is-selected" data-setting="previewDelay" data-value="600" aria-pressed="true">۶۰۰ میلی‌ثانیه</button>
+                                <button type="button" class="settings-option" data-setting="previewDelay" data-value="1000" aria-pressed="false">۱ ثانیه</button>
                             </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>به‌روزرسانی دستی</h3><p>اجرای پیش‌نمایش حتی در حالت غیرفعال بودن به‌روزرسانی خودکار</p></div>
+                            <div class="settings-options"><button type="button" class="settings-option settings-active" id="btnSettingsPreviewNow">اکنون به‌روزرسانی کن</button></div>
                         </div>
                     </section>
 
-                    <section class="settings-card" aria-labelledby="settingsLayoutTitle">
+                    <section id="settingsLayoutCard" class="settings-card" aria-labelledby="settingsLayoutTitle">
                         <header class="settings-card-header">
                             <span class="settings-card-icon" aria-hidden="true">▥</span>
                             <div><h2 id="settingsLayoutTitle">چیدمان محیط</h2><p>نسبت فضای کدنویسی به نمایش زنده</p></div>
-                            <span class="settings-proposed">پیشنهادی</span>
+                            <span class="settings-proposed settings-active">فعال</span>
                         </header>
                         <div class="settings-row">
-                            <div class="settings-row-info"><h3>نسبت دو پنل</h3><p>تعیین سهم هر پنل از عرض صفحه</p></div>
+                            <div class="settings-row-info"><h3>نسبت دو پنل</h3><p>تعیین سهم هر پنل از فضای در دسترس</p></div>
                             <div class="settings-options" role="group" aria-label="نسبت پنل‌ها">
-                                <button type="button" class="settings-option is-selected" disabled>۵۰٪ / ۵۰٪</button>
-                                <button type="button" class="settings-option" disabled>۶۰٪ / ۴۰٪</button>
-                                <button type="button" class="settings-option" disabled>۷۰٪ / ۳۰٪</button>
+                                <button type="button" class="settings-option is-selected" data-setting="splitRatio" data-value="50" aria-pressed="true">۵۰٪ / ۵۰٪</button>
+                                <button type="button" class="settings-option" data-setting="splitRatio" data-value="60" aria-pressed="false">۶۰٪ / ۴۰٪</button>
+                                <button type="button" class="settings-option" data-setting="splitRatio" data-value="70" aria-pressed="false">۷۰٪ / ۳۰٪</button>
                             </div>
                         </div>
                         <div class="settings-row">
                             <div class="settings-row-info"><h3>جهت نمایش پنل‌ها</h3><p>چیدمان ویرایشگر و پیش‌نمایش</p></div>
                             <div class="settings-options" role="group" aria-label="جهت نمایش پنل‌ها">
-                                <button type="button" class="settings-option is-selected" disabled>کنار هم</button>
-                                <button type="button" class="settings-option" disabled>روی هم</button>
+                                <button type="button" class="settings-option is-selected" data-setting="layout" data-value="side-by-side" aria-pressed="true">کنار هم</button>
+                                <button type="button" class="settings-option" data-setting="layout" data-value="stacked" aria-pressed="false">روی هم</button>
                             </div>
                         </div>
                     </section>
 
-                    <section class="settings-card" aria-labelledby="settingsStorageTitle">
+                    <section id="settingsStorageCard" class="settings-card" aria-labelledby="settingsStorageTitle">
                         <header class="settings-card-header">
                             <span class="settings-card-icon" aria-hidden="true">💾</span>
                             <div><h2 id="settingsStorageTitle">ذخیره‌سازی و بازیابی</h2><p>رفتار ذخیره‌سازی و بازگردانی تنظیمات</p></div>
-                            <span class="settings-proposed">پیشنهادی</span>
+                            <span class="settings-proposed settings-active">فعال</span>
                         </header>
                         <div class="settings-row">
-                            <div class="settings-row-info"><h3>ذخیرهٔ خودکار تنظیمات</h3><p>نگهداری تنظیمات در مرورگر</p></div>
+                            <div class="settings-row-info"><h3>ذخیرهٔ خودکار تنظیمات</h3><p>نگهداری خودکار تغییرات تنظیمات در همین مرورگر</p></div>
                             <div class="settings-options" role="group" aria-label="ذخیره خودکار تنظیمات">
-                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
-                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                                <button type="button" class="settings-option is-selected" data-setting="autoSaveSettings" data-value="on" aria-pressed="true">فعال</button>
+                                <button type="button" class="settings-option" data-setting="autoSaveSettings" data-value="off" aria-pressed="false">غیرفعال</button>
                             </div>
                         </div>
                         <div class="settings-row">
-                            <div class="settings-row-info"><h3>بازنشانی تنظیمات</h3><p>برگرداندن گزینه‌ها به مقادیر اولیه</p></div>
+                            <div class="settings-row-info"><h3>بازنشانی تنظیمات</h3><p>برگرداندن گزینه‌ها به مقادیر اولیه؛ کدهای پروژه پاک نمی‌شوند</p></div>
                             <div class="settings-options">
-                                <button type="button" class="settings-option settings-reset-option" disabled>بازگردانی پیش‌فرض‌ها</button>
+                                <button type="button" class="settings-option settings-reset-option" id="btnSettingsResetDefaults">بازگردانی پیش‌فرض‌ها</button>
                             </div>
                         </div>
                     </section>
 
-                    <p class="settings-bottom-note">سکشن «ظاهر برنامه» فعال شد؛ بخش‌های دیگر در مراحل بعدی تکمیل می‌شوند.</p>
+                    <p class="settings-bottom-note">همهٔ سکشن‌ها فعال‌اند؛ تنظیمات هر بخش مستقیماً روی محیط ویرایشگر اثر می‌گذارند.</p>
                 </main>
             </div>
         </div>
     </section>
-
     <div class="toast" id="toast"></div>
 
     <script src="html-suggestions.js"></script>

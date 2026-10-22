@@ -1699,8 +1699,9 @@
             symbolToolbar.setAttribute('aria-label', labels[language].toolbar);
 
             const data = window.EDITOR_INTELLISENSE_DATA || {};
-            const defaultItems = data.symbols && data.symbols[language];
+            const defaultItems = data.symbols && Array.isArray(data.symbols[language]) ? data.symbols[language] : [];
             let customItems = [];
+            let builtinConfig = { deleted: [], overrides: {} };
             try {
                 const saved = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-v1') || '{}');
                 if (saved && Array.isArray(saved[language])) {
@@ -1711,7 +1712,29 @@
             } catch (error) {
                 customItems = [];
             }
-            const items = (Array.isArray(defaultItems) ? defaultItems : []).concat(customItems);
+            try {
+                const config = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-builtins-v1') || '{}');
+                const section = config && config[language] && typeof config[language] === 'object' ? config[language] : {};
+                builtinConfig = {
+                    deleted: Array.isArray(section.deleted) ? section.deleted : [],
+                    overrides: section.overrides && typeof section.overrides === 'object' ? section.overrides : {}
+                };
+            } catch (error) {
+                builtinConfig = { deleted: [], overrides: {} };
+            }
+            const managedDefaults = defaultItems.map(function(item, index) {
+                const id = 'builtin-' + language + '-' + index;
+                const override = builtinConfig.overrides[id];
+                return {
+                    label: override && typeof override.label === 'string' ? override.label : item.label,
+                    prefix: override && typeof override.prefix === 'string' ? override.prefix : item.prefix,
+                    suffix: override && typeof override.suffix === 'string' ? override.suffix : item.suffix,
+                    description: override && typeof override.description === 'string' ? override.description : item.description
+                };
+            }).filter(function(item, index) {
+                return !builtinConfig.deleted.includes('builtin-' + language + '-' + index);
+            });
+            const items = managedDefaults.concat(customItems);
             if (!items.length) {
                 symbolToolbar.replaceChildren();
                 return;

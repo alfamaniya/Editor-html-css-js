@@ -81,6 +81,7 @@
                 categoryLabels = saved.categoryLabels && typeof saved.categoryLabels === 'object' ? clone(saved.categoryLabels) : {};
             }
         } catch (error) { console.warn('بارگذاری بانک پیشنهادها انجام نشد.', error); }
+        normalizeCustomIds();
         syncCustomBanks();
         baseline = getBaseline();
     }
@@ -164,6 +165,34 @@
         else if (parts.length === 2 && ['cssValues', 'htmlAttrsByTag', 'jsMembers'].indexOf(parts[0]) !== -1) {
             data[parts[0]] = data[parts[0]] || {}; data[parts[0]][parts[1]] = value;
         } else data[key] = value;
+    }
+    function makeUniqueId(prefix, items) {
+        var used = (items || []).map(function (item) { return item && item.id; });
+        var base = prefix + Date.now().toString(36), candidate = base, suffix = 1;
+        while (used.indexOf(candidate) !== -1) candidate = base + '-' + suffix++;
+        return candidate;
+    }
+    function normalizeCustomIds() {
+        var seenBanks = [];
+        customBanks.forEach(function (bank) {
+            if (!bank || typeof bank !== 'object') return;
+            if (!bank.id || seenBanks.indexOf(bank.id) !== -1) bank.id = makeUniqueId('custom-', seenBanks.map(function (id) { return { id: id }; }));
+            seenBanks.push(bank.id);
+            if (!Array.isArray(bank.words)) bank.words = [];
+            var seenWords = [];
+            bank.words.forEach(function (word) {
+                if (!word || typeof word !== 'object') return;
+                if (!word.id || seenWords.indexOf(word.id) !== -1) word.id = makeUniqueId('word-', seenWords.map(function (id) { return { id: id }; }));
+                seenWords.push(word.id);
+            });
+        });
+    }
+    function categoryKeyExists(key) {
+        var parts = key.split('.');
+        if (parts.length === 2 && ['cssValues','htmlAttrsByTag','jsMembers','snippets'].indexOf(parts[0]) !== -1) {
+            return !!(data[parts[0]] && Object.prototype.hasOwnProperty.call(data[parts[0]], parts[1]));
+        }
+        return Object.prototype.hasOwnProperty.call(data, key);
     }
     function defaultTarget(lang) {
         return lang === 'css' ? 'cssProperties' : lang === 'js' ? 'jsWords' : 'htmlTags';
@@ -345,7 +374,7 @@
             var custom = readCustomBanks(), bankForWord = custom[node.bankIndex];
             if (!bankForWord) { setStatus('بانک انتخاب‌شده دیگر وجود ندارد.', true); return; }
             var isNewCustom = node.index < 0;
-            var word = isNewCustom ? { id: 'word-' + Date.now().toString(36), label: '', insert: '', description: '', active: true } : bankForWord.words[node.index];
+            var word = isNewCustom ? { id: makeUniqueId('word-', bankForWord.words), label: '', insert: '', description: '', active: true } : bankForWord.words[node.index];
             if (!word) { setStatus('کلمه انتخاب‌شده دیگر وجود ندارد.', true); return; }
             title.textContent = (isNewCustom ? 'افزودن کلمه به ' : 'ویرایش کلمهٔ ') + bankForWord.name;
             editor.appendChild(renderField('عنوان نمایشی', 'smLabel', word.label));
@@ -358,6 +387,7 @@
                 var label = modal.querySelector('#smLabel').value.trim(), insert = modal.querySelector('#smInsert').value;
                 if (!label || !insert.trim()) { setStatus('عنوان نمایشی و متن درج‌شونده الزامی هستند.', true); return; }
                 if (bankForWord.words.some(function (other, index) { return index !== node.index && other.label.toLowerCase() === label.toLowerCase(); })) { setStatus('کلمه‌ای با این عنوان در بانک وجود دارد.', true); return; }
+                if (!word.id || bankForWord.words.some(function (other, index) { return index !== node.index && other.id === word.id; })) word.id = makeUniqueId('word-', bankForWord.words);
                 word.label = label; word.insert = insert; word.description = modal.querySelector('#smDescription').value; word.active = activeInput.checked;
                 if (isNewCustom) bankForWord.words.push(word);
                 writeCustomBanks(custom);
@@ -382,7 +412,7 @@
                 if (!nextKey || nextKey === 'snippets' || nextKey.indexOf(' ') !== -1) { setStatus('شناسه فنی معتبر وارد کنید.', true); return; }
                 var fixedCategories = ['htmlTags','htmlAttributes','htmlAbbreviations','htmlAttrsByTag','cssProperties','cssValues','cssAbbreviations','cssAtRules','cssPseudoClasses','cssPseudoElements','cssFunctions','cssUnits','jsWords','jsMembers'];
                 if ((fixedCategories.indexOf(categoryKey) !== -1 || categoryKey.indexOf('snippets.') === 0) && nextKey !== categoryKey) { setStatus('شناسهٔ این دسته توسط موتور پیشنهاد استفاده می‌شود و قابل تغییر نیست؛ نام نمایشی را تغییر دهید.', true); return; }
-                if (nextKey !== categoryKey && data[nextKey] !== undefined) { setStatus('این شناسه قبلاً استفاده شده است.', true); return; }
+                if (nextKey !== categoryKey && categoryKeyExists(nextKey)) { setStatus('این شناسه قبلاً استفاده شده است.', true); return; }
                 if (nextKey !== categoryKey) {
                     var parts = categoryKey.split('.');
                     if (parts.length === 2 && ['cssValues','htmlAttrsByTag','jsMembers','snippets'].indexOf(parts[0]) !== -1) {
@@ -518,7 +548,7 @@
         name = name.trim();
         var banks = readCustomBanks();
         if (banks.some(function (bank) { return bank.name.toLowerCase() === name.toLowerCase(); })) { setStatus('دسته‌بندی یا بانکی با این نام وجود دارد.', true); return; }
-        banks.push({ id: 'custom-' + Date.now().toString(36), name: name, lang: lang, target: defaultTarget(lang), words: [] });
+        banks.push({ id: makeUniqueId('custom-', banks), name: name, lang: lang, target: defaultTarget(lang), words: [] });
         writeCustomBanks(banks); selected = { kind: 'customBank', bankIndex: banks.length - 1 }; renderTree(); editNode(selected);
     }
     function addBank() {
@@ -528,7 +558,7 @@
         if (banks.some(function (bank) { return bank.name.toLowerCase() === name.trim().toLowerCase(); })) { setStatus('نام این بانک از قبل وجود دارد.', true); return; }
         var selectedBank = selected && (selected.kind === 'customBank' || selected.kind === 'customWord') ? banks[selected.bankIndex] : null;
         var lang = selected && selected.lang || (selectedBank && selectedBank.lang) || 'html';
-        banks.push({ id: 'custom-' + Date.now().toString(36), name: name.trim(), lang: lang, target: defaultTarget(lang), words: [] });
+        banks.push({ id: makeUniqueId('custom-', banks), name: name.trim(), lang: lang, target: defaultTarget(lang), words: [] });
         writeCustomBanks(banks); renderTree(); setStatus('بانک سفارشی ایجاد شد؛ برای افزودن کلمه، از گزینهٔ افزودن داخل همان بانک استفاده کنید.');
     }
     function saveUiState() {

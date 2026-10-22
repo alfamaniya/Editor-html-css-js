@@ -373,6 +373,7 @@
                 var nextKey = modal.querySelector('#smCategoryKey').value.trim();
                 var nextLabel = modal.querySelector('#smCategoryLabel').value.trim() || nextKey;
                 if (!nextKey || nextKey === 'snippets' || nextKey.indexOf(' ') !== -1) { setStatus('شناسه فنی معتبر وارد کنید.', true); return; }
+                if (categoryKey.indexOf('snippets.') === 0 && nextKey !== categoryKey) { setStatus('شناسهٔ دسته‌های snippets بخشی از قرارداد موتور پیشنهاد است و قابل تغییر نیست.', true); return; }
                 if (nextKey !== categoryKey && data[nextKey] !== undefined) { setStatus('این شناسه قبلاً استفاده شده است.', true); return; }
                 if (nextKey !== categoryKey) {
                     var parts = categoryKey.split('.');
@@ -390,6 +391,7 @@
                 markDirty('مشخصات دسته‌بندی تغییر کرد؛ ذخیره کنید تا باقی بماند.');
                 renderTree(); editNode(node);
             }, function () {
+                if (categoryKey.indexOf('snippets.') === 0) { setStatus('دسته‌های snippets بخشی از قرارداد موتور پیشنهاد هستند و قابل حذف نیستند.', true); return; }
                 var direct = categoryList.filter(function (entry) { return !(entry && entry.__suggestionManagerBankId); }).length;
                 if (!window.confirm('حذف دسته‌بندی «' + categoryKey + '» و ' + direct + ' کلمهٔ مستقیم آن؟')) return;
                 var parts = categoryKey.split('.');
@@ -440,6 +442,43 @@
             list.splice(node.index, 1); setList(node.key, list); markDirty(); selected = null; renderTree();
             editor.innerHTML = '<p class="sm-empty">کلمه حذف شد؛ برای نهایی‌کردن، ذخیره تغییرات را بزنید.</p>';
         });
+        if (node.index >= 0) {
+            var movement = document.createElement('div'); movement.className = 'sm-editor-actions sm-move-actions';
+            var up = document.createElement('button'); up.type = 'button'; up.textContent = 'انتقال به بالا'; up.disabled = node.index === 0;
+            up.addEventListener('click', function () {
+                var current = listForKey(node.key) || [], at = node.index;
+                if (at <= 0 || at >= current.length) return;
+                var previous = current[at - 1]; current[at - 1] = current[at]; current[at] = previous;
+                setList(node.key, current); node.index = at - 1; markDirty('ترتیب کلمه تغییر کرد؛ ذخیره کنید.'); renderTree(); editNode(node);
+            });
+            var down = document.createElement('button'); down.type = 'button'; down.textContent = 'انتقال به پایین'; down.disabled = node.index >= list.length - 1;
+            down.addEventListener('click', function () {
+                var current = listForKey(node.key) || [], at = node.index;
+                if (at < 0 || at >= current.length - 1) return;
+                var next = current[at + 1]; current[at + 1] = current[at]; current[at] = next;
+                setList(node.key, current); node.index = at + 1; markDirty('ترتیب کلمه تغییر کرد؛ ذخیره کنید.'); renderTree(); editNode(node);
+            });
+            movement.appendChild(up); movement.appendChild(down);
+            var targetLabel = document.createElement('label'); targetLabel.className = 'sm-field'; targetLabel.textContent = 'انتقال به دسته‌بندی';
+            var targetSelect = document.createElement('select'); targetSelect.id = 'smMoveTarget';
+            arraysFor(node.lang).forEach(function (group) {
+                if (group.key === node.key) return;
+                var option = document.createElement('option'); option.value = group.key; option.textContent = categoryLabels[group.key] || group.key; targetSelect.appendChild(option);
+            });
+            if (targetSelect.options.length) {
+                targetLabel.appendChild(targetSelect); movement.appendChild(targetLabel);
+                var move = document.createElement('button'); move.type = 'button'; move.textContent = 'انتقال'; move.addEventListener('click', function () {
+                    var targetKey = targetSelect.value, source = listForKey(node.key) || [], destination = listForKey(targetKey) || [];
+                    if (!targetKey || targetKey === node.key || node.index < 0 || node.index >= source.length) return;
+                    var moving = source[node.index], movingLabel = labelForEntry(moving);
+                    if (destination.some(function (item) { return labelForEntry(item).toLowerCase() === movingLabel.toLowerCase(); })) { setStatus('در دستهٔ مقصد کلمه‌ای با همین عنوان وجود دارد.', true); return; }
+                    source.splice(node.index, 1); destination.push(moving); setList(node.key, source); setList(targetKey, destination);
+                    node.key = targetKey; node.index = destination.length - 1; markDirty('کلمه به دستهٔ مقصد منتقل شد؛ شمارش‌ها به‌روز شدند.'); renderTree(); editNode(node);
+                });
+                movement.appendChild(move);
+            }
+            editor.appendChild(movement);
+        }
     }
     function addEditorButtons(editor, onSave, onDelete) {
         var actions = document.createElement('div'); actions.className = 'sm-editor-actions';

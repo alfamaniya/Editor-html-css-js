@@ -96,20 +96,27 @@
         modal.setAttribute('aria-modal', 'true');
         modal.setAttribute('aria-labelledby', 'suggestionManagerTitle');
         modal.setAttribute('dir', 'rtl');
-        modal.innerHTML = '<div class="sm-shell"><header class="sm-top"><div><h2 id="suggestionManagerTitle">مدیریت کلمات پیشنهادی</h2><p>ویرایش مستقیم بانک‌های مورد استفادهٔ تکمیل خودکار</p></div><div class="sm-actions"><button type="button" id="smNewBank">بانک سفارشی</button><button type="button" id="smNewCategory">دسته‌بندی جدید</button><button type="button" id="smNewWord">کلمه جدید</button><button type="button" id="smSave" class="primary" disabled>ذخیره تغییرات</button><button type="button" id="smClose" aria-label="بستن پنجره">بستن ✕</button></div></header><div class="sm-search"><label for="smSearch">جست‌وجو</label><input id="smSearch" type="search" placeholder="نام کلمه، دسته‌بندی، بانک یا شناسه…"><label for="smLangFilter">زبان</label><select id="smLangFilter"><option value="all">همه</option><option value="html">HTML</option><option value="css">CSS</option><option value="js">JavaScript</option></select><label for="smTypeFilter">نوع</label><select id="smTypeFilter"><option value="all">همه</option><option value="category">دسته‌بندی</option><option value="word">کلمه</option></select><button type="button" id="smResetFilters">پاک‌کردن فیلترها</button><span id="smResultCount" aria-live="polite">۰ نتیجه</span><span id="smStatus" role="status" aria-live="polite">آماده</span></div><nav class="sm-mobile-tabs" aria-label="نمایش پنل"><button type="button" data-sm-view="tree" aria-pressed="true">درخت بانک‌ها</button><button type="button" data-sm-view="details" aria-pressed="false">جزئیات</button></nav><div class="sm-workspace" data-mobile-view="tree"><aside class="sm-tree-panel"><h3>درخت بانک‌ها</h3><div id="smTree" class="sm-tree"></div></aside><div id="smSplitter" class="sm-splitter" role="separator" tabindex="0" aria-label="تغییر عرض پنل درخت" aria-orientation="vertical"></div><section class="sm-editor-panel"><h3 id="smEditorTitle">یک کلمه یا دسته‌بندی را انتخاب کنید</h3><div id="smEditor" class="sm-editor"><p class="sm-empty">برای مشاهده یا ویرایش، یک گره از درخت انتخاب کنید.</p></div></section></div></div>';
+        modal.innerHTML = '<div class="sm-shell"><header class="sm-top"><div><h2 id="suggestionManagerTitle">مدیریت کلمات پیشنهادی</h2><p>ویرایش مستقیم بانک‌های مورد استفادهٔ تکمیل خودکار</p></div><div class="sm-actions"><button type="button" id="smNewBank">بانک سفارشی</button><button type="button" id="smNewCategory">دسته‌بندی جدید</button><button type="button" id="smNewWord">کلمه جدید</button><button type="button" id="smSave" class="primary" disabled>ذخیره تغییرات</button><button type="button" id="smClose" aria-label="بستن پنجره">بستن ✕</button></div></header><div class="sm-search"><label for="smSearch">جست‌وجو</label><input id="smSearch" type="search" placeholder="نام کلمه، دسته‌بندی، بانک یا شناسه…"><label for="smLangFilter">زبان</label><select id="smLangFilter"><option value="all">همه</option><option value="html">HTML</option><option value="css">CSS</option><option value="js">JavaScript</option></select><label for="smTypeFilter">نوع</label><select id="smTypeFilter"><option value="all">همه</option><option value="category">دسته‌بندی</option><option value="word">کلمه</option></select><label for="smStatusFilter">وضعیت</label><select id="smStatusFilter"><option value="all">همه</option><option value="active">فعال</option><option value="inactive">غیرفعال</option></select><button type="button" id="smResetFilters">پاک‌کردن فیلترها</button><span id="smResultCount" aria-live="polite">۰ نتیجه</span><span id="smStatus" role="status" aria-live="polite">آماده</span></div><nav class="sm-mobile-tabs" aria-label="نمایش پنل"><button type="button" data-sm-view="tree" aria-pressed="true">درخت بانک‌ها</button><button type="button" data-sm-view="details" aria-pressed="false">جزئیات</button></nav><div class="sm-workspace" data-mobile-view="tree"><aside class="sm-tree-panel"><h3>درخت بانک‌ها</h3><div id="smTree" class="sm-tree"></div></aside><div id="smSplitter" class="sm-splitter" role="separator" tabindex="0" aria-label="تغییر عرض پنل درخت" aria-orientation="vertical"></div><section class="sm-editor-panel"><h3 id="smEditorTitle">یک کلمه یا دسته‌بندی را انتخاب کنید</h3><div id="smEditor" class="sm-editor"><p class="sm-empty">برای مشاهده یا ویرایش، یک گره از درخت انتخاب کنید.</p></div></section></div></div>';
         document.body.appendChild(modal);
         modal.querySelector('#smClose').addEventListener('click', closeModal);
         modal.querySelector('#smSave').addEventListener('click', saveChanges);
         modal.querySelector('#smSearch').addEventListener('input', renderTree);
-        ['#smLangFilter', '#smTypeFilter'].forEach(function (selector) { modal.querySelector(selector).addEventListener('change', renderTree); });
-        modal.querySelector('#smResetFilters').addEventListener('click', function () { modal.querySelector('#smSearch').value = ''; modal.querySelector('#smLangFilter').value = 'all'; modal.querySelector('#smTypeFilter').value = 'all'; renderTree(); });
+        ['#smLangFilter', '#smTypeFilter', '#smStatusFilter'].forEach(function (selector) { modal.querySelector(selector).addEventListener('change', renderTree); });
+        modal.querySelector('#smResetFilters').addEventListener('click', function () { modal.querySelector('#smSearch').value = ''; modal.querySelector('#smLangFilter').value = 'all'; modal.querySelector('#smTypeFilter').value = 'all'; modal.querySelector('#smStatusFilter').value = 'all'; renderTree(); });
         modal.querySelector('#smNewWord').addEventListener('click', function () { editNode({ kind: 'word', lang: selected && selected.lang || 'html', key: selected && selected.key || 'htmlTags', index: -1 }); });
         modal.querySelector('#smNewCategory').addEventListener('click', addCategory);
         modal.querySelector('#smNewBank').addEventListener('click', addBank);
         modal.addEventListener('click', function (event) { if (event.target === modal) closeModal(); });
         document.addEventListener('keydown', function (event) {
             if (modal.hidden) return;
-            if (event.key === 'Escape') { event.preventDefault(); closeModal(); }
+            if (event.key === 'Escape') { event.preventDefault(); closeModal(); return; }
+            if (event.key === 'Tab') {
+                var focusable = Array.prototype.slice.call(modal.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary, [tabindex]:not([tabindex="-1"])')).filter(function (item) { return item.offsetParent !== null; });
+                if (!focusable.length) return;
+                var first = focusable[0], last = focusable[focusable.length - 1];
+                if (event.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
+                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            }
         });
     }
     function labelForEntry(entry) {
@@ -206,6 +213,7 @@
         var query = modal.querySelector('#smSearch').value.trim().toLowerCase();
         var langFilter = modal.querySelector('#smLangFilter').value;
         var typeFilter = modal.querySelector('#smTypeFilter').value;
+        var statusFilter = modal.querySelector('#smStatusFilter').value;
         var resultCount = 0;
         tree.textContent = '';
         ['html', 'css', 'js'].forEach(function (lang) {
@@ -221,7 +229,9 @@
                 var categoryMatch = (group.key + ' ' + lang).toLowerCase().indexOf(query) !== -1;
                 var filtered = entries.filter(function (item) {
                     var haystack = (group.key + ' ' + item.label + ' ' + (item.entry && item.entry.description || '') + ' ' + (item.entry && item.entry.id || '')).toLowerCase();
-                    return !query || categoryMatch || haystack.indexOf(query) !== -1;
+                    var isActive = !(item.entry && typeof item.entry === 'object' && (item.entry.active === false || item.entry.enabled === false));
+                    var matchesStatus = statusFilter === 'all' || (statusFilter === 'active' ? isActive : !isActive);
+                    return matchesStatus && (!query || categoryMatch || haystack.indexOf(query) !== -1);
                 });
                 if (typeFilter === 'category' && !categoryMatch) return;
                 if (typeFilter === 'word' && !filtered.length) return;
@@ -262,7 +272,9 @@
                 if (langFilter !== 'all' && bank.lang !== langFilter) return;
                 var words = bank.words || [];
                 var matching = words.map(function (word, wi) { return { word: word, index: wi }; }).filter(function (item) {
-                    return !query || (bank.name + ' ' + bank.id + ' ' + bank.lang + ' ' + bank.target + ' ' + item.word.label + ' ' + item.word.insert + ' ' + (item.word.description || '')).toLowerCase().indexOf(query) !== -1;
+                    var isActive = item.word.active !== false;
+                    var matchesStatus = statusFilter === 'all' || (statusFilter === 'active' ? isActive : !isActive);
+                    return matchesStatus && (!query || (bank.name + ' ' + bank.id + ' ' + bank.lang + ' ' + bank.target + ' ' + item.word.label + ' ' + item.word.insert + ' ' + (item.word.description || '')).toLowerCase().indexOf(query) !== -1);
                 });
                 if (query && !matching.length && (bank.name + ' ' + bank.id + ' ' + bank.target).toLowerCase().indexOf(query) === -1) return;
                 resultCount += matching.length;
@@ -311,7 +323,7 @@
                 var target = modal.querySelector('#smBankTarget').value.trim() || defaultTarget(lang);
                 if (!name) { setStatus('نام بانک الزامی است.', true); return; }
                 if (banks.some(function (other, index) { return index !== node.bankIndex && other.name.toLowerCase() === name.toLowerCase(); })) { setStatus('بانکی با این نام وجود دارد.', true); return; }
-                if (target.indexOf('cssValues.') !== 0 && target.indexOf('snippets.') !== 0 && !Array.isArray(data[target])) { setStatus('مسیر منبع معتبر نیست؛ از کلید آرایه‌ای موجود استفاده کنید.', true); return; }
+                if (!targetList(target)) { setStatus('مسیر منبع معتبر نیست؛ از یک آرایهٔ پیشنهاد موجود استفاده کنید.', true); return; }
                 bank.name = name; bank.lang = lang; bank.target = target;
                 writeCustomBanks(banks); renderTree(); editNode(node);
             }, function () {
@@ -370,6 +382,7 @@
                         delete data[parts[0]][parts[1]];
                     } else { data[nextKey] = data[categoryKey]; delete data[categoryKey]; }
                     if (categoryLabels[categoryKey]) { categoryLabels[nextKey] = categoryLabels[categoryKey]; delete categoryLabels[categoryKey]; }
+                    customBanks.forEach(function (bank) { if (bank.target === categoryKey) bank.target = nextKey; });
                     node.key = nextKey; categoryKey = nextKey;
                 }
                 if (nextLabel && nextLabel !== categoryKey) categoryLabels[categoryKey] = nextLabel;

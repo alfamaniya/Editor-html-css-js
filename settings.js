@@ -45,6 +45,7 @@
     let settings = loadSettings();
     let systemThemeMedia = null;
     let toastTimer = null;
+    let previouslyFocusedElement = null;
 
     function storageGet(key) {
         try { return window.localStorage.getItem(key); }
@@ -219,6 +220,7 @@
     }
 
     function openSettingsScreen() {
+        previouslyFocusedElement = document.activeElement;
         settingsScreen.hidden = false;
         settingsButton.setAttribute('aria-expanded', 'true');
         saveReturnButton.focus();
@@ -227,7 +229,11 @@
     function returnToCodingScreen() {
         settingsScreen.hidden = true;
         settingsButton.setAttribute('aria-expanded', 'false');
-        settingsButton.focus();
+        const focusTarget = previouslyFocusedElement && document.contains(previouslyFocusedElement)
+            ? previouslyFocusedElement
+            : settingsButton;
+        previouslyFocusedElement = null;
+        focusTarget.focus();
     }
 
     if (!settingsButton || !settingsScreen || !saveReturnButton) return;
@@ -300,9 +306,37 @@
     });
 
     document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && !settingsScreen.hidden) {
+        if (settingsScreen.hidden) return;
+
+        if (event.key === 'Escape') {
             event.preventDefault();
             returnToCodingScreen();
+            return;
+        }
+
+        /* فوکوس با Tab داخل پنل گفت‌وگویی تنظیمات محصور بماند. */
+        if (event.key !== 'Tab') return;
+        const focusableElements = Array.from(settingsScreen.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )).filter(function (element) {
+            return !element.hidden &&
+                element.getAttribute('aria-hidden') !== 'true' &&
+                element.getClientRects().length > 0;
+        });
+
+        if (!focusableElements.length) {
+            event.preventDefault();
+            return;
+        }
+
+        const first = focusableElements[0];
+        const last = focusableElements[focusableElements.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !settingsScreen.contains(document.activeElement))) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !settingsScreen.contains(document.activeElement))) {
+            event.preventDefault();
+            first.focus();
         }
     });
 

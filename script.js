@@ -2239,14 +2239,19 @@
                 const w = (word || '').toLowerCase();
                 const out = [];
                 const seenLabels = new Set();
+                const seenInsertions = new Set();
                 const items = (list || []).map(asItem);
                 for (let i = 0; i < items.length; i++) {
-                    const label = String(items[i].label || items[i].insert || '');
+                    const item = items[i];
+                    const label = String(item.label || item.insert || '');
+                    const insertion = String(item.insert || item.label || '');
                     // JavaScript is case-sensitive: keep distinct names such as Map and map.
-                    if (!label || seenLabels.has(label)) continue;
+                    // Also avoid showing the same completion twice under different labels.
+                    if (!label || seenLabels.has(label) || seenInsertions.has(insertion)) continue;
                     seenLabels.add(label);
+                    seenInsertions.add(insertion);
                     if (!w || label.toLowerCase().startsWith(w)) {
-                        out.push(items[i]);
+                        out.push(item);
                         if (out.length >= 24) break;
                     }
                 }

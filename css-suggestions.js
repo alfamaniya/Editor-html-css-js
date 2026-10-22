@@ -292,24 +292,132 @@
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
         symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
             css: [
-            { label: "{ }", prefix: "{", suffix: "}", description: "Insert a CSS rule block" },
-            { label: ": ;", prefix: ": ", suffix: ";", description: "Insert a CSS declaration" },
-            { label: "var(--)", prefix: "var(--", suffix: ")", description: "Reference a CSS custom property" },
-            { label: "()", prefix: "(", suffix: ")", description: "Insert paired parentheses" },
-            { label: "/* */", prefix: "/* ", suffix: " */", description: "Insert a CSS comment" },
-            { label: "@media", prefix: "@media (max-width: 768px) {\n    ", suffix: "\n}", description: "Insert a responsive media query" },
-            { label: "calc()", prefix: "calc(", suffix: ")", description: "Insert a CSS calculation" },
-            { label: "linear-gradient()", prefix: "linear-gradient(", suffix: ")", description: "Insert a gradient function" },
-            { label: "!important", prefix: " !important", suffix: "", description: "Append important priority to a declaration" },
-            { label: "#color", prefix: "#", suffix: "", description: "Start a hexadecimal color value" },
-            { label: ":hover", prefix: ":hover {\n    ", suffix: "\n}", description: "Create a hover state rule" },
-            { label: ":focus-visible", prefix: ":focus-visible {\n    ", suffix: "\n}", description: "Create an accessible keyboard-focus rule" },
-            { label: "::before", prefix: "::before {\n    content: \"\";\n    ", suffix: "\n}", description: "Create a before pseudo-element with content" },
-            { label: "::after", prefix: "::after {\n    content: \"\";\n    ", suffix: "\n}", description: "Create an after pseudo-element with content" },
-            { label: "@supports", prefix: "@supports (display: grid) {\n    ", suffix: "\n}", description: "Create a feature support query" },
-            { label: "@keyframes", prefix: "@keyframes fade-in {\n    from { opacity: 0; }\n    to { opacity: 1; }\n}", suffix: "", description: "Insert a keyframes animation" },
-            { label: "clamp()", prefix: "clamp(", suffix: ")", description: "Insert a responsive clamp() value" },
-            { label: "minmax()", prefix: "minmax(", suffix: ")", description: "Insert a CSS grid minmax() value" }
+                {
+                    "label": "display",
+                    "prefix": "display: ",
+                    "suffix": ";",
+                    "description": "Insert a display declaration"
+                },
+                {
+                    "label": "color",
+                    "prefix": "color: ",
+                    "suffix": ";",
+                    "description": "Insert a text color declaration"
+                },
+                {
+                    "label": "background",
+                    "prefix": "background: ",
+                    "suffix": ";",
+                    "description": "Insert a background declaration"
+                },
+                {
+                    "label": "margin",
+                    "prefix": "margin: ",
+                    "suffix": ";",
+                    "description": "Insert a margin declaration"
+                },
+                {
+                    "label": "padding",
+                    "prefix": "padding: ",
+                    "suffix": ";",
+                    "description": "Insert a padding declaration"
+                },
+                {
+                    "label": "width",
+                    "prefix": "width: ",
+                    "suffix": ";",
+                    "description": "Insert a width declaration"
+                },
+                {
+                    "label": "max-width",
+                    "prefix": "max-width: ",
+                    "suffix": ";",
+                    "description": "Insert a responsive maximum width"
+                },
+                {
+                    "label": "height",
+                    "prefix": "height: ",
+                    "suffix": ";",
+                    "description": "Insert a height declaration"
+                },
+                {
+                    "label": "font-size",
+                    "prefix": "font-size: ",
+                    "suffix": ";",
+                    "description": "Insert a font size declaration"
+                },
+                {
+                    "label": "font-family",
+                    "prefix": "font-family: ",
+                    "suffix": ";",
+                    "description": "Insert a font family declaration"
+                },
+                {
+                    "label": "border",
+                    "prefix": "border: ",
+                    "suffix": ";",
+                    "description": "Insert a border declaration"
+                },
+                {
+                    "label": "border-radius",
+                    "prefix": "border-radius: ",
+                    "suffix": ";",
+                    "description": "Insert rounded corners"
+                },
+                {
+                    "label": "gap",
+                    "prefix": "gap: ",
+                    "suffix": ";",
+                    "description": "Insert spacing between flex or grid items"
+                },
+                {
+                    "label": "flex layout",
+                    "prefix": "display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: ",
+                    "suffix": ";",
+                    "description": "Insert a common flexbox layout"
+                },
+                {
+                    "label": "grid layout",
+                    "prefix": "display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n    gap: ",
+                    "suffix": ";",
+                    "description": "Insert a responsive grid layout"
+                },
+                {
+                    "label": "position",
+                    "prefix": "position: ",
+                    "suffix": ";",
+                    "description": "Insert a position declaration"
+                },
+                {
+                    "label": "box-shadow",
+                    "prefix": "box-shadow: ",
+                    "suffix": ";",
+                    "description": "Insert a box shadow"
+                },
+                {
+                    "label": "transition",
+                    "prefix": "transition: ",
+                    "suffix": ";",
+                    "description": "Insert a transition declaration"
+                },
+                {
+                    "label": ":hover",
+                    "prefix": ":hover {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a hover state rule after a selector"
+                },
+                {
+                    "label": ":focus-visible",
+                    "prefix": ":focus-visible {\n    outline: 2px solid currentColor;\n    outline-offset: 2px;\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a visible keyboard-focus rule"
+                },
+                {
+                    "label": "@media",
+                    "prefix": "@media (max-width: 768px) {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a responsive media query"
+                }
             ]
         }),
 

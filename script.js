@@ -1673,15 +1673,24 @@
             }
         }
 
-        // Quick symbol toolbar: remember the active editor selection even when a toolbar
+        // Quick-insert toolbar: keep the active editor selection while a toolbar
         // button temporarily takes focus (especially on touch/mobile browsers).
         const symbolToolbar = document.getElementById('symbolToolbar');
         function renderSymbolToolbar(language) {
             if (!symbolToolbar) return;
             const header = symbolToolbar.closest('.page-symbol-header');
             const supportedLanguage = LANGS.includes(language);
-            if (header) header.hidden = !supportedLanguage;
+            const labels = {
+                html: { header: 'Popular HTML tags and elements', toolbar: 'Quick-insert HTML tags' },
+                css: { header: 'Popular CSS properties and patterns', toolbar: 'Quick-insert CSS properties and patterns' },
+                js: { header: 'Popular JavaScript snippets', toolbar: 'Quick-insert JavaScript snippets' }
+            };
+            if (header) {
+                header.hidden = !supportedLanguage;
+                if (supportedLanguage) header.setAttribute('aria-label', labels[language].header);
+            }
             if (!supportedLanguage) return;
+            symbolToolbar.setAttribute('aria-label', labels[language].toolbar);
 
             const data = window.EDITOR_INTELLISENSE_DATA || {};
             const items = data.symbols && data.symbols[language];

@@ -162,24 +162,126 @@
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
         symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
             html: [
-            { label: "<div>", prefix: "<div>", suffix: "</div>", description: "Insert a div container" },
-            { label: "<section>", prefix: "<section>", suffix: "</section>", description: "Insert a semantic section" },
-            { label: "<article>", prefix: "<article>", suffix: "</article>", description: "Insert a self-contained article" },
-            { label: "<a>", prefix: "<a href=\"\">", suffix: "</a>", description: "Insert a link" },
-            { label: "<button>", prefix: "<button type=\"button\">", suffix: "</button>", description: "Insert a button" },
-            { label: "<img>", prefix: "<img src=\"\" alt=\"\">", suffix: "", description: "Insert an image with source and accessible alt text" },
-            { label: "<ul>/<li>", prefix: "<ul>\n    <li>", suffix: "</li>\n</ul>", description: "Insert an unordered list with one item" },
-            { label: "<form>", prefix: "<form action=\"#\" method=\"get\">", suffix: "</form>", description: "Insert a form" },
-            { label: "<!-- -->", prefix: "<!-- ", suffix: " -->", description: "Insert an HTML comment" },
-            { label: "\"\"", prefix: "\"", suffix: "\"", description: "Wrap selected text in quotation marks" },
-            { label: "&nbsp;", prefix: "&nbsp;", suffix: "", description: "Insert a non-breaking space entity" },
-            { label: "&amp;", prefix: "&amp;", suffix: "", description: "Insert an ampersand entity" },
-            { label: "&lt;", prefix: "&lt;", suffix: "", description: "Insert a less-than entity" },
-            { label: "&gt;", prefix: "&gt;", suffix: "", description: "Insert a greater-than entity" },
-            { label: "&quot;", prefix: "&quot;", suffix: "", description: "Insert a quotation-mark entity" },
-            { label: "&#39;", prefix: "&#39;", suffix: "", description: "Insert an apostrophe entity" },
-            { label: "<!doctype>", prefix: "<!doctype html>\n", suffix: "", description: "Insert the HTML doctype declaration" },
-            { label: "<meta viewport>", prefix: '<meta name="viewport" content="width=device-width, initial-scale=1.0">', suffix: "", description: "Insert responsive viewport metadata" }
+                {
+                    "label": "<!doctype>",
+                    "prefix": "<!DOCTYPE html>\n",
+                    "suffix": "",
+                    "description": "Insert the HTML5 doctype declaration"
+                },
+                {
+                    "label": "<div>",
+                    "prefix": "<div>",
+                    "suffix": "</div>",
+                    "description": "Insert a generic container"
+                },
+                {
+                    "label": "<p>",
+                    "prefix": "<p>",
+                    "suffix": "</p>",
+                    "description": "Insert a paragraph"
+                },
+                {
+                    "label": "<h1>",
+                    "prefix": "<h1>",
+                    "suffix": "</h1>",
+                    "description": "Insert a level-one heading"
+                },
+                {
+                    "label": "<a href=\"\">",
+                    "prefix": "<a href=\"",
+                    "suffix": "\">link</a>",
+                    "description": "Insert a hyperlink; caret starts inside href"
+                },
+                {
+                    "label": "<img>",
+                    "prefix": "<img src=\"",
+                    "suffix": "\" alt=\"\">",
+                    "description": "Insert an image with src and alt attributes"
+                },
+                {
+                    "label": "<button>",
+                    "prefix": "<button type=\"button\">",
+                    "suffix": "</button>",
+                    "description": "Insert a button"
+                },
+                {
+                    "label": "<input>",
+                    "prefix": "<input type=\"text\" name=\"",
+                    "suffix": "\">",
+                    "description": "Insert a text input; caret starts inside name"
+                },
+                {
+                    "label": "<label>",
+                    "prefix": "<label for=\"",
+                    "suffix": "\">Label</label>",
+                    "description": "Insert a label associated with a form control"
+                },
+                {
+                    "label": "<form>",
+                    "prefix": "<form action=\"\" method=\"post\">\n    ",
+                    "suffix": "\n</form>",
+                    "description": "Insert a form block"
+                },
+                {
+                    "label": "<ul><li>",
+                    "prefix": "<ul>\n    <li>",
+                    "suffix": "</li>\n</ul>",
+                    "description": "Insert an unordered list with one item"
+                },
+                {
+                    "label": "<ol><li>",
+                    "prefix": "<ol>\n    <li>",
+                    "suffix": "</li>\n</ol>",
+                    "description": "Insert an ordered list with one item"
+                },
+                {
+                    "label": "<section>",
+                    "prefix": "<section>",
+                    "suffix": "</section>",
+                    "description": "Insert a semantic section"
+                },
+                {
+                    "label": "<main>",
+                    "prefix": "<main>",
+                    "suffix": "</main>",
+                    "description": "Insert the main content landmark"
+                },
+                {
+                    "label": "<header>",
+                    "prefix": "<header>",
+                    "suffix": "</header>",
+                    "description": "Insert a section or page header"
+                },
+                {
+                    "label": "<footer>",
+                    "prefix": "<footer>",
+                    "suffix": "</footer>",
+                    "description": "Insert a section or page footer"
+                },
+                {
+                    "label": "<table>",
+                    "prefix": "<table>\n    <thead>\n        <tr><th scope=\"col\">Heading</th></tr>\n    </thead>\n    <tbody>\n        <tr><td>Value</td></tr>\n    </tbody>\n</table>",
+                    "suffix": "",
+                    "description": "Insert an accessible table skeleton"
+                },
+                {
+                    "label": "<textarea>",
+                    "prefix": "<textarea name=\"",
+                    "suffix": "\" rows=\"4\"></textarea>",
+                    "description": "Insert a multi-line text field"
+                },
+                {
+                    "label": "<script>",
+                    "prefix": "<script>\n    ",
+                    "suffix": "\n</script>",
+                    "description": "Insert an inline script block"
+                },
+                {
+                    "label": "<!-- -->",
+                    "prefix": "<!-- ",
+                    "suffix": " -->",
+                    "description": "Insert an HTML comment"
+                }
             ]
         }),
 

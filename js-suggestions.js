@@ -232,27 +232,126 @@
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, {
         symbols: Object.assign((window.EDITOR_INTELLISENSE_DATA || {}).symbols || {}, {
             js: [
-            { label: "console.log()", prefix: "console.log(", suffix: ");", description: "Log a value to the console" },
-            { label: "querySelector()", prefix: "document.querySelector('", suffix: "')", description: "Select an element with a CSS selector" },
-            { label: "addEventListener", prefix: "addEventListener('click', () => {\n    ", suffix: "\n});", description: "Add a click event handler" },
-            { label: "() => { }", prefix: "() => {", suffix: "}", description: "Insert an arrow function body" },
-            { label: "if ( )", prefix: "if (", suffix: ") {\n    \n}", description: "Insert an if statement" },
-            { label: "{ }", prefix: "{", suffix: "}", description: "Insert paired braces" },
-            { label: "[ ]", prefix: "[", suffix: "]", description: "Insert an array or bracket pair" },
-            { label: "/* */", prefix: "/* ", suffix: " */", description: "Insert a block comment" },
-            { label: "//", prefix: "// ", suffix: "", description: "Start a single-line comment" },
-            { label: "try/catch", prefix: "try {\n    ", suffix: "\n} catch (error) {\n    console.error(error);\n}", description: "Insert error handling" },
-            { label: "=>", prefix: " => ", suffix: "", description: "Insert the arrow-function operator" },
-            { label: "===", prefix: " === ", suffix: "", description: "Insert strict equality" },
-            { label: "!==", prefix: " !== ", suffix: "", description: "Insert strict inequality" },
-            { label: "&&", prefix: " && ", suffix: "", description: "Insert logical AND" },
-            { label: "||", prefix: " || ", suffix: "", description: "Insert logical OR" },
-            { label: "??", prefix: " ?? ", suffix: "", description: "Insert nullish coalescing" },
-            { label: "?.", prefix: "?.", suffix: "", description: "Insert optional chaining" },
-            { label: "...", prefix: "...", suffix: "", description: "Insert the spread/rest operator" },
-            { label: "\${}", prefix: "\${", suffix: "}", description: "Insert template-literal interpolation" },
-            { label: "++", prefix: "++", suffix: "", description: "Insert increment operator" },
-            { label: "+=", prefix: " += ", suffix: "", description: "Insert addition assignment" }
+                {
+                    "label": "console.log()",
+                    "prefix": "console.log(",
+                    "suffix": ");",
+                    "description": "Log a value to the console"
+                },
+                {
+                    "label": "const",
+                    "prefix": "const ",
+                    "suffix": " = ",
+                    "description": "Declare a constant; caret starts at the variable name"
+                },
+                {
+                    "label": "let",
+                    "prefix": "let ",
+                    "suffix": " = ",
+                    "description": "Declare a block-scoped variable"
+                },
+                {
+                    "label": "if",
+                    "prefix": "if (",
+                    "suffix": ") {\n    \n}",
+                    "description": "Insert an if statement"
+                },
+                {
+                    "label": "if / else",
+                    "prefix": "if (",
+                    "suffix": ") {\n    \n} else {\n    \n}",
+                    "description": "Insert an if/else branch"
+                },
+                {
+                    "label": "function",
+                    "prefix": "function ",
+                    "suffix": "() {\n    \n}",
+                    "description": "Insert a function declaration"
+                },
+                {
+                    "label": "arrow function",
+                    "prefix": "() => {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert an arrow function body"
+                },
+                {
+                    "label": "addEventListener",
+                    "prefix": "document.addEventListener('click', () => {\n    ",
+                    "suffix": "\n});",
+                    "description": "Insert a click event listener"
+                },
+                {
+                    "label": "querySelector()",
+                    "prefix": "document.querySelector('",
+                    "suffix": "')",
+                    "description": "Select one element by CSS selector"
+                },
+                {
+                    "label": "querySelectorAll()",
+                    "prefix": "document.querySelectorAll('",
+                    "suffix": "')",
+                    "description": "Select all matching elements"
+                },
+                {
+                    "label": "for...of",
+                    "prefix": "for (const item of items) {\n    ",
+                    "suffix": "\n}",
+                    "description": "Insert a for...of loop"
+                },
+                {
+                    "label": "return",
+                    "prefix": "return ",
+                    "suffix": ";",
+                    "description": "Insert a return statement"
+                },
+                {
+                    "label": "try / catch",
+                    "prefix": "try {\n    ",
+                    "suffix": "\n} catch (error) {\n    console.error(error);\n}",
+                    "description": "Insert error handling"
+                },
+                {
+                    "label": "fetch()",
+                    "prefix": "fetch('",
+                    "suffix": "').then(response => response.json()).then(data => {\n    \n}).catch(error => console.error(error));",
+                    "description": "Insert a basic fetch request chain"
+                },
+                {
+                    "label": "async / await",
+                    "prefix": "async function ",
+                    "suffix": "() {\n    const response = await fetch('');\n    const data = await response.json();\n    \n}",
+                    "description": "Insert an async function using await"
+                },
+                {
+                    "label": "setTimeout()",
+                    "prefix": "setTimeout(() => {\n    ",
+                    "suffix": "\n}, 1000);",
+                    "description": "Insert a delayed callback"
+                },
+                {
+                    "label": "JSON.parse()",
+                    "prefix": "JSON.parse('",
+                    "suffix": "')",
+                    "description": "Parse a JSON string"
+                },
+                {
+                    "label": "JSON.stringify()",
+                    "prefix": "JSON.stringify(",
+                    "suffix": ")",
+                    "description": "Convert a value to JSON text"
+                },
+                {
+                    "label": "===",
+                    "prefix": " === ",
+                    "suffix": "",
+                    "description": "Insert strict equality comparison"
+                },
+                {
+                    "label": "// comment",
+                    "prefix": "// ",
+                    "suffix": "",
+                    "description": "Insert a single-line comment"
+                }
             ]
         }),
 

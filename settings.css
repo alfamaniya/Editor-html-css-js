@@ -320,3 +320,34 @@
 
 :root[data-density="comfortable"] .settings-row { padding-top: 19px; padding-bottom: 19px; }
 :root[data-density="comfortable"] .settings-card-header { padding-top: 20px; padding-bottom: 20px; }
+
+/* دسترسی‌پذیری و رفتار دکمه‌های ناوبری سکشن‌های تنظیمات */
+.settings-nav-item {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    text-align: right;
+    font: 500 12px/1.5 Tahoma, "Segoe UI", sans-serif;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.settings-nav-item:hover,
+.settings-nav-item:focus-visible {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    outline-offset: 2px;
+}
+.settings-nav-item.is-active {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--accent-color);
+}
+.settings-general-status {
+    margin-top: 6px;
+    color: #b9cce2;
+    font-size: 10px;
+    line-height: 1.9;
+}
+:root[data-theme="light"] .settings-general-status { color: #4d647c; }
+.settings-card { scroll-margin-top: 18px; }
+.settings-reset-option:not(:disabled) { cursor: pointer; }

@@ -220,6 +220,21 @@
     });
     // Preserve valid multi-token values instead of suggesting fragments such as 'only'.
     cssValues['color-scheme'] = ['normal', 'light', 'dark', 'light dark', 'only light', 'only dark'];
+    // box-shadow values contain spaces and commas, so keep each complete declaration value
+    // as one suggestion rather than splitting it into invalid fragments.
+    cssValues['box-shadow'] = [
+        'none',
+        '0 1px 2px rgba(0, 0, 0, 0.08)',
+        '0 2px 4px rgba(0, 0, 0, 0.1)',
+        '0 4px 12px rgba(0, 0, 0, 0.15)',
+        '0 8px 24px rgba(0, 0, 0, 0.12)',
+        '0 12px 32px rgba(0, 0, 0, 0.16)',
+        'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+        'inset 0 1px 2px rgba(0, 0, 0, 0.12)',
+        '0 0 0 1px rgba(0, 0, 0, 0.08)',
+        '0 0 0 3px rgba(59, 130, 246, 0.35)',
+        '0 0 10px rgba(0, 0, 0, 0.2)'
+    ];
 
 
     // Emmet-style CSS shorthands. Numeric forms such as m10 and p8-16 are resolved by IntelliSense.

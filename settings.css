@@ -399,3 +399,18 @@
     .settings-quickinsert-list-wrap { padding: 0 12px 14px; }
     .settings-quickinsert-item { align-items: flex-start; }
 }
+
+
+.settings-quickinsert-cancel, .settings-quickinsert-edit {
+    border: 1px solid rgb(136 160 190 / 35%); border-radius: 9px; background: rgb(136 160 190 / 10%);
+    color: #c6d6e8; padding: 9px 13px; font: 700 11px/1.6 Tahoma, "Segoe UI", sans-serif; cursor: pointer;
+}
+.settings-quickinsert-item-actions { display: flex; align-items: center; gap: 7px; flex: 0 0 auto; }
+.settings-quickinsert-edit { padding: 7px 10px; }
+.settings-quickinsert-cancel[hidden] { display: none; }
+.settings-quickinsert-field select:disabled { opacity: .65; cursor: not-allowed; }
+:root[data-theme="light"] .settings-quickinsert-cancel,
+:root[data-theme="light"] .settings-quickinsert-edit { color: #354e67; }
+@media (max-width: 600px) {
+    .settings-quickinsert-item-actions { flex-wrap: wrap; justify-content: flex-end; }
+}

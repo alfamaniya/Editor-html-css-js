@@ -287,10 +287,21 @@
         const labelInput = document.getElementById('quickInsertLabel');
         const codeInput = document.getElementById('quickInsertCode');
         const addButton = document.getElementById('btnQuickInsertAdd');
+        const cancelButton = document.getElementById('btnQuickInsertCancel');
         const list = document.getElementById('quickInsertList');
         const emptyMessage = document.getElementById('quickInsertEmpty');
         const status = document.getElementById('quickInsertStatus');
-        if (!tabSelect || !labelInput || !codeInput || !addButton || !list || !emptyMessage || !status) return;
+        if (!tabSelect || !labelInput || !codeInput || !addButton || !cancelButton || !list || !emptyMessage || !status) return;
+        let editingItemId = null;
+
+        function resetQuickInsertEditor() {
+            editingItemId = null;
+            labelInput.value = '';
+            codeInput.value = '';
+            tabSelect.disabled = false;
+            addButton.textContent = 'افزودن به فهرست';
+            cancelButton.hidden = true;
+        }
 
         function readQuickInsertItems() {
             try {
@@ -326,13 +337,22 @@
                 const preview = document.createElement('code');
                 preview.textContent = item.prefix.length > 100 ? item.prefix.slice(0, 100) + '…' : item.prefix;
                 details.append(title, preview);
+                const actions = document.createElement('div');
+                actions.className = 'settings-quickinsert-item-actions';
+                const edit = document.createElement('button');
+                edit.type = 'button';
+                edit.className = 'settings-quickinsert-edit';
+                edit.dataset.quickInsertEdit = item.id;
+                edit.textContent = 'ویرایش';
+                edit.setAttribute('aria-label', 'ویرایش آیتم ' + item.label);
                 const remove = document.createElement('button');
                 remove.type = 'button';
                 remove.className = 'settings-quickinsert-remove';
                 remove.dataset.quickInsertRemove = item.id;
                 remove.textContent = 'حذف';
                 remove.setAttribute('aria-label', 'حذف آیتم ' + item.label);
-                row.append(details, remove);
+                actions.append(edit, remove);
+                row.append(details, actions);
                 list.appendChild(row);
             });
             emptyMessage.hidden = items.length > 0;
@@ -348,45 +368,87 @@
             }
             const items = readQuickInsertItems();
             const languageItems = items[tabSelect.value];
-            if (languageItems.length >= 100) {
+            if (!editingItemId && languageItems.length >= 100) {
                 status.textContent = 'برای هر تب حداکثر ۱۰۰ آیتم سفارشی مجاز است.';
                 return;
             }
-            if (languageItems.some(function (item) { return item.label.toLocaleLowerCase() === label.toLocaleLowerCase(); })) {
+            if (languageItems.some(function (item) { return item.id !== editingItemId && item.label.toLocaleLowerCase() === label.toLocaleLowerCase(); })) {
                 status.textContent = 'این عنوان در فهرست همین تب وجود دارد؛ عنوان دیگری انتخاب کنید.';
                 return;
             }
-            languageItems.push({
-                id: 'custom-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8),
-                label: label,
-                prefix: code,
-                suffix: '',
-                description: label
-            });
+            if (editingItemId) {
+                const existing = languageItems.find(function (item) { return item.id === editingItemId; });
+                if (!existing) {
+                    resetQuickInsertEditor();
+                    status.textContent = 'آیتم موردنظر پیدا نشد؛ فهرست را دوباره بررسی کنید.';
+                    renderQuickInsertList();
+                    return;
+                }
+                existing.label = label;
+                existing.prefix = code;
+                existing.description = label;
+            } else {
+                languageItems.push({
+                    id: 'custom-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8),
+                    label: label,
+                    prefix: code,
+                    suffix: '',
+                    description: label
+                });
+            }
             if (!saveQuickInsertItems(items)) {
-                status.textContent = 'ذخیره‌سازی مرورگر در دسترس نیست؛ آیتم ثبت نشد.';
+                status.textContent = 'ذخیره‌سازی مرورگر در دسترس نیست؛ تغییر ثبت نشد.';
                 return;
             }
-            labelInput.value = '';
-            codeInput.value = '';
+            const wasEditing = Boolean(editingItemId);
+            resetQuickInsertEditor();
             renderQuickInsertList();
-            status.textContent = 'آیتم به فهرست ' + tabSelect.options[tabSelect.selectedIndex].text + ' اضافه و ذخیره شد.';
+            status.textContent = wasEditing
+                ? 'ویرایش آیتم ذخیره شد و نوار درج سریع به‌روزرسانی شد.'
+                : 'آیتم به فهرست ' + tabSelect.options[tabSelect.selectedIndex].text + ' اضافه و ذخیره شد.';
             window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: tabSelect.value } }));
         });
 
+        cancelButton.addEventListener('click', function () {
+            resetQuickInsertEditor();
+            status.textContent = 'ویرایش لغو شد؛ فهرست تغییری نکرد.';
+        });
+
         list.addEventListener('click', function (event) {
-            const button = event.target.closest('button[data-quick-insert-remove]');
-            if (!button) return;
-            const items = readQuickInsertItems();
+            const editButton = event.target.closest('button[data-quick-insert-edit]');
+            const removeButton = event.target.closest('button[data-quick-insert-remove]');
             const language = tabSelect.value;
-            items[language] = items[language].filter(function (item) { return item.id !== button.dataset.quickInsertRemove; });
-            if (!saveQuickInsertItems(items)) {
-                status.textContent = 'حذف انجام نشد؛ ذخیره‌سازی مرورگر در دسترس نیست.';
+            const items = readQuickInsertItems()[language];
+
+            if (editButton) {
+                const item = items.find(function (entry) { return entry.id === editButton.dataset.quickInsertEdit; });
+                if (!item) {
+                    status.textContent = 'آیتم موردنظر پیدا نشد.';
+                    return;
+                }
+                editingItemId = item.id;
+                labelInput.value = item.label;
+                codeInput.value = item.prefix;
+                tabSelect.disabled = true;
+                addButton.textContent = 'ذخیره ویرایش';
+                cancelButton.hidden = false;
+                status.textContent = 'عنوان یا کد را تغییر دهید و «ذخیره ویرایش» را بزنید.';
+                labelInput.focus();
                 return;
             }
-            renderQuickInsertList();
-            status.textContent = 'آیتم از فهرست همین تب حذف شد.';
-            window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: language } }));
+
+            if (removeButton) {
+                const allItems = readQuickInsertItems();
+                allItems[language] = allItems[language].filter(function (item) { return item.id !== removeButton.dataset.quickInsertRemove; });
+                if (!saveQuickInsertItems(allItems)) {
+                    status.textContent = 'حذف انجام نشد؛ ذخیره‌سازی مرورگر در دسترس نیست.';
+                    return;
+                }
+                if (editingItemId === removeButton.dataset.quickInsertRemove) resetQuickInsertEditor();
+                renderQuickInsertList();
+                status.textContent = 'آیتم از فهرست همین تب حذف شد.';
+                window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: language } }));
+            }
         });
 
         renderQuickInsertList();

@@ -424,6 +424,7 @@
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsPreviewCard"><span aria-hidden="true">🪟</span><span>نمایش زنده</span></button>
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsLayoutCard"><span aria-hidden="true">▥</span><span>چیدمان محیط</span></button>
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsStorageCard"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></button>
+                    <button type="button" class="settings-nav-item" data-settings-nav="settingsQuickInsertCard"><span aria-hidden="true">⚡</span><span>مدیریت فهرست درج سریع</span></button>
                     <div class="settings-sidebar-note">
                         <span class="settings-status-dot" aria-hidden="true"></span>
                         <span>هر پنج سکشن فعال است و گزینه‌ها مستقیماً به ویرایشگر متصل‌اند.</span>
@@ -579,6 +580,44 @@
                             <div class="settings-options">
                                 <button type="button" class="settings-option settings-reset-option" id="btnSettingsResetDefaults">بازگردانی پیش‌فرض‌ها</button>
                             </div>
+                        </div>
+                    </section>
+
+                    <section id="settingsQuickInsertCard" class="settings-card" aria-labelledby="settingsQuickInsertTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">⚡</span>
+                            <div><h2 id="settingsQuickInsertTitle">مدیریت فهرست درج سریع</h2><p>آیتم‌های دلخواه هر تب را جداگانه اضافه یا حذف کنید</p></div>
+                            <span class="settings-proposed settings-active">فعال</span>
+                        </header>
+                        <div class="settings-quickinsert-intro">
+                            <p>هر آیتم در نوار بالای تب انتخاب‌شده نمایش داده می‌شود. عنوان، نام دکمه است و کد درج‌شونده همان متنی است که در کادر کد وارد می‌کنید.</p>
+                        </div>
+                        <div class="settings-quickinsert-form">
+                            <div class="settings-quickinsert-field">
+                                <label for="quickInsertTab">تب موردنظر</label>
+                                <select id="quickInsertTab">
+                                    <option value="html">HTML</option>
+                                    <option value="css">CSS</option>
+                                    <option value="js">JavaScript</option>
+                                </select>
+                            </div>
+                            <div class="settings-quickinsert-field">
+                                <label for="quickInsertLabel">عنوان آیتم</label>
+                                <input id="quickInsertLabel" type="text" maxlength="40" placeholder="مثلاً کارت محصول" autocomplete="off">
+                            </div>
+                            <div class="settings-quickinsert-field settings-quickinsert-code-field">
+                                <label for="quickInsertCode">کد درج‌شونده</label>
+                                <textarea id="quickInsertCode" rows="5" maxlength="5000" dir="auto" spellcheck="false" placeholder="کد HTML، CSS یا JavaScript را وارد کنید…"></textarea>
+                            </div>
+                            <div class="settings-quickinsert-actions">
+                                <button type="button" class="settings-quickinsert-add" id="btnQuickInsertAdd">افزودن به فهرست</button>
+                                <span id="quickInsertStatus" role="status" aria-live="polite">فهرست هر تب جداگانه ذخیره می‌شود.</span>
+                            </div>
+                        </div>
+                        <div class="settings-quickinsert-list-wrap">
+                            <h3>آیتم‌های ثبت‌شده در این تب</h3>
+                            <ul id="quickInsertList" class="settings-quickinsert-list" aria-live="polite"></ul>
+                            <p class="settings-quickinsert-empty" id="quickInsertEmpty">هنوز آیتم سفارشی برای این تب ثبت نشده است.</p>
                         </div>
                     </section>
 

@@ -2113,3 +2113,25 @@ input {
     width: 70px;
     height: 2px;
 }
+
+
+/* در نمایشگر کوچک، پنل‌ها عمودی می‌مانند تا فضای کدنویسی و پیش‌نمایش بیش از حد باریک نشود. */
+@media (max-width: 768px) {
+    :root[data-layout="side-by-side"] .container {
+        flex-direction: column !important;
+    }
+    :root[data-layout="side-by-side"] .editor-pane {
+        width: 100% !important;
+        height: var(--editor-pane-ratio, 50%) !important;
+        border-left: 0;
+        border-bottom: 2px solid #1e1e1e;
+    }
+    :root[data-layout="side-by-side"] .preview-pane {
+        width: 100% !important;
+        height: calc(100% - var(--editor-pane-ratio, 50%) - 6px) !important;
+        flex: 0 0 auto !important;
+    }
+    :root[data-layout="side-by-side"] .divider {
+        display: none !important;
+    }
+}

@@ -2233,7 +2233,17 @@
             }
 
             function asItem(item) {
-                return typeof item === 'string' ? { label: item, insert: item, description: '' } : item;
+                if (typeof item === 'string') return { label: item, insert: item, description: '' };
+                if (!item || typeof item !== 'object') return { label: String(item || ''), insert: String(item || ''), description: '' };
+                // Legacy snippet records store their insertion as prefix + suffix.
+                // Keep the visible label independent and place the caret between both parts.
+                if (typeof item.insert !== 'string' && typeof item.prefix === 'string') {
+                    return Object.assign({}, item, {
+                        insert: item.prefix + (typeof item.suffix === 'string' ? item.suffix : ''),
+                        caret: Number.isInteger(item.caret) ? item.caret : item.prefix.length
+                    });
+                }
+                return item;
             }
             function filterList(list, word) {
                 const w = (word || '').toLowerCase();
@@ -2243,6 +2253,7 @@
                 const items = (list || []).map(asItem);
                 for (let i = 0; i < items.length; i++) {
                     const item = items[i];
+                    if (!item || item.active === false || item.enabled === false) continue;
                     const label = String(item.label || item.insert || '');
                     const insertion = String(item.insert || item.label || '');
                     // JavaScript is case-sensitive: keep distinct names such as Map and map.
@@ -2315,7 +2326,20 @@
                     const shorthand = resolveCssAbbreviation(ctx.word, data);
                     if (shorthand) return [shorthand];
                     const snippets = (data.snippets && data.snippets.css) || [];
-                    return filterList(snippets.concat(data.cssAbbreviations || [], data.cssProperties || CSS_PROPS), ctx.word);
+                    const properties = data.cssProperties || CSS_PROPS;
+                    const propertyNames = new Set(properties.map(function (item) {
+                        return typeof item === 'string' ? item : String(item && item.label || '');
+                    }));
+                    function preservePropertyName(item) {
+                        if (item && typeof item === 'object' && typeof item.insert !== 'string' &&
+                            typeof item.prefix === 'string' && propertyNames.has(String(item.label || ''))) {
+                            return Object.assign({}, item, { insert: String(item.label), caret: null });
+                        }
+                        return item;
+                    }
+                    const normalizedSnippets = snippets.map(preservePropertyName);
+                    const normalizedProperties = properties.map(preservePropertyName);
+                    return filterList(normalizedSnippets.concat(data.cssAbbreviations || [], normalizedProperties), ctx.word);
                 }
                 if (ctx.kind === 'cssValue') {
                     const values = (data.cssValues || {})[ctx.property] || [];

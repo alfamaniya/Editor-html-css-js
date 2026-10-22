@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const htmlPath = resolve(root, 'index.html');
-const cssFiles = ['style.css', 'settings.css'];
+const cssFiles = ['style.css', 'settings.css', 'suggestion-manager.css'];
 const outputPath = resolve(root, 'index-test-etitor.html');
 const temporaryPath = outputPath + '.tmp';
 
@@ -20,6 +20,7 @@ const scriptFiles = [
     'html-suggestions.js',
     'css-suggestions.js',
     'js-suggestions.js',
+    'suggestion-manager.js',
     'next-word-suggestions.js',
     'script.js',
     'settings.js',

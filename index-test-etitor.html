@@ -4002,6 +4002,7 @@ input {
         let project = null;
         let projectLoadWarning = '';
         let projectRecoveryAvailable = false;
+        let lastExportDependencyWarnings = [];
         let libraries = [];
         let libraryDownloadController = null;
         let libraryDownloadRequest = 0;
@@ -4938,43 +4939,487 @@ input {
         }
         const HIGHLIGHTERS = { html: highlightHTML, css: highlightCSS, js: highlightJS };
 
+
+        // انتقال محافظه‌کارانه CSS و JavaScript هنگام Paste در تب HTML
+        const HTML_PASTE_VOID_TAGS = new Set([
+            'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'
+        ]);
+        const HTML_PASTE_RAW_TEXT_TAGS = new Set([
+            'textarea','title','xmp','iframe','noembed','noframes','noscript','plaintext'
+        ]);
+
+        function findPasteTagEnd(source, start) {
+            let quote = '';
+            for (let i = start + 1; i < source.length; i++) {
+                const ch = source[i];
+                if (quote) { if (ch === quote) quote = ''; }
+                else if (ch === '"' || ch === "'") quote = ch;
+                else if (ch === '>') return i;
+            }
+            return -1;
+        }
+
+        function readPasteTagAttributes(tag) {
+            const match = tag.match(/^<\s*[A-Za-z][\w:-]*/);
+            if (!match) return null;
+            const attrs = Object.create(null);
+            let i = match[0].length;
+            while (i < tag.length - 1) {
+                while (i < tag.length - 1 && (/\s/.test(tag[i]) || tag[i] === '/')) i++;
+                if (i >= tag.length - 1) break;
+                const start = i;
+                while (i < tag.length - 1 && !/[\s=/>]/.test(tag[i])) i++;
+                if (start === i) { i++; continue; }
+                const name = tag.slice(start, i).toLowerCase();
+                while (i < tag.length - 1 && /\s/.test(tag[i])) i++;
+                let value = '';
+                if (tag[i] === '=') {
+                    i++;
+                    while (i < tag.length - 1 && /\s/.test(tag[i])) i++;
+                    if (tag[i] === '"' || tag[i] === "'") {
+                        const quote = tag[i++];
+                        const valueStart = i;
+                        while (i < tag.length - 1 && tag[i] !== quote) i++;
+                        if (i >= tag.length - 1) return null;
+                        value = tag.slice(valueStart, i++);
+                    } else {
+                        const valueStart = i;
+                        while (i < tag.length - 1 && !/[\s>]/.test(tag[i])) i++;
+                        value = tag.slice(valueStart, i);
+                    }
+                }
+                if (!Object.prototype.hasOwnProperty.call(attrs, name)) attrs[name] = value;
+            }
+            return attrs;
+        }
+
+        function scanMarkupForPaste(source) {
+            const text = String(source || '');
+            const blocks = [], tags = [], stack = [];
+            let templateDepth = 0, hasDoctype = false, i = 0;
+            while (i < text.length) {
+                const start = text.indexOf('<', i);
+                if (start < 0) break;
+                if (text.slice(start, start + 4) === '<!--') {
+                    const end = text.indexOf('-->', start + 4);
+                    if (end < 0) return { invalid: true, blocks: [], tags: [], hasDoctype: false };
+                    i = end + 3; continue;
+                }
+                if (text.slice(start, start + 9).toLowerCase() === '<!doctype') {
+                    const end = findPasteTagEnd(text, start);
+                    if (end < 0) return { invalid: true, blocks: [], tags: [], hasDoctype: false };
+                    hasDoctype = true; i = end + 1; continue;
+                }
+                if (text.slice(start, start + 9) === '<![CDATA[') {
+                    const end = text.indexOf(']]>', start + 9);
+                    if (end < 0) return { invalid: true, blocks: [], tags: [], hasDoctype: false };
+                    i = end + 3; continue;
+                }
+                if (text.slice(start, start + 2) === '<!' || text.slice(start, start + 2) === '<?') {
+                    const isProcessing = text.slice(start, start + 2) === '<?';
+                    const end = isProcessing ? text.indexOf('?>', start + 2) : findPasteTagEnd(text, start);
+                    if (end < 0) return { invalid: true, blocks: [], tags: [], hasDoctype: false };
+                    i = end + (isProcessing ? 2 : 1); continue;
+                }
+                const header = text.slice(start).match(/^<\s*(\/?)\s*([A-Za-z][\w:-]*)/);
+                if (!header) { i = start + 1; continue; }
+                const end = findPasteTagEnd(text, start);
+                if (end < 0) return { invalid: true, blocks: [], tags: [], hasDoctype: hasDoctype };
+                const token = text.slice(start, end + 1);
+                const name = header[2].toLowerCase();
+                const closing = !!header[1];
+                const selfClosing = /\/\s*>$/.test(token);
+                tags.push({ name: name, closing: closing, start: start, end: end + 1 });
+                if (closing) {
+                    if (name === 'template') templateDepth = Math.max(0, templateDepth - 1);
+                    let position = -1;
+                    for (let j = stack.length - 1; j >= 0; j--) {
+                        if (stack[j].name === name) { position = j; break; }
+                    }
+                    if (position >= 0) stack.length = position;
+                    i = end + 1; continue;
+                }
+                const parentTags = stack.map(function(item) { return item.name; });
+                const attrs = readPasteTagAttributes(token);
+                if (!attrs) return { invalid: true, blocks: [], tags: tags, hasDoctype: hasDoctype };
+                if (name === 'style' || name === 'script') {
+                    const closePattern = new RegExp('</\\s*' + name + '\\s*>', 'ig');
+                    closePattern.lastIndex = end + 1;
+                    const close = closePattern.exec(text);
+                    if (!close) return { invalid: true, blocks: [], tags: tags, hasDoctype: hasDoctype };
+                    blocks.push({
+                        name: name, start: start, openEnd: end + 1, contentStart: end + 1,
+                        contentEnd: close.index, end: close.index + close[0].length,
+                        content: text.slice(end + 1, close.index), attrs: attrs,
+                        parentTags: parentTags, templateDepth: templateDepth
+                    });
+                    i = close.index + close[0].length; continue;
+                }
+                if (HTML_PASTE_RAW_TEXT_TAGS.has(name)) {
+                    if (name === 'plaintext') break;
+                    const closePattern = new RegExp('</\\s*' + name + '\\s*>','ig');
+                    closePattern.lastIndex = end + 1;
+                    const close = closePattern.exec(text);
+                    if (!close) return { invalid: true, blocks: [], tags: tags, hasDoctype: hasDoctype };
+                    i = close.index + close[0].length; continue;
+                }
+                if (name === 'template') templateDepth++;
+                if (!HTML_PASTE_VOID_TAGS.has(name) && !selfClosing) stack.push({ name: name, start: start });
+                i = end + 1;
+            }
+            return { invalid: false, blocks: blocks, tags: tags, hasDoctype: hasDoctype };
+        }
+
+        function normalizeCodeForComparison(code) {
+            return String(code == null ? '' : code).replace(/\r\n?/g, '\n').trim();
+        }
+
+        function codeBlockAlreadyExists(existing, candidate) {
+            const wanted = normalizeCodeForComparison(candidate);
+            const haystack = normalizeCodeForComparison(existing);
+            if (!wanted || !haystack) return false;
+            let from = 0, index = haystack.indexOf(wanted, from);
+            while (index >= 0) {
+                const before = index === 0 || /\s/.test(haystack[index - 1]);
+                const afterAt = index + wanted.length;
+                const after = afterAt === haystack.length || /\s/.test(haystack[afterAt]);
+                if (before && after) return true;
+                from = index + 1;
+                index = haystack.indexOf(wanted, from);
+            }
+            return false;
+        }
+
+        function appendUniqueCode(existing, chunks) {
+            const current = String(existing == null ? '' : existing);
+            const additions = [];
+            chunks.forEach(function(chunk) {
+                const code = String(chunk == null ? '' : chunk);
+                if (!normalizeCodeForComparison(code) || codeBlockAlreadyExists(current, code)) return;
+                if (additions.some(function(item) {
+                    return normalizeCodeForComparison(item) === normalizeCodeForComparison(code);
+                })) return;
+                additions.push(code);
+            });
+            if (!additions.length) return current;
+            if (!current.trim()) return current + additions.join('\n\n');
+            return current + (/\n$/.test(current) ? '\n' : '\n\n') + additions.join('\n\n');
+        }
+
+        function looksLikeStandaloneCss(source) {
+            const text = String(source || '').trim();
+            if (!text || /<\/?\s*[a-z][^>]*>/i.test(text)) return false;
+            let state = 'code', quote = '', escaped = false, depth = 0;
+            let segmentStart = 0, hasSelector = false, hasDeclaration = false;
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i], next = text[i + 1] || '';
+                if (state === 'comment') { if (ch === '*' && next === '/') { state = 'code'; i++; } continue; }
+                if (state === 'string') {
+                    if (escaped) { escaped = false; continue; }
+                    if (ch === '\\') { escaped = true; continue; }
+                    if (ch === quote) state = 'code';
+                    continue;
+                }
+                if (ch === '/' && next === '*') { state = 'comment'; i++; continue; }
+                if (ch === '"' || ch === "'") { state = 'string'; quote = ch; continue; }
+                if (ch === '{') {
+                    if (!depth) {
+                        const selector = text.slice(segmentStart, i).trim();
+                        if (selector && (selector[0] === '@' || /[.#*:[\]a-zA-Z]/.test(selector))) hasSelector = true;
+                    }
+                    depth++;
+                } else if (ch === '}') {
+                    if (--depth < 0) return false;
+                    if (!depth) segmentStart = i + 1;
+                } else if (ch === ':' && depth) hasDeclaration = true;
+            }
+            return depth === 0 && state !== 'comment' && state !== 'string' && hasSelector && hasDeclaration;
+        }
+
+        function looksLikeStandaloneJavaScript(source) {
+            const text = String(source || '').trim();
+            if (!text || /<\/?\s*[a-z][^>]*>/i.test(text)) return false;
+            const syntax = /(?:=>|===|!==|==|!=|\+\+|--|\b(?:const|let|var|function|class|return|if|for|while|switch|throw|try|catch|finally|new|async|await|import|export)\b)/;
+            const call = /\b(?:console\s*\.\s*(?:log|warn|error|info|debug)|alert|confirm|prompt|fetch|setTimeout|setInterval|requestAnimationFrame|addEventListener|document\s*\.|window\s*\.)\s*[\.(]/;
+            return (syntax.test(text) && /[=({;]/.test(text)) || call.test(text);
+        }
+
+        function getPasteStyleCode(block, scan) {
+            if (block.templateDepth || block.parentTags.includes('template') || block.parentTags.includes('noscript')) return null;
+            const attrs = block.attrs;
+            if (Object.keys(attrs).some(function(name) { return name !== 'type' && name !== 'media'; })) return null;
+            const type = String(attrs.type || '').split(';')[0].trim().toLowerCase();
+            if (type && type !== 'text/css') return null;
+            if (!block.content.trim()) return null;
+            const names = scan.tags.filter(function(tag) { return !tag.closing; }).map(function(tag) { return tag.name; });
+            const structured = scan.hasDoctype || names.some(function(name) { return ['html','head','body'].includes(name); });
+            const hasBody = names.includes('body');
+            if (hasBody && !block.parentTags.includes('head')) return null;
+            if (structured && !block.parentTags.includes('head')) {
+                const bodyTag = scan.tags.find(function(tag) { return !tag.closing && tag.name === 'body'; });
+                const beforeBody = !bodyTag || block.start < bodyTag.start;
+                if (hasBody || !beforeBody || block.parentTags.includes('body')) return null;
+            }
+            if (Object.prototype.hasOwnProperty.call(attrs, 'media')) {
+                const media = String(attrs.media || '').trim();
+                if (!media || /[{};]/.test(media)) return null;
+                return '@media ' + media + ' {\n' + block.content + '\n}';
+            }
+            return block.content;
+        }
+
+        function getPasteScriptCode(block) {
+            if (block.templateDepth || block.parentTags.includes('template') || block.parentTags.includes('noscript') ||
+                Object.prototype.hasOwnProperty.call(block.attrs, 'src')) return null;
+            if (Object.keys(block.attrs).some(function(name) { return name !== 'type'; })) return null;
+            const type = String(block.attrs.type || '').split(';')[0].trim().toLowerCase();
+            if (!['','text/javascript','application/javascript','text/ecmascript','application/ecmascript'].includes(type)) return null;
+            if (!block.content.trim() || block.parentTags.includes('head')) return null;
+            return block.content;
+        }
+
+        function canMovePasteScriptToEnd(block, scan, source, laterBlocks) {
+            if (block.parentTags.some(function(name) { return !['html','body'].includes(name); })) return false;
+            const names = scan.tags.filter(function(tag) { return !tag.closing; }).map(function(tag) { return tag.name; });
+            const hasHtml = names.includes('html'), hasHead = names.includes('head'), hasBody = names.includes('body');
+            if (block.parentTags.includes('head')) return false;
+            if (hasBody && !block.parentTags.includes('body')) return false;
+            if ((hasHtml || hasHead) && !block.parentTags.includes('body')) return false;
+            let tail = source.slice(block.end);
+            laterBlocks.slice().sort(function(a,b) { return b.start-a.start; }).forEach(function(other) {
+                const a = other.start - block.end, b = other.end - block.end;
+                if (a >= 0 && b >= a && b <= tail.length) tail = tail.slice(0,a) + tail.slice(b);
+            });
+            tail = tail.replace(/<!--[\s\S]*?-->/g, '').replace(/<\/\s*(?:body|html)\s*>/gi, '');
+            return !tail.trim();
+        }
+
+        function extractPasteAssets(source) {
+            const text = String(source == null ? '' : source);
+            if (!text.trim()) return null;
+            try {
+                const scan = scanMarkupForPaste(text);
+                if (scan.invalid) return null;
+                const names = scan.tags.filter(function(tag) { return !tag.closing; }).map(function(tag) { return tag.name; });
+                const structured = scan.hasDoctype || names.some(function(name) { return ['html','head','body','title'].includes(name); });
+                const cssItems = [], scriptItems = [];
+                scan.blocks.forEach(function(block) {
+                    if (block.name === 'style') {
+                        const code = getPasteStyleCode(block, scan);
+                        if (code) cssItems.push({block:block, code:code});
+                    } else {
+                        const code = getPasteScriptCode(block);
+                        if (code) scriptItems.push({block:block, code:code});
+                    }
+                });
+                const movableScripts = scriptItems.filter(function(item) {
+                    const later = scan.blocks.filter(function(other) {
+                        return other.start >= item.block.end && (
+                            (other.name === 'style' && !!getPasteStyleCode(other, scan)) ||
+                            (other.name === 'script' && !!getPasteScriptCode(other))
+                        );
+                    });
+                    return canMovePasteScriptToEnd(item.block, scan, text, later);
+                });
+                const removable = cssItems.map(function(item) { return item.block; }).concat(
+                    movableScripts.map(function(item) { return item.block; })
+                );
+                let html = text;
+                removable.slice().sort(function(a,b) { return b.start-a.start; }).forEach(function(block) {
+                    html = html.slice(0,block.start) + html.slice(block.end);
+                });
+                const unique = function(items) {
+                    const seen = new Set(), result = [];
+                    items.forEach(function(code) {
+                        const normalized = normalizeCodeForComparison(code);
+                        if (normalized && !seen.has(normalized)) { seen.add(normalized); result.push(code); }
+                    });
+                    return result;
+                };
+                let css = unique(cssItems.filter(function(item) { return removable.includes(item.block); }).map(function(item) { return item.code; }));
+                let js = unique(movableScripts.map(function(item) { return item.code; }));
+                if (!css.length && !js.length && !structured && !scan.tags.length) {
+                    if (looksLikeStandaloneCss(text)) css = [text];
+                    else if (looksLikeStandaloneJavaScript(text)) js = [text];
+                    if (css.length || js.length) html = '';
+                }
+                if (!css.length && !js.length) return null;
+                return { html:html, css:css, js:js };
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function handleHtmlEditorPaste(event) {
+            if (!event || event.defaultPrevented || !event.clipboardData) return;
+            const pasted = event.clipboardData.getData('text/plain');
+            if (!pasted) return;
+            const extracted = extractPasteAssets(pasted);
+            if (!extracted || (!extracted.css.length && !extracted.js.length)) return;
+            const htmlEditor = editors.html, cssEditor = editors.css, jsEditor = editors.js;
+            if (!htmlEditor || !cssEditor || !jsEditor) return;
+            const htmlBefore = htmlEditor.ta.value, cssBefore = cssEditor.ta.value, jsBefore = jsEditor.ta.value;
+            const start = htmlEditor.ta.selectionStart, end = htmlEditor.ta.selectionEnd;
+            const htmlAfter = htmlBefore.slice(0,start) + extracted.html + htmlBefore.slice(end);
+            const cssAfter = appendUniqueCode(cssBefore, extracted.css);
+            const jsAfter = appendUniqueCode(jsBefore, extracted.js);
+            event.preventDefault();
+            try {
+                if (htmlAfter !== htmlBefore) htmlEditor.ta.setRangeText(extracted.html,start,end,'end');
+                if (cssAfter !== cssBefore) cssEditor.ta.value = cssAfter;
+                if (jsAfter !== jsBefore) jsEditor.ta.value = jsAfter;
+                if (htmlAfter !== htmlBefore) htmlEditor.ta.dispatchEvent(new Event('input',{bubbles:true}));
+                if (cssAfter !== cssBefore) cssEditor.ta.dispatchEvent(new Event('input',{bubbles:true}));
+                if (jsAfter !== jsBefore) jsEditor.ta.dispatchEvent(new Event('input',{bubbles:true}));
+                if (htmlAfter !== htmlBefore) {
+                    const caret = start + extracted.html.length;
+                    htmlEditor.ta.setSelectionRange(caret,caret);
+                }
+                const moved = [];
+                if (extracted.css.length) moved.push('CSS');
+                if (extracted.js.length) moved.push('JavaScript');
+                showToast('Paste processed. Extracted ' + moved.join(' and ') + '; existing tab code was preserved.','success');
+            } catch (error) {
+                htmlEditor.ta.value = htmlBefore;
+                cssEditor.ta.value = cssBefore;
+                jsEditor.ta.value = jsBefore;
+                [htmlEditor,cssEditor,jsEditor].forEach(function(editor) {
+                    editor.refresh();
+                    const file = getFileForLang(editor.lang);
+                    if (file) file.content = editor.ta.value;
+                });
+                showToast('Paste processing failed. The previous editor contents were restored.','error');
+            }
+        }
+
+        function containsDocumentStructure(markup) {
+            const scan = scanMarkupForPaste(markup);
+            if (scan.invalid) return /<!doctype\s+html\b|<\s*\/?\s*(?:html|head|body|title)\b/i.test(String(markup || ''));
+            return scan.hasDoctype || scan.tags.some(function(tag) {
+                return !tag.closing && ['html','head','body','title'].includes(tag.name);
+            });
+        }
+
+        function getLocalAssetFilename(url) {
+            const value = String(url || '').trim();
+            if (!value || /[?#]/.test(value) || /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(value)) return null;
+            let path = value.replace(/\\/g,'/');
+            if (path.startsWith('/')) return null;
+            path = path.replace(/^(?:\.\/)+/,'');
+            if (!path || path.includes('/')) return null;
+            try { return decodeURIComponent(path).toLowerCase(); } catch (error) { return null; }
+        }
+
+        function isClassicJavaScriptType(value) {
+            const type = String(value || '').split(';')[0].trim().toLowerCase();
+            return !type || ['text/javascript','application/javascript','text/ecmascript','application/ecmascript'].includes(type);
+        }
+
+        function canInlineBundledScript(node, file) {
+            if (!String(file.content || '').trim()) return false;
+            const attrs = Array.from(node.attributes).map(function(attr) { return attr.name.toLowerCase(); });
+            if (attrs.some(function(name) { return !['src','type'].includes(name); })) return false;
+            if (!isClassicJavaScriptType(node.getAttribute('type'))) return false;
+            if (/\bdocument\s*\.\s*currentScript\b/.test(file.content)) return false;
+            return true;
+        }
+
+        function canInlineBundledStylesheet(node, file) {
+            if (!String(file.content || '').trim()) return false;
+            const attrs = Array.from(node.attributes).map(function(attr) { return attr.name.toLowerCase(); });
+            if (attrs.some(function(name) { return !['href','rel','media','title','type'].includes(name); })) return false;
+            const rel = String(node.getAttribute('rel') || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+            const type = String(node.getAttribute('type') || '').split(';')[0].trim().toLowerCase();
+            return rel.length === 1 && rel[0] === 'stylesheet' && (!type || type === 'text/css');
+        }
+
+        function comparableInlineAssetCode(markup, type) {
+            const doc = new DOMParser().parseFromString(String(markup || ''),'text/html');
+            const tag = type === 'css' ? 'style' : 'script';
+            return Array.from(doc.querySelectorAll(tag)).filter(function(node) {
+                const contentType = String(node.getAttribute('type') || '').split(';')[0].trim().toLowerCase();
+                if (type === 'css') return !contentType || contentType === 'text/css';
+                return !node.hasAttribute('src') && isClassicJavaScriptType(contentType);
+            }).map(function(node) { return normalizeCodeForComparison(node.textContent); }).filter(Boolean);
+        }
+
+        function fileStillReferenced(markup, type, filename) {
+            const doc = new DOMParser().parseFromString(String(markup || ''),'text/html');
+            const nodes = type === 'css' ? doc.querySelectorAll('link[rel~="stylesheet"][href]') : doc.querySelectorAll('script[src]');
+            return Array.from(nodes).some(function(node) {
+                return getLocalAssetFilename(node.getAttribute(type === 'css' ? 'href' : 'src')) === String(filename || '').toLowerCase();
+            });
+        }
+
+        function buildUniqueAssetCode(markup, type, files, libs) {
+            const seen = new Set(comparableInlineAssetCode(markup,type));
+            const parts = [];
+            const items = (libs || []).map(function(lib) {
+                return {name:lib.name,content:lib.code,isLibrary:true};
+            }).concat((files || []).map(function(file) {
+                return {name:file.name,content:file.content,filename:file.name,isLibrary:false};
+            }));
+            items.forEach(function(item) {
+                const content = String(item.content || ''), normalized = normalizeCodeForComparison(content);
+                if (!normalized || seen.has(normalized)) return;
+                if (!item.isLibrary && fileStillReferenced(markup,type,item.filename)) return;
+                seen.add(normalized);
+                parts.push('/* === ' + safeCommentLabel(item.name) + (item.isLibrary ? ' (lib)' : '') + ' === */\n' + content);
+            });
+            const closing = type === 'css' ? '<\\/style' : '<\\/script';
+            return parts.join('\n\n').replace(type === 'css' ? /<\/style/gi : /<\/script/gi,closing);
+        }
+
+        function getLocalAssetDependencyWarnings(markup, ignore) {
+            const doc = new DOMParser().parseFromString(String(markup || ''),'text/html');
+            const ignored = new Set(ignore || []);
+            const found = [];
+            doc.querySelectorAll('script[src], link[rel~="stylesheet"][href]').forEach(function(node) {
+                const ref = String(node.getAttribute(node.tagName.toLowerCase() === 'script' ? 'src' : 'href') || '').trim();
+                if (!ref || /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(ref) || ignored.has(ref)) return;
+                if (!found.includes(ref)) found.push(ref);
+            });
+            return found;
+        }
+
         // Remove local asset references when the same files are embedded below.
         // Keep remote URLs and local files that are not part of this project bundle.
+        // تعبیه فایل محلی فقط پس از یافتن محتوای متناظر و در محل اصلی تگ
         function stripBundledAssetReferences(markup, cssFiles, jsFiles, preserveDocument) {
             const source = String(markup || '');
-            const cssNames = new Set(cssFiles.map(function(file) { return String(file.name || '').toLowerCase(); }));
-            const jsNames = new Set(jsFiles.map(function(file) { return String(file.name || '').toLowerCase(); }));
+            const cssByName = new Map(cssFiles.filter(function(file) { return String(file.content || '').trim(); })
+                .map(function(file) { return [String(file.name || '').toLowerCase(),file]; }));
+            const jsByName = new Map(jsFiles.filter(function(file) { return String(file.content || '').trim(); })
+                .map(function(file) { return [String(file.name || '').toLowerCase(),file]; }));
             const template = preserveDocument ? null : document.createElement('template');
-            const parsedDocument = preserveDocument
-                ? new DOMParser().parseFromString(source, 'text/html')
-                : null;
-            const root = preserveDocument ? parsedDocument : template.content;
+            const parsed = preserveDocument ? new DOMParser().parseFromString(source,'text/html') : null;
+            const root = preserveDocument ? parsed : template.content;
             if (!preserveDocument) template.innerHTML = source;
-
-            function getLocalFilename(url) {
-                const value = String(url || '').trim();
-                if (!value || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(value)) return null;
-                let path = value.split(/[?#]/, 1)[0].replace(/\\/g, '/');
-                if (path.startsWith('/')) return null;
-                path = path.replace(/^(?:\.\/)+/, '');
-                if (!path || path.includes('/')) return null;
-                const filename = path;
-                if (!filename) return null;
-                try { return decodeURIComponent(filename).toLowerCase(); }
-                catch (error) { return filename.toLowerCase(); }
-            }
-
+            const owner = preserveDocument ? parsed : document;
             root.querySelectorAll('script[src], link[rel~="stylesheet"][href]').forEach(function(node) {
-                const isScript = node.tagName.toLowerCase() === 'script';
-                const filename = getLocalFilename(node.getAttribute(isScript ? 'src' : 'href'));
-                const bundledNames = isScript ? jsNames : cssNames;
-                if (filename && bundledNames.has(filename)) node.remove();
+                const script = node.tagName.toLowerCase() === 'script';
+                const filename = getLocalAssetFilename(node.getAttribute(script ? 'src' : 'href'));
+                if (!filename) return;
+                const file = (script ? jsByName : cssByName).get(filename);
+                if (!file) return;
+                if (script) {
+                    if (!canInlineBundledScript(node,file)) return;
+                    const replacement = owner.createElement('script');
+                    if (node.hasAttribute('type')) replacement.setAttribute('type',node.getAttribute('type'));
+                    replacement.textContent = String(file.content).replace(/<\/script/gi,'<\\/script');
+                    node.replaceWith(replacement);
+                } else {
+                    if (!canInlineBundledStylesheet(node,file)) return;
+                    const replacement = owner.createElement('style');
+                    ['type','media','title'].forEach(function(name) {
+                        if (node.hasAttribute(name)) replacement.setAttribute(name,node.getAttribute(name));
+                    });
+                    replacement.textContent = String(file.content).replace(/<\/style/gi,'<\\/style');
+                    node.replaceWith(replacement);
+                }
             });
-
             if (!preserveDocument) return template.innerHTML;
-            // DOMParser preserves document-level elements that template.innerHTML would discard.
-            // Always emit a doctype for a complete document to keep standards mode.
-            return '<!DOCTYPE html>\n' + parsedDocument.documentElement.outerHTML;
+            return '<!DOCTYPE html>\n' + parsed.documentElement.outerHTML;
         }
 
         // Keep user-controlled file and library names inside generated comments.
@@ -4988,33 +5433,35 @@ input {
         // ==========================================
         //  Build document
         // ==========================================
+        function normalizeExistingDocument(markup, fallbackTitle) {
+            const parsed = new DOMParser().parseFromString(String(markup || ''),'text/html');
+            const titles = Array.from(parsed.head.querySelectorAll('title'));
+            if (!titles.length) {
+                const title = parsed.createElement('title');
+                title.textContent = fallbackTitle;
+                parsed.head.insertBefore(title,parsed.head.firstChild);
+            } else {
+                if (!String(titles[0].textContent || '').trim()) titles[0].textContent = fallbackTitle;
+                titles.slice(1).forEach(function(extra) {
+                    const preserved = safeCommentLabel(extra.textContent).replace(/--/g,'- -');
+                    extra.replaceWith(parsed.createComment('Additional title preserved as comment: ' + preserved));
+                });
+            }
+            return '<!DOCTYPE html>\n' + parsed.documentElement.outerHTML;
+        }
+
         function buildDocument(forExport, externalAssetBaseName) {
-            const htmlFiles = project.files.filter(function(f) { return f.type === 'html'; });
-            const cssFiles  = project.files.filter(function(f) { return f.type === 'css'; });
-            const jsFiles   = project.files.filter(function(f) { return f.type === 'js'; });
-
-            const sourceHtml = htmlFiles.map(function(f) { return f.content; }).join('\n');
-            // A full HTML document must not be wrapped inside a second html/head/body structure.
-            const isFullHtmlDocument = /<!doctype\s+html\b/i.test(sourceHtml) ||
-                /^\s*(?:<!--[\s\S]*?-->\s*)*<html(?:\s|>)/i.test(sourceHtml);
-            const html = stripBundledAssetReferences(sourceHtml, cssFiles, jsFiles, isFullHtmlDocument);
-            const css  = cssFiles.map(function(f) { return '/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content; })
-                                 .join('\n\n')
-                                 .replace(/<\/style/gi, '<\\/style');
-            const js   = jsFiles.map(function(f) { return '/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content; })
-                                .join('\n\n')
-                                .replace(/<\/script/gi, '<\\/script');
-
-            const enabledLibs = libraries.filter(function(l) { return l.enabled; });
-            const libCss = enabledLibs
-                .filter(function(l) { return l.type === 'css'; })
-                .map(function(l) { return '/* === ' + safeCommentLabel(l.name) + ' === */\n' + l.code.replace(/<\/style/gi, '<\\/style'); })
-                .join('\n\n');
-            const libJs = enabledLibs
-                .filter(function(l) { return l.type === 'js'; })
-                .map(function(l) { return '/* === ' + safeCommentLabel(l.name) + ' === */\n' + l.code.replace(/<\/script/gi, '<\\/script'); })
-                .join('\n\n');
-
+            const htmlFiles = project.files.filter(function(file) { return file.type === 'html'; });
+            const cssFiles = project.files.filter(function(file) { return file.type === 'css'; });
+            const jsFiles = project.files.filter(function(file) { return file.type === 'js'; });
+            const sourceHtml = htmlFiles.map(function(file) { return file.content; }).join('\n');
+            const fullDocument = containsDocumentStructure(sourceHtml);
+            let html = stripBundledAssetReferences(sourceHtml,cssFiles,jsFiles,fullDocument);
+            const enabledLibs = libraries.filter(function(lib) { return lib.enabled; });
+            const libCss = enabledLibs.filter(function(lib) { return lib.type === 'css'; });
+            const libJs = enabledLibs.filter(function(lib) { return lib.type === 'js'; });
+            const css = buildUniqueAssetCode(html,'css',cssFiles,libCss);
+            const js = buildUniqueAssetCode(html,'js',jsFiles,libJs);
             const errorHook = forExport ? '' : [
                 '<script>',
                 'window.addEventListener("error",function(e){ parent.postMessage({editorError:true,message:String(e.message)},"*"); });',
@@ -5022,54 +5469,52 @@ input {
                 'window.addEventListener("keydown",function(e){ if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="s"){ e.preventDefault(); parent.postMessage({editorSave:true},"*"); } });',
                 '<\/script>'
             ].join('\n');
-
             const safeTitle = String(project.documentTitle || 'My Page')
-                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-            if (isFullHtmlDocument) {
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            let output;
+            if (fullDocument) {
+                html = normalizeExistingDocument(html,project.documentTitle || 'My Page');
                 const headParts = [];
                 if (!/<meta\b[^>]*\bcharset\s*=/i.test(html)) headParts.push('<meta charset="UTF-8">');
                 if (!/<meta\b[^>]*\bname\s*=\s*["']viewport["']/i.test(html)) {
                     headParts.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
                 }
-                if (!/<title\b/i.test(html)) headParts.push('<title>' + safeTitle + '</title>');
-                const extraHead = stripBundledAssetReferences(project.headExtras || '', cssFiles, jsFiles);
+                const extraHead = stripBundledAssetReferences(project.headExtras || '',cssFiles,jsFiles,false);
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
-
                 if (externalAssetBaseName) {
-                    headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
-                } else {
-                    headParts.push('<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>');
-                }
-
-                let output = html.replace(/<\/head\s*>/i, headParts.filter(Boolean).join('\n') + '\n</head>');
+                    if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
+                } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
+                output = html.replace(/<\/head\s*>/i,headParts.filter(Boolean).join('\n') + '\n</head>');
                 const bodyParts = [];
                 if (externalAssetBaseName) {
-                    bodyParts.push('<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>');
-                } else {
-                    if (libJs) bodyParts.push('<script>\n' + libJs + '\n<\/script>');
-                    bodyParts.push('<script>\n' + js + '\n<\/script>');
-                }
-                output = output.replace(/<\/body\s*>/i, bodyParts.join('\n') + '\n</body>');
-                return output;
+                    if (js.trim()) bodyParts.push('<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>');
+                } else if (js.trim()) bodyParts.push('<script>\n' + js + '\n<\/script>');
+                output = output.replace(/<\/body\s*>/i,bodyParts.join('\n') + '\n</body>');
+            } else {
+                const headParts = [
+                    '<meta charset="UTF-8">',
+                    '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+                    '<title>' + safeTitle + '</title>'
+                ];
+                const extraHead = stripBundledAssetReferences(project.headExtras || '',cssFiles,jsFiles,false);
+                if (extraHead.trim()) headParts.push(extraHead);
+                if (errorHook) headParts.push(errorHook);
+                if (externalAssetBaseName) {
+                    if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
+                } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
+                const bodyParts = [];
+                if (externalAssetBaseName) {
+                    if (js.trim()) bodyParts.push('<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>');
+                } else if (js.trim()) bodyParts.push('<script>\n' + js + '\n<\/script>');
+                output = '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n' + headParts.join('\n') +
+                    '\n</head>\n<body>\n' + html + '\n' + bodyParts.join('\n') + '\n</body>\n</html>';
             }
-
-            return '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n' +
-                '<meta charset="UTF-8">\n' +
-                '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-                '<title>' + safeTitle + '</title>\n' +
-                stripBundledAssetReferences(project.headExtras || '', cssFiles, jsFiles) + '\n' +
-                errorHook + '\n' +
-                (externalAssetBaseName
-                    ? '<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">\n'
-                    : '<style>\n' + (libCss ? libCss + '\n\n' : '') + css + '\n</style>\n') +
-                '</head>\n<body>\n' + html + '\n' +
-                (externalAssetBaseName
-                    ? '<script src="' + escHtml(externalAssetBaseName) + '.js"><\/script>\n'
-                    : (libJs ? '<script>\n' + libJs + '\n<\/script>\n' : '') +
-                      '<script>\n' + js + '\n<\/script>\n') +
-                '</body>\n</html>';
+            if (forExport) {
+                const ignore = externalAssetBaseName ? [externalAssetBaseName + '.css',externalAssetBaseName + '.js'] : [];
+                lastExportDependencyWarnings = getLocalAssetDependencyWarnings(output,ignore);
+            }
+            return output;
         }
 
         function updatePreviewNow() {
@@ -6292,8 +6737,7 @@ input {
                 syncScroll();
             }
 
-            // Keep native paste behavior: complete HTML documents must remain intact in the HTML editor.
-            // The preview/export pipeline already supports full documents as well as body fragments.
+            if (lang === 'html') ta.addEventListener('paste', handleHtmlEditorPaste);
 
             ta.addEventListener('input', function(e) {
                 const wasDirty = dirty;
@@ -6442,50 +6886,69 @@ input {
             return lines.join('\n');
         }
         function buildAllCssCombined() {
-            const parts = [];
-            libraries.filter(function(l) { return l.enabled && l.type === 'css'; })
-                .forEach(function(l) { parts.push('/* === ' + safeCommentLabel(l.name) + ' (lib) === */\n' + l.code); });
-            project.files.filter(function(f) { return f.type === 'css'; })
-                .forEach(function(f) { parts.push('/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content); });
-            return parts.join('\n\n');
+            const htmlFiles = project.files.filter(function(file) { return file.type === 'html'; });
+            const cssFiles = project.files.filter(function(file) { return file.type === 'css'; });
+            const jsFiles = project.files.filter(function(file) { return file.type === 'js'; });
+            const markup = htmlFiles.map(function(file) { return file.content; }).join('\n');
+            const transformed = stripBundledAssetReferences(markup,cssFiles,jsFiles,containsDocumentStructure(markup));
+            const libs = libraries.filter(function(lib) { return lib.enabled && lib.type === 'css'; });
+            return buildUniqueAssetCode(transformed,'css',cssFiles,libs);
         }
         function buildAllJsCombined() {
-            const parts = [];
-            libraries.filter(function(l) { return l.enabled && l.type === 'js'; })
-                .forEach(function(l) { parts.push('/* === ' + safeCommentLabel(l.name) + ' (lib) === */\n' + l.code); });
-            project.files.filter(function(f) { return f.type === 'js'; })
-                .forEach(function(f) { parts.push('/* === ' + safeCommentLabel(f.name) + ' === */\n' + f.content); });
-            return parts.join('\n\n');
+            const htmlFiles = project.files.filter(function(file) { return file.type === 'html'; });
+            const cssFiles = project.files.filter(function(file) { return file.type === 'css'; });
+            const jsFiles = project.files.filter(function(file) { return file.type === 'js'; });
+            const markup = htmlFiles.map(function(file) { return file.content; }).join('\n');
+            const transformed = stripBundledAssetReferences(markup,cssFiles,jsFiles,containsDocumentStructure(markup));
+            const libs = libraries.filter(function(lib) { return lib.enabled && lib.type === 'js'; });
+            return buildUniqueAssetCode(transformed,'js',jsFiles,libs);
+        }
+
+        function reportExportResult(filename) {
+            if (lastExportDependencyWarnings.length) {
+                showToast('Download requested. Local references were preserved: ' + lastExportDependencyWarnings.join(', '),'error');
+            } else {
+                showToast('Download requested for ' + filename + '. If it does not appear, check the browser downloads list and site download permissions.','info');
+            }
         }
         function downloadSingle(name) {
             const safe = sanitizeFilename(name);
             try {
-                downloadFile(buildDocument(true), safe + '.html', 'text/html;charset=utf-8');
-                showToast('Download requested for ' + safe + '.html. If it does not appear, check the browser downloads list and site download permissions.', 'info');
+                const content = buildDocument(true);
+                downloadFile(content,safe + '.html','text/html;charset=utf-8');
+                reportExportResult(safe + '.html');
             } catch (error) {
-                showToast('Could not create the download: ' + String(error && error.message ? error.message : error), 'error');
+                showToast('Could not create the download: ' + String(error && error.message ? error.message : error),'error');
             }
         }
         function downloadBundle(name) {
             const safe = sanitizeFilename(name);
-            const files = [
-                { content: buildDocument(true, safe), filename: safe + '.html',     mime: 'text/html;charset=utf-8' },
-                { content: buildAllCssCombined(), filename: safe + '.css',      mime: 'text/css;charset=utf-8' },
-                { content: buildAllJsCombined(),  filename: safe + '.js',       mime: 'text/javascript;charset=utf-8' },
-                { content: buildLibsTextFile(),   filename: safe + '.libs.txt', mime: 'text/plain;charset=utf-8' }
-            ];
-            let requested = 0;
-            files.forEach(function(f, i) {
-                setTimeout(function() {
-                    try {
-                        downloadFile(f.content, f.filename, f.mime);
-                        requested++;
-                    } catch (error) {
-                        showToast('Could not create ' + f.filename + ': ' + String(error && error.message ? error.message : error), 'error');
-                    }
-                }, i * 300);
-            });
-            showToast('Download requests sent for 4 files. Your browser may ask permission for multiple downloads.', 'info');
+            try {
+                const html = buildDocument(true,safe);
+                const css = buildAllCssCombined();
+                const js = buildAllJsCombined();
+                const files = [
+                    {content:html,filename:safe + '.html',mime:'text/html;charset=utf-8'},
+                    {content:css,filename:safe + '.css',mime:'text/css;charset=utf-8'},
+                    {content:js,filename:safe + '.js',mime:'text/javascript;charset=utf-8'},
+                    {content:buildLibsTextFile(),filename:safe + '.libs.txt',mime:'text/plain;charset=utf-8'}
+                ];
+                files.forEach(function(file,index) {
+                    setTimeout(function() {
+                        try { downloadFile(file.content,file.filename,file.mime); }
+                        catch (error) {
+                            showToast('Could not create ' + file.filename + ': ' + String(error && error.message ? error.message : error),'error');
+                        }
+                    },index * 300);
+                });
+                if (lastExportDependencyWarnings.length) {
+                    showToast('Download requests sent. Local references were preserved: ' + lastExportDependencyWarnings.join(', '),'error');
+                } else {
+                    showToast('Download requests sent for 4 files. Your browser may ask permission for multiple downloads.','info');
+                }
+            } catch (error) {
+                showToast('Could not prepare the download bundle: ' + String(error && error.message ? error.message : error),'error');
+            }
         }
 
         const nameModal = document.getElementById('nameModal');

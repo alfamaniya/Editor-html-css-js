@@ -409,7 +409,7 @@
         editor.appendChild(renderField('نام / متن نمایشی', 'smLabel', entry == null ? '' : labelForEntry(entry)));
         var objectEntry = entry && typeof entry === 'object';
         if (objectEntry) {
-            editor.appendChild(renderField('متن درج‌شونده', 'smPrefix', entry.insert !== undefined ? entry.insert : entry.prefix !== undefined ? entry.prefix : labelForEntry(entry), true));
+            editor.appendChild(renderField('متن درج‌شونده', 'smPrefix', entry.insert !== undefined ? entry.insert : (node.key === 'cssProperties' && labelForEntry(entry) ? labelForEntry(entry) : entry.prefix !== undefined ? entry.prefix : labelForEntry(entry)), true));
             editor.appendChild(renderField('پسوند درج‌شونده (برای قالب‌ها)', 'smSuffix', entry.suffix || '', true));
             editor.appendChild(renderField('توضیحات', 'smDescription', entry.description || '', true));
         } else {
@@ -425,8 +425,11 @@
             var result;
             if (objectEntry) {
                 result = clone(entry); result.label = label;
-                if ('prefix' in result) result.prefix = modal.querySelector('#smPrefix').value;
-                else if ('insert' in result) result.insert = modal.querySelector('#smPrefix').value;
+                if (node.key === 'cssProperties' && !('insert' in result)) {
+                    result.insert = modal.querySelector('#smPrefix').value;
+                    delete result.prefix; delete result.suffix;
+                } else if ('insert' in result) result.insert = modal.querySelector('#smPrefix').value;
+                else if ('prefix' in result) result.prefix = modal.querySelector('#smPrefix').value;
                 if ('suffix' in result) result.suffix = modal.querySelector('#smSuffix').value;
                 if ('description' in result) result.description = modal.querySelector('#smDescription').value;
                 result.active = activeCheck.checked;

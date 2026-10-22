@@ -358,9 +358,40 @@
         });
         window.addEventListener('editor-open-quick-insert-manager', openQuickInsertModal);
         document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' && !modalOverlay.hidden) {
+            if (modalOverlay.hidden) return;
+
+            if (event.key === 'Escape') {
                 event.preventDefault();
                 closeQuickInsertModal();
+                return;
+            }
+            if (event.key !== 'Tab') return;
+
+            /* فوکوس در محدودهٔ همین دیالوگ بماند؛ والد هنگام فوکوس فرزند دخالت نمی‌کند. */
+            const focusableElements = Array.from(managerCard.querySelectorAll(
+                'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )).filter(function (element) {
+                return !element.hidden &&
+                    element.getAttribute('aria-hidden') !== 'true' &&
+                    element.getClientRects().length > 0;
+            });
+
+            if (!focusableElements.length) {
+                event.preventDefault();
+                managerCard.focus();
+                return;
+            }
+
+            const first = focusableElements[0];
+            const last = focusableElements[focusableElements.length - 1];
+            if (event.shiftKey && (document.activeElement === first ||
+                document.activeElement === managerCard || !managerCard.contains(document.activeElement))) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && (document.activeElement === last ||
+                document.activeElement === managerCard || !managerCard.contains(document.activeElement))) {
+                event.preventDefault();
+                first.focus();
             }
         });
 

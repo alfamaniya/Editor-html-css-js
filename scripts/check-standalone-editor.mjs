@@ -7,11 +7,12 @@ import { spawnSync } from 'node:child_process';
 
 const sourcePath = 'index.html';
 const bundlePath = 'index-test-etitor.html';
+const cssFiles = ['style.css', 'settings.css'];
 const scriptFiles = [
     'html-suggestions.js', 'css-suggestions.js', 'js-suggestions.js',
-    'next-word-suggestions.js', 'script.js', 'word-tree.js', 'github-update.js'
+    'next-word-suggestions.js', 'script.js', 'settings.js', 'word-tree.js', 'github-update.js'
 ];
-const expectedAssets = ['style.css', ...scriptFiles];
+const expectedAssets = [...cssFiles, ...scriptFiles];
 const voidTags = new Set([
     'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
     'link', 'meta', 'param', 'source', 'track', 'wbr'
@@ -185,7 +186,8 @@ function main() {
     assert(embedded.assets.size === expectedAssets.length,
         'Expected ' + expectedAssets.length + ' embedded assets; found ' + embedded.assets.size + '.');
 
-    const expectedContent = new Map([['style.css', safeInlineCode(readText('style.css'), 'style')]]);
+    const expectedContent = new Map();
+    for (const filename of cssFiles) expectedContent.set(filename, safeInlineCode(readText(filename), 'style'));
     for (const filename of scriptFiles) expectedContent.set(filename, safeInlineCode(readText(filename), 'script'));
 
     for (const [filename, content] of expectedContent) {
@@ -195,13 +197,13 @@ function main() {
         if (filename.endsWith('.js')) checkJavaScript(filename, embedded.assets.get(filename));
     }
 
-    checkCss(embedded.assets.get('style.css'));
+    for (const filename of cssFiles) checkCss(embedded.assets.get(filename));
     checkHtmlStructure(bundleHtml);
 
     for (const id of [
         'tab-html', 'tab-css', 'tab-js', 'output', 'fileExplorer',
         'btnDownload', 'btnReset', 'btnClear', 'btnClearAll',
-        'helpPanel', 'libsPanel', 'wordTreeModal'
+        'helpPanel', 'libsPanel', 'wordTreeModal', 'settingsScreen', 'btnSettingsSaveReturn'
     ]) {
         assert(sourceHtml.includes('id="' + id + '"') && bundleHtml.includes('id="' + id + '"'),
             'Core editor control is missing from standalone output: ' + id);

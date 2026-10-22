@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const htmlPath = resolve(root, 'index.html');
-const cssPath = resolve(root, 'style.css');
+const cssFiles = ['style.css', 'settings.css'];
 const outputPath = resolve(root, 'index-test-etitor.html');
 const temporaryPath = outputPath + '.tmp';
 
@@ -22,10 +22,11 @@ const scriptFiles = [
     'js-suggestions.js',
     'next-word-suggestions.js',
     'script.js',
+    'settings.js',
     'word-tree.js',
     'github-update.js'
 ];
-const expectedAssetOrder = ['style.css', ...scriptFiles];
+const expectedAssetOrder = [...cssFiles, ...scriptFiles];
 
 async function readText(path) {
     const content = await readFile(path, 'utf8');
@@ -178,8 +179,7 @@ function assertEmbeddedAssetsMatch(html, expectedContent) {
 
 async function build() {
     let html = await readText(htmlPath);
-    const css = await readText(cssPath);
-    const expectedContent = new Map([['style.css', escapeInlineStyle(css)]]);
+    const expectedContent = new Map();
 
     assertSourceAssetContract(html);
 
@@ -196,12 +196,21 @@ async function build() {
         'DOCTYPE declaration'
     );
 
-    html = replaceExactlyOnce(
-        html,
-        /<link\b[^>]*\bhref=["']style\.css["'][^>]*>/i,
-        '<style data-bundled-from="style.css">\n' + escapeInlineStyle(css) + '\n</style>',
-        'stylesheet reference to style.css'
-    );
+    for (const filename of cssFiles) {
+        const css = await readText(resolve(root, filename));
+        const escapedFilename = filename.replace(/\./g, '\\.');
+        const stylesheetTag = new RegExp(
+            '<link rel="stylesheet" href="' + escapedFilename + '">',
+            'g'
+        );
+        html = replaceExactlyOnce(
+            html,
+            stylesheetTag,
+            '<style data-bundled-from="' + filename + '">\n' + escapeInlineStyle(css) + '\n</style>',
+            'stylesheet reference to ' + filename
+        );
+        expectedContent.set(filename, escapeInlineStyle(css));
+    }
 
     for (const filename of scriptFiles) {
         const script = await readText(resolve(root, filename));

@@ -9,6 +9,7 @@
 - پیشنهادهای زمینه‌ای کد و ابزار **Word Tree**؛ این امکانات جایگزین IDE یا تحلیل‌گر کامل زبان نیستند.
 - مدیریت فایل‌های مجازی و کتابخانه‌های CSS/JavaScript.
 - ذخیره‌سازی در `localStorage` و امکان دریافت نسخهٔ بازیابی در برخی خطاها.
+- سکشن «ظاهر برنامه» در تنظیمات؛ استایل و منطق آن در `settings.css` و `settings.js` نگهداری می‌شوند.
 - خروجی به‌صورت یک فایل HTML مستقل یا بستهٔ چهار‌فایلی.
 
 ## اجرا
@@ -57,7 +58,9 @@ node scripts/check-standalone-editor.mjs
 ├── index.html
 ├── index-test-etitor.html
 ├── style.css
+├── settings.css
 ├── script.js
+├── settings.js
 ├── github-update.js
 ├── word-tree.js
 ├── html-suggestions.js
@@ -70,7 +73,8 @@ node scripts/check-standalone-editor.mjs
 
 | فایل | کاربرد |
 |---|---|
-| `index.html`، `style.css`، `script.js` | رابط، ظاهر و منطق اصلی ویرایشگر |
+| `index.html`، `style.css`، `script.js` | ساختار صفحه، ظاهر و منطق اصلی ویرایشگر |
+| `settings.css`، `settings.js` | استایل پنل تنظیمات و منطق سکشن ظاهر برنامه |
 | `html-suggestions.js`، `css-suggestions.js`، `js-suggestions.js` | بانک پیشنهادهای زبان‌ها |
 | `next-word-suggestions.js`، `word-tree.js` | پیشنهاد ادامهٔ کد و نمایش Word Tree |
 | `github-update.js` | نمایش زمان آخرین کامیت GitHub |

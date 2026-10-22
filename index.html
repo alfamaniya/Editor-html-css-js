@@ -24,6 +24,7 @@
             <button id="btnFontInc"  title="Increase Font Size">A+</button>
             <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
             <button type="button" id="btnWordTree" title="Open the live word tree">🌳 Word Tree</button>
+            <button type="button" id="btnSettings" title="تنظیمات ویرایشگر" aria-controls="settingsScreen" aria-haspopup="dialog" aria-expanded="false">⚙ تنظیمات</button>
         </div>
         <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
         <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
@@ -399,6 +400,186 @@
             </div>
         </div>
     </div>
+
+    <section id="settingsScreen" class="settings-screen" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" lang="fa" dir="rtl" hidden>
+        <div class="settings-shell">
+            <header class="settings-topbar">
+                <div class="settings-heading">
+                    <span class="settings-eyebrow">محیط شخصی‌سازی ویرایشگر</span>
+                    <h1 id="settingsTitle">تنظیمات برنامه</h1>
+                    <p>طرح اولیه برای بررسی و انتخاب گزینه‌ها؛ کنترل‌های داخل صفحه فعلاً غیرفعال هستند.</p>
+                </div>
+                <button type="button" id="btnSettingsSaveReturn" class="settings-save-return">
+                    <span aria-hidden="true">💾</span>
+                    ذخیره تنظیمات در مرورگر و بازگشت به کدنویسی
+                </button>
+            </header>
+
+            <div class="settings-layout">
+                <aside class="settings-sidebar" aria-label="دسته‌بندی تنظیمات">
+                    <p class="settings-sidebar-title">دسته‌بندی تنظیمات</p>
+                    <div class="settings-nav-item"><span aria-hidden="true">🎨</span><span>ظاهر برنامه</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">⌨️</span><span>ویرایشگر کد</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">🪟</span><span>نمایش زنده</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">▥</span><span>چیدمان محیط</span></div>
+                    <div class="settings-nav-item"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></div>
+                    <div class="settings-sidebar-note">
+                        <span class="settings-status-dot" aria-hidden="true"></span>
+                        <span>نسخهٔ نمایشی برای دریافت نظر شما</span>
+                    </div>
+                </aside>
+
+                <main class="settings-content">
+                    <div class="settings-notice" role="note">
+                        <span class="settings-notice-icon" aria-hidden="true">i</span>
+                        <div>
+                            <strong>این صفحه فعلاً نمونهٔ ظاهری است</strong>
+                            <p>دکمه‌های گزینه‌ها هنوز هیچ تغییری در ویرایشگر ایجاد نمی‌کنند. فقط دکمهٔ بالای صفحه برای ذخیرهٔ پیش‌نویس پیشنهادی و بازگشت فعال است.</p>
+                        </div>
+                    </div>
+
+                    <section class="settings-card" aria-labelledby="settingsAppearanceTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">🎨</span>
+                            <div><h2 id="settingsAppearanceTitle">ظاهر برنامه</h2><p>رنگ‌ها و چگونگی نمایش محیط کار</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>پوستهٔ برنامه</h3><p>انتخاب زمینهٔ کلی محیط</p></div>
+                            <div class="settings-options" role="group" aria-label="گزینه‌های پوسته">
+                                <button type="button" class="settings-option is-selected" disabled>تیره</button>
+                                <button type="button" class="settings-option" disabled>روشن</button>
+                                <button type="button" class="settings-option" disabled>مطابق سیستم</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>رنگ تأکیدی</h3><p>رنگ دکمه‌ها و بخش‌های برجسته</p></div>
+                            <div class="settings-options" role="group" aria-label="رنگ تأکیدی">
+                                <button type="button" class="settings-option settings-color-option is-selected" disabled><span class="settings-color-dot color-blue" aria-hidden="true"></span>آبی</button>
+                                <button type="button" class="settings-option settings-color-option" disabled><span class="settings-color-dot color-green" aria-hidden="true"></span>سبز</button>
+                                <button type="button" class="settings-option settings-color-option" disabled><span class="settings-color-dot color-violet" aria-hidden="true"></span>بنفش</button>
+                                <button type="button" class="settings-option settings-color-option" disabled><span class="settings-color-dot color-orange" aria-hidden="true"></span>نارنجی</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>تراکم رابط کاربری</h3><p>فاصلهٔ میان دکمه‌ها و بخش‌ها</p></div>
+                            <div class="settings-options" role="group" aria-label="تراکم رابط کاربری">
+                                <button type="button" class="settings-option" disabled>فشرده</button>
+                                <button type="button" class="settings-option is-selected" disabled>معمولی</button>
+                                <button type="button" class="settings-option" disabled>بازتر</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsEditorTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">⌨️</span>
+                            <div><h2 id="settingsEditorTitle">ویرایشگر کد</h2><p>خوانایی و امکانات هنگام نوشتن کد</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>اندازهٔ قلم کد</h3><p>تنظیم اندازهٔ نوشته‌ها در پنل‌های کدنویسی</p></div>
+                            <div class="settings-options" role="group" aria-label="اندازه قلم کد">
+                                <button type="button" class="settings-option" disabled>کوچک</button>
+                                <button type="button" class="settings-option is-selected" disabled>متوسط</button>
+                                <button type="button" class="settings-option" disabled>بزرگ</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>شمارهٔ خطوط</h3><p>نمایش شماره کنار هر خط کد</p></div>
+                            <div class="settings-options" role="group" aria-label="نمایش شماره خطوط">
+                                <button type="button" class="settings-option is-selected" disabled>نمایش</button>
+                                <button type="button" class="settings-option" disabled>عدم نمایش</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>شکستن خطوط طولانی</h3><p>نمایش ادامهٔ خط در ردیف بعدی</p></div>
+                            <div class="settings-options" role="group" aria-label="شکستن خطوط طولانی">
+                                <button type="button" class="settings-option" disabled>فعال</button>
+                                <button type="button" class="settings-option is-selected" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>پیشنهاد خودکار کد</h3><p>نمایش پیشنهادها هنگام تایپ</p></div>
+                            <div class="settings-options" role="group" aria-label="پیشنهاد خودکار کد">
+                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
+                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsPreviewTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">🪟</span>
+                            <div><h2 id="settingsPreviewTitle">نمایش زنده</h2><p>رفتار پیش‌نمایش خروجی کد</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>به‌روزرسانی خودکار</h3><p>به‌روزرسانی پیش‌نمایش پس از ویرایش کد</p></div>
+                            <div class="settings-options" role="group" aria-label="به روزرسانی خودکار">
+                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
+                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>وقفهٔ پیش‌نمایش</h3><p>فاصلهٔ زمانی پس از تایپ تا به‌روزرسانی</p></div>
+                            <div class="settings-options" role="group" aria-label="وقفه پیش نمایش">
+                                <button type="button" class="settings-option" disabled>۳۰۰ میلی‌ثانیه</button>
+                                <button type="button" class="settings-option is-selected" disabled>۶۰۰ میلی‌ثانیه</button>
+                                <button type="button" class="settings-option" disabled>۱ ثانیه</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsLayoutTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">▥</span>
+                            <div><h2 id="settingsLayoutTitle">چیدمان محیط</h2><p>نسبت فضای کدنویسی به نمایش زنده</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>نسبت دو پنل</h3><p>تعیین سهم هر پنل از عرض صفحه</p></div>
+                            <div class="settings-options" role="group" aria-label="نسبت پنل‌ها">
+                                <button type="button" class="settings-option is-selected" disabled>۵۰٪ / ۵۰٪</button>
+                                <button type="button" class="settings-option" disabled>۶۰٪ / ۴۰٪</button>
+                                <button type="button" class="settings-option" disabled>۷۰٪ / ۳۰٪</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>جهت نمایش پنل‌ها</h3><p>چیدمان ویرایشگر و پیش‌نمایش</p></div>
+                            <div class="settings-options" role="group" aria-label="جهت نمایش پنل‌ها">
+                                <button type="button" class="settings-option is-selected" disabled>کنار هم</button>
+                                <button type="button" class="settings-option" disabled>روی هم</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="settings-card" aria-labelledby="settingsStorageTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">💾</span>
+                            <div><h2 id="settingsStorageTitle">ذخیره‌سازی و بازیابی</h2><p>رفتار ذخیره‌سازی و بازگردانی تنظیمات</p></div>
+                            <span class="settings-proposed">پیشنهادی</span>
+                        </header>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>ذخیرهٔ خودکار تنظیمات</h3><p>نگهداری تنظیمات در مرورگر</p></div>
+                            <div class="settings-options" role="group" aria-label="ذخیره خودکار تنظیمات">
+                                <button type="button" class="settings-option is-selected" disabled>فعال</button>
+                                <button type="button" class="settings-option" disabled>غیرفعال</button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-row-info"><h3>بازنشانی تنظیمات</h3><p>برگرداندن گزینه‌ها به مقادیر اولیه</p></div>
+                            <div class="settings-options">
+                                <button type="button" class="settings-option settings-reset-option" disabled>بازگردانی پیش‌فرض‌ها</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <p class="settings-bottom-note">پس از تأیید طراحی، گزینه‌های موردنظر را یکی‌یکی فعال می‌کنیم.</p>
+                </main>
+            </div>
+        </div>
+    </section>
 
     <div class="toast" id="toast"></div>
 

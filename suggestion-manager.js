@@ -103,7 +103,10 @@
         modal.querySelector('#smSearch').addEventListener('input', renderTree);
         ['#smLangFilter', '#smTypeFilter', '#smStatusFilter'].forEach(function (selector) { modal.querySelector(selector).addEventListener('change', renderTree); });
         modal.querySelector('#smResetFilters').addEventListener('click', function () { modal.querySelector('#smSearch').value = ''; modal.querySelector('#smLangFilter').value = 'all'; modal.querySelector('#smTypeFilter').value = 'all'; modal.querySelector('#smStatusFilter').value = 'all'; renderTree(); });
-        modal.querySelector('#smNewWord').addEventListener('click', function () { editNode({ kind: 'word', lang: selected && selected.lang || 'html', key: selected && selected.key || 'htmlTags', index: -1 }); });
+        modal.querySelector('#smNewWord').addEventListener('click', function () {
+            if (selected && (selected.kind === 'customBank' || selected.kind === 'customWord')) editNode({ kind: 'customWord', bankIndex: selected.bankIndex, index: -1 });
+            else editNode({ kind: 'word', lang: selected && selected.lang || 'html', key: selected && selected.key || 'htmlTags', index: -1 });
+        });
         modal.querySelector('#smNewCategory').addEventListener('click', addCategory);
         modal.querySelector('#smNewBank').addEventListener('click', addBank);
         modal.addEventListener('click', function (event) { if (event.target === modal) closeModal(); });
@@ -265,7 +268,7 @@
             if (bank.children.length > 1) tree.appendChild(bank);
         });
         var custom = readCustomBanks();
-        if (typeFilter !== 'category' && custom.some(function (bank) { return langFilter === 'all' || bank.lang === langFilter; })) {
+        if (custom.some(function (bank) { return langFilter === 'all' || bank.lang === langFilter; })) {
             var customBank = document.createElement('details'); customBank.open = true;
             var sum = document.createElement('summary'); sum.textContent = 'بانک‌های سفارشی (' + custom.length + ')'; customBank.appendChild(sum);
             custom.forEach(function (bank, bi) {
@@ -277,22 +280,25 @@
                     return matchesStatus && (!query || (bank.name + ' ' + bank.id + ' ' + bank.lang + ' ' + bank.target + ' ' + item.word.label + ' ' + item.word.insert + ' ' + (item.word.description || '')).toLowerCase().indexOf(query) !== -1);
                 });
                 if (query && !matching.length && (bank.name + ' ' + bank.id + ' ' + bank.target).toLowerCase().indexOf(query) === -1) return;
-                resultCount += matching.length;
+                resultCount += typeFilter === 'category' ? 1 : matching.length;
                 var cat = document.createElement('details'); cat.open = true;
                 var cs = document.createElement('summary'); cs.textContent = bank.name + ' (' + words.length + ')'; cat.appendChild(cs);
                 cs.addEventListener('click', function () { selected = { kind: 'customBank', bankIndex: bi }; editNode(selected); });
                 var bankEdit = document.createElement('button'); bankEdit.type = 'button'; bankEdit.className = 'sm-tree-add'; bankEdit.textContent = 'ویرایش بانک';
                 bankEdit.addEventListener('click', function () { selected = { kind: 'customBank', bankIndex: bi }; editNode(selected); });
                 cat.appendChild(bankEdit);
-                matching.forEach(function (item) {
+                if (typeFilter !== 'category') matching.forEach(function (item) {
                     var b = document.createElement('button'); b.type = 'button'; b.className = 'sm-tree-word';
                     b.textContent = (item.word.active === false ? '⏸ ' : '') + item.word.label;
                     b.addEventListener('click', function () { selected = { kind: 'customWord', bankIndex: bi, index: item.index }; renderTree(); editNode(selected); });
                     cat.appendChild(b);
                 });
-                var addWord = document.createElement('button'); addWord.type = 'button'; addWord.className = 'sm-tree-add'; addWord.textContent = '+ افزودن کلمه به این بانک';
-                addWord.addEventListener('click', function () { selected = { kind: 'customWord', bankIndex: bi, index: -1 }; editNode(selected); });
-                cat.appendChild(addWord); customBank.appendChild(cat);
+                if (typeFilter !== 'category') {
+                    var addWord = document.createElement('button'); addWord.type = 'button'; addWord.className = 'sm-tree-add'; addWord.textContent = '+ افزودن کلمه به این بانک';
+                    addWord.addEventListener('click', function () { selected = { kind: 'customWord', bankIndex: bi, index: -1 }; editNode(selected); });
+                    cat.appendChild(addWord);
+                }
+                customBank.appendChild(cat);
             });
             tree.appendChild(customBank);
         }
@@ -373,7 +379,8 @@
                 var nextKey = modal.querySelector('#smCategoryKey').value.trim();
                 var nextLabel = modal.querySelector('#smCategoryLabel').value.trim() || nextKey;
                 if (!nextKey || nextKey === 'snippets' || nextKey.indexOf(' ') !== -1) { setStatus('شناسه فنی معتبر وارد کنید.', true); return; }
-                if (categoryKey.indexOf('snippets.') === 0 && nextKey !== categoryKey) { setStatus('شناسهٔ دسته‌های snippets بخشی از قرارداد موتور پیشنهاد است و قابل تغییر نیست.', true); return; }
+                var fixedCategories = ['htmlTags','htmlAttributes','htmlAbbreviations','htmlAttrsByTag','cssProperties','cssValues','cssAbbreviations','cssAtRules','cssPseudoClasses','cssPseudoElements','cssFunctions','cssUnits','jsWords','jsMembers'];
+                if ((fixedCategories.indexOf(categoryKey) !== -1 || categoryKey.indexOf('snippets.') === 0) && nextKey !== categoryKey) { setStatus('شناسهٔ این دسته توسط موتور پیشنهاد استفاده می‌شود و قابل تغییر نیست؛ نام نمایشی را تغییر دهید.', true); return; }
                 if (nextKey !== categoryKey && data[nextKey] !== undefined) { setStatus('این شناسه قبلاً استفاده شده است.', true); return; }
                 if (nextKey !== categoryKey) {
                     var parts = categoryKey.split('.');
@@ -384,6 +391,7 @@
                     } else { data[nextKey] = data[categoryKey]; delete data[categoryKey]; }
                     if (categoryLabels[categoryKey]) { categoryLabels[nextKey] = categoryLabels[categoryKey]; delete categoryLabels[categoryKey]; }
                     customBanks.forEach(function (bank) { if (bank.target === categoryKey) bank.target = nextKey; });
+                    syncCustomBanks();
                     node.key = nextKey; categoryKey = nextKey;
                 }
                 if (nextLabel && nextLabel !== categoryKey) categoryLabels[categoryKey] = nextLabel;
@@ -392,13 +400,18 @@
                 renderTree(); editNode(node);
             }, function () {
                 if (categoryKey.indexOf('snippets.') === 0) { setStatus('دسته‌های snippets بخشی از قرارداد موتور پیشنهاد هستند و قابل حذف نیستند.', true); return; }
+                var fixedCategories = ['htmlTags','htmlAttributes','htmlAbbreviations','htmlAttrsByTag','cssProperties','cssValues','cssAbbreviations','cssAtRules','cssPseudoClasses','cssPseudoElements','cssFunctions','cssUnits','jsWords','jsMembers'];
+                if (fixedCategories.indexOf(categoryKey) !== -1 || categoryKey.indexOf('snippets.') === 0) { setStatus('دسته‌های سیستمی موتور پیشنهاد قابل حذف نیستند؛ کلمات داخل آن‌ها را مدیریت کنید.', true); return; }
                 var direct = categoryList.filter(function (entry) { return !(entry && entry.__suggestionManagerBankId); }).length;
-                if (!window.confirm('حذف دسته‌بندی «' + categoryKey + '» و ' + direct + ' کلمهٔ مستقیم آن؟')) return;
+                var affectedBanks = customBanks.filter(function (bank) { return bank.target === categoryKey; });
+                if (!window.confirm('حذف دسته‌بندی «' + categoryKey + '» و ' + direct + ' کلمهٔ مستقیم آن؟ ' + affectedBanks.length + ' بانک سفارشی به این دسته متصل‌اند و به منبع پیش‌فرض زبانشان منتقل می‌شوند.')) return;
                 var parts = categoryKey.split('.');
                 if (parts.length === 2 && ['cssValues','htmlAttrsByTag','jsMembers','snippets'].indexOf(parts[0]) !== -1) {
                     if (data[parts[0]]) delete data[parts[0]][parts[1]];
                 } else delete data[categoryKey];
                 delete categoryLabels[categoryKey];
+                affectedBanks.forEach(function (bank) { bank.target = defaultTarget(bank.lang); });
+                syncCustomBanks();
                 selected = null; markDirty('دسته‌بندی حذف شد؛ ذخیره کنید تا نهایی شود.'); renderTree();
                 editor.innerHTML = '<p class="sm-empty">دسته‌بندی حذف شد.</p>';
             });
@@ -498,12 +511,13 @@
     }
     function addCategory() {
         var lang = selected && selected.lang || 'html';
-        var name = window.prompt('نام دسته‌بندی جدید را وارد کنید (مثلاً cssCustomValues):');
-        if (!name) return;
+        var name = window.prompt('عنوان دسته‌بندی جدید را وارد کنید:');
+        if (!name || !name.trim()) return;
         name = name.trim();
-        var key = name.replace(/[^\w.-]/g, '');
-        if (!key || data[key] !== undefined || !/^(html|css|js)/i.test(key)) { setStatus('نام دسته باید یکتا و با html، css یا js آغاز شود.', true); return; }
-        data[key] = []; selected = { kind: 'word', lang: languageForKey(key) || lang, key: key, index: -1 }; markDirty(); renderTree(); editNode(selected);
+        var banks = readCustomBanks();
+        if (banks.some(function (bank) { return bank.name.toLowerCase() === name.toLowerCase(); })) { setStatus('دسته‌بندی یا بانکی با این نام وجود دارد.', true); return; }
+        banks.push({ id: 'custom-' + Date.now().toString(36), name: name, lang: lang, target: defaultTarget(lang), words: [] });
+        writeCustomBanks(banks); selected = { kind: 'customBank', bankIndex: banks.length - 1 }; renderTree(); editNode(selected);
     }
     function addBank() {
         var name = window.prompt('نام بانک سفارشی را وارد کنید:');

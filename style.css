@@ -1997,3 +1997,365 @@ input {
 @media (prefers-reduced-motion: reduce) {
     .settings-save-return { transition: none; }
 }
+
+
+/* =========================================================
+   تنظیمات ظاهری فعال: پوسته، رنگ تأکیدی و تراکم رابط کاربری
+   این قواعد روی محیط ویرایشگر اعمال می‌شوند، نه خروجی iframe.
+   ========================================================= */
+:root {
+    color-scheme: dark;
+    --accent-color: #56a5ff;
+    --accent-strong: #2674ca;
+    --accent-soft: rgb(86 165 255 / 18%);
+    --accent-border: #528fcf;
+    --accent-shadow: rgb(86 165 255 / 24%);
+    --editor-line-height: 1.5;
+}
+
+:root[data-accent="blue"] {
+    --accent-color: #56a5ff;
+    --accent-strong: #2674ca;
+    --accent-soft: rgb(86 165 255 / 18%);
+    --accent-border: #528fcf;
+    --accent-shadow: rgb(86 165 255 / 24%);
+    --blue-accent: #8ab9e8;
+    --blue-border: #527da8;
+    --blue-shadow: rgb(138 185 232 / 25%);
+}
+:root[data-accent="green"] {
+    --accent-color: #53d3a0;
+    --accent-strong: #167d5a;
+    --accent-soft: rgb(83 211 160 / 18%);
+    --accent-border: #3d8d70;
+    --accent-shadow: rgb(83 211 160 / 24%);
+    --blue-accent: #53d3a0;
+    --blue-border: #3d8d70;
+    --blue-shadow: rgb(83 211 160 / 24%);
+}
+:root[data-accent="violet"] {
+    --accent-color: #aa8cff;
+    --accent-strong: #7451bb;
+    --accent-soft: rgb(170 140 255 / 18%);
+    --accent-border: #8267c5;
+    --blue-accent: #aa8cff;
+    --blue-border: #8267c5;
+    --blue-shadow: rgb(170 140 255 / 24%);
+}
+:root[data-accent="orange"] {
+    --accent-color: #ffad65;
+    --accent-strong: #bb641e;
+    --accent-soft: rgb(255 173 101 / 18%);
+    --accent-border: #c47b3d;
+    --accent-shadow: rgb(255 173 101 / 24%);
+    --blue-accent: #ffad65;
+    --blue-border: #c47b3d;
+    --blue-shadow: rgb(255 173 101 / 24%);
+}
+
+/* رنگ انتخاب‌شده روی اجزای فعال، فوکوس و کنترل‌های اصلی قابل مشاهده است. */
+:root .toolbar button:hover,
+:root .toolbar button:focus-visible,
+:root .symbol-toolbar button:hover,
+:root .symbol-toolbar button:focus-visible,
+:root .search-bar button:hover:not(:disabled),
+:root .fe-add-btn:hover,
+:root .fe-new-actions button.primary,
+:root .settings-save-return {
+    border-color: var(--accent-border);
+    box-shadow: 0 3px 13px var(--accent-shadow);
+}
+:root .tab.active {
+    border-color: var(--accent-border);
+    box-shadow: inset 0 2px 0 var(--accent-color);
+}
+:root .fe-item.active {
+    background: linear-gradient(180deg, var(--accent-soft), transparent);
+    border-color: var(--accent-border);
+    color: var(--blue-text);
+    box-shadow: 0 0 8px var(--accent-shadow);
+}
+:root .intellisense-item.selected {
+    background: linear-gradient(180deg, var(--accent-color), var(--accent-strong));
+    color: #fff;
+}
+:root .settings-option.is-selected {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--blue-text);
+    box-shadow: inset 0 0 0 1px var(--accent-soft);
+}
+:root .settings-save-return {
+    border-color: var(--accent-border);
+    background: linear-gradient(135deg, var(--accent-strong), var(--accent-border));
+}
+:root .settings-option:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+:root .settings-option:not(:disabled) {
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .15s ease;
+}
+:root .settings-option:not(:disabled):hover {
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+.settings-active {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--accent-color);
+}
+.settings-apply-status {
+    margin: 0;
+    padding: 10px 18px 13px;
+    color: #9bb4cf;
+    font-size: 10px;
+    line-height: 1.9;
+}
+:root[data-theme="light"] .settings-apply-status { color: #4d647c; }
+
+/* پوستهٔ روشن: اجزای اصلی محیط برنامه و پنل تنظیمات */
+:root[data-theme="light"] {
+    color-scheme: light;
+    --blue-bg-1: #edf3fa;
+    --blue-bg-2: #e5edf6;
+    --blue-bg-3: #f7faff;
+    --blue-bg-4: #d8e4f1;
+    --blue-text: #263b52;
+    --editor-navy: #f8fbff;
+    --editor-gutter: #eaf1f8;
+    --editor-border: #c5d3e1;
+}
+:root[data-theme="light"] body {
+    background: #f1f5fa;
+    color: #24364b;
+}
+:root[data-theme="light"] .settings-header,
+:root[data-theme="light"] .pane-label,
+:root[data-theme="light"] .tabs,
+:root[data-theme="light"] .fe-header {
+    background: linear-gradient(180deg, #f8fbff, #e6edf6);
+    color: #263b52;
+    border-color: #bdcddd;
+    box-shadow: 0 2px 9px rgb(30 54 80 / 8%);
+}
+:root[data-theme="light"] .toolbar button,
+:root[data-theme="light"] .arrow-btn,
+:root[data-theme="light"] .symbol-toolbar button,
+:root[data-theme="light"] .search-bar button,
+:root[data-theme="light"] .fe-toggle-btn,
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .fe-new-actions button,
+:root[data-theme="light"] .tab {
+    background: linear-gradient(180deg, #f9fbfe, #dfe8f2);
+    color: #29415b;
+    border-color: #afc2d6;
+}
+:root[data-theme="light"] .toolbar button:hover,
+:root[data-theme="light"] .arrow-btn:hover,
+:root[data-theme="light"] .symbol-toolbar button:hover,
+:root[data-theme="light"] .search-bar button:hover:not(:disabled),
+:root[data-theme="light"] .fe-add-btn:hover,
+:root[data-theme="light"] .fe-new-actions button:hover {
+    background: var(--accent-soft);
+    color: #20364d;
+}
+:root[data-theme="light"] .tab.active {
+    background: #fff;
+    color: #193955;
+    border-color: var(--accent-border);
+}
+:root[data-theme="light"] .dirty { color: #8d5a00; }
+:root[data-theme="light"] .github-update {
+    background: linear-gradient(90deg, #e8f1fa, #e4eef5);
+    border-color: #bfd2e4;
+    color: #435a70;
+}
+:root[data-theme="light"] .github-update time { color: #203d59; }
+:root[data-theme="light"] .github-update a { color: var(--accent-strong); }
+:root[data-theme="light"] .file-explorer {
+    background: #f4f8fc;
+    border-color: #c4d2e0;
+    color: #283b50;
+}
+:root[data-theme="light"] .fe-controls,
+:root[data-theme="light"] .fe-new-form {
+    background: #edf3f9;
+    border-color: #c6d3e0;
+}
+:root[data-theme="light"] .fe-controls input,
+:root[data-theme="light"] .fe-controls select,
+:root[data-theme="light"] .fe-new-form input,
+:root[data-theme="light"] .fe-new-form select,
+:root[data-theme="light"] .fe-rename-input,
+:root[data-theme="light"] .search-input,
+:root[data-theme="light"] .search-tools-row input,
+:root[data-theme="light"] .search-tools-row select {
+    background: #fff;
+    color: #24384e;
+    border-color: #b9c9d9;
+}
+:root[data-theme="light"] .fe-title,
+:root[data-theme="light"] .fe-item,
+:root[data-theme="light"] .fe-empty,
+:root[data-theme="light"] .fe-help,
+:root[data-theme="light"] .fe-rename,
+:root[data-theme="light"] .fe-del { color: #425a72; }
+:root[data-theme="light"] .fe-item:hover {
+    background: #e4edf6;
+    border-color: #c2d1e0;
+}
+:root[data-theme="light"] .fe-item.active {
+    background: var(--accent-soft);
+    color: #213a53;
+    border-color: var(--accent-border);
+}
+:root[data-theme="light"] .editors,
+:root[data-theme="light"] .editor-wrap {
+    background: #f8fbff;
+}
+:root[data-theme="light"] .line-numbers {
+    background: #eaf1f8;
+    color: #7b8da1;
+    border-right: 1px solid #d0dce7;
+}
+:root[data-theme="light"] .highlight { color: #27384b; }
+:root[data-theme="light"] .input { caret-color: #20384f; }
+:root[data-theme="light"] .input::selection,
+:root[data-theme="light"] .input::-moz-selection { background: var(--accent-soft); }
+:root[data-theme="light"] .hl-tag { color: #b4235c; }
+:root[data-theme="light"] .hl-attr { color: #276b35; }
+:root[data-theme="light"] .hl-string { color: #8b5810; }
+:root[data-theme="light"] .hl-comment { color: #687b8b; }
+:root[data-theme="light"] .hl-doctype { color: #087b91; }
+:root[data-theme="light"] .hl-num { color: #7049b8; }
+:root[data-theme="light"] .search-results {
+    background: #edf3f9;
+    color: #293d53;
+    border-color: #c6d4e2;
+}
+:root[data-theme="light"] .libs-panel {
+    background: #f7faff;
+    color: #24384e;
+}
+:root[data-theme="light"] .intellisense {
+    background: #fff;
+    border-color: var(--accent-border);
+    box-shadow: 0 10px 28px rgb(0 0 0 / 16%);
+}
+:root[data-theme="light"] .intellisense-item { color: #273a50; }
+:root[data-theme="light"] .intellisense-item:hover { color: #1b2e44; }
+:root[data-theme="light"] .modal-box,
+:root[data-theme="light"] .word-tree-dialog,
+:root[data-theme="light"] .word-detail-dialog {
+    background: #f8fbff;
+    color: #24384e;
+    border-color: #c4d2e0;
+}
+:root[data-theme="light"] .modal-title,
+:root[data-theme="light"] .word-tree-dialog h2,
+:root[data-theme="light"] .word-tree-dialog h3,
+:root[data-theme="light"] .word-detail-dialog h2,
+:root[data-theme="light"] .word-detail-dialog h3 { color: #223a52; }
+:root[data-theme="light"] .settings-screen {
+    background: radial-gradient(ellipse at 10% 0%, rgb(70 132 194 / 10%), transparent 42%), #f1f5fa;
+    color: #26394f;
+}
+:root[data-theme="light"] .settings-topbar {
+    background: linear-gradient(115deg, #f9fbff, #e7eef7);
+    border-color: #c7d5e3;
+    box-shadow: 0 8px 30px rgb(40 65 90 / 8%);
+}
+:root[data-theme="light"] .settings-heading h1,
+:root[data-theme="light"] .settings-card-header h2,
+:root[data-theme="light"] .settings-row-info h3,
+:root[data-theme="light"] .settings-notice strong { color: #243950; }
+:root[data-theme="light"] .settings-eyebrow,
+:root[data-theme="light"] .settings-heading p,
+:root[data-theme="light"] .settings-sidebar-title,
+:root[data-theme="light"] .settings-sidebar-note,
+:root[data-theme="light"] .settings-card-header p,
+:root[data-theme="light"] .settings-row-info p,
+:root[data-theme="light"] .settings-bottom-note { color: #566d84; }
+:root[data-theme="light"] .settings-sidebar,
+:root[data-theme="light"] .settings-card {
+    background: linear-gradient(145deg, #fff, #f0f5fa);
+    border-color: #cbd8e4;
+    box-shadow: 0 8px 24px rgb(34 59 83 / 7%);
+}
+:root[data-theme="light"] .settings-nav-item { color: #3c536b; }
+:root[data-theme="light"] .settings-nav-item:first-of-type {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: #263e56;
+}
+:root[data-theme="light"] .settings-notice {
+    background: #eaf3fb;
+    border-color: #c0d7ec;
+    color: #2e4964;
+}
+:root[data-theme="light"] .settings-notice strong { color: #24415c; }
+:root[data-theme="light"] .settings-notice p { color: #4a647d; }
+:root[data-theme="light"] .settings-card-header,
+:root[data-theme="light"] .settings-row + .settings-row { border-color: #d9e2eb; }
+:root[data-theme="light"] .settings-card-icon {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+}
+:root[data-theme="light"] .settings-proposed {
+    background: #edf2f8;
+    border-color: #d0dce7;
+    color: #536a80;
+}
+:root[data-theme="light"] .settings-option {
+    background: #fff;
+    border-color: #c4d2df;
+    color: #334a61;
+}
+:root[data-theme="light"] .settings-option.is-selected {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: #233a52;
+}
+:root[data-theme="light"] .settings-option.settings-reset-option {
+    background: #fff0f0;
+    color: #973e3e;
+    border-color: #e6b6b6;
+}
+:root[data-theme="light"] .settings-status-dot { background: var(--accent-color); }
+
+/* تراکم روی فاصله‌ها و ارتفاع خطوط کد اثر می‌گذارد؛ پیش‌نمایش ثابت می‌ماند. */
+:root[data-density="compact"] { --editor-line-height: 1.32; }
+:root[data-density="normal"] { --editor-line-height: 1.5; }
+:root[data-density="comfortable"] { --editor-line-height: 1.72; }
+
+:root[data-density="compact"] .settings-header { padding: 3px 2px 4px; }
+:root[data-density="compact"] .pane-label { min-height: 34px; padding: 3px 8px; gap: 4px; }
+:root[data-density="compact"] .toolbar { gap: 3px; }
+:root[data-density="compact"] .toolbar button,
+:root[data-density="compact"] .symbol-toolbar button { padding: 3px 7px; min-height: 26px; }
+:root[data-density="compact"] .tabs { gap: 2px; padding: 3px 5px 0; }
+:root[data-density="compact"] .tab { padding: 4px 5px; }
+:root[data-density="compact"] .search-tools-row { padding: 2px 4px; gap: 2px; }
+:root[data-density="compact"] .fe-header { padding: 3px 5px; min-height: 30px; }
+:root[data-density="compact"] .fe-item { padding: 2px 4px; gap: 3px; }
+:root[data-density="compact"] .fe-controls { padding: 4px; gap: 3px; }
+:root[data-density="compact"] .settings-row { padding-top: 10px; padding-bottom: 10px; }
+:root[data-density="compact"] .settings-card-header { padding-top: 12px; padding-bottom: 12px; }
+:root[data-density="comfortable"] .settings-header { padding: 9px 6px 11px; }
+:root[data-density="comfortable"] .pane-label { min-height: 46px; padding: 8px 14px; gap: 9px; }
+:root[data-density="comfortable"] .toolbar { gap: 7px; }
+:root[data-density="comfortable"] .toolbar button,
+:root[data-density="comfortable"] .symbol-toolbar button { padding: 8px 13px; min-height: 34px; }
+:root[data-density="comfortable"] .tabs { gap: 6px; padding: 8px 10px 0; }
+:root[data-density="comfortable"] .tab { padding: 9px 8px; }
+:root[data-density="comfortable"] .search-tools-row { padding: 7px 9px; gap: 6px; }
+:root[data-density="comfortable"] .fe-header { padding: 9px; min-height: 40px; }
+:root[data-density="comfortable"] .fe-item { padding: 7px 8px; gap: 6px; }
+:root[data-density="comfortable"] .fe-controls { padding: 8px; gap: 6px; }
+:root[data-density="comfortable"] .settings-row { padding-top: 19px; padding-bottom: 19px; }
+:root[data-density="comfortable"] .settings-card-header { padding-top: 20px; padding-bottom: 20px; }
+.line-numbers,
+.highlight,
+.input { line-height: var(--editor-line-height, 1.5); }

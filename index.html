@@ -407,11 +407,11 @@
                 <div class="settings-heading">
                     <span class="settings-eyebrow">محیط شخصی‌سازی ویرایشگر</span>
                     <h1 id="settingsTitle">تنظیمات برنامه</h1>
-                    <p>طرح اولیه برای بررسی و انتخاب گزینه‌ها؛ کنترل‌های داخل صفحه فعلاً غیرفعال هستند.</p>
+                    <p>ظاهر محیط را شخصی‌سازی کنید؛ انتخاب‌ها فوراً اعمال می‌شوند و در همین مرورگر می‌مانند.</p>
                 </div>
                 <button type="button" id="btnSettingsSaveReturn" class="settings-save-return">
                     <span aria-hidden="true">💾</span>
-                    ذخیره تنظیمات در مرورگر و بازگشت به کدنویسی
+                    ذخیره ظاهر و بازگشت به کدنویسی
                 </button>
             </header>
 
@@ -425,50 +425,51 @@
                     <div class="settings-nav-item"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></div>
                     <div class="settings-sidebar-note">
                         <span class="settings-status-dot" aria-hidden="true"></span>
-                        <span>نسخهٔ نمایشی برای دریافت نظر شما</span>
+                        <span>سکشن ظاهر برنامه فعال است؛ سایر سکشن‌ها در مراحل بعد تکمیل می‌شوند</span>
                     </div>
                 </aside>
 
                 <main class="settings-content">
                     <div class="settings-notice" role="note">
-                        <span class="settings-notice-icon" aria-hidden="true">i</span>
+                        <span class="settings-notice-icon" aria-hidden="true">✓</span>
                         <div>
-                            <strong>این صفحه فعلاً نمونهٔ ظاهری است</strong>
-                            <p>دکمه‌های گزینه‌ها هنوز هیچ تغییری در ویرایشگر ایجاد نمی‌کنند. فقط دکمهٔ بالای صفحه برای ذخیرهٔ پیش‌نویس پیشنهادی و بازگشت فعال است.</p>
+                            <strong>تنظیمات ظاهر فعال است</strong>
+                            <p>پوسته، رنگ تأکیدی و تراکم رابط کاربری همین حالا روی محیط برنامه اعمال و در مرورگر ذخیره می‌شوند. بخش‌های دیگر در مراحل بعد فعال خواهند شد.</p>
                         </div>
                     </div>
 
-                    <section class="settings-card" aria-labelledby="settingsAppearanceTitle">
+                    <section id="settingsAppearanceCard" class="settings-card" aria-labelledby="settingsAppearanceTitle">
                         <header class="settings-card-header">
                             <span class="settings-card-icon" aria-hidden="true">🎨</span>
                             <div><h2 id="settingsAppearanceTitle">ظاهر برنامه</h2><p>رنگ‌ها و چگونگی نمایش محیط کار</p></div>
-                            <span class="settings-proposed">پیشنهادی</span>
+                            <span class="settings-proposed settings-active">فعال</span>
                         </header>
                         <div class="settings-row">
                             <div class="settings-row-info"><h3>پوستهٔ برنامه</h3><p>انتخاب زمینهٔ کلی محیط</p></div>
                             <div class="settings-options" role="group" aria-label="گزینه‌های پوسته">
-                                <button type="button" class="settings-option is-selected" disabled>تیره</button>
-                                <button type="button" class="settings-option" disabled>روشن</button>
-                                <button type="button" class="settings-option" disabled>مطابق سیستم</button>
+                                <button type="button" class="settings-option is-selected" data-setting="theme" data-value="dark" aria-pressed="true">تیره</button>
+                                <button type="button" class="settings-option" data-setting="theme" data-value="light" aria-pressed="false">روشن</button>
+                                <button type="button" class="settings-option" data-setting="theme" data-value="system" aria-pressed="false">مطابق سیستم</button>
                             </div>
                         </div>
                         <div class="settings-row">
                             <div class="settings-row-info"><h3>رنگ تأکیدی</h3><p>رنگ دکمه‌ها و بخش‌های برجسته</p></div>
                             <div class="settings-options" role="group" aria-label="رنگ تأکیدی">
-                                <button type="button" class="settings-option settings-color-option is-selected" disabled><span class="settings-color-dot color-blue" aria-hidden="true"></span>آبی</button>
-                                <button type="button" class="settings-option settings-color-option" disabled><span class="settings-color-dot color-green" aria-hidden="true"></span>سبز</button>
-                                <button type="button" class="settings-option settings-color-option" disabled><span class="settings-color-dot color-violet" aria-hidden="true"></span>بنفش</button>
-                                <button type="button" class="settings-option settings-color-option" disabled><span class="settings-color-dot color-orange" aria-hidden="true"></span>نارنجی</button>
+                                <button type="button" class="settings-option settings-color-option is-selected" data-setting="accentColor" data-value="blue" aria-pressed="true"><span class="settings-color-dot color-blue" aria-hidden="true"></span>آبی</button>
+                                <button type="button" class="settings-option settings-color-option" data-setting="accentColor" data-value="green" aria-pressed="false"><span class="settings-color-dot color-green" aria-hidden="true"></span>سبز</button>
+                                <button type="button" class="settings-option settings-color-option" data-setting="accentColor" data-value="violet" aria-pressed="false"><span class="settings-color-dot color-violet" aria-hidden="true"></span>بنفش</button>
+                                <button type="button" class="settings-option settings-color-option" data-setting="accentColor" data-value="orange" aria-pressed="false"><span class="settings-color-dot color-orange" aria-hidden="true"></span>نارنجی</button>
                             </div>
                         </div>
                         <div class="settings-row">
                             <div class="settings-row-info"><h3>تراکم رابط کاربری</h3><p>فاصلهٔ میان دکمه‌ها و بخش‌ها</p></div>
                             <div class="settings-options" role="group" aria-label="تراکم رابط کاربری">
-                                <button type="button" class="settings-option" disabled>فشرده</button>
-                                <button type="button" class="settings-option is-selected" disabled>معمولی</button>
-                                <button type="button" class="settings-option" disabled>بازتر</button>
+                                <button type="button" class="settings-option" data-setting="density" data-value="compact" aria-pressed="false">فشرده</button>
+                                <button type="button" class="settings-option is-selected" data-setting="density" data-value="normal" aria-pressed="true">معمولی</button>
+                                <button type="button" class="settings-option" data-setting="density" data-value="comfortable" aria-pressed="false">بازتر</button>
                             </div>
                         </div>
+                        <p class="settings-apply-status" id="settingsAppearanceStatus" role="status" aria-live="polite">تغییرات این بخش بلافاصله اعمال و در مرورگر ذخیره می‌شوند.</p>
                     </section>
 
                     <section class="settings-card" aria-labelledby="settingsEditorTitle">
@@ -575,7 +576,7 @@
                         </div>
                     </section>
 
-                    <p class="settings-bottom-note">پس از تأیید طراحی، گزینه‌های موردنظر را یکی‌یکی فعال می‌کنیم.</p>
+                    <p class="settings-bottom-note">سکشن «ظاهر برنامه» فعال شد؛ بخش‌های دیگر در مراحل بعدی تکمیل می‌شوند.</p>
                 </main>
             </div>
         </div>

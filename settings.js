@@ -275,7 +275,7 @@
         });
     });
 
-    /* مدیریت فهرست درج سریع؛ داده‌ها برای هر زبان مستقل و در همین مرورگر ذخیره می‌شوند. */
+    /* مدیریت فهرست درج سریع؛ آیتم‌های پیش‌فرض و سفارشی هر دو قابل ویرایش و حذف‌اند. */
     (function initQuickInsertManager() {
         const tabSelect = document.getElementById('quickInsertTab');
         const labelInput = document.getElementById('quickInsertLabel');
@@ -286,10 +286,14 @@
         const emptyMessage = document.getElementById('quickInsertEmpty');
         const status = document.getElementById('quickInsertStatus');
         if (!tabSelect || !labelInput || !codeInput || !addButton || !cancelButton || !list || !emptyMessage || !status) return;
+
+        const builtinStorageKey = 'html-editor-quick-insert-builtins-v1';
         let editingItemId = null;
+        let editingItemType = null;
 
         function resetQuickInsertEditor() {
             editingItemId = null;
+            editingItemType = null;
             labelInput.value = '';
             codeInput.value = '';
             tabSelect.disabled = false;
@@ -313,36 +317,88 @@
             }
         }
 
+        function readBuiltinSettings() {
+            const saved = readObject(builtinStorageKey);
+            const result = {};
+            ['html', 'css', 'js'].forEach(function (language) {
+                const section = saved[language] && typeof saved[language] === 'object' ? saved[language] : {};
+                result[language] = {
+                    deleted: Array.isArray(section.deleted) ? section.deleted.filter(function (id) { return typeof id === 'string'; }) : [],
+                    overrides: section.overrides && typeof section.overrides === 'object' && !Array.isArray(section.overrides)
+                        ? section.overrides : {}
+                };
+            });
+            return result;
+        }
+
+        function saveBuiltinSettings(config) {
+            return storageSet(builtinStorageKey, JSON.stringify(config));
+        }
+
+        function getBuiltinItems(language) {
+            const data = window.EDITOR_INTELLISENSE_DATA || {};
+            const defaults = data.symbols && Array.isArray(data.symbols[language]) ? data.symbols[language] : [];
+            const config = readBuiltinSettings()[language];
+            return defaults.map(function (item, index) {
+                const id = 'builtin-' + language + '-' + index;
+                const override = config.overrides[id];
+                return {
+                    id: id,
+                    type: 'builtin',
+                    label: override && typeof override.label === 'string' ? override.label : item.label || 'آیتم پیش‌فرض',
+                    prefix: override && typeof override.prefix === 'string' ? override.prefix : item.prefix || '',
+                    suffix: override && typeof override.suffix === 'string' ? override.suffix : item.suffix || '',
+                    description: override && typeof override.description === 'string' ? override.description : item.description || item.label || '',
+                    deleted: config.deleted.includes(id)
+                };
+            }).filter(function (item) { return !item.deleted; });
+        }
+
+        function getAllVisibleItems(language) {
+            return getBuiltinItems(language).concat(readQuickInsertItems()[language].map(function (item) {
+                return Object.assign({}, item, { type: 'custom' });
+            }));
+        }
+
         function saveQuickInsertItems(items) {
             return storageSet(quickInsertStorageKey, JSON.stringify(items));
         }
 
         function renderQuickInsertList() {
             const language = tabSelect.value;
-            const items = readQuickInsertItems()[language];
+            const items = getAllVisibleItems(language);
             list.replaceChildren();
             items.forEach(function (item) {
                 const row = document.createElement('li');
                 row.className = 'settings-quickinsert-item';
                 const details = document.createElement('div');
                 details.className = 'settings-quickinsert-item-details';
+                const titleRow = document.createElement('div');
+                titleRow.className = 'settings-quickinsert-title-row';
                 const title = document.createElement('strong');
                 title.textContent = item.label;
+                const type = document.createElement('span');
+                type.className = 'settings-quickinsert-type';
+                type.textContent = item.type === 'builtin' ? 'پیش‌فرض' : 'سفارشی';
+                titleRow.append(title, type);
                 const preview = document.createElement('code');
-                preview.textContent = item.prefix.length > 100 ? item.prefix.slice(0, 100) + '…' : item.prefix;
-                details.append(title, preview);
+                const fullCode = String(item.prefix || '') + String(item.suffix || '');
+                preview.textContent = fullCode.length > 100 ? fullCode.slice(0, 100) + '…' : fullCode;
+                details.append(titleRow, preview);
                 const actions = document.createElement('div');
                 actions.className = 'settings-quickinsert-item-actions';
                 const edit = document.createElement('button');
                 edit.type = 'button';
                 edit.className = 'settings-quickinsert-edit';
                 edit.dataset.quickInsertEdit = item.id;
+                edit.dataset.quickInsertType = item.type;
                 edit.textContent = 'ویرایش';
                 edit.setAttribute('aria-label', 'ویرایش آیتم ' + item.label);
                 const remove = document.createElement('button');
                 remove.type = 'button';
                 remove.className = 'settings-quickinsert-remove';
                 remove.dataset.quickInsertRemove = item.id;
+                remove.dataset.quickInsertType = item.type;
                 remove.textContent = 'حذف';
                 remove.setAttribute('aria-label', 'حذف آیتم ' + item.label);
                 actions.append(edit, remove);
@@ -350,9 +406,11 @@
                 list.appendChild(row);
             });
             emptyMessage.hidden = items.length > 0;
+            emptyMessage.textContent = 'برای این تب آیتمی در فهرست درج سریع وجود ندارد.';
         }
 
         tabSelect.addEventListener('change', renderQuickInsertList);
+
         addButton.addEventListener('click', function () {
             const label = labelInput.value.trim();
             const code = codeInput.value;
@@ -360,18 +418,36 @@
                 status.textContent = 'عنوان و کد درج‌شونده را وارد کنید.';
                 return;
             }
-            const items = readQuickInsertItems();
-            const languageItems = items[tabSelect.value];
-            if (!editingItemId && languageItems.length >= 100) {
+
+            const language = tabSelect.value;
+            const customItems = readQuickInsertItems();
+            const visibleItems = getAllVisibleItems(language);
+            if (!editingItemId && customItems[language].length >= 100) {
                 status.textContent = 'برای هر تب حداکثر ۱۰۰ آیتم سفارشی مجاز است.';
                 return;
             }
-            if (languageItems.some(function (item) { return item.id !== editingItemId && item.label.toLocaleLowerCase() === label.toLocaleLowerCase(); })) {
+            if (visibleItems.some(function (item) {
+                return !(item.id === editingItemId && item.type === editingItemType) &&
+                    item.label.toLocaleLowerCase() === label.toLocaleLowerCase();
+            })) {
                 status.textContent = 'این عنوان در فهرست همین تب وجود دارد؛ عنوان دیگری انتخاب کنید.';
                 return;
             }
-            if (editingItemId) {
-                const existing = languageItems.find(function (item) { return item.id === editingItemId; });
+
+            if (editingItemType === 'builtin' && editingItemId) {
+                const config = readBuiltinSettings();
+                config[language].overrides[editingItemId] = {
+                    label: label,
+                    prefix: code,
+                    suffix: '',
+                    description: label
+                };
+                if (!saveBuiltinSettings(config)) {
+                    status.textContent = 'ذخیره‌سازی مرورگر در دسترس نیست؛ ویرایش ثبت نشد.';
+                    return;
+                }
+            } else if (editingItemType === 'custom' && editingItemId) {
+                const existing = customItems[language].find(function (item) { return item.id === editingItemId; });
                 if (!existing) {
                     resetQuickInsertEditor();
                     status.textContent = 'آیتم موردنظر پیدا نشد؛ فهرست را دوباره بررسی کنید.';
@@ -380,27 +456,34 @@
                 }
                 existing.label = label;
                 existing.prefix = code;
+                existing.suffix = '';
                 existing.description = label;
+                if (!saveQuickInsertItems(customItems)) {
+                    status.textContent = 'ذخیره‌سازی مرورگر در دسترس نیست؛ ویرایش ثبت نشد.';
+                    return;
+                }
             } else {
-                languageItems.push({
+                customItems[language].push({
                     id: 'custom-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8),
                     label: label,
                     prefix: code,
                     suffix: '',
                     description: label
                 });
+                if (!saveQuickInsertItems(customItems)) {
+                    status.textContent = 'ذخیره‌سازی مرورگر در دسترس نیست؛ آیتم ثبت نشد.';
+                    return;
+                }
             }
-            if (!saveQuickInsertItems(items)) {
-                status.textContent = 'ذخیره‌سازی مرورگر در دسترس نیست؛ تغییر ثبت نشد.';
-                return;
-            }
+
             const wasEditing = Boolean(editingItemId);
+            const editedType = editingItemType;
             resetQuickInsertEditor();
             renderQuickInsertList();
             status.textContent = wasEditing
-                ? 'ویرایش آیتم ذخیره شد و نوار درج سریع به‌روزرسانی شد.'
+                ? (editedType === 'builtin' ? 'آیتم پیش‌فرض ویرایش شد؛ تغییر فقط در همین مرورگر ذخیره شد.' : 'ویرایش آیتم سفارشی ذخیره شد.')
                 : 'آیتم به فهرست ' + tabSelect.options[tabSelect.selectedIndex].text + ' اضافه و ذخیره شد.';
-            window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: tabSelect.value } }));
+            window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: language } }));
         });
 
         cancelButton.addEventListener('click', function () {
@@ -412,35 +495,54 @@
             const editButton = event.target.closest('button[data-quick-insert-edit]');
             const removeButton = event.target.closest('button[data-quick-insert-remove]');
             const language = tabSelect.value;
-            const items = readQuickInsertItems()[language];
 
             if (editButton) {
-                const item = items.find(function (entry) { return entry.id === editButton.dataset.quickInsertEdit; });
+                const type = editButton.dataset.quickInsertType;
+                const item = getAllVisibleItems(language).find(function (entry) {
+                    return entry.id === editButton.dataset.quickInsertEdit && entry.type === type;
+                });
                 if (!item) {
                     status.textContent = 'آیتم موردنظر پیدا نشد.';
                     return;
                 }
                 editingItemId = item.id;
+                editingItemType = type;
                 labelInput.value = item.label;
-                codeInput.value = item.prefix;
+                codeInput.value = String(item.prefix || '') + String(item.suffix || '');
                 tabSelect.disabled = true;
                 addButton.textContent = 'ذخیره ویرایش';
                 cancelButton.hidden = false;
-                status.textContent = 'عنوان یا کد را تغییر دهید و «ذخیره ویرایش» را بزنید.';
+                status.textContent = type === 'builtin'
+                    ? 'آیتم پیش‌فرض را تغییر دهید؛ نسخهٔ اصلی محفوظ می‌ماند و تغییر شما در همین مرورگر ذخیره می‌شود.'
+                    : 'عنوان یا کد را تغییر دهید و «ذخیره ویرایش» را بزنید.';
                 labelInput.focus();
                 return;
             }
 
             if (removeButton) {
-                const allItems = readQuickInsertItems();
-                allItems[language] = allItems[language].filter(function (item) { return item.id !== removeButton.dataset.quickInsertRemove; });
-                if (!saveQuickInsertItems(allItems)) {
-                    status.textContent = 'حذف انجام نشد؛ ذخیره‌سازی مرورگر در دسترس نیست.';
-                    return;
+                const type = removeButton.dataset.quickInsertType;
+                const id = removeButton.dataset.quickInsertRemove;
+                if (type === 'builtin') {
+                    const config = readBuiltinSettings();
+                    if (!config[language].deleted.includes(id)) config[language].deleted.push(id);
+                    delete config[language].overrides[id];
+                    if (!saveBuiltinSettings(config)) {
+                        status.textContent = 'حذف انجام نشد؛ ذخیره‌سازی مرورگر در دسترس نیست.';
+                        return;
+                    }
+                } else {
+                    const allItems = readQuickInsertItems();
+                    allItems[language] = allItems[language].filter(function (item) { return item.id !== id; });
+                    if (!saveQuickInsertItems(allItems)) {
+                        status.textContent = 'حذف انجام نشد؛ ذخیره‌سازی مرورگر در دسترس نیست.';
+                        return;
+                    }
                 }
-                if (editingItemId === removeButton.dataset.quickInsertRemove) resetQuickInsertEditor();
+                if (editingItemId === id) resetQuickInsertEditor();
                 renderQuickInsertList();
-                status.textContent = 'آیتم از فهرست همین تب حذف شد.';
+                status.textContent = type === 'builtin'
+                    ? 'آیتم پیش‌فرض از فهرست این مرورگر حذف شد.'
+                    : 'آیتم سفارشی از فهرست همین تب حذف شد.';
                 window.dispatchEvent(new CustomEvent('editor-quick-insert-change', { detail: { language: language } }));
             }
         });

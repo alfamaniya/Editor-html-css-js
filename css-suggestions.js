@@ -108,7 +108,6 @@
             {label:'flex-center', insert:'display: flex;\njustify-content: center;\nalign-items: center;', description:'Center content with flexbox', caret:0},
             {label:'grid-center', insert:'display: grid;\nplace-items: center;', description:'Center content with grid', caret:0},
             {label:'transition', insert:'transition: all 0.3s ease;', description:'Common transition', caret:0},
-            {label:'box-shadow', insert:'0 4px 12px rgba(0, 0, 0, 0.15)', description:'Soft shadow value', caret:0}
         ]
     };
     const extendedCssProperties = (

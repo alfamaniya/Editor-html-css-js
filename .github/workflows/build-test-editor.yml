@@ -1,5 +1,7 @@
 name: Build standalone test editor
 
+# این Workflow تا دریافت دستور صریح کاربر غیرفعال است.
+# برای فعال‌سازی، ابتدا باید دستور مستقیم کاربر دریافت شود.
 on:
   workflow_dispatch:
 
@@ -8,6 +10,8 @@ permissions:
 
 jobs:
   build-standalone:
+    # قفل ایمنی: بدون اجازهٔ صریح کاربر اجرا نشود.
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Check out main

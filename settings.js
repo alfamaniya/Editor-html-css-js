@@ -32,7 +32,7 @@
 
     const allowedValues = {
         theme: ['dark', 'light', 'system'],
-        accentColor: ['blue', 'green', 'violet', 'orange'],
+        accentColor: ['blue', 'green', 'red', 'yellow'],
         density: ['compact', 'normal', 'comfortable'],
         autoSaveSettings: ['on', 'off'],
         lineNumbers: ['on', 'off'],

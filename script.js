@@ -3524,7 +3524,7 @@
                 const end = Math.max(start, Math.min(file.content.length, Number(options.end) || start));
                 const metrics = window.getComputedStyle(editor.ta);
                 const lineHeight = parseFloat(metrics.lineHeight) || (parseFloat(metrics.fontSize) || 15) * 1.5;
-                const lineNumber = file.content.slice(0, start).split('\\n').length;
+                const lineNumber = file.content.slice(0, start).split('\n').length;
                 editor.ta.focus();
                 editor.ta.scrollTop = Math.max(0, (lineNumber - 2) * lineHeight);
                 editor.ta.setSelectionRange(start, end);

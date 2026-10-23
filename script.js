@@ -1641,6 +1641,7 @@
                 const extraHead = stripBundledAssetReferences(project.headExtras || '',cssFiles,jsFiles,false);
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
+                if (inspectorHook) headParts.push(inspectorHook);
                 if (externalAssetBaseName) {
                     if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
                 } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');

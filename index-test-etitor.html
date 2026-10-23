@@ -9219,7 +9219,14 @@ iframe#output {
             function apply() {
                 if (!ctx) return;
                 const c = ctx;
-                const text = ': ' + formatColor(hsvToRgb(h, s, v)) + ';';
+                let text;
+                if (c.mode === 'token') {
+                    text = formatColor(hsvToRgb(h, s, v));
+                } else {
+                    const beforeCaret = c.ta.value.substring(0, c.pos);
+                    const needsColon = !beforeCaret.trimEnd().endsWith(':');
+                    text = (needsColon ? ': ' : ' ') + formatColor(hsvToRgb(h, s, v)) + ';';
+                }
                 close();
                 c.ta.focus();
                 c.ta.setSelectionRange(c.pos, c.pos + c.replaceLen);
@@ -9240,6 +9247,19 @@ iframe#output {
                 }
             }, true);
             window.addEventListener('resize', closeIfOpen);
+
+            const COLOR_PROPERTIES = new Set([
+                'color', 'background', 'background-color', 'border-color', 'border', 'border-top', 'border-right',
+                'border-bottom', 'border-left', 'border-top-color', 'border-right-color', 'border-bottom-color',
+                'border-left-color', 'outline-color', 'outline', 'fill', 'stroke', 'caret-color', 'box-shadow',
+                'text-shadow', 'text-decoration-color', 'column-rule-color', 'column-rule', 'accent-color'
+            ]);
+
+            function isColorProperty(prop) {
+                if (!prop) return false;
+                const p = prop.toLowerCase().trim();
+                return COLOR_PROPERTIES.has(p) || p.endsWith('color') || p.includes('color');
+            }
 
             function isColorContext(val, pos, lang) {
                 const before = val.substring(0, pos);
@@ -9262,7 +9282,21 @@ iframe#output {
                     const m = declaration.match(/^\s*([\w-]+)\s*:\s*[^;]*$/);
                     token = m && m[1];
                 } else { return false; }
-                return !!token && (token.toLowerCase() === 'color' || /-color$/i.test(token));
+                return isColorProperty(token);
+            }
+
+            function findColorTokenAt(val, pos) {
+                if (!val) return null;
+                const colorRegex = /(#[0-9a-fA-F]{3,8}\b|rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[\d.]+\s*)?\)|hsla?\(\s*\d+\s*,\s*\d+%\s*,\s*\d+%\s*(?:,\s*[\d.]+\s*)?\))/gi;
+                let match;
+                while ((match = colorRegex.exec(val)) !== null) {
+                    const start = match.index;
+                    const end = start + match[0].length;
+                    if (pos >= start && pos <= end) {
+                        return { text: match[0], start: start, end: end };
+                    }
+                }
+                return null;
             }
             const measureCtx2 = document.createElement('canvas').getContext('2d');
             function caretRect2(ta, pos) {
@@ -9281,10 +9315,17 @@ iframe#output {
                 };
             }
             function openAt(ta, pos, lang) {
-                const rest = ta.value.substring(pos);
-                const rm = rest.match(/^[ \t]*:[ \t]*([^;\n}"']*);?/);
-                const initial = rm ? parseColor(rm[1]) : null;
-                ctx = { ta: ta, pos: pos, replaceLen: rm ? rm[0].length : 0 };
+                const token = findColorTokenAt(ta.value, pos);
+                let initial = null;
+                if (token) {
+                    initial = parseColor(token.text);
+                    ctx = { ta: ta, pos: token.start, replaceLen: token.text.length, mode: 'token' };
+                } else {
+                    const rest = ta.value.substring(pos);
+                    const rm = rest.match(/^[ \t]*:[ \t]*([^;\n}"']*);?/);
+                    initial = rm ? parseColor(rm[1]) : null;
+                    ctx = { ta: ta, pos: pos, replaceLen: rm ? rm[0].length : 0, mode: 'declaration' };
+                }
                 if (initial) setHsv(initial, true);
                 else { h = 204; s = 0.7626; v = 0.8588; }
                 oldSw.style.background = toHex(hsvToRgb(h, s, v));
@@ -9299,21 +9340,34 @@ iframe#output {
                 el.style.left = left + 'px';
                 el.style.top = top + 'px';
             }
+            function checkAndOpenAtCaret(ta, lang) {
+                if (lang === 'js') return;
+                const pos = ta.selectionStart;
+                const token = findColorTokenAt(ta.value, pos);
+                if (token) {
+                    openAt(ta, pos, lang);
+                    return;
+                }
+                if (isColorContext(ta.value, pos, lang)) {
+                    openAt(ta, pos, lang);
+                }
+            }
+
             function onInput(ta, lang, e) {
                 clearTimeout(timer); close();
                 if (lang === 'js') return;
-                if (!e || e.inputType !== 'insertText' || !e.data || e.data.toLowerCase() !== 'r') return;
                 const pos = ta.selectionStart;
-                if (!isColorContext(ta.value, pos, lang)) return;
+                const token = findColorTokenAt(ta.value, pos);
+                const isCtx = isColorContext(ta.value, pos, lang);
+                if (!token && !isCtx) return;
                 timer = setTimeout(function() {
-                    if (document.activeElement === ta && ta.selectionStart === pos &&
-                        isColorContext(ta.value, pos, lang)) {
-                        openAt(ta, pos, lang);
+                    if (document.activeElement === ta && ta.selectionStart === pos) {
+                        checkAndOpenAtCaret(ta, lang);
                     }
-                }, 300);
+                }, 200);
             }
             function closeIfOpen() { if (!el.hidden) close(); }
-            return { onInput, close, closeIfOpen };
+            return { onInput, openAt, checkAndOpenAtCaret, close, closeIfOpen };
         })();
 
         // ==========================================
@@ -9985,6 +10039,13 @@ iframe#output {
             };
             ['select', 'keyup', 'click', 'input', 'pointerup'].forEach(function(eventName) {
                 ta.addEventListener(eventName, rememberSelection);
+            });
+            ['click', 'keyup', 'pointerup'].forEach(function(eventName) {
+                ta.addEventListener(eventName, function() {
+                    if (document.activeElement === ta && ta.selectionStart === ta.selectionEnd) {
+                        picker.checkAndOpenAtCaret(ta, lang);
+                    }
+                });
             });
             rememberSelection();
         });

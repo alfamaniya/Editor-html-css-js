@@ -1607,6 +1607,8 @@
                 'window.addEventListener("keydown",function(e){ if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="s"){ e.preventDefault(); parent.postMessage({editorSave:true},"*"); } });',
                 '<\/script>'
             ].join('\n');
+            const inspectorHook = forExport || typeof window.EditorElementInspectorPreviewHook !== 'string'
+                ? '' : window.EditorElementInspectorPreviewHook;
             const safeTitle = String(project.documentTitle || 'My Page')
                 .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             let output;
@@ -1620,6 +1622,7 @@
                 const extraHead = stripBundledAssetReferences(project.headExtras || '',cssFiles,jsFiles,false);
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
+                if (inspectorHook) headParts.push(inspectorHook);
                 if (externalAssetBaseName) {
                     if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
                 } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
@@ -1638,6 +1641,7 @@
                 const extraHead = stripBundledAssetReferences(project.headExtras || '',cssFiles,jsFiles,false);
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
+                if (inspectorHook) headParts.push(inspectorHook);
                 if (externalAssetBaseName) {
                     if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
                 } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
@@ -2947,6 +2951,9 @@
             function refresh() {
                 code.innerHTML = highlight(ta.value) + '\n';
                 applySearchHighlights(code, searchInput.value);
+                if (window.EditorElementInspector && typeof window.EditorElementInspector.renderDecorations === 'function') {
+                    window.EditorElementInspector.renderDecorations(lang, ta.value, code);
+                }
                 const count = ta.value.split('\n').length;
                 const parts = new Array(count);
                 for (let i = 0; i < count; i++) parts[i] = i + 1;
@@ -3491,6 +3498,40 @@
         };
         window.EditorBackupAPI.getActiveTab = function () {
             return activeTab;
+        };
+
+        window.EditorElementInspectorAPI = {
+            getProject: function () {
+                return JSON.parse(JSON.stringify(project));
+            },
+            openFile: function (fileId) {
+                return openFile(fileId);
+            },
+            switchTab: function (lang) {
+                if (LANGS.includes(lang)) switchTab(lang);
+            },
+            showMessage: function (message, type) {
+                showToast(String(message || ''), type === 'error' ? 'error' : 'info');
+            },
+            focusRange: function (options) {
+                if (!options || !LANGS.includes(options.lang)) return false;
+                const file = getFile(options.fileId);
+                if (!file || file.type !== options.lang || file.content !== options.source) return false;
+                if (project.activeFileId !== file.id || activeTab !== options.lang) openFile(file.id);
+                const editor = editors[options.lang];
+                if (!editor || editor.ta.value !== file.content) return false;
+                editor.refresh();
+                const start = Math.max(0, Math.min(file.content.length, Number(options.start) || 0));
+                const end = Math.max(start, Math.min(file.content.length, Number(options.end) || start));
+                const metrics = window.getComputedStyle(editor.ta);
+                const lineHeight = parseFloat(metrics.lineHeight) || (parseFloat(metrics.fontSize) || 15) * 1.5;
+                const lineNumber = file.content.slice(0, start).split('\n').length;
+                editor.ta.focus();
+                editor.ta.scrollTop = Math.max(0, (lineNumber - 2) * lineHeight);
+                editor.ta.setSelectionRange(start, end);
+                editor.syncScroll();
+                return true;
+            }
         };
 
         setDirty(false);

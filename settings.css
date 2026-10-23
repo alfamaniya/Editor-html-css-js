@@ -178,10 +178,10 @@
 .settings-option.is-selected { border-color: #518acb; background: rgb(48 101 163 / 25%); color: #e4f1ff; box-shadow: inset 0 0 0 1px rgb(81 138 203 / 10%); }
 .settings-option:disabled { opacity: 1; }
 .settings-color-dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 0 2px rgb(255 255 255 / 9%); }
+.settings-color-dot.color-red { background: #ff5252; }
 .settings-color-dot.color-blue { background: #56a5ff; }
+.settings-color-dot.color-yellow { background: #ffd54f; }
 .settings-color-dot.color-green { background: #53d3a0; }
-.settings-color-dot.color-violet { background: #aa8cff; }
-.settings-color-dot.color-orange { background: #ffad65; }
 .settings-option.settings-reset-option { border-color: rgb(219 126 126 / 30%); background: rgb(139 54 54 / 15%); color: #f0bcbc; }
 .settings-bottom-note { padding: 3px 4px 0; color: #8ea3be; font-size: 10px; line-height: 1.9; text-align: center; }
 

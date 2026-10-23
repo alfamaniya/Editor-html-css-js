@@ -223,11 +223,11 @@
             border-color: transparent;
             box-shadow: 0 -4px 16px var(--blue-shadow);
         }
-        .tab[data-tab="html"].active { background: linear-gradient(180deg, #b6d5f5, #6fa7e8); }
-        .tab[data-tab="css"].active  { background: linear-gradient(180deg, #9fc4ed, #5f93c7); }
-        .tab[data-tab="js"].active   { background: linear-gradient(180deg, #c4d7e9, #88a9ca); }
-        .tab[data-tab="libs"].active { background: linear-gradient(180deg, var(--green-light), var(--green)); }
-        .tab[data-tab="help"].active { background: linear-gradient(180deg, #d7e8ff, #91b8f5); }
+.tab[data-tab="html"].active { background: linear-gradient(180deg, #ff7b7b, #e63946); color: #ffffff; }
+.tab[data-tab="css"].active  { background: linear-gradient(180deg, #70a1ff, #1e90ff); color: #ffffff; }
+.tab[data-tab="js"].active   { background: linear-gradient(180deg, #ffe066, #f1c40f); color: #172333; }
+.tab[data-tab="libs"].active { background: linear-gradient(180deg, #a8e6cf, #2ecc71); color: #172333; }
+.tab[data-tab="help"].active { background: linear-gradient(180deg, #a8e6cf, #2ecc71); color: #172333; }
 
         .search-tools-row {
             box-sizing: border-box;
@@ -1803,6 +1803,16 @@ input {
     --editor-line-height: 1.5;
 }
 
+:root[data-accent="red"] {
+    --accent-color: #ff5252;
+    --accent-strong: #d32f2f;
+    --accent-soft: rgb(255 82 82 / 18%);
+    --accent-border: #e53935;
+    --accent-shadow: rgb(255 82 82 / 24%);
+    --blue-accent: #ff5252;
+    --blue-border: #e53935;
+    --blue-shadow: rgb(255 82 82 / 24%);
+}
 :root[data-accent="blue"] {
     --accent-color: #56a5ff;
     --accent-strong: #2674ca;
@@ -1813,6 +1823,16 @@ input {
     --blue-border: #527da8;
     --blue-shadow: rgb(138 185 232 / 25%);
 }
+:root[data-accent="yellow"] {
+    --accent-color: #ffd54f;
+    --accent-strong: #f57f17;
+    --accent-soft: rgb(255 213 79 / 18%);
+    --accent-border: #fbc02d;
+    --accent-shadow: rgb(255 213 79 / 24%);
+    --blue-accent: #ffd54f;
+    --blue-border: #fbc02d;
+    --blue-shadow: rgb(255 213 79 / 24%);
+}
 :root[data-accent="green"] {
     --accent-color: #53d3a0;
     --accent-strong: #167d5a;
@@ -1822,25 +1842,6 @@ input {
     --blue-accent: #53d3a0;
     --blue-border: #3d8d70;
     --blue-shadow: rgb(83 211 160 / 24%);
-}
-:root[data-accent="violet"] {
-    --accent-color: #aa8cff;
-    --accent-strong: #7451bb;
-    --accent-soft: rgb(170 140 255 / 18%);
-    --accent-border: #8267c5;
-    --blue-accent: #aa8cff;
-    --blue-border: #8267c5;
-    --blue-shadow: rgb(170 140 255 / 24%);
-}
-:root[data-accent="orange"] {
-    --accent-color: #ffad65;
-    --accent-strong: #bb641e;
-    --accent-soft: rgb(255 173 101 / 18%);
-    --accent-border: #c47b3d;
-    --accent-shadow: rgb(255 173 101 / 24%);
-    --blue-accent: #ffad65;
-    --blue-border: #c47b3d;
-    --blue-shadow: rgb(255 173 101 / 24%);
 }
 
 /* رنگ انتخاب‌شده روی اجزای فعال، فوکوس و کنترل‌های اصلی قابل مشاهده است. */

@@ -22,6 +22,7 @@ const scriptFiles = [
     'js-suggestions.js',
     'suggestion-manager.js',
     'next-word-suggestions.js',
+    'preview-element-inspector.js',
     'script.js',
     'settings.js',
     'backup-restore.js',

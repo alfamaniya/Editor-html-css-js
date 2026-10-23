@@ -52,9 +52,11 @@
 
             <div class="search-tools-row">
                 <div class="search-bar">
+                    <label class="visually-hidden" for="searchInput">Search code</label>
                     <input type="text" class="search-input" id="searchInput"
                            placeholder="🔍 Search code... (Ctrl+F)"
-                           dir="auto" spellcheck="false" autocomplete="off">
+                           dir="auto" spellcheck="false" autocomplete="off"
+                           aria-label="Search code">
                     <span class="search-count zero" id="searchCount">0</span>
                     <button type="button" id="searchPrev" title="Previous result (Shift+Enter)">▲</button>
                     <button type="button" id="searchNext" title="Next result (Enter)">▼</button>
@@ -120,15 +122,19 @@
                         <div class="lib-form">
                             <div class="lib-form-title">➕ Add New Library</div>
                             <div class="lib-form-row">
-                                <input type="text" id="libName" placeholder="Library name (e.g. jQuery)">
-                                <select id="libType">
+                                <label class="visually-hidden" for="libName">Library name</label>
+                                <input type="text" id="libName" placeholder="Library name (e.g. jQuery)" aria-label="Library name">
+                                <label class="visually-hidden" for="libType">Library type</label>
+                                <select id="libType" aria-label="Library type">
                                     <option value="css">CSS</option>
                                     <option value="js">JS</option>
                                 </select>
                             </div>
+                            <label class="visually-hidden" for="libCode">Library code</label>
                             <textarea id="libCode"
                                 placeholder="Paste library code here..."
-                                spellcheck="false" autocomplete="off"></textarea>
+                                spellcheck="false" autocomplete="off"
+                                aria-label="Library code"></textarea>
                             <button type="button" class="lib-add-btn" id="libAddBtn">
                                 ➕ Add to Libraries
                             </button>

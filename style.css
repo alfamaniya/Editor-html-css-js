@@ -2046,7 +2046,7 @@ input {
 
 
 /* تنظیمات اجرایی پنل‌ها و خوانایی کد؛ مقادیر از settings.js کنترل می‌شوند. */
-:root { --editor-pane-ratio: 50%; }
+:root { --editor-pane-ratio: 60%; }
 
 :root[data-line-numbers="off"] .line-numbers {
     display: none !important;
@@ -2135,3 +2135,175 @@ input {
         display: none !important;
     }
 }
+
+/* اصلاح واکنش‌گرایی نوار ابزار، پنل فایل‌ها و فضای پیش‌نمایش */
+body,
+.page-symbol-header,
+.settings-header,
+.github-update,
+.container,
+.editor-pane,
+.preview-pane,
+.editor-body,
+.editors,
+.file-explorer,
+.code-wrap {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.page-symbol-header .symbol-toolbar {
+    align-content: center;
+    overflow-x: hidden;
+}
+
+.symbol-toolbar button {
+    flex: 0 1 auto;
+    max-width: 100%;
+}
+
+.pane-label,
+.pane-label .toolbar,
+.tabs,
+.editor-body,
+.editors,
+.code-wrap,
+.preview-pane {
+    min-width: 0;
+}
+
+.pane-label .toolbar {
+    flex: 1 1 auto;
+    width: 100%;
+    justify-content: center;
+}
+
+.toolbar button {
+    min-height: 34px;
+    max-width: 100%;
+}
+
+.github-update {
+    box-sizing: border-box;
+    gap: clamp(3px, 1vw, 9px);
+    line-height: 1.55;
+}
+.github-update > [role="status"] {
+    min-width: 0;
+    max-width: 100%;
+}
+.github-update a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.editor-pane,
+.preview-pane {
+    min-height: 0;
+}
+.file-explorer {
+    min-width: 0;
+}
+iframe#output {
+    display: block;
+    min-width: 0;
+    min-height: 0;
+}
+
+@media (max-width: 760px) {
+    :root { --file-explorer-width: min(56vw, 240px); }
+
+    .file-explorer:not(.is-collapsed) {
+        max-width: var(--file-explorer-width);
+    }
+
+    .page-symbol-header .symbol-toolbar {
+        gap: 3px;
+        padding: 5px;
+    }
+
+    .settings-header .pane-label {
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .pane-label .toolbar {
+        gap: 4px;
+    }
+
+    .github-update {
+        padding: 7px 8px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 560px) {
+    .settings-header .pane-label {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas:
+            "undo redo"
+            "toolbar toolbar"
+            "dirty dirty";
+        align-items: center;
+        justify-content: stretch;
+        gap: 7px;
+        padding: 7px 8px;
+    }
+
+    .settings-header .pane-label > .arrow-btn.left {
+        grid-area: undo;
+        justify-self: start;
+    }
+
+    .settings-header .pane-label > .arrow-btn.right {
+        grid-area: redo;
+        justify-self: end;
+    }
+
+    .settings-header .pane-label > .toolbar {
+        grid-area: toolbar;
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        gap: 5px;
+    }
+
+    .settings-header .pane-label > .dirty {
+        grid-area: dirty;
+        justify-self: center;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .toolbar button {
+        min-height: 36px;
+        padding: 6px 8px;
+        font-size: clamp(11px, 2.8vw, 13px);
+    }
+
+    .symbol-toolbar button {
+        font-size: clamp(10px, 2.6vw, 11px);
+        padding-inline: 5px;
+    }
+
+    .tabs {
+        gap: 3px;
+        padding-inline: 4px;
+    }
+
+    .tab {
+        min-width: 0;
+        padding: 7px 2px;
+        font-size: 11px;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .github-update > [role="status"] {
+        flex: 1 1 190px;
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
+}
+

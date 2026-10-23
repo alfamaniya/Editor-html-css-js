@@ -129,7 +129,7 @@
         let previewDelayMs = 600;
         let autocompleteEnabled = true;
         let settingsAutoSaveEnabled = true;
-        let currentSplitRatio = 50;
+        let currentSplitRatio = 60;
         let autoSaveTimer = null;
         let dirtyResetTimer = null;
         let project = null;

@@ -7,6 +7,7 @@
 - ویرایش جداگانهٔ HTML، CSS و JavaScript با رنگ‌آمیزی نحوی، شمارهٔ خطوط، Undo/Redo و جست‌وجو.
 - پیش‌نمایش زنده در محیط محدودشدهٔ `iframe`.
 - پیشنهادهای زمینه‌ای کد و ابزار **Word Tree**؛ این امکانات جایگزین IDE یا تحلیل‌گر کامل زبان نیستند.
+- **انتخاب المان از پیش‌نمایش:** ابزار اختیاری برای انتخاب المان، یافتن تگ HTML، قوانین CSS منطبق و ارجاع‌های احتمالی JavaScript؛ این تشخیص یک تحلیل‌گر کامل وابستگی‌ها نیست.
 - مدیریت فایل‌های مجازی و کتابخانه‌های CSS/JavaScript.
 - ذخیره‌سازی در `localStorage` و امکان دریافت نسخهٔ بازیابی در برخی خطاها.
 - سکشن‌های تنظیمات شامل ظاهر برنامه، ویرایشگر کد، نمایش زنده، چیدمان محیط، ذخیره‌سازی/بازیابی و مدیریت فهرست درج سریع هستند؛ ظاهر و منطق تنظیمات در `settings.css` و `settings.js` جدا شده‌اند.
@@ -27,6 +28,7 @@ node --check suggestion-manager.js
 node --check backup-restore.js
 node scripts/check-backup-restore.mjs
 node --check script.js
+node --check preview-element-inspector.js
 node scripts/check-editor-code-processing.mjs
 node scripts/check-settings-dialog-keyboard.mjs
 node scripts/check-index-integrity.mjs
@@ -83,6 +85,7 @@ node scripts/check-standalone-editor.mjs
 ├── backup-restore.css
 ├── suggestion-manager.js
 ├── script.js
+├── preview-element-inspector.js
 ├── settings.js
 ├── backup-restore.js
 ├── github-update.js
@@ -98,6 +101,7 @@ node scripts/check-standalone-editor.mjs
 | فایل | کاربرد |
 |---|---|
 | `index.html`، `style.css`، `script.js` | ساختار صفحه، ظاهر و منطق اصلی ویرایشگر |
+| `preview-element-inspector.js` | انتخاب اختیاری المان از پیش‌نمایش، تطبیق سورس و هایلایت بازه‌ها |
 | `settings.css`، `settings.js` | استایل پنل تنظیمات و منطق سکشن‌های تنظیمات |
 | `suggestion-manager.css`، `suggestion-manager.js` | رابط، مدیریت تغییرات و اتصال بانک‌های سفارشی به منبع واقعی پیشنهادها |
 | `html-suggestions.js`، `css-suggestions.js`، `js-suggestions.js` | بانک پیشنهادهای زبان‌ها |

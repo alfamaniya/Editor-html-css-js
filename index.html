@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="suggestion-manager.css">
+    <link rel="stylesheet" href="backup-restore.css">
 </head>
 <body>
 
@@ -425,6 +426,7 @@
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsPreviewCard"><span aria-hidden="true">🪟</span><span>نمایش زنده</span></button>
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsLayoutCard"><span aria-hidden="true">▥</span><span>چیدمان محیط</span></button>
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsStorageCard"><span aria-hidden="true">💾</span><span>ذخیره‌سازی</span></button>
+                    <button type="button" class="settings-nav-item" data-settings-nav="settingsBackupRestoreCard"><span aria-hidden="true">🗃️</span><span>پشتیبان‌گیری و بازیابی</span></button>
                     <button type="button" class="settings-nav-item" data-settings-nav="settingsQuickInsertCard"><span aria-hidden="true">⚡</span><span>مدیریت فهرست درج سریع</span></button>
                     <button type="button" class="settings-nav-item" id="btnSuggestionManager" aria-haspopup="dialog"><span aria-hidden="true">🧩</span><span>مدیریت کلمات پیشنهادی</span></button>
                     <div class="settings-sidebar-note">
@@ -585,6 +587,65 @@
                         </div>
                     </section>
 
+                    <section id="settingsBackupRestoreCard" class="settings-card" aria-labelledby="settingsBackupRestoreTitle">
+                        <header class="settings-card-header">
+                            <span class="settings-card-icon" aria-hidden="true">🗃️</span>
+                            <div><h2 id="settingsBackupRestoreTitle">پشتیبان‌گیری و بازیابی</h2><p>نسخهٔ قابل دانلود از تنظیمات و داده‌های قابل مدیریت برنامه</p></div>
+                            <span class="settings-proposed settings-active">فعال</span>
+                        </header>
+                        <div class="backup-restore-body">
+                            <p class="backup-restore-intro">بخش‌های دلخواه را برای تهیهٔ فایل انتخاب کنید. هنگام بازیابی، ابتدا فایل به‌طور کامل اعتبارسنجی می‌شود و هیچ داده‌ای پیش از تأیید شما تغییر نمی‌کند.</p>
+                            <section class="backup-restore-panel" aria-labelledby="backupCreateTitle">
+                                <h3 id="backupCreateTitle">تهیهٔ نسخهٔ پشتیبان</h3>
+                                <p>فایل JSON با قالب نسخه‌دار تولید می‌شود. کد اجرایی برنامه و فایل‌های ثابت از این فایل جدا می‌مانند.</p>
+                                <fieldset class="backup-restore-choices">
+                                    <legend>بخش‌های پشتیبان‌گیری</legend>
+                                    <label class="backup-restore-choice"><input type="checkbox" value="settings" data-backup-section checked><span>تنظیمات و ترجیحات محیط</span></label>
+                                    <label class="backup-restore-choice"><input type="checkbox" value="project" data-backup-section checked><span>پروژه و فایل‌های ویرایشگر</span></label>
+                                    <label class="backup-restore-choice"><input type="checkbox" value="libraries" data-backup-section checked><span>کتابخانه‌های سفارشی</span></label>
+                                    <label class="backup-restore-choice"><input type="checkbox" value="suggestedWords" data-backup-section checked><span>بانک‌ها، دسته‌بندی‌ها و کلمات پیشنهادی ذخیره‌شده</span></label>
+                                    <label class="backup-restore-choice"><input type="checkbox" value="quickInsert" data-backup-section checked><span>فهرست درج سریع و تغییرات آیتم‌های پیش‌فرض</span></label>
+                                </fieldset>
+                                <div class="backup-restore-actions">
+                                    <button type="button" class="backup-restore-button primary" id="btnBackupCreate">دانلود نسخهٔ پشتیبان</button>
+                                </div>
+                            </section>
+                            <section class="backup-restore-panel" aria-labelledby="backupRestoreTitle">
+                                <h3 id="backupRestoreTitle">بازیابی از فایل</h3>
+                                <p>فقط JSON با شناسهٔ قالب پشتیبان و نسخهٔ پشتیبانی‌شده پذیرفته می‌شود؛ پسوند یا نوع فایل به‌تنهایی کافی نیست.</p>
+                                <input class="backup-restore-hidden-input" type="file" id="backupRestoreFile" accept=".editor-backup.json,.json,application/json" aria-label="انتخاب فایل پشتیبان">
+                                <div class="backup-restore-actions">
+                                    <button type="button" class="backup-restore-button" id="btnBackupChooseFile">انتخاب فایل پشتیبان</button>
+                                </div>
+                                <div id="backupRestorePreview" hidden>
+                                    <dl class="backup-restore-file-summary">
+                                        <div><dt>نام فایل</dt><dd id="backupRestoreFileName"></dd></div>
+                                        <div><dt>برنامه</dt><dd id="backupRestoreAppName"></dd></div>
+                                        <div><dt>نسخهٔ قالب</dt><dd id="backupRestoreSchemaVersion"></dd></div>
+                                        <div><dt>تاریخ تهیه</dt><dd id="backupRestoreCreatedAt"></dd></div>
+                                        <div><dt>بخش‌های موجود در فایل</dt><dd id="backupRestoreIncludedSections"></dd></div>
+                                    </dl>
+                                    <fieldset class="backup-restore-choices">
+                                        <legend>بخش‌های موردنظر برای بازیابی</legend>
+                                        <div id="backupRestoreSectionChoices" class="backup-restore-choices"></div>
+                                    </fieldset>
+                                    <label class="backup-restore-mode" for="backupRestoreMode">روش بازیابی
+                                        <select id="backupRestoreMode">
+                                            <option value="replace">جایگزینی داده‌های انتخاب‌شده</option>
+                                            <option value="merge" disabled>ادغام با داده‌های فعلی</option>
+                                        </select>
+                                    </label>
+                                    <p class="backup-restore-note">جایگزینی ممکن است داده‌های فعلی بخش انتخاب‌شده را حذف یا عوض کند. ادغام فقط برای کتابخانه‌های سفارشی، بانک‌های کلمات و درج سریع در دسترس است؛ در تعارض شناسه یا عنوان، دادهٔ فعلی اولویت دارد.</p>
+                                    <div class="backup-restore-actions">
+                                        <button type="button" class="backup-restore-button primary" id="btnBackupRestoreApply" disabled>تأیید و بازیابی</button>
+                                    </div>
+                                </div>
+                            </section>
+                            <p id="backupRestoreStatus" class="backup-restore-status" role="status" aria-live="polite">آمادهٔ تهیه یا بازیابی نسخهٔ پشتیبان.</p>
+                            <p class="backup-restore-intro">فایل پشتیبان فقط در محل دانلود انتخابی شما ذخیره می‌شود و همگام‌سازی خودکار میان دستگاه‌ها ایجاد نمی‌کند. فایل ممکن است شامل کد و داده‌های سفارشی شما باشد؛ آن را در محل امن نگه دارید.</p>
+                        </div>
+                    </section>
+
                     <section id="settingsQuickInsertCard" class="settings-card" aria-labelledby="settingsQuickInsertTitle">
                         <header class="settings-card-header">
                             <span class="settings-card-icon" aria-hidden="true">⚡</span>
@@ -638,6 +699,7 @@
     <script src="next-word-suggestions.js"></script>
         <script src="script.js"></script>
     <script src="settings.js"></script>
+    <script src="backup-restore.js"></script>
     <script src="word-tree.js"></script>
     <script src="github-update.js"></script>
 

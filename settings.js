@@ -44,6 +44,12 @@
     };
 
     let settings = loadSettings();
+
+    /* رابط فقط‌خواندنی برای گرفتن تنظیمات زنده هنگام پشتیبان‌گیری */
+    window.EditorBackupAPI = window.EditorBackupAPI || {};
+    window.EditorBackupAPI.getSettings = function () {
+        return JSON.parse(JSON.stringify(settings));
+    };
     let systemThemeMedia = null;
     let toastTimer = null;
     let previouslyFocusedElement = null;

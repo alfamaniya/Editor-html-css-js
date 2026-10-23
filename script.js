@@ -222,6 +222,11 @@
 
         function loadProject() {
             const rawProject = storageGet(PROJECT_KEY);
+            let skipLegacyStarterUpgrade = false;
+            try {
+                skipLegacyStarterUpgrade = window.sessionStorage.getItem('editor-backup-project-restore-v1') === '1';
+                if (skipLegacyStarterUpgrade) window.sessionStorage.removeItem('editor-backup-project-restore-v1');
+            } catch (e) {}
             try {
                 if (rawProject) {
                     const p = JSON.parse(rawProject);
@@ -243,7 +248,7 @@
                             });
 
                         if (validFiles.length) {
-                            if (isUntouchedLegacyStarter(validFiles)) {
+                            if (!skipLegacyStarterUpgrade && isUntouchedLegacyStarter(validFiles)) {
                                 // Keep a recoverable copy, then upgrade only the pristine old starter.
                                 storageSet(PROJECT_RECOVERY_KEY, rawProject);
                                 const upgraded = createDefaultProject();
@@ -3475,6 +3480,18 @@
 
         applyFontSize();
         activateTab(storageGet(TAB_KEY) || 'html');
+
+        /* دسترسی فقط‌خواندنی به وضعیت زندهٔ پروژه پیش از تکمیل autosave */
+        window.EditorBackupAPI = window.EditorBackupAPI || {};
+        window.EditorBackupAPI.getProject = function () {
+            return JSON.parse(JSON.stringify(project));
+        };
+        window.EditorBackupAPI.getLibraries = function () {
+            return JSON.parse(JSON.stringify(libraries));
+        };
+        window.EditorBackupAPI.getActiveTab = function () {
+            return activeTab;
+        };
 
         setDirty(false);
         updatePreviewNow();

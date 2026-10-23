@@ -12,6 +12,9 @@ on:
       - "settings.js"
       - "suggestion-manager.js"
       - "suggestion-manager.css"
+      - "backup-restore.css"
+      - "backup-restore.js"
+      - "scripts/check-backup-restore.mjs"
       - "word-tree.js"
       - "github-update.js"
       - "html-suggestions.js"
@@ -33,6 +36,9 @@ on:
       - "settings.js"
       - "suggestion-manager.js"
       - "suggestion-manager.css"
+      - "backup-restore.css"
+      - "backup-restore.js"
+      - "scripts/check-backup-restore.mjs"
       - "word-tree.js"
       - "github-update.js"
       - "html-suggestions.js"
@@ -135,9 +141,12 @@ jobs:
       - name: Test nested settings dialog keyboard handling
         run: node scripts/check-settings-dialog-keyboard.mjs
 
+      - name: Test backup validation and recovery logic
+        run: node scripts/check-backup-restore.mjs
+
       - name: Check JavaScript syntax used by the index page
         run: |
-          for file in script.js settings.js suggestion-manager.js word-tree.js github-update.js html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js; do
+          for file in script.js settings.js suggestion-manager.js word-tree.js github-update.js html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js backup-restore.js; do
             if [ -f "$file" ]; then
               node --check "$file"
             fi

@@ -7,10 +7,10 @@ import { spawnSync } from 'node:child_process';
 
 const sourcePath = 'index.html';
 const bundlePath = 'index-test-etitor.html';
-const cssFiles = ['style.css', 'settings.css', 'suggestion-manager.css'];
+const cssFiles = ['style.css', 'settings.css', 'suggestion-manager.css', 'backup-restore.css'];
 const scriptFiles = [
     'html-suggestions.js', 'css-suggestions.js', 'js-suggestions.js',
-    'suggestion-manager.js', 'next-word-suggestions.js', 'script.js', 'settings.js', 'word-tree.js', 'github-update.js'
+    'suggestion-manager.js', 'next-word-suggestions.js', 'script.js', 'settings.js', 'backup-restore.js', 'word-tree.js', 'github-update.js'
 ];
 const expectedAssets = [...cssFiles, ...scriptFiles];
 const voidTags = new Set([

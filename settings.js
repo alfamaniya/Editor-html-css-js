@@ -26,7 +26,7 @@
         autocomplete: 'on',
         autoPreview: 'on',
         previewDelay: '600',
-        splitRatio: '50',
+        splitRatio: '60',
         layout: 'side-by-side'
     };
 

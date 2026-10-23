@@ -1,0 +1,33 @@
+/* ظاهر مستقل و واکنش‌گرای پشتیبان‌گیری و بازیابی */
+.backup-restore-body { display: grid; gap: 18px; padding-top: 8px; }
+.backup-restore-intro { margin: 0; color: #aebfd4; line-height: 1.9; font-size: 12px; }
+.backup-restore-panel { min-width: 0; padding: 18px; border: 1px solid rgb(132 161 196 / 24%); border-radius: 13px; background: rgb(14 25 40 / 55%); }
+.backup-restore-panel h3 { margin: 0 0 8px; color: #eef5ff; font-size: 14px; }
+.backup-restore-panel > p { margin: 0 0 14px; color: #aebfd4; font-size: 11px; line-height: 1.9; }
+.backup-restore-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin: 14px 0 18px; padding: 0; border: 0; }
+.backup-restore-choices legend { grid-column: 1 / -1; margin-bottom: 10px; color: #d9e7f8; font-weight: 700; font-size: 12px; }
+.backup-restore-choice { display: flex; align-items: flex-start; gap: 9px; min-width: 0; padding: 11px 12px; border: 1px solid rgb(132 161 196 / 24%); border-radius: 9px; background: rgb(28 43 62 / 75%); color: #dce9f8; font-size: 11px; line-height: 1.7; cursor: pointer; }
+.backup-restore-choice input { flex: 0 0 auto; width: 16px; height: 16px; margin: 2px 0 0; accent-color: #56a2ef; }
+.backup-restore-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+.backup-restore-button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 15px; border: 1px solid #4e739c; border-radius: 9px; background: #243c58; color: #f1f7ff; font: 700 11px/1.7 Tahoma, "Segoe UI", sans-serif; cursor: pointer; }
+.backup-restore-button.primary { background: linear-gradient(135deg, #2674ca, #1f5da8); border-color: #65a7f4; }
+.backup-restore-button:disabled { opacity: .45; cursor: not-allowed; }
+.backup-restore-button:focus-visible, .backup-restore-panel input:focus-visible, .backup-restore-panel select:focus-visible { outline: 3px solid #a8d3ff; outline-offset: 2px; }
+.backup-restore-hidden-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.backup-restore-file-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; margin: 15px 0; padding: 14px; border: 1px solid rgb(132 161 196 / 20%); border-radius: 10px; background: rgb(8 17 29 / 45%); }
+.backup-restore-file-summary div { min-width: 0; }
+.backup-restore-file-summary dt { margin-bottom: 4px; color: #8ea7c7; font-size: 10px; }
+.backup-restore-file-summary dd { margin: 0; color: #e6f0fc; font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
+.backup-restore-mode { display: grid; gap: 6px; max-width: 420px; margin: 15px 0; color: #dbe8f8; font-size: 11px; font-weight: 700; }
+.backup-restore-mode select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #506681; border-radius: 8px; background: #0e1725; color: #f2f7ff; font: inherit; }
+.backup-restore-note { margin-top: 15px !important; padding: 11px 12px; border-right: 3px solid #6b91b8; border-radius: 5px; background: rgb(64 97 132 / 13%); color: #b5c8df !important; }
+.backup-restore-status { margin: 0; padding: 12px 14px; border: 1px solid rgb(132 161 196 / 24%); border-radius: 9px; background: rgb(19 32 49 / 72%); color: #d5e3f5; font-size: 11px; line-height: 1.9; overflow-wrap: anywhere; }
+.backup-restore-status[data-state="success"] { border-color: rgb(73 175 125 / 48%); color: #b9f1d1; }
+.backup-restore-status[data-state="warning"] { border-color: rgb(226 172 80 / 48%); color: #ffe0a4; }
+.backup-restore-status[data-state="error"] { border-color: rgb(223 103 112 / 55%); color: #ffb7bd; }
+.backup-restore-status[data-state="busy"] { color: #b5d8ff; }
+@media (max-width: 760px) {
+    .backup-restore-choices, .backup-restore-file-summary { grid-template-columns: minmax(0, 1fr); }
+    .backup-restore-panel { padding: 14px; }
+    .backup-restore-actions > button { width: 100%; }
+}

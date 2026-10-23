@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const htmlPath = resolve(root, 'index.html');
-const cssFiles = ['style.css', 'settings.css', 'suggestion-manager.css'];
+const cssFiles = ['style.css', 'settings.css', 'suggestion-manager.css', 'backup-restore.css'];
 const outputPath = resolve(root, 'index-test-etitor.html');
 const temporaryPath = outputPath + '.tmp';
 
@@ -24,6 +24,7 @@ const scriptFiles = [
     'next-word-suggestions.js',
     'script.js',
     'settings.js',
+    'backup-restore.js',
     'word-tree.js',
     'github-update.js'
 ];

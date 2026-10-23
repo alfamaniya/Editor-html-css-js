@@ -13,7 +13,7 @@
         'document.addEventListener("pointermove",function(e){if(!active)return;ui();var n=target(e);if(!n){tip.hidden=true;return;}var d=info(n),s="<"+d.tag+">"+(d.id?"  #"+d.id:"")+(d.classes.length?"  ."+d.classes.join("."):"");tip.textContent=s;tip.hidden=false;tip.style.left=Math.max(4,Math.min(e.clientX+12,innerWidth-220))+"px";tip.style.top=Math.max(4,Math.min(e.clientY+14,innerHeight-60))+"px";},true);',
         'document.addEventListener("click",function(e){if(!active)return;var n=target(e);if(!n)return;e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();var d=info(n);d.cssSelectors=css(n);mode(false);try{parent.postMessage({editorElementInspectorSelection:d},"*");}catch(x){}},true);',
         '})();',
-        '<\\/script>'
+        '</script>'
     ].join('\n');
     window.EditorElementInspectorPreviewHook = HOOK;
     const frame = document.getElementById('output');

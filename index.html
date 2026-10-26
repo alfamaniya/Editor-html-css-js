@@ -9,11 +9,46 @@
     <link rel="stylesheet" href="src/features/workspace/toolbar/toolbar-sidebar.css">
     <link rel="stylesheet" href="src/features/workspace/file-manager/file-manager.css">
     <link rel="stylesheet" href="src/features/workspace/search/search-tools.css">
+    <link rel="stylesheet" href="src/features/workspace/search/search-header.css">
     <link rel="stylesheet" href="src/features/settings/settings.css">
     <link rel="stylesheet" href="src/features/suggestions/manager/suggestion-manager.css">
     <link rel="stylesheet" href="src/features/backup-restore/backup-restore.css">
 </head>
 <body class="toolbar-sidebar-open">
+    <header class="workspace-header" id="workspaceHeader" aria-label="جست‌وجو و ابزارهای اصلی">
+        <button type="button" class="file-manager-open-button workspace-menu-button" id="fileManagerOpenButton"
+                aria-controls="fileExplorer" aria-expanded="false" aria-label="باز کردن فایل‌منیجر" title="باز کردن فایل‌منیجر">
+            <span class="menu-glyph" aria-hidden="true"></span>
+        </button>
+        <div class="workspace-header-center">
+            <div class="workspace-history-controls" role="group" aria-label="تاریخچه ویرایش">
+                <button type="button" class="header-history-button" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
+                <button type="button" class="header-history-button" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
+                <span class="dirty header-dirty-badge" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
+            </div>
+            <div class="workspace-search" id="workspaceSearch">
+                <button type="button" class="workspace-search-toggle" id="searchExpandButton"
+                        aria-controls="searchPanel" aria-expanded="false" aria-label="باز کردن جست‌وجو" title="جست‌وجو در کد">
+                    <span class="search-glyph" aria-hidden="true"></span>
+                </button>
+                <div class="workspace-search-panel" id="searchPanel" hidden>
+                    <label class="visually-hidden" for="searchInput">جست‌وجو در کد</label>
+                    <input type="text" class="search-input" id="searchInput"
+                           placeholder="جست‌وجو در کد… (Ctrl+F)"
+                           dir="auto" spellcheck="false" autocomplete="off" aria-label="جست‌وجو در کد">
+                    <span class="search-count zero" id="searchCount">0</span>
+                    <button type="button" id="searchPrev" title="نتیجهٔ قبلی (Shift+Enter)" aria-label="نتیجهٔ قبلی">▲</button>
+                    <button type="button" id="searchNext" title="نتیجهٔ بعدی (Enter)" aria-label="نتیجهٔ بعدی">▼</button>
+                    <button type="button" id="searchClear" title="پاک‌کردن جست‌وجو (Esc)" aria-label="پاک‌کردن جست‌وجو">✕</button>
+                    <div class="search-results" id="searchResults" hidden></div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="toolbar-sidebar-open-button workspace-menu-button" id="toolbarSidebarOpen"
+                aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار تنظیمات" title="باز کردن سایدبار تنظیمات">
+            <span class="menu-glyph" aria-hidden="true"></span>
+        </button>
+    </header>
 
     <header class="page-symbol-header" aria-label="Popular code quick inserts">
         <div class="symbol-toolbar" id="symbolToolbar" role="toolbar" aria-label="Quick inserts for the active language"></div>
@@ -27,12 +62,7 @@
             <button type="button" class="toolbar-sidebar-close-button" id="toolbarSidebarClose" aria-controls="toolbarSidebar" aria-label="بستن نوار ابزار" title="بستن نوار ابزار">×</button>
         </div>
         <div class="pane-label">
-            <div class="toolbar-sidebar-history">
-                <button type="button" class="arrow-btn left" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
-                <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
-                <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
-            </div>
-            <div class="toolbar">
+                <div class="toolbar">
                 <button id="btnDownload" title="Download with Custom Name">⬇ Download</button>
                 <button id="btnReset" title="Restore Default Code">🔁 Reset</button>
                 <button id="btnClear" title="Clear Current File">🗑 Clear</button>
@@ -57,22 +87,6 @@
             </div>
 
 
-            <div class="search-tools-row">
-                <button type="button" class="file-manager-open-button" id="fileManagerOpenButton" aria-controls="fileExplorer" aria-expanded="false" aria-label="باز کردن فایل‌منیجر" title="باز کردن فایل‌منیجر">📁</button>
-                <div class="search-bar">
-                    <label class="visually-hidden" for="searchInput">Search code</label>
-                    <input type="text" class="search-input" id="searchInput"
-                           placeholder="🔍 Search code... (Ctrl+F)"
-                           dir="auto" spellcheck="false" autocomplete="off"
-                           aria-label="Search code">
-                    <span class="search-count zero" id="searchCount">0</span>
-                    <button type="button" id="searchPrev" title="Previous result (Shift+Enter)">▲</button>
-                    <button type="button" id="searchNext" title="Next result (Enter)">▼</button>
-                    <button type="button" id="searchClear" title="Clear (Esc)">✕</button>
-                </div>
-                <button type="button" class="toolbar-sidebar-open-button" id="toolbarSidebarOpen" aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن نوار ابزار" title="باز کردن نوار ابزار">☰</button>
-            </div>
-            <div class="search-results" id="searchResults" hidden></div>
 
             <div class="editor-body">
                 <aside class="file-explorer is-collapsed" id="fileExplorer" aria-label="File manager">
@@ -721,5 +735,6 @@
     <script src="src/features/word-tree/word-tree.js"></script>
 
     <script src="src/features/workspace/file-manager/file-manager-drawer.js"></script>
+    <script src="src/features/workspace/search/search-header.js"></script>
 </body>
 </html>

@@ -77,6 +77,10 @@ Editor-html-css-js/
 │       ├── quick-insert/
 │       │   ├── quick-insert.js
 │       │   └── quick-insert.css
+│       ├── workspace/
+│       │   └── toolbar/
+│       │       ├── toolbar-sidebar.js
+│       │       └── toolbar-sidebar.css
 │       ├── word-tree/word-tree.js
 │       └── integrations/github/github-update.js
 ├── docs/suggestions/tree-world-suggestion.md
@@ -104,6 +108,7 @@ Editor-html-css-js/
 | `src/features/suggestions/next-word/` | پیشنهاد کلمهٔ بعدی |
 | `src/features/live-preview/element-inspector.js` | بازرسی عناصر پیش‌نمایش |
 | `src/features/quick-insert/` | منطق و استایل مستقل نوار درج سریع کلمات و قطعه‌کدها |
+| `src/features/workspace/toolbar/` | منطق و استایل نوار ابزار کناری ویرایشگر؛ شامل کنترل‌های دانلود، پاک‌سازی، راهنما، درخت کلمات و تنظیمات |
 | `src/features/integrations/github/` | قابلیت‌های مرتبط با به‌روزرسانی GitHub |
 | `src/features/word-tree/` و `docs/suggestions/` | درخت کلمات و مستندات مرتبط |
 | `scripts/` | اسکریپت‌های آزمون، بررسی و ساخت |
@@ -128,6 +133,7 @@ Editor-html-css-js/
 | پیشنهاد واژهٔ بعدی | `src/features/suggestions/next-word/` | `next-word-suggestions.js` | منطق پیشنهاد ادامهٔ کلمه یا عبارت؛ منتقل شده است |
 | بازرس عناصر پیش‌نمایش | `src/features/live-preview/` | `element-inspector.js` | ابزار بررسی عناصر پیش‌نمایش و پیوند آن‌ها با کد؛ منتقل شده است |
 | نوار درج سریع | `src/features/quick-insert/` | `quick-insert.js`, `quick-insert.css` | منطق و استایل نوار درج سریع از `script.js` و `style.css` جدا شده‌اند؛ واکنش‌گرایی تک‌ردیفه و اسکرول افقی افزوده شده است |
+| نوار ابزار کناری | `src/features/workspace/toolbar/` | `toolbar-sidebar.js`, `toolbar-sidebar.css` | کنترل‌های سربرگ قبلی به نوار کناری سمت راست منتقل شده‌اند؛ در دسکتاپ باز و در موبایل به‌صورت پوشاننده با پس‌زمینهٔ تارشده باز و بسته می‌شود |
 | درخت کلمات | `src/features/word-tree/` | `word-tree.js` | منطق نمایش و تعامل با درخت کلمات؛ منتقل شده است |
 | یکپارچه‌سازی GitHub | `src/features/integrations/github/` | `github-update.js` | نمایش اطلاعات مرتبط با به‌روزرسانی مخزن GitHub؛ منتقل شده است |
 | مستندات پیشنهادها | `docs/suggestions/` | `tree-world-suggestion.md` | مستند مرتبط با پیشنهادهای درخت کلمات؛ به پوشهٔ مستندات منتقل شده است |
@@ -257,6 +263,7 @@ Editor-html-css-js/
 | `preview-element-inspector.js` | `src/features/live-preview/element-inspector.js` | **منتقل شد**؛ ارجاع HTML اصلاح شد. |
 | `word-tree.js` | `src/features/word-tree/word-tree.js` | **منتقل شد**؛ مستند مرتبط نیز منتقل شد. |
 | `github-update.js` | `src/features/integrations/github/github-update.js` | **منتقل شد**؛ ارجاع HTML اصلاح شد. |
+| کنترل‌های سربرگ و نوار کناری | `src/features/workspace/toolbar/` | **منتقل شد**؛ HTML، استایل اختصاصی، کنترل باز/بسته‌شدن و منابع نسخهٔ مستقل همگام شدند. |
 | `tree-world-suggestion.md` | `docs/suggestions/tree-world-suggestion.md` | **منتقل شد**. |
 | فایل‌های `scripts/*.mjs` | مسیرهای فعلی `scripts/` | فعلاً در ریشهٔ پوشهٔ `scripts/` باقی مانده‌اند؛ انتقال آن‌ها مرحله‌ای جداگانه خواهد بود تا فراخوانی‌ها و Workflowها هماهنگ بمانند. |
 

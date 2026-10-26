@@ -87,14 +87,6 @@
             background: rgba(255, 255, 255, 0.55);
             height: 70px;
         }
-
-        .settings-header {
-            flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
-            gap: 4px; width: 100%; max-width: 100vw; min-width: 0; padding: 5px 4px 7px;
-            background: linear-gradient(180deg, var(--blue-bg-2), var(--blue-bg-1));
-            border-bottom: 1px solid var(--blue-border); box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .settings-header .pane-label { width: 100%; box-shadow: none; border-bottom: 0; padding-top: 2px; padding-bottom: 2px; }
         .pane-label {
             position: relative;
             display: flex;
@@ -271,7 +263,6 @@
             .search-bar { min-width: 104px; gap: 3px; }
             .search-bar .search-count { display: none; }
             .search-bar button { padding: 4px 5px; }
-            .settings-header { padding: 4px 2px 6px; }
         }
 
         .search-input {
@@ -1396,8 +1387,7 @@ textarea:focus-visible,
 /* Unified rounded components and deliberately distinct workspace surfaces. */
 /* Workspace color tokens are defined together in the main :root block. */
 body { background-color: #0e1725; }
-.page-symbol-header,
-.settings-header {
+.page-symbol-header {
     background: linear-gradient(135deg, var(--chrome-purple), var(--chrome-purple-deep));
     border-color: var(--chrome-purple-border);
     box-shadow: 0 5px 18px rgb(0 0 0 / 18%);
@@ -1406,9 +1396,6 @@ body { background-color: #0e1725; }
     background: rgb(13 22 37 / 60%);
     border: 1px solid var(--chrome-purple-border);
     border-radius: 14px;
-}
-.settings-header .pane-label {
-    background: transparent;
 }
 .symbol-toolbar button,
 .toolbar button,
@@ -1458,7 +1445,6 @@ input {
 }
 .symbol-toolbar button { border-radius: 9px; }
 .page-symbol-header,
-.settings-header,
 .editor-pane,
 .preview-pane,
 .file-explorer,
@@ -1537,8 +1523,7 @@ input {
 .page-symbol-header[hidden] { display: none !important; }
 
 @media (max-width: 760px) {
-    .page-symbol-header,
-    .settings-header { border-radius: 0 0 12px 12px; }
+    .page-symbol-header { border-radius: 0 0 12px 12px; }
     .symbol-toolbar { flex-wrap: wrap; }
     .symbol-toolbar button { min-height: 34px; }
 }
@@ -1831,7 +1816,6 @@ input {
     background: #f1f5fa;
     color: #24364b;
 }
-:root[data-theme="light"] .settings-header,
 :root[data-theme="light"] .pane-label,
 :root[data-theme="light"] .tabs,
 :root[data-theme="light"] .fe-header {
@@ -1963,8 +1947,6 @@ input {
 :root[data-density="compact"] { --editor-line-height: 1.32; }
 :root[data-density="normal"] { --editor-line-height: 1.5; }
 :root[data-density="comfortable"] { --editor-line-height: 1.72; }
-
-:root[data-density="compact"] .settings-header { padding: 3px 2px 4px; }
 :root[data-density="compact"] .pane-label { min-height: 34px; padding: 3px 8px; gap: 4px; }
 :root[data-density="compact"] .toolbar { gap: 3px; }
 :root[data-density="compact"] .toolbar button,
@@ -1975,7 +1957,6 @@ input {
 :root[data-density="compact"] .fe-header { padding: 3px 5px; min-height: 30px; }
 :root[data-density="compact"] .fe-item { padding: 2px 4px; gap: 3px; }
 :root[data-density="compact"] .fe-controls { padding: 4px; gap: 3px; }
-:root[data-density="comfortable"] .settings-header { padding: 9px 6px 11px; }
 :root[data-density="comfortable"] .pane-label { min-height: 46px; padding: 8px 14px; gap: 9px; }
 :root[data-density="comfortable"] .toolbar { gap: 7px; }
 :root[data-density="comfortable"] .toolbar button,
@@ -2085,7 +2066,6 @@ input {
 /* اصلاح واکنش‌گرایی نوار ابزار، پنل فایل‌ها و فضای پیش‌نمایش */
 body,
 .page-symbol-header,
-.settings-header,
 .github-update,
 .container,
 .editor-pane,
@@ -2167,11 +2147,6 @@ iframe#output {
         padding: 5px;
     }
 
-    .settings-header .pane-label {
-        gap: 6px;
-        padding: 6px;
-    }
-
     .pane-label .toolbar {
         gap: 4px;
     }
@@ -2183,43 +2158,6 @@ iframe#output {
 }
 
 @media (max-width: 560px) {
-    .settings-header .pane-label {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        grid-template-areas:
-            "undo redo"
-            "toolbar toolbar"
-            "dirty dirty";
-        align-items: center;
-        justify-content: stretch;
-        gap: 7px;
-        padding: 7px 8px;
-    }
-
-    .settings-header .pane-label > .arrow-btn.left {
-        grid-area: undo;
-        justify-self: start;
-    }
-
-    .settings-header .pane-label > .arrow-btn.right {
-        grid-area: redo;
-        justify-self: end;
-    }
-
-    .settings-header .pane-label > .toolbar {
-        grid-area: toolbar;
-        width: 100%;
-        min-width: 0;
-        margin: 0;
-        gap: 5px;
-    }
-
-    .settings-header .pane-label > .dirty {
-        grid-area: dirty;
-        justify-self: center;
-        white-space: normal;
-        text-align: center;
-    }
 
     .toolbar button {
         min-height: 36px;

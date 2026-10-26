@@ -95,14 +95,6 @@
             background: rgba(255, 255, 255, 0.55);
             height: 70px;
         }
-
-        .settings-header {
-            flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
-            gap: 4px; width: 100%; max-width: 100vw; min-width: 0; padding: 5px 4px 7px;
-            background: linear-gradient(180deg, var(--blue-bg-2), var(--blue-bg-1));
-            border-bottom: 1px solid var(--blue-border); box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .settings-header .pane-label { width: 100%; box-shadow: none; border-bottom: 0; padding-top: 2px; padding-bottom: 2px; }
         .pane-label {
             position: relative;
             display: flex;
@@ -279,7 +271,6 @@
             .search-bar { min-width: 104px; gap: 3px; }
             .search-bar .search-count { display: none; }
             .search-bar button { padding: 4px 5px; }
-            .settings-header { padding: 4px 2px 6px; }
         }
 
         .search-input {
@@ -1404,8 +1395,7 @@ textarea:focus-visible,
 /* Unified rounded components and deliberately distinct workspace surfaces. */
 /* Workspace color tokens are defined together in the main :root block. */
 body { background-color: #0e1725; }
-.page-symbol-header,
-.settings-header {
+.page-symbol-header {
     background: linear-gradient(135deg, var(--chrome-purple), var(--chrome-purple-deep));
     border-color: var(--chrome-purple-border);
     box-shadow: 0 5px 18px rgb(0 0 0 / 18%);
@@ -1414,9 +1404,6 @@ body { background-color: #0e1725; }
     background: rgb(13 22 37 / 60%);
     border: 1px solid var(--chrome-purple-border);
     border-radius: 14px;
-}
-.settings-header .pane-label {
-    background: transparent;
 }
 .symbol-toolbar button,
 .toolbar button,
@@ -1466,7 +1453,6 @@ input {
 }
 .symbol-toolbar button { border-radius: 9px; }
 .page-symbol-header,
-.settings-header,
 .editor-pane,
 .preview-pane,
 .file-explorer,
@@ -1545,8 +1531,7 @@ input {
 .page-symbol-header[hidden] { display: none !important; }
 
 @media (max-width: 760px) {
-    .page-symbol-header,
-    .settings-header { border-radius: 0 0 12px 12px; }
+    .page-symbol-header { border-radius: 0 0 12px 12px; }
     .symbol-toolbar { flex-wrap: wrap; }
     .symbol-toolbar button { min-height: 34px; }
 }
@@ -1839,7 +1824,6 @@ input {
     background: #f1f5fa;
     color: #24364b;
 }
-:root[data-theme="light"] .settings-header,
 :root[data-theme="light"] .pane-label,
 :root[data-theme="light"] .tabs,
 :root[data-theme="light"] .fe-header {
@@ -1971,8 +1955,6 @@ input {
 :root[data-density="compact"] { --editor-line-height: 1.32; }
 :root[data-density="normal"] { --editor-line-height: 1.5; }
 :root[data-density="comfortable"] { --editor-line-height: 1.72; }
-
-:root[data-density="compact"] .settings-header { padding: 3px 2px 4px; }
 :root[data-density="compact"] .pane-label { min-height: 34px; padding: 3px 8px; gap: 4px; }
 :root[data-density="compact"] .toolbar { gap: 3px; }
 :root[data-density="compact"] .toolbar button,
@@ -1983,7 +1965,6 @@ input {
 :root[data-density="compact"] .fe-header { padding: 3px 5px; min-height: 30px; }
 :root[data-density="compact"] .fe-item { padding: 2px 4px; gap: 3px; }
 :root[data-density="compact"] .fe-controls { padding: 4px; gap: 3px; }
-:root[data-density="comfortable"] .settings-header { padding: 9px 6px 11px; }
 :root[data-density="comfortable"] .pane-label { min-height: 46px; padding: 8px 14px; gap: 9px; }
 :root[data-density="comfortable"] .toolbar { gap: 7px; }
 :root[data-density="comfortable"] .toolbar button,
@@ -2093,7 +2074,6 @@ input {
 /* اصلاح واکنش‌گرایی نوار ابزار، پنل فایل‌ها و فضای پیش‌نمایش */
 body,
 .page-symbol-header,
-.settings-header,
 .github-update,
 .container,
 .editor-pane,
@@ -2175,11 +2155,6 @@ iframe#output {
         padding: 5px;
     }
 
-    .settings-header .pane-label {
-        gap: 6px;
-        padding: 6px;
-    }
-
     .pane-label .toolbar {
         gap: 4px;
     }
@@ -2191,43 +2166,6 @@ iframe#output {
 }
 
 @media (max-width: 560px) {
-    .settings-header .pane-label {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        grid-template-areas:
-            "undo redo"
-            "toolbar toolbar"
-            "dirty dirty";
-        align-items: center;
-        justify-content: stretch;
-        gap: 7px;
-        padding: 7px 8px;
-    }
-
-    .settings-header .pane-label > .arrow-btn.left {
-        grid-area: undo;
-        justify-self: start;
-    }
-
-    .settings-header .pane-label > .arrow-btn.right {
-        grid-area: redo;
-        justify-self: end;
-    }
-
-    .settings-header .pane-label > .toolbar {
-        grid-area: toolbar;
-        width: 100%;
-        min-width: 0;
-        margin: 0;
-        gap: 5px;
-    }
-
-    .settings-header .pane-label > .dirty {
-        grid-area: dirty;
-        justify-self: center;
-        white-space: normal;
-        text-align: center;
-    }
 
     .toolbar button {
         min-height: 36px;
@@ -2489,6 +2427,85 @@ iframe#output {
         padding-inline: 6px;
     }
 }
+
+</style>
+<style data-bundled-from="src/features/workspace/toolbar/toolbar-sidebar.css">
+/* نوار ابزار کناری ویرایشگر؛ مستقل از استایل‌های عمومی برنامه */
+:root { --toolbar-sidebar-width: 276px; }
+body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: var(--toolbar-sidebar-width); }
+.toolbar-sidebar {
+    position: fixed; z-index: 6001; top: 0; right: 0; bottom: 0;
+    width: var(--toolbar-sidebar-width); max-width: 100vw; display: flex;
+    flex-direction: column; gap: 0; overflow-x: hidden; overflow-y: auto;
+    overscroll-behavior: contain; direction: ltr; color: var(--blue-text);
+    background: linear-gradient(180deg, var(--chrome-purple), var(--chrome-purple-deep));
+    border-left: 1px solid var(--chrome-purple-border);
+    box-shadow: -8px 0 28px rgb(0 0 0 / 22%);
+    transition: transform .22s ease, visibility .22s ease;
+}
+body:not(.toolbar-sidebar-open) .toolbar-sidebar { transform: translateX(calc(100% + 12px)); visibility: hidden; pointer-events: none; }
+.toolbar-sidebar-heading {
+    flex: 0 0 auto; min-height: 56px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px; padding: 10px 14px;
+    color: var(--blue-text); font-size: 14px; font-weight: 700;
+    border-bottom: 1px solid var(--chrome-purple-border); background: rgb(0 0 0 / 12%);
+}
+.toolbar-sidebar-close-button, .toolbar-sidebar-open-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-width: 34px; min-height: 34px; padding: 6px 10px;
+    border: 1px solid var(--chrome-purple-border); border-radius: 9px;
+    background: var(--blue-bg-3); color: var(--blue-text); font: inherit;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.toolbar-sidebar-close-button { flex: 0 0 34px; padding: 0; font-size: 24px; line-height: 1; }
+.toolbar-sidebar-close-button:hover, .toolbar-sidebar-open-button:hover { background: var(--blue-bg-4); }
+.toolbar-sidebar-open-button { position: fixed; z-index: 6000; top: 12px; right: 12px; box-shadow: 0 4px 18px rgb(0 0 0 / 24%); }
+body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
+.toolbar-sidebar-backdrop {
+    position: fixed; z-index: 6000; inset: 0; background: rgb(5 10 18 / 58%);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); cursor: pointer;
+}
+.toolbar-sidebar-backdrop[hidden] { display: none !important; }
+.toolbar-sidebar .pane-label {
+    width: 100%; display: flex; flex: 0 0 auto; flex-direction: column;
+    align-items: stretch; justify-content: flex-start; gap: 12px; padding: 14px 12px 18px;
+    background: transparent; border: 0; border-radius: 0; box-shadow: none;
+}
+.toolbar-sidebar-history { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px; }
+.toolbar-sidebar-history .arrow-btn { position: static; transform: none; flex: 0 0 34px; width: 34px; height: 34px; }
+.toolbar-sidebar-history .dirty { position: static; margin: 0; white-space: normal; text-align: center; }
+.toolbar-sidebar .pane-label > .toolbar {
+    width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch; justify-content: stretch; gap: 8px; margin: 0;
+}
+.toolbar-sidebar .pane-label > .toolbar button {
+    min-width: 0; min-height: 40px; max-width: 100%; padding: 7px 6px;
+    white-space: normal; overflow-wrap: anywhere; font-size: 12px;
+}
+.toolbar-sidebar .pane-label > .toolbar #btnSettings { grid-column: 1 / -1; min-height: 44px; }
+.toolbar-sidebar button:focus-visible { outline: 2px solid var(--blue-accent); outline-offset: 2px; }
+:root[data-theme="light"] .toolbar-sidebar {
+    color: #263b52; background: linear-gradient(180deg, #f8fbff, #e6edf6);
+    border-left-color: #bdcddd; box-shadow: -8px 0 28px rgb(30 54 80 / 16%);
+}
+:root[data-theme="light"] .toolbar-sidebar-heading { color: #263b52; border-bottom-color: #bdcddd; }
+:root[data-theme="light"] .toolbar-sidebar-close-button,
+:root[data-theme="light"] .toolbar-sidebar-open-button {
+    color: #29415b; background: linear-gradient(180deg, #fff, #dfe8f2); border-color: #afc2d6;
+}
+:root[data-theme="light"] .toolbar-sidebar-close-button:hover,
+:root[data-theme="light"] .toolbar-sidebar-open-button:hover { background: var(--accent-soft, #dcecf8); }
+@media (max-width: 760px) {
+    body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: 0; }
+    .toolbar-sidebar { z-index: 7001; width: min(86vw, 330px); box-shadow: -12px 0 32px rgb(0 0 0 / 30%); }
+    .toolbar-sidebar-backdrop { z-index: 7000; }
+    .toolbar-sidebar-open-button { top: 10px; right: 10px; }
+    body.toolbar-sidebar-mobile-open { padding-right: 0; }
+    body.toolbar-sidebar-mobile-open .container,
+    body.toolbar-sidebar-mobile-open .page-symbol-header,
+    body.toolbar-sidebar-mobile-open .github-update { pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) { .toolbar-sidebar { transition: none; } }
 
 </style>
     <style data-bundled-from="src/features/settings/settings.css">
@@ -3180,30 +3197,38 @@ iframe#output {
 }
 </style>
 </head>
-<body>
+<body class="toolbar-sidebar-open">
 
     <header class="page-symbol-header" aria-label="Popular code quick inserts">
         <div class="symbol-toolbar" id="symbolToolbar" role="toolbar" aria-label="Quick inserts for the active language"></div>
     
     </header>
-    <header class="settings-header" aria-label="Editor settings">
-    <div class="pane-label">
-        <button type="button" class="arrow-btn left" id="btnUndo" title="Undo (Ctrl+Z)">↶</button>
-        <div class="toolbar">
-            <button id="btnDownload" title="Download with Custom Name">⬇ Download</button>
-            <button id="btnReset"    title="Restore Default Code">🔁 Reset</button>
-            <button id="btnClear"    title="Clear Current File">🗑 Clear</button>
-            <button id="btnClearAll" title="Clear All Files">🧹 Clear All</button>
-            <button id="btnFontDec"  title="Decrease Font Size">A−</button>
-            <button id="btnFontInc"  title="Increase Font Size">A+</button>
-            <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
-            <button type="button" id="btnWordTree" title="Open the live word tree">🌳 Word Tree</button>
-            <button type="button" id="btnSettings" title="تنظیمات ویرایشگر" aria-controls="settingsScreen" aria-haspopup="dialog" aria-expanded="false">⚙ تنظیمات</button>
+        <div class="toolbar-sidebar-backdrop" id="toolbarSidebarBackdrop" hidden aria-hidden="true"></div>
+    <button type="button" class="toolbar-sidebar-open-button" id="toolbarSidebarOpen" aria-controls="toolbarSidebar" aria-expanded="true" aria-label="باز کردن نوار ابزار">☰ ابزارها</button>
+    <aside class="toolbar-sidebar" id="toolbarSidebar" aria-label="نوار ابزار ویرایشگر" aria-hidden="false">
+        <div class="toolbar-sidebar-heading">
+            <span>ابزارهای ویرایشگر</span>
+            <button type="button" class="toolbar-sidebar-close-button" id="toolbarSidebarClose" aria-controls="toolbarSidebar" aria-label="بستن نوار ابزار" title="بستن نوار ابزار">×</button>
         </div>
-        <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)">↷</button>
-        <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
-    </div>
-    </header>
+        <div class="pane-label">
+            <div class="toolbar-sidebar-history">
+                <button type="button" class="arrow-btn left" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
+                <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
+                <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
+            </div>
+            <div class="toolbar">
+                <button id="btnDownload" title="Download with Custom Name">⬇ Download</button>
+                <button id="btnReset" title="Restore Default Code">🔁 Reset</button>
+                <button id="btnClear" title="Clear Current File">🗑 Clear</button>
+                <button id="btnClearAll" title="Clear All Files">🧹 Clear All</button>
+                <button id="btnFontDec" title="Decrease Font Size">A−</button>
+                <button id="btnFontInc" title="Increase Font Size">A+</button>
+                <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
+                <button type="button" id="btnWordTree" title="Open the live word tree">🌳 Word Tree</button>
+                <button type="button" id="btnSettings" title="تنظیمات ویرایشگر" aria-controls="settingsScreen" aria-haspopup="dialog" aria-expanded="false">⚙ تنظیمات</button>
+            </div>
+        </div>
+    </aside>
     <section class="github-update" aria-label="GitHub update information">
         <span class="github-update-dot" aria-hidden="true"></span>
         <span id="githubUpdateStatus" role="status" aria-live="polite">در حال دریافت زمان آخرین به‌روزرسانی از GitHub…</span>
@@ -6717,6 +6742,72 @@ iframe#output {
     }
 
     window.EDITOR_QUICK_INSERT = { create: create };
+})();
+
+</script>
+<script data-bundled-from="src/features/workspace/toolbar/toolbar-sidebar.js">
+/* کنترل نوار ابزار کناری؛ در دسکتاپ باز و در موبایل به‌صورت پنجرهٔ پوشاننده بسته آغاز می‌شود. */
+(function () {
+    'use strict';
+    const sidebar = document.getElementById('toolbarSidebar');
+    const openButton = document.getElementById('toolbarSidebarOpen');
+    const closeButton = document.getElementById('toolbarSidebarClose');
+    const backdrop = document.getElementById('toolbarSidebarBackdrop');
+    const media = window.matchMedia('(max-width: 760px)');
+    if (!sidebar || !openButton || !closeButton || !backdrop) return;
+    let isOpen = !media.matches;
+
+    function setOpen(nextOpen, options) {
+        const settings = options || {};
+        isOpen = Boolean(nextOpen);
+        const mobileModal = isOpen && media.matches;
+        document.body.classList.toggle('toolbar-sidebar-open', isOpen);
+        document.body.classList.toggle('toolbar-sidebar-mobile-open', mobileModal);
+        sidebar.setAttribute('aria-hidden', String(!isOpen));
+        openButton.setAttribute('aria-expanded', String(isOpen));
+        if (mobileModal) {
+            sidebar.setAttribute('role', 'dialog');
+            sidebar.setAttribute('aria-modal', 'true');
+            backdrop.hidden = false;
+            backdrop.setAttribute('aria-hidden', 'false');
+        } else {
+            sidebar.removeAttribute('role');
+            sidebar.removeAttribute('aria-modal');
+            backdrop.hidden = true;
+            backdrop.setAttribute('aria-hidden', 'true');
+        }
+        if (settings.focus === 'close' && isOpen) closeButton.focus();
+        if (!isOpen && settings.focus === 'open') openButton.focus();
+    }
+
+    openButton.addEventListener('click', function () { setOpen(true, { focus: 'close' }); });
+    closeButton.addEventListener('click', function () { setOpen(false, { focus: 'open' }); });
+    backdrop.addEventListener('click', function () { setOpen(false, { focus: 'open' }); });
+    document.addEventListener('keydown', function (event) {
+        if (!isOpen) return;
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            setOpen(false, { focus: 'open' });
+            return;
+        }
+        if (!media.matches || event.key !== 'Tab') return;
+        const focusable = Array.from(sidebar.querySelectorAll(
+            'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )).filter(function (element) {
+            return !element.hidden && element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0;
+        });
+        if (!focusable.length) { event.preventDefault(); closeButton.focus(); return; }
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !sidebar.contains(document.activeElement))) {
+            event.preventDefault(); last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !sidebar.contains(document.activeElement))) {
+            event.preventDefault(); first.focus();
+        }
+    });
+    function handleViewportChange() { setOpen(!media.matches); }
+    if (typeof media.addEventListener === 'function') media.addEventListener('change', handleViewportChange);
+    else if (typeof media.addListener === 'function') media.addListener(handleViewportChange);
+    setOpen(!media.matches);
 })();
 
 </script>

@@ -1,0 +1,76 @@
+/* نوار ابزار کناری ویرایشگر؛ مستقل از استایل‌های عمومی برنامه */
+:root { --toolbar-sidebar-width: 276px; }
+body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: var(--toolbar-sidebar-width); }
+.toolbar-sidebar {
+    position: fixed; z-index: 6001; top: 0; right: 0; bottom: 0;
+    width: var(--toolbar-sidebar-width); max-width: 100vw; display: flex;
+    flex-direction: column; gap: 0; overflow-x: hidden; overflow-y: auto;
+    overscroll-behavior: contain; direction: ltr; color: var(--blue-text);
+    background: linear-gradient(180deg, var(--chrome-purple), var(--chrome-purple-deep));
+    border-left: 1px solid var(--chrome-purple-border);
+    box-shadow: -8px 0 28px rgb(0 0 0 / 22%);
+    transition: transform .22s ease, visibility .22s ease;
+}
+body:not(.toolbar-sidebar-open) .toolbar-sidebar { transform: translateX(calc(100% + 12px)); visibility: hidden; pointer-events: none; }
+.toolbar-sidebar-heading {
+    flex: 0 0 auto; min-height: 56px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px; padding: 10px 14px;
+    color: var(--blue-text); font-size: 14px; font-weight: 700;
+    border-bottom: 1px solid var(--chrome-purple-border); background: rgb(0 0 0 / 12%);
+}
+.toolbar-sidebar-close-button, .toolbar-sidebar-open-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-width: 34px; min-height: 34px; padding: 6px 10px;
+    border: 1px solid var(--chrome-purple-border); border-radius: 9px;
+    background: var(--blue-bg-3); color: var(--blue-text); font: inherit;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.toolbar-sidebar-close-button { flex: 0 0 34px; padding: 0; font-size: 24px; line-height: 1; }
+.toolbar-sidebar-close-button:hover, .toolbar-sidebar-open-button:hover { background: var(--blue-bg-4); }
+.toolbar-sidebar-open-button { position: fixed; z-index: 6000; top: 12px; right: 12px; box-shadow: 0 4px 18px rgb(0 0 0 / 24%); }
+body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
+.toolbar-sidebar-backdrop {
+    position: fixed; z-index: 6000; inset: 0; background: rgb(5 10 18 / 58%);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); cursor: pointer;
+}
+.toolbar-sidebar-backdrop[hidden] { display: none !important; }
+.toolbar-sidebar .pane-label {
+    width: 100%; display: flex; flex: 0 0 auto; flex-direction: column;
+    align-items: stretch; justify-content: flex-start; gap: 12px; padding: 14px 12px 18px;
+    background: transparent; border: 0; border-radius: 0; box-shadow: none;
+}
+.toolbar-sidebar-history { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px; }
+.toolbar-sidebar-history .arrow-btn { position: static; transform: none; flex: 0 0 34px; width: 34px; height: 34px; }
+.toolbar-sidebar-history .dirty { position: static; margin: 0; white-space: normal; text-align: center; }
+.toolbar-sidebar .pane-label > .toolbar {
+    width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch; justify-content: stretch; gap: 8px; margin: 0;
+}
+.toolbar-sidebar .pane-label > .toolbar button {
+    min-width: 0; min-height: 40px; max-width: 100%; padding: 7px 6px;
+    white-space: normal; overflow-wrap: anywhere; font-size: 12px;
+}
+.toolbar-sidebar .pane-label > .toolbar #btnSettings { grid-column: 1 / -1; min-height: 44px; }
+.toolbar-sidebar button:focus-visible { outline: 2px solid var(--blue-accent); outline-offset: 2px; }
+:root[data-theme="light"] .toolbar-sidebar {
+    color: #263b52; background: linear-gradient(180deg, #f8fbff, #e6edf6);
+    border-left-color: #bdcddd; box-shadow: -8px 0 28px rgb(30 54 80 / 16%);
+}
+:root[data-theme="light"] .toolbar-sidebar-heading { color: #263b52; border-bottom-color: #bdcddd; }
+:root[data-theme="light"] .toolbar-sidebar-close-button,
+:root[data-theme="light"] .toolbar-sidebar-open-button {
+    color: #29415b; background: linear-gradient(180deg, #fff, #dfe8f2); border-color: #afc2d6;
+}
+:root[data-theme="light"] .toolbar-sidebar-close-button:hover,
+:root[data-theme="light"] .toolbar-sidebar-open-button:hover { background: var(--accent-soft, #dcecf8); }
+@media (max-width: 760px) {
+    body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: 0; }
+    .toolbar-sidebar { z-index: 7001; width: min(86vw, 330px); box-shadow: -12px 0 32px rgb(0 0 0 / 30%); }
+    .toolbar-sidebar-backdrop { z-index: 7000; }
+    .toolbar-sidebar-open-button { top: 10px; right: 10px; }
+    body.toolbar-sidebar-mobile-open { padding-right: 0; }
+    body.toolbar-sidebar-mobile-open .container,
+    body.toolbar-sidebar-mobile-open .page-symbol-header,
+    body.toolbar-sidebar-mobile-open .github-update { pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) { .toolbar-sidebar { transition: none; } }

@@ -3282,6 +3282,7 @@
             if (k === 's') { e.preventDefault(); if (project) { clearTimeout(autoSaveTimer); if (saveProject()) { setDirty(false); showToast('✅ Auto-saved', 'success'); } } return; }
             if (k === 'f') {
                 e.preventDefault();
+                if (window.EditorSearchHeader) window.EditorSearchHeader.open({ focus: false, select: true });
                 searchInput.focus();
                 searchInput.select();
                 return;

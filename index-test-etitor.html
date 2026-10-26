@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML / CSS / JS Editor</title>
-    <style data-bundled-from="style.css">
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+    <style data-bundled-from="style.css">\n        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
             --editor-font: 15px;
@@ -267,60 +266,8 @@
             direction: ltr;
         }
 
-        .page-symbol-header {
-            flex: 0 0 auto; width: 100%; max-width: 100vw; min-width: 0;
-            display: flex; flex-direction: column; align-items: center; gap: 3px;
-            padding: 5px 8px 7px;
-            background: linear-gradient(180deg, var(--blue-bg-1), var(--blue-bg-2));
-            border-bottom: 1px solid var(--blue-border);
-        }
-                /* Global symbol strip centered inside the full-width page header. */
-        .page-symbol-header .symbol-toolbar {
-            position: relative; z-index: 50; flex: 0 0 auto;
-            width: 100%;
-            max-width: 100vw;
-            min-width: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 4px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            overscroll-behavior-x: contain;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-            padding: 5px 8px;
-            background: var(--blue-bg-2);
-            border-bottom: 1px solid var(--blue-border);
-        }
-
-        .symbol-toolbar button {
-            flex: 0 0 auto;
-            min-width: 28px;
-            min-height: 28px;
-            padding: 4px 6px;
-            border: 1px solid var(--blue-border);
-            border-radius: 5px;
-            background: var(--blue-bg-3);
-            color: var(--blue-text);
-            font: 11px 'Courier New', monospace;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: background .15s, border-color .15s, transform .15s;
-        }
-        .symbol-toolbar button:hover {
-            background: var(--blue-bg-4);
-            border-color: var(--blue-accent);
-        }
-        .symbol-toolbar button:active { transform: scale(.96); }
         .search-match-highlight { background: #ffeb3b; color: #202020 !important; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255,235,59,.35); }
-        .symbol-toolbar button:focus-visible {
-            outline: 2px solid var(--blue-accent);
-            outline-offset: 1px;
-        }
-
-        /* Align the search and symbol toolbar with the code column, not the file explorer. */
+                /* Align the search and symbol toolbar with the code column, not the file explorer. */
         .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
             margin-left: 168px;
             width: calc(100% - 168px);
@@ -331,10 +278,7 @@
             .search-bar { min-width: 104px; gap: 3px; }
             .search-bar .search-count { display: none; }
             .search-bar button { padding: 4px 5px; }
-            .symbol-toolbar { gap: 2px; padding: 4px; justify-content: center; }
-            .page-symbol-header { padding: 4px; }
             .settings-header { padding: 4px 2px 6px; }
-            .symbol-toolbar button { min-height: 30px; padding: 4px 5px; }
         }
 
         .search-input {
@@ -2437,6 +2381,111 @@ iframe#output {
         border-radius: 11px;
     }
     .element-inspector-dialog h2 { font-size: 16px; }
+}
+\n</style>
+<style data-bundled-from="src/features/quick-insert/quick-insert.css">
+/* نوار درج سریع: استایل‌های اختصاصی این قابلیت در همین فایل متمرکز هستند. */
+.page-symbol-header {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: stretch;
+    padding: 5px 8px;
+    background: linear-gradient(180deg, var(--blue-bg-1), var(--blue-bg-2));
+    border-bottom: 1px solid var(--blue-border);
+}
+.page-symbol-header .symbol-toolbar {
+    position: relative;
+    z-index: 50;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding: 5px 8px;
+    background: rgb(13 22 37 / 60%);
+    border: 1px solid var(--blue-border);
+    border-radius: 14px;
+    white-space: nowrap;
+}
+.page-symbol-header .symbol-toolbar button {
+    flex: 0 0 auto;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: none;
+    padding: 4px 7px;
+    border: 1px solid var(--blue-border);
+    border-radius: 9px;
+    background: var(--blue-bg-3);
+    color: var(--blue-text);
+    font: 11px 'Courier New', monospace;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s, border-color .15s, transform .15s;
+}
+.page-symbol-header .symbol-toolbar button:hover {
+    background: var(--blue-bg-4);
+    border-color: var(--accent-border, var(--blue-accent));
+}
+.page-symbol-header .symbol-toolbar button:active { transform: scale(.96); }
+.page-symbol-header .symbol-toolbar button:focus-visible {
+    outline: 2px solid var(--blue-accent);
+    outline-offset: 1px;
+}
+.page-symbol-header[hidden] { display: none !important; }
+
+:root[data-theme="light"] .page-symbol-header {
+    background: linear-gradient(180deg, #f8fbff, #e6edf6);
+    border-color: #bdcddd;
+    box-shadow: 0 2px 9px rgb(30 54 80 / 8%);
+}
+:root[data-theme="light"] .page-symbol-header .symbol-toolbar {
+    background: rgb(226 236 247 / 92%);
+    border-color: #bdcddd;
+}
+:root[data-theme="light"] .page-symbol-header .symbol-toolbar button {
+    background: linear-gradient(180deg, #ffffff, #dfe8f2);
+    color: #29415b;
+    border-color: #afc2d6;
+}
+:root[data-theme="light"] .page-symbol-header .symbol-toolbar button:hover,
+:root[data-theme="light"] .page-symbol-header .symbol-toolbar button:focus-visible {
+    background: var(--accent-soft, #dcecf8);
+    color: #20364d;
+    border-color: var(--accent-border, #7aa5ca);
+}
+@media (max-width: 760px) {
+    .page-symbol-header { padding: 4px; }
+    .page-symbol-header .symbol-toolbar {
+        gap: 3px;
+        padding: 4px 5px;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        touch-action: pan-x;
+    }
+    .page-symbol-header .symbol-toolbar button {
+        min-height: 30px;
+        padding: 4px 6px;
+    }
+}
+@media (max-width: 560px) {
+    .page-symbol-header .symbol-toolbar button {
+        font-size: 10px;
+        padding-inline: 6px;
+    }
 }
 
 </style>
@@ -6536,8 +6585,140 @@ iframe#output {
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
 })();
 </script>
-    <script data-bundled-from="script.js">
-    (function() {
+    <script data-bundled-from="src/features/quick-insert/quick-insert.js">
+/* ماژول مستقل نوار درج سریع کلمات و قطعه‌کدها */
+(function() {
+    'use strict';
+
+    function create(options) {
+        const toolbar = document.getElementById('symbolToolbar');
+        const header = toolbar ? toolbar.closest('.page-symbol-header') : null;
+        const languages = options.languages || [];
+        const labels = {
+            html: { header: 'Popular HTML tags and elements', toolbar: 'Quick-insert HTML tags' },
+            css: { header: 'Popular CSS properties and patterns', toolbar: 'Quick-insert CSS properties and patterns' },
+            js: { header: 'Popular JavaScript snippets', toolbar: 'Quick-insert JavaScript snippets' }
+        };
+
+        function render(language) {
+            if (!toolbar) return;
+            const supported = languages.includes(language);
+            if (header) {
+                header.hidden = !supported;
+                if (supported) header.setAttribute('aria-label', labels[language].header);
+            }
+            if (!supported) return;
+            toolbar.setAttribute('aria-label', labels[language].toolbar);
+
+            const data = window.EDITOR_INTELLISENSE_DATA || {};
+            const defaults = data.symbols && Array.isArray(data.symbols[language]) ? data.symbols[language] : [];
+            let customItems = [];
+            let config = { deleted: [], overrides: {} };
+            try {
+                const saved = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-v1') || '{}');
+                if (saved && Array.isArray(saved[language])) {
+                    customItems = saved[language].filter(function(item) {
+                        return item && typeof item.label === 'string' &&
+                            typeof item.prefix === 'string' && typeof item.suffix === 'string';
+                    });
+                }
+            } catch (error) {
+                customItems = [];
+            }
+            try {
+                const savedConfig = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-builtins-v1') || '{}');
+                const section = savedConfig && savedConfig[language] && typeof savedConfig[language] === 'object'
+                    ? savedConfig[language] : {};
+                config = {
+                    deleted: Array.isArray(section.deleted) ? section.deleted : [],
+                    overrides: section.overrides && typeof section.overrides === 'object' ? section.overrides : {}
+                };
+            } catch (error) {
+                config = { deleted: [], overrides: {} };
+            }
+            const managed = defaults.map(function(item, index) {
+                const id = 'builtin-' + language + '-' + index;
+                const override = config.overrides[id];
+                return {
+                    label: override && typeof override.label === 'string' ? override.label : item.label,
+                    prefix: override && typeof override.prefix === 'string' ? override.prefix : item.prefix,
+                    suffix: override && typeof override.suffix === 'string' ? override.suffix : item.suffix,
+                    description: override && typeof override.description === 'string' ? override.description : item.description
+                };
+            }).filter(function(item, index) {
+                return !config.deleted.includes('builtin-' + language + '-' + index);
+            });
+            const items = managed.concat(customItems);
+            if (!items.length) {
+                toolbar.replaceChildren();
+                return;
+            }
+            toolbar.dataset.language = language;
+            toolbar.innerHTML = items.map(function(item) {
+                const escape = options.escapeHtml;
+                return '<button type="button" data-prefix="' + escape(item.prefix || '') +
+                    '" data-suffix="' + escape(item.suffix || '') +
+                    '" title="' + escape(item.description || item.label || 'Insert symbol') +
+                    '" aria-label="' + escape(item.description || item.label || 'Insert symbol') +
+                    '">' + escape(item.label || 'Symbol') + '</button>';
+            }).join('');
+        }
+
+        window.addEventListener('editor-quick-insert-change', function(event) {
+            const language = event.detail && event.detail.language;
+            if (language === options.getActiveTab()) render(options.getActiveTab());
+        });
+
+        if (toolbar) {
+            toolbar.addEventListener('mousedown', function(event) {
+                if (event.target.closest('button')) event.preventDefault();
+            });
+            toolbar.addEventListener('click', function(event) {
+                const button = event.target.closest('button[data-prefix]');
+                const language = options.getActiveTab();
+                const editors = options.editors;
+                if (!button || !languages.includes(language) || !editors[language]) return;
+                const editor = editors[language];
+                const textarea = editor.ta;
+                const selections = options.getSymbolSelections();
+                const live = document.activeElement === textarea;
+                const saved = live ? {
+                    start: textarea.selectionStart,
+                    end: textarea.selectionEnd,
+                    direction: textarea.selectionDirection || 'none'
+                } : (selections[language] || {
+                    start: textarea.selectionStart,
+                    end: textarea.selectionEnd,
+                    direction: textarea.selectionDirection || 'none'
+                });
+                const start = Math.max(0, Math.min(saved.start, textarea.value.length));
+                const end = Math.max(start, Math.min(saved.end, textarea.value.length));
+                const prefix = button.dataset.prefix || '';
+                const suffix = button.dataset.suffix || '';
+                const selected = textarea.value.slice(start, end);
+                textarea.focus({ preventScroll: true });
+                textarea.setRangeText(prefix + selected + suffix, start, end, 'select');
+                const selectionStart = start + prefix.length;
+                if (selected) textarea.setSelectionRange(selectionStart, selectionStart + selected.length, 'forward');
+                else textarea.setSelectionRange(selectionStart, selectionStart);
+                selections[language] = {
+                    start: textarea.selectionStart,
+                    end: textarea.selectionEnd,
+                    direction: textarea.selectionDirection || 'none'
+                };
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                if (editor.refresh) editor.refresh();
+                textarea.focus({ preventScroll: true });
+            });
+        }
+        return { render: render };
+    }
+
+    window.EDITOR_QUICK_INSERT = { create: create };
+})();
+
+</script>
+<script data-bundled-from="script.js">\n    (function() {
         'use strict';
 
         // ==========================================
@@ -8227,133 +8408,15 @@ iframe#output {
             }
         }
 
-        // Quick-insert toolbar: keep the active editor selection while a toolbar
-        // button temporarily takes focus (especially on touch/mobile browsers).
-        const symbolToolbar = document.getElementById('symbolToolbar');
-        function renderSymbolToolbar(language) {
-            if (!symbolToolbar) return;
-            const header = symbolToolbar.closest('.page-symbol-header');
-            const supportedLanguage = LANGS.includes(language);
-            const labels = {
-                html: { header: 'Popular HTML tags and elements', toolbar: 'Quick-insert HTML tags' },
-                css: { header: 'Popular CSS properties and patterns', toolbar: 'Quick-insert CSS properties and patterns' },
-                js: { header: 'Popular JavaScript snippets', toolbar: 'Quick-insert JavaScript snippets' }
-            };
-            if (header) {
-                header.hidden = !supportedLanguage;
-                if (supportedLanguage) header.setAttribute('aria-label', labels[language].header);
-            }
-            if (!supportedLanguage) return;
-            symbolToolbar.setAttribute('aria-label', labels[language].toolbar);
-
-            const data = window.EDITOR_INTELLISENSE_DATA || {};
-            const defaultItems = data.symbols && Array.isArray(data.symbols[language]) ? data.symbols[language] : [];
-            let customItems = [];
-            let builtinConfig = { deleted: [], overrides: {} };
-            try {
-                const saved = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-v1') || '{}');
-                if (saved && Array.isArray(saved[language])) {
-                    customItems = saved[language].filter(function(item) {
-                        return item && typeof item.label === 'string' && typeof item.prefix === 'string' && typeof item.suffix === 'string';
-                    });
-                }
-            } catch (error) {
-                customItems = [];
-            }
-            try {
-                const config = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-builtins-v1') || '{}');
-                const section = config && config[language] && typeof config[language] === 'object' ? config[language] : {};
-                builtinConfig = {
-                    deleted: Array.isArray(section.deleted) ? section.deleted : [],
-                    overrides: section.overrides && typeof section.overrides === 'object' ? section.overrides : {}
-                };
-            } catch (error) {
-                builtinConfig = { deleted: [], overrides: {} };
-            }
-            const managedDefaults = defaultItems.map(function(item, index) {
-                const id = 'builtin-' + language + '-' + index;
-                const override = builtinConfig.overrides[id];
-                return {
-                    label: override && typeof override.label === 'string' ? override.label : item.label,
-                    prefix: override && typeof override.prefix === 'string' ? override.prefix : item.prefix,
-                    suffix: override && typeof override.suffix === 'string' ? override.suffix : item.suffix,
-                    description: override && typeof override.description === 'string' ? override.description : item.description
-                };
-            }).filter(function(item, index) {
-                return !builtinConfig.deleted.includes('builtin-' + language + '-' + index);
-            });
-            const items = managedDefaults.concat(customItems);
-            if (!items.length) {
-                symbolToolbar.replaceChildren();
-                return;
-            }
-            symbolToolbar.dataset.language = language;
-            symbolToolbar.innerHTML = items.map(function(item) {
-                return '<button type="button" data-prefix="' + escHtml(item.prefix || '') +
-                    '" data-suffix="' + escHtml(item.suffix || '') +
-                    '" title="' + escHtml(item.description || item.label || 'Insert symbol') +
-                    '" aria-label="' + escHtml(item.description || item.label || 'Insert symbol') +
-                    '">' + escHtml(item.label || 'Symbol') + '</button>';
-            }).join('');
-        }
-
-        window.addEventListener('editor-quick-insert-change', function(event) {
-            const language = event.detail && event.detail.language;
-            if (language === activeTab) renderSymbolToolbar(activeTab);
+        // نوار درج سریع در ماژول مستقل نگهداری می‌شود؛ وابستگی‌ها از محیط ویرایشگر تزریق می‌شوند.
+        const quickInsertToolbar = window.EDITOR_QUICK_INSERT.create({
+            getActiveTab: function() { return activeTab; },
+            languages: LANGS,
+            editors: editors,
+            getSymbolSelections: function() { return symbolSelections; },
+            escapeHtml: escHtml
         });
-
-        if (symbolToolbar) {
-            // Prevent mouse focus transfer where supported, but also retain a saved range
-            // for browsers that still move focus when tapping a toolbar button.
-            symbolToolbar.addEventListener('mousedown', function(e) {
-                if (e.target.closest('button')) e.preventDefault();
-            });
-            symbolToolbar.addEventListener('click', function(e) {
-                const button = e.target.closest('button[data-prefix]');
-                if (!button || !LANGS.includes(activeTab) || !editors[activeTab]) return;
-
-                const ta = editors[activeTab].ta;
-                // Prefer the live caret/selection whenever the editor still owns focus.
-                // The remembered range is only a fallback for browsers that move focus
-                // to the toolbar before dispatching its click event.
-                const liveSelection = document.activeElement === ta;
-                const saved = liveSelection ? {
-                    start: ta.selectionStart,
-                    end: ta.selectionEnd,
-                    direction: ta.selectionDirection || 'none'
-                } : (symbolSelections[activeTab] || {
-                    start: ta.selectionStart,
-                    end: ta.selectionEnd,
-                    direction: ta.selectionDirection || 'none'
-                });
-                const start = Math.max(0, Math.min(saved.start, ta.value.length));
-                const end = Math.max(start, Math.min(saved.end, ta.value.length));
-                const prefix = button.dataset.prefix || '';
-                const suffix = button.dataset.suffix || '';
-                const selected = ta.value.slice(start, end);
-                const replacement = prefix + selected + suffix;
-
-                ta.focus({ preventScroll: true });
-                ta.setRangeText(replacement, start, end, 'select');
-                const selectionStart = start + prefix.length;
-                const selectionEnd = selectionStart + selected.length;
-                if (selected) {
-                    ta.setSelectionRange(selectionStart, selectionEnd, 'forward');
-                } else {
-                    // Place the caret inside paired symbols; line-comment has no suffix.
-                    ta.setSelectionRange(selectionStart, selectionStart);
-                }
-                symbolSelections[activeTab] = {
-                    start: ta.selectionStart,
-                    end: ta.selectionEnd,
-                    direction: ta.selectionDirection || 'none'
-                };
-                ta.dispatchEvent(new Event('input', { bubbles: true }));
-                if (editors[activeTab].refresh) editors[activeTab].refresh();
-                ta.focus({ preventScroll: true });
-            });
-        }
-
+        const renderSymbolToolbar = quickInsertToolbar.render;
         renderSymbolToolbar(activeTab);
 
         function doUndo() {
@@ -10089,8 +10152,7 @@ iframe#output {
 
     })();
     
-
-</script>
+\n</script>
     <script data-bundled-from="src/features/settings/settings.js">
 /* منطق پنل تنظیمات؛ تمام گزینه‌ها به رفتار واقعی ویرایشگر متصل‌اند. */
 (function () {

@@ -1688,133 +1688,15 @@
             }
         }
 
-        // Quick-insert toolbar: keep the active editor selection while a toolbar
-        // button temporarily takes focus (especially on touch/mobile browsers).
-        const symbolToolbar = document.getElementById('symbolToolbar');
-        function renderSymbolToolbar(language) {
-            if (!symbolToolbar) return;
-            const header = symbolToolbar.closest('.page-symbol-header');
-            const supportedLanguage = LANGS.includes(language);
-            const labels = {
-                html: { header: 'Popular HTML tags and elements', toolbar: 'Quick-insert HTML tags' },
-                css: { header: 'Popular CSS properties and patterns', toolbar: 'Quick-insert CSS properties and patterns' },
-                js: { header: 'Popular JavaScript snippets', toolbar: 'Quick-insert JavaScript snippets' }
-            };
-            if (header) {
-                header.hidden = !supportedLanguage;
-                if (supportedLanguage) header.setAttribute('aria-label', labels[language].header);
-            }
-            if (!supportedLanguage) return;
-            symbolToolbar.setAttribute('aria-label', labels[language].toolbar);
-
-            const data = window.EDITOR_INTELLISENSE_DATA || {};
-            const defaultItems = data.symbols && Array.isArray(data.symbols[language]) ? data.symbols[language] : [];
-            let customItems = [];
-            let builtinConfig = { deleted: [], overrides: {} };
-            try {
-                const saved = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-v1') || '{}');
-                if (saved && Array.isArray(saved[language])) {
-                    customItems = saved[language].filter(function(item) {
-                        return item && typeof item.label === 'string' && typeof item.prefix === 'string' && typeof item.suffix === 'string';
-                    });
-                }
-            } catch (error) {
-                customItems = [];
-            }
-            try {
-                const config = JSON.parse(window.localStorage.getItem('html-editor-quick-insert-builtins-v1') || '{}');
-                const section = config && config[language] && typeof config[language] === 'object' ? config[language] : {};
-                builtinConfig = {
-                    deleted: Array.isArray(section.deleted) ? section.deleted : [],
-                    overrides: section.overrides && typeof section.overrides === 'object' ? section.overrides : {}
-                };
-            } catch (error) {
-                builtinConfig = { deleted: [], overrides: {} };
-            }
-            const managedDefaults = defaultItems.map(function(item, index) {
-                const id = 'builtin-' + language + '-' + index;
-                const override = builtinConfig.overrides[id];
-                return {
-                    label: override && typeof override.label === 'string' ? override.label : item.label,
-                    prefix: override && typeof override.prefix === 'string' ? override.prefix : item.prefix,
-                    suffix: override && typeof override.suffix === 'string' ? override.suffix : item.suffix,
-                    description: override && typeof override.description === 'string' ? override.description : item.description
-                };
-            }).filter(function(item, index) {
-                return !builtinConfig.deleted.includes('builtin-' + language + '-' + index);
-            });
-            const items = managedDefaults.concat(customItems);
-            if (!items.length) {
-                symbolToolbar.replaceChildren();
-                return;
-            }
-            symbolToolbar.dataset.language = language;
-            symbolToolbar.innerHTML = items.map(function(item) {
-                return '<button type="button" data-prefix="' + escHtml(item.prefix || '') +
-                    '" data-suffix="' + escHtml(item.suffix || '') +
-                    '" title="' + escHtml(item.description || item.label || 'Insert symbol') +
-                    '" aria-label="' + escHtml(item.description || item.label || 'Insert symbol') +
-                    '">' + escHtml(item.label || 'Symbol') + '</button>';
-            }).join('');
-        }
-
-        window.addEventListener('editor-quick-insert-change', function(event) {
-            const language = event.detail && event.detail.language;
-            if (language === activeTab) renderSymbolToolbar(activeTab);
+        // نوار درج سریع در ماژول مستقل نگهداری می‌شود؛ وابستگی‌ها از محیط ویرایشگر تزریق می‌شوند.
+        const quickInsertToolbar = window.EDITOR_QUICK_INSERT.create({
+            getActiveTab: function() { return activeTab; },
+            languages: LANGS,
+            editors: editors,
+            getSymbolSelections: function() { return symbolSelections; },
+            escapeHtml: escHtml
         });
-
-        if (symbolToolbar) {
-            // Prevent mouse focus transfer where supported, but also retain a saved range
-            // for browsers that still move focus when tapping a toolbar button.
-            symbolToolbar.addEventListener('mousedown', function(e) {
-                if (e.target.closest('button')) e.preventDefault();
-            });
-            symbolToolbar.addEventListener('click', function(e) {
-                const button = e.target.closest('button[data-prefix]');
-                if (!button || !LANGS.includes(activeTab) || !editors[activeTab]) return;
-
-                const ta = editors[activeTab].ta;
-                // Prefer the live caret/selection whenever the editor still owns focus.
-                // The remembered range is only a fallback for browsers that move focus
-                // to the toolbar before dispatching its click event.
-                const liveSelection = document.activeElement === ta;
-                const saved = liveSelection ? {
-                    start: ta.selectionStart,
-                    end: ta.selectionEnd,
-                    direction: ta.selectionDirection || 'none'
-                } : (symbolSelections[activeTab] || {
-                    start: ta.selectionStart,
-                    end: ta.selectionEnd,
-                    direction: ta.selectionDirection || 'none'
-                });
-                const start = Math.max(0, Math.min(saved.start, ta.value.length));
-                const end = Math.max(start, Math.min(saved.end, ta.value.length));
-                const prefix = button.dataset.prefix || '';
-                const suffix = button.dataset.suffix || '';
-                const selected = ta.value.slice(start, end);
-                const replacement = prefix + selected + suffix;
-
-                ta.focus({ preventScroll: true });
-                ta.setRangeText(replacement, start, end, 'select');
-                const selectionStart = start + prefix.length;
-                const selectionEnd = selectionStart + selected.length;
-                if (selected) {
-                    ta.setSelectionRange(selectionStart, selectionEnd, 'forward');
-                } else {
-                    // Place the caret inside paired symbols; line-comment has no suffix.
-                    ta.setSelectionRange(selectionStart, selectionStart);
-                }
-                symbolSelections[activeTab] = {
-                    start: ta.selectionStart,
-                    end: ta.selectionEnd,
-                    direction: ta.selectionDirection || 'none'
-                };
-                ta.dispatchEvent(new Event('input', { bubbles: true }));
-                if (editors[activeTab].refresh) editors[activeTab].refresh();
-                ta.focus({ preventScroll: true });
-            });
-        }
-
+        const renderSymbolToolbar = quickInsertToolbar.render;
         renderSymbolToolbar(activeTab);
 
         function doUndo() {

@@ -206,3 +206,54 @@
        این کار مانع محوشدن خود پنل کشویی نیز می‌شود. */
     body.file-manager-drawer-active { overflow: hidden; }
 }
+
+
+/* تنها حالت مجاز فایل‌منیجر: پنل کشویی روی محتوا */
+.file-explorer.file-manager-drawer-open {
+    position: fixed;
+    z-index: 7101;
+    top: 12px;
+    right: auto;
+    bottom: 12px;
+    left: 12px;
+    width: min(320px, calc(100vw - 24px));
+    max-width: calc(100vw - 24px);
+    height: auto;
+    max-height: none;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+    box-shadow: 12px 0 36px rgb(0 0 0 / 32%);
+}
+.file-explorer.file-manager-drawer-open .fe-header { flex: 0 0 auto; }
+.file-explorer.file-manager-drawer-open .fe-title { display: inline-flex; }
+.file-explorer.file-manager-drawer-open .fe-controls,
+.file-explorer.file-manager-drawer-open .fe-list { min-height: 0; }
+.file-explorer.file-manager-drawer-open .fe-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.fe-drawer-mark { display: inline-flex; align-items: center; justify-content: center; }
+body.file-manager-drawer-active { overflow: hidden; }
+body.file-manager-drawer-active .container,
+body.file-manager-drawer-active .page-symbol-header,
+body.file-manager-drawer-active .toolbar-sidebar {
+    filter: blur(3px);
+    pointer-events: none;
+    user-select: none;
+}
+@media (max-width: 760px) {
+    .file-explorer.file-manager-drawer-open {
+        top: 10px;
+        bottom: 10px;
+        left: 8px;
+        width: min(82vw, 320px);
+        max-width: calc(100vw - 24px);
+    }
+}

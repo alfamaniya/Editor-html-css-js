@@ -358,42 +358,38 @@
         const feList      = document.getElementById('feList');
         const feAddBtn    = document.getElementById('feAddBtn');
         const fileExplorer = document.getElementById('fileExplorer');
-        const feToggleBtn = document.getElementById('feToggleBtn');
-        const FILE_EXPLORER_KEY = 'html-editor-file-explorer-collapsed';
+        const fileManagerOpenButton = document.getElementById('fileManagerOpenButton');
         const feSearch = document.getElementById('feSearch');
         const feTypeFilter = document.getElementById('feTypeFilter');
         const feGroupMode = document.getElementById('feGroupMode');
 
-        const fileExplorerMedia = window.matchMedia('(max-width: 768px)');
-        const savedExplorerState = storageGet(FILE_EXPLORER_KEY);
-        let hasManualExplorerPreference = savedExplorerState === '1' || savedExplorerState === '0';
-
-        function setFileExplorerCollapsed(collapsed, persist) {
-            fileExplorer.classList.toggle('is-collapsed', collapsed);
-            feToggleBtn.setAttribute('aria-expanded', String(!collapsed));
-            feToggleBtn.setAttribute('aria-label', collapsed ? 'Open file manager' : 'Collapse file manager');
-            feToggleBtn.title = collapsed ? 'Open file manager' : 'Collapse file manager';
-            if (persist !== false) {
-                storageSet(FILE_EXPLORER_KEY, collapsed ? '1' : '0');
-                hasManualExplorerPreference = true;
+        // فایل‌منیجر فقط از دکمهٔ جدید باز می‌شود؛ وضعیت قدیمی ذخیره‌شده نباید پنل درون‌صفحه‌ای را دوباره فعال کند.
+        function setFileExplorerCollapsed(collapsed) {
+            if (collapsed) {
+                if (fileExplorer.classList.contains('file-manager-drawer-open') && fileManagerOpenButton) {
+                    fileManagerOpenButton.click();
+                    return;
+                }
+                fileExplorer.classList.remove('file-manager-drawer-open');
+                fileExplorer.classList.add('is-collapsed');
+                document.body.classList.remove('file-manager-drawer-active');
+                const backdrop = document.getElementById('fileManagerBackdrop');
+                if (backdrop) {
+                    backdrop.hidden = true;
+                    backdrop.setAttribute('aria-hidden', 'true');
+                }
+                if (fileManagerOpenButton) fileManagerOpenButton.setAttribute('aria-expanded', 'false');
+                fileExplorer.removeAttribute('aria-modal');
+                fileExplorer.removeAttribute('role');
+                return;
+            }
+            if (fileManagerOpenButton && !fileExplorer.classList.contains('file-manager-drawer-open')) {
+                fileManagerOpenButton.click();
             }
         }
-
-        const initialExplorerCollapsed = hasManualExplorerPreference
-            ? savedExplorerState === '1'
-            : fileExplorerMedia.matches;
-        setFileExplorerCollapsed(initialExplorerCollapsed, false);
-        const handleExplorerViewportChange = function(event) {
-            if (!hasManualExplorerPreference) setFileExplorerCollapsed(event.matches, false);
-        };
-        if (typeof fileExplorerMedia.addEventListener === 'function') {
-            fileExplorerMedia.addEventListener('change', handleExplorerViewportChange);
-        } else if (typeof fileExplorerMedia.addListener === 'function') {
-            fileExplorerMedia.addListener(handleExplorerViewportChange);
-        }
-        feToggleBtn.addEventListener('click', function() {
-            setFileExplorerCollapsed(!fileExplorer.classList.contains('is-collapsed'));
-        });
+        // همیشه بسته آغاز شود؛ بازشدن فقط از طریق دکمهٔ کنار جست‌وجو انجام می‌شود.
+        fileExplorer.classList.add('is-collapsed');
+        if (fileManagerOpenButton) fileManagerOpenButton.setAttribute('aria-expanded', 'false');
         const feNewForm   = document.getElementById('feNewForm');
         const feNewName   = document.getElementById('feNewName');
         const feLibraryBtn = document.getElementById('feLibraryBtn');

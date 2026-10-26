@@ -414,19 +414,7 @@
             } else if (groupMode === 'name') {
                 files.sort(function(a, b) { return a.name.localeCompare(b.name); });
             }
-            const html = files.map(function(f) {
-                const isActive = f.id === project.activeFileId;
-                const icon = f.type === 'html' ? '📄' : (f.type === 'css' ? '🎨' : '⚡');
-                const isDirty = dirtyFileIds.has(f.id);
-                return '<div class="fe-item' + (isActive ? ' active' : '') + '" data-id="' + escHtml(f.id) + '" title="' + escHtml(f.name) + '">' +
-                    '<button type="button" class="fe-open" data-role="name" aria-label="Open file ' + escHtml(f.name) + (isActive ? ', active file' : '') + '">' +
-                    '<span class="fe-icon" aria-hidden="true">' + icon + '</span>' +
-                    '<span class="fe-name">' + escHtml(f.name) + '</span></button>' +
-                    (isDirty ? '<span class="fe-dirty-dot" title="Unsaved changes" aria-label="Unsaved changes">●</span>' : '') +
-                    '<button type="button" class="fe-rename" data-action="rename" title="Rename ' + escHtml(f.name) + '" aria-label="Rename ' + escHtml(f.name) + '">✏️</button>' +
-                    '<button type="button" class="fe-del" data-action="delete" title="Delete ' + escHtml(f.name) + '" aria-label="Delete ' + escHtml(f.name) + '">🗑</button>' +
-                '</div>';
-            }).join('');
+            const html = window.FileManagerView.render(files, project.activeFileId, dirtyFileIds, escHtml);
             feList.innerHTML = html || '<div class="fe-empty" role="status">' + (query || typeFilter !== 'all' ? 'No matching files' : 'No files yet') + '</div>';
         }
         let feSearchTimer = null;

@@ -217,7 +217,7 @@
 /* تنها حالت مجاز فایل‌منیجر: پنل کشویی روی محتوا */
 .file-explorer.file-manager-drawer-open {
     position: fixed;
-    z-index: 7101;
+    z-index: 8201;
     top: 12px;
     right: auto;
     bottom: 12px;
@@ -278,7 +278,7 @@ body.file-manager-drawer-active { overflow: hidden; }
 /* فایل‌منیجر همان کارت کشویی سایدبار ابزارهاست؛ فقط جهت حرکت آن از چپ به راست معکوس است. */
 .file-explorer {
     position: fixed;
-    z-index: 8101;
+    z-index: 8201;
     top: var(--workspace-drawer-inset, 12px);
     right: auto;
     bottom: var(--workspace-drawer-inset, 12px);

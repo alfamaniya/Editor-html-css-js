@@ -119,6 +119,7 @@ body.toolbar-sidebar-active .toast.show {
 :root {
     --workspace-drawer-width: min(320px, calc(100vw - 24px));
     --workspace-drawer-inset: 12px;
+    --workspace-drawer-gap: 24px;
     --workspace-drawer-radius: 16px;
     --workspace-drawer-duration: 260ms;
     --workspace-drawer-easing: cubic-bezier(.22, 1, .36, 1);
@@ -137,7 +138,10 @@ body.toolbar-sidebar-active .toast.show {
     --workspace-drawer-text: #283b50;
 }
 @media (max-width: 760px) {
-    :root { --workspace-drawer-width: min(86vw, 330px); }
+    :root {
+        --workspace-drawer-width: min(86vw, 330px);
+        --workspace-drawer-gap: 20px;
+    }
 }
 
 .toolbar-sidebar {
@@ -146,7 +150,7 @@ body.toolbar-sidebar-active .toast.show {
     bottom: var(--workspace-drawer-inset);
     box-sizing: border-box;
     width: var(--workspace-drawer-width);
-    max-width: calc(100vw - (var(--workspace-drawer-inset) * 2));
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
     border: 1px solid var(--workspace-drawer-border);
     border-radius: var(--workspace-drawer-radius);
     background: var(--workspace-drawer-surface);
@@ -157,7 +161,7 @@ body.toolbar-sidebar-active .toast.show {
         visibility var(--workspace-drawer-duration) var(--workspace-drawer-easing);
 }
 body:not(.toolbar-sidebar-open) .toolbar-sidebar {
-    transform: translateX(calc(100% + (var(--workspace-drawer-inset) * 2)));
+    transform: translateX(calc(100% + var(--workspace-drawer-gap, 24px)));
     visibility: hidden;
     pointer-events: none;
 }

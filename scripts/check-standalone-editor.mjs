@@ -10,8 +10,9 @@ const bundlePath = 'index-test-etitor.html';
 const cssFiles = ['style.css', 'src/features/quick-insert/quick-insert.css', 'src/features/workspace/toolbar/toolbar-sidebar.css', 'src/features/workspace/file-manager/file-manager.css', 'src/features/workspace/search/search-tools.css', 'src/features/workspace/search/search-header.css', 'src/features/settings/settings.css', 'src/features/suggestions/manager/suggestion-manager.css', 'src/features/backup-restore/backup-restore.css'];
 const scriptFiles = [
     'src/features/suggestions/data/html-suggestions.js', 'src/features/suggestions/data/css-suggestions.js', 'src/features/suggestions/data/js-suggestions.js',
-    'src/features/suggestions/manager/suggestion-manager.js', 'src/features/suggestions/next-word/next-word-suggestions.js', 'src/features/live-preview/element-inspector.js', 'src/features/quick-insert/quick-insert.js', 'src/features/workspace/toolbar/toolbar-sidebar.js', 'src/features/workspace/file-manager/file-manager.js', 'src/features/workspace/file-manager/file-manager-drawer.js', 'src/features/workspace/search/search-header.js',
-    'script.js', 'src/features/settings/settings.js', 'src/features/backup-restore/backup-restore.js', 'src/features/word-tree/word-tree.js'
+    'src/features/suggestions/manager/suggestion-manager.js', 'src/features/suggestions/next-word/next-word-suggestions.js', 'src/features/live-preview/element-inspector.js', 'src/features/quick-insert/quick-insert.js', 'src/features/workspace/toolbar/toolbar-sidebar.js', 'src/features/workspace/file-manager/file-manager.js',
+    'script.js', 'src/features/settings/settings.js', 'src/features/backup-restore/backup-restore.js', 'src/features/word-tree/word-tree.js',
+    'src/features/workspace/file-manager/file-manager-drawer.js', 'src/features/workspace/search/search-header.js'
 ];
 const expectedAssets = [...cssFiles, ...scriptFiles];
 const voidTags = new Set([

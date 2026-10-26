@@ -1,45 +1,111 @@
-/* کنترل یگانهٔ فایل‌منیجر؛ مسیر قدیمی بازشدن پنل حذف شده است. */
+/* کنترل پنل کشویی فایل‌منیجر؛ انیمیشن و دسترس‌پذیری هم‌الگوی سایدبار ابزارهاست. */
 (function () {
     'use strict';
+
     function init() {
-        const button = document.getElementById('fileManagerOpenButton');
+        const openButton = document.getElementById('fileManagerOpenButton');
+        const closeButton = document.getElementById('fileManagerCloseButton');
         const explorer = document.getElementById('fileExplorer');
         const backdrop = document.getElementById('fileManagerBackdrop');
-        if (!button || !explorer || !backdrop) return;
+        if (!openButton || !closeButton || !explorer || !backdrop) return;
 
-        function open() {
-            explorer.classList.remove('is-collapsed');
-            explorer.classList.add('file-manager-drawer-open');
-            backdrop.hidden = false;
-            backdrop.setAttribute('aria-hidden', 'false');
-            document.body.classList.add('file-manager-drawer-active');
-            button.setAttribute('aria-expanded', 'true');
-            button.setAttribute('aria-label', 'بستن فایل‌منیجر');
-            button.title = 'بستن فایل‌منیجر';
-            explorer.setAttribute('aria-modal', 'true');
-            explorer.setAttribute('role', 'dialog');
+        let isOpen = false;
+        const transitionFallbackMs = 280;
+
+        function setOpen(nextOpen, options) {
+            const settings = options || {};
+            const wasOpen = isOpen;
+            isOpen = Boolean(nextOpen);
+
+            explorer.classList.toggle('file-manager-drawer-open', isOpen);
+            explorer.classList.toggle('is-collapsed', !isOpen);
+            explorer.setAttribute('aria-hidden', String(!isOpen));
+            openButton.setAttribute('aria-expanded', String(isOpen));
+            openButton.setAttribute('aria-label', isOpen ? 'بستن فایل‌منیجر' : 'باز کردن فایل‌منیجر');
+            openButton.title = isOpen ? 'بستن فایل‌منیجر' : 'باز کردن فایل‌منیجر';
+
+            document.body.classList.toggle('file-manager-drawer-active', isOpen);
+
+            if (isOpen) {
+                explorer.setAttribute('role', 'dialog');
+                explorer.setAttribute('aria-modal', 'true');
+                backdrop.hidden = false;
+                backdrop.setAttribute('aria-hidden', 'false');
+                /* ایجاد یک نقطهٔ شروع مستقل برای انیمیشن محوشدن پس‌زمینه. */
+                void backdrop.offsetWidth;
+                backdrop.classList.add('is-visible');
+            } else {
+                explorer.removeAttribute('role');
+                explorer.removeAttribute('aria-modal');
+                backdrop.classList.remove('is-visible');
+                backdrop.setAttribute('aria-hidden', 'true');
+
+                if (!wasOpen || (window.matchMedia &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+                    backdrop.hidden = true;
+                } else {
+                    window.setTimeout(function () {
+                        if (!isOpen) backdrop.hidden = true;
+                    }, transitionFallbackMs);
+                }
+            }
+
+            if (settings.focus === 'close' && isOpen) closeButton.focus();
+            else if (!isOpen && settings.focus === 'open') openButton.focus();
         }
-        function close() {
-            explorer.classList.remove('file-manager-drawer-open');
-            explorer.classList.add('is-collapsed');
-            backdrop.hidden = true;
-            backdrop.setAttribute('aria-hidden', 'true');
-            document.body.classList.remove('file-manager-drawer-active');
-            button.setAttribute('aria-expanded', 'false');
-            button.setAttribute('aria-label', 'باز کردن فایل‌منیجر');
-            button.title = 'باز کردن فایل‌منیجر';
-            explorer.removeAttribute('aria-modal');
-            explorer.removeAttribute('role');
-        }
-        button.addEventListener('click', function () {
-            if (explorer.classList.contains('file-manager-drawer-open')) close();
-            else open();
+
+        openButton.addEventListener('click', function () {
+            setOpen(!isOpen, { focus: isOpen ? 'open' : 'close' });
         });
-        backdrop.addEventListener('click', close);
+
+        closeButton.addEventListener('click', function () {
+            setOpen(false, { focus: 'open' });
+        });
+
+        backdrop.addEventListener('click', function () {
+            setOpen(false, { focus: 'open' });
+        });
+
         document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' && explorer.classList.contains('file-manager-drawer-open')) close();
+            if (!isOpen) return;
+
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                setOpen(false, { focus: 'open' });
+                return;
+            }
+
+            if (event.key !== 'Tab') return;
+
+            const focusable = Array.from(explorer.querySelectorAll(
+                'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )).filter(function (element) {
+                return !element.hidden &&
+                    element.getAttribute('aria-hidden') !== 'true' &&
+                    element.getClientRects().length > 0;
+            });
+
+            if (!focusable.length) {
+                event.preventDefault();
+                closeButton.focus();
+                return;
+            }
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && (document.activeElement === first || !explorer.contains(document.activeElement))) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && (document.activeElement === last || !explorer.contains(document.activeElement))) {
+                event.preventDefault();
+                first.focus();
+            }
         });
+
+        /* در همهٔ اندازه‌ها، فایل‌منیجر بسته آغاز می‌شود. */
+        setOpen(false);
     }
+
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();
 }());

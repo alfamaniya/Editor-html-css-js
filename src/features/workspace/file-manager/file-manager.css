@@ -169,7 +169,7 @@
     .file-explorer.file-manager-drawer-open {
     display: flex !important;
         position: fixed;
-        z-index: 7101;
+        z-index: 8201;
         top: 10px;
         right: auto;
         bottom: 10px;

@@ -202,14 +202,7 @@
         overflow-y: auto;
         overscroll-behavior: contain;
     }
-    body.file-manager-drawer-active .container,
-    body.file-manager-drawer-active .page-symbol-header,
-    body.file-manager-drawer-active .tabs,
-    body.file-manager-drawer-active .search-tools-row,
-    body.file-manager-drawer-active .preview-pane {
-        filter: blur(3px);
-        pointer-events: none;
-        user-select: none;
-    }
+    /* محوشدن و جلوگیری از کلیک روی صفحه توسط backdrop انجام می‌شود؛
+       این کار مانع محوشدن خود پنل کشویی نیز می‌شود. */
     body.file-manager-drawer-active { overflow: hidden; }
 }

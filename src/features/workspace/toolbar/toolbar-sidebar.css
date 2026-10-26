@@ -1,6 +1,8 @@
 /* نوار ابزار کناری ویرایشگر؛ مستقل از استایل‌های عمومی برنامه */
 :root { --toolbar-sidebar-width: 276px; }
 /* سایدبار روی محتوای صفحه قرار می‌گیرد و عرض و چیدمان صفحه را تغییر نمی‌دهد. */
+body.toolbar-sidebar-active { overflow: hidden; }
+
 .toolbar-sidebar {
     position: fixed; z-index: 8101; top: 0; right: 0; bottom: 0;
     width: var(--toolbar-sidebar-width); max-width: 100vw; display: flex;

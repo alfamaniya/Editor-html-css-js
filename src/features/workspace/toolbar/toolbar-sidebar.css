@@ -28,7 +28,6 @@ body:not(.toolbar-sidebar-open) .toolbar-sidebar { transform: translateX(calc(10
 .toolbar-sidebar-close-button { flex: 0 0 34px; padding: 0; font-size: 24px; line-height: 1; }
 .toolbar-sidebar-close-button:hover, .toolbar-sidebar-open-button:hover { background: var(--blue-bg-4); }
 .toolbar-sidebar-open-button { position: fixed; z-index: 6000; top: 12px; right: 12px; box-shadow: 0 4px 18px rgb(0 0 0 / 24%); }
-body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 .toolbar-sidebar-backdrop {
     position: fixed; z-index: 6000; inset: 0; background: rgb(5 10 18 / 58%);
     -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); cursor: pointer;

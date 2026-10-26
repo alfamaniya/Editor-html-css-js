@@ -16,6 +16,7 @@
             isOpen = Boolean(nextOpen);
 
             document.body.classList.toggle('toolbar-sidebar-open', isOpen);
+            document.body.classList.toggle('toolbar-sidebar-active', isOpen);
             sidebar.setAttribute('aria-hidden', String(!isOpen));
             openButton.setAttribute('aria-expanded', String(isOpen));
             openButton.setAttribute('aria-label', isOpen ? 'بستن سایدبار تنظیمات' : 'باز کردن سایدبار تنظیمات');

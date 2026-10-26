@@ -110,3 +110,55 @@
     .file-explorer { border-radius: 0 14px 14px 0; box-shadow: 8px 0 24px rgb(0 0 0 / 20%); }
     .fe-header { min-height: 48px; padding: 8px; }
 }
+
+/* هماهنگ‌سازی فایل‌منیجر با کارت‌های سایدبار تنظیمات */
+.file-explorer {
+    align-self: stretch;
+    margin: 10px 8px 10px 10px;
+    border: 1px solid rgb(130 159 194 / 22%);
+    border-radius: 16px;
+    background: rgb(26 38 57 / 88%);
+    color: #d8e4f4;
+    box-shadow: 0 12px 34px rgb(0 0 0 / 12%);
+}
+.fe-header {
+    min-height: 52px;
+    padding: 10px 12px;
+    background: linear-gradient(115deg, rgb(27 47 72 / 97%), rgb(20 32 50 / 97%));
+    border-bottom: 1px solid rgb(129 164 205 / 24%);
+}
+.fe-title { color: #e7eef9; font-weight: 700; }
+.fe-controls, .fe-new-form {
+    background: rgb(20 32 50 / 72%);
+    border-bottom-color: rgb(129 164 205 / 18%);
+}
+.fe-controls input, .fe-controls select, .fe-new-form input, .fe-new-form select {
+    border-radius: 10px;
+    border-color: rgb(130 159 194 / 28%);
+}
+.fe-item { border: 1px solid transparent; border-radius: 10px; color: #d8e4f4; }
+.fe-item:hover { background: rgb(57 82 115 / 34%); border-color: rgb(130 159 194 / 24%); }
+.fe-item.active {
+    background: rgb(57 112 174 / 22%);
+    border-color: rgb(112 159 214 / 44%);
+    color: #f4f8ff;
+    box-shadow: none;
+}
+.fe-toggle-btn, .fe-add-btn, .fe-library-btn { border-radius: 10px; border-color: rgb(130 159 194 / 28%); }
+:root[data-theme="light"] .file-explorer {
+    background: #f8fbff; border-color: rgb(130 159 194 / 32%);
+    color: #283b50; box-shadow: 0 12px 34px rgb(30 54 80 / 10%);
+}
+:root[data-theme="light"] .fe-header {
+    background: linear-gradient(115deg, #f8fbff, #eaf1f9); border-bottom-color: #d4e0ec;
+}
+:root[data-theme="light"] .fe-title { color: #263b52; }
+:root[data-theme="light"] .fe-controls,
+:root[data-theme="light"] .fe-new-form { background: #edf3f9; border-bottom-color: #d4e0ec; }
+:root[data-theme="light"] .fe-item { color: #425a72; }
+:root[data-theme="light"] .fe-item:hover { background: #e4edf6; border-color: #c2d1e0; }
+:root[data-theme="light"] .fe-item.active { background: var(--accent-soft); color: #213a53; border-color: var(--accent-border); }
+@media (max-width: 760px) {
+    .file-explorer { margin: 6px; border-radius: 16px; box-shadow: 0 12px 30px rgb(0 0 0 / 18%); }
+    .fe-header { min-height: 48px; padding: 8px 10px; }
+}

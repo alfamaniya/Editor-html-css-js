@@ -306,6 +306,9 @@ body.file-manager-drawer-active { overflow: hidden; }
 }
 .file-explorer.file-manager-drawer-open {
     display: flex !important;
+    width: var(--workspace-drawer-width, min(320px, calc(100vw - 24px)));
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
+    margin: 0;
     transform: translateX(0);
     visibility: visible;
     pointer-events: auto;
@@ -313,6 +316,9 @@ body.file-manager-drawer-active { overflow: hidden; }
 .file-explorer:not(.file-manager-drawer-open) {
     /* display:none باعث حذف انیمیشن خروج می‌شد؛ پنل اکنون خارج از دید قرار می‌گیرد. */
     display: flex !important;
+    width: var(--workspace-drawer-width, min(320px, calc(100vw - 24px)));
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
+    margin: 0;
     transform: translateX(calc(-100% - var(--workspace-drawer-gap, 24px)));
     visibility: hidden;
     pointer-events: none;

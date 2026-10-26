@@ -67,6 +67,7 @@ body { padding-top: var(--workspace-header-height); }
     content: "";
 }
 .workspace-header-center {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -110,8 +111,8 @@ body { padding-top: var(--workspace-header-height); }
     font-size: 10px;
     white-space: nowrap;
 }
-.workspace-search {
-    position: relative;
+ .workspace-search {
+    position: static;
     display: flex;
     align-items: center;
     flex: 1 1 auto;
@@ -155,18 +156,31 @@ body { padding-top: var(--workspace-header-height); }
     transform: rotate(48deg);
     transform-origin: left center;
 }
+.workspace-search.is-expanded .workspace-search-toggle {
+    position: absolute;
+    z-index: 7201;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
 .workspace-search-panel {
-    position: relative;
+    position: absolute;
+    z-index: 7200;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
     display: flex;
     flex: 1 1 0;
     align-items: center;
     min-width: 0;
     width: auto;
     gap: 5px;
-    padding: 4px 6px;
+    padding: 4px 6px 4px 48px;
     border: 1px solid var(--blue-border);
     border-radius: 11px;
     background: var(--blue-bg-1);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 16%);
 }
 .workspace-search-panel[hidden] { display: none !important; }
 .workspace-search-panel .search-input {
@@ -233,7 +247,7 @@ body { padding-top: var(--workspace-header-height); }
 :root[data-theme="light"] .workspace-menu-button:hover,
 :root[data-theme="light"] .header-history-button:hover,
 :root[data-theme="light"] .workspace-search-toggle:hover { background: var(--accent-soft, #dcecf8); }
-:root[data-theme="light"] .workspace-search-panel { background: #f4f8fc; border-color: #bdcddd; }
+:root[data-theme="light"] .workspace-search-panel { background: #f4f8fc; border-color: #bdcddd; box-shadow: 0 4px 14px rgb(30 54 80 / 12%); }
 :root[data-theme="light"] .workspace-search-panel > button:not(.workspace-search-toggle) {
     color: #29415b;
     background: #e5edf6;

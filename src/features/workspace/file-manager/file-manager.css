@@ -258,3 +258,16 @@ body.file-manager-drawer-active { overflow: hidden; }
         max-width: calc(100vw - 24px);
     }
 }
+
+
+/* لایهٔ پس‌زمینهٔ پنل کشویی فایل‌منیجر */
+.file-manager-backdrop {
+    position: fixed;
+    z-index: 7100;
+    inset: 0;
+    background: rgb(5 10 18 / 58%);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+}
+.file-manager-backdrop[hidden] { display: none !important; }

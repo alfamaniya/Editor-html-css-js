@@ -15,6 +15,56 @@
 </head>
 <body>
     <header class="workspace-header" id="workspaceHeader" aria-label="جست‌وجو و ابزارهای اصلی">
+        <nav class="app-menu-bar" aria-label="Application menu">
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="fileMenu">File</button>
+                <div class="app-menu-dropdown" id="fileMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="new-file">New file <span>＋</span></button>
+                    <button type="button" class="app-menu-item" data-menu-action="open-files">Open files</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="save-project">Save project <span>Ctrl+S</span></button>
+                    <button type="button" class="app-menu-item" data-menu-action="download">Download HTML <span>Ctrl+Shift+S</span></button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="backup">Backup &amp; restore</button>
+                </div>
+            </div>
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="editMenu">Edit</button>
+                <div class="app-menu-dropdown" id="editMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="undo">Undo <span>Ctrl+Z</span></button>
+                    <button type="button" class="app-menu-item" data-menu-action="redo">Redo <span>Ctrl+Y</span></button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="find">Find in code <span>Ctrl+F</span></button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="clear-file">Clear current file</button>
+                    <button type="button" class="app-menu-item" data-menu-action="clear-all">Clear all files</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="font-increase">Increase font size</button>
+                    <button type="button" class="app-menu-item" data-menu-action="font-decrease">Decrease font size</button>
+                </div>
+            </div>
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="viewMenu">View</button>
+                <div class="app-menu-dropdown" id="viewMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="view-html">HTML editor</button>
+                    <button type="button" class="app-menu-item" data-menu-action="view-css">CSS editor</button>
+                    <button type="button" class="app-menu-item" data-menu-action="view-js">JavaScript editor</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="refresh-preview">Refresh preview</button>
+                    <button type="button" class="app-menu-item" data-menu-action="editor-tools">Editor tools</button>
+                    <button type="button" class="app-menu-item" data-menu-action="settings">Settings</button>
+                </div>
+            </div>
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="helpMenu">Help</button>
+                <div class="app-menu-dropdown" id="helpMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="help">Help guide</button>
+                    <button type="button" class="app-menu-item" data-menu-action="help">Keyboard shortcuts</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="libraries">Libraries</button>
+                </div>
+            </div>
+        </nav>
         <button type="button" class="file-manager-open-button workspace-menu-button" id="fileManagerOpenButton"
                 aria-controls="fileExplorer" aria-expanded="false" aria-label="باز کردن فایل‌منیجر" title="باز کردن فایل‌منیجر">
             <span class="menu-glyph" aria-hidden="true"></span>

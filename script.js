@@ -419,6 +419,68 @@
             activateTab('help');
         });
 
+        const appMenuBar = document.querySelector('.app-menu-bar');
+        function closeAppMenus() {
+            appMenuBar.querySelectorAll('.app-menu-dropdown').forEach(function(menu) {
+                menu.hidden = true;
+            });
+            appMenuBar.querySelectorAll('.app-menu-trigger').forEach(function(trigger) {
+                trigger.setAttribute('aria-expanded', 'false');
+            });
+        }
+        appMenuBar.addEventListener('click', function(event) {
+            const trigger = event.target.closest('.app-menu-trigger');
+            if (trigger) {
+                const menu = document.getElementById(trigger.getAttribute('aria-controls'));
+                const shouldOpen = trigger.getAttribute('aria-expanded') !== 'true';
+                closeAppMenus();
+                menu.hidden = !shouldOpen;
+                trigger.setAttribute('aria-expanded', String(shouldOpen));
+                return;
+            }
+
+            const item = event.target.closest('[data-menu-action]');
+            if (!item) return;
+            closeAppMenus();
+            const action = item.dataset.menuAction;
+            const clickById = function(id) { document.getElementById(id).click(); };
+            if (action === 'new-file') clickById('feAddBtn');
+            else if (action === 'open-files') clickById('fileManagerOpenButton');
+            else if (action === 'save-project') {
+                clearTimeout(autoSaveTimer);
+                clearTimeout(dirtyResetTimer);
+                if (saveProject()) {
+                    setDirty(false);
+                    showToast('✅ Project saved locally', 'success');
+                }
+            } else if (action === 'download') clickById('btnDownload');
+            else if (action === 'backup') {
+                clickById('btnSettings');
+                const backupSection = document.querySelector('[data-settings-nav="settingsBackupRestoreCard"]');
+                if (backupSection) backupSection.click();
+            } else if (action === 'undo') clickById('btnUndo');
+            else if (action === 'redo') clickById('btnRedo');
+            else if (action === 'find') clickById('searchExpandButton');
+            else if (action === 'clear-file') clickById('btnClear');
+            else if (action === 'clear-all') clickById('btnClearAll');
+            else if (action === 'font-increase') clickById('btnFontInc');
+            else if (action === 'font-decrease') clickById('btnFontDec');
+            else if (action === 'view-html') clickById('tab-html');
+            else if (action === 'view-css') clickById('tab-css');
+            else if (action === 'view-js') clickById('tab-js');
+            else if (action === 'refresh-preview') window.dispatchEvent(new Event('editor-refresh-preview'));
+            else if (action === 'editor-tools') clickById('toolbarSidebarOpen');
+            else if (action === 'settings') clickById('btnSettings');
+            else if (action === 'help') clickById('btnHelp');
+            else if (action === 'libraries') clickById('feLibraryBtn');
+        });
+        document.addEventListener('click', function(event) {
+            if (!appMenuBar.contains(event.target)) closeAppMenus();
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') closeAppMenus();
+        });
+
         feAddBtn.addEventListener('click', function() {
             if (!fileExplorer.classList.contains('file-manager-drawer-open')) {
                 setFileExplorerCollapsed(false);
@@ -2400,6 +2462,7 @@
             let h = 204, s = 0.7626, v = 0.8588;
             let ctx = null;
             let timer = null;
+            let applying = false;
 
             function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
             function hsvToRgb(hh, ss, vv) {
@@ -2471,6 +2534,17 @@
                     const vv = ll + ss * Math.min(ll, 1 - ll);
                     return { h: hh, s: vv === 0 ? 0 : 2 * (1 - ll / vv), v: vv };
                 }
+                const probe = document.createElement('span');
+                probe.style.color = '';
+                probe.style.color = str;
+                if (!probe.style.color) return null;
+                probe.style.position = 'fixed';
+                probe.style.visibility = 'hidden';
+                document.body.appendChild(probe);
+                const computed = getComputedStyle(probe).color;
+                probe.remove();
+                m = computed.match(/^rgba?\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})/i);
+                if (m) return rgbToHsv(+m[1], +m[2], +m[3]);
                 return null;
             }
             function render(skipText) {
@@ -2533,11 +2607,13 @@
             function apply() {
                 if (!ctx) return;
                 const c = ctx;
-                const text = ': ' + formatColor(hsvToRgb(h, s, v)) + ';';
+                const text = formatColor(hsvToRgb(h, s, v));
                 close();
                 c.ta.focus();
-                c.ta.setSelectionRange(c.pos, c.pos + c.replaceLen);
-                insertText(c.ta, text);
+                c.ta.setSelectionRange(c.start, c.end);
+                applying = true;
+                try { insertText(c.ta, text); }
+                finally { applying = false; }
             }
             function close() { clearTimeout(timer); el.hidden = true; ctx = null; }
             el.querySelector('.cp-ok').addEventListener('click', apply);
@@ -2555,28 +2631,103 @@
             }, true);
             window.addEventListener('resize', closeIfOpen);
 
-            function isColorContext(val, pos, lang) {
+            function isInsideString(val, pos) {
+                let quote = '';
+                for (let i = 0; i < pos; i++) {
+                    if (val[i] === '\\') { i++; continue; }
+                    if (quote) {
+                        if (val[i] === quote) quote = '';
+                    } else if (val[i] === '"' || val[i] === "'" || val[i] === '`') {
+                        quote = val[i];
+                    }
+                }
+                return !!quote;
+            }
+            function isHtmlColorAttribute(val, pos) {
+                const tagStart = val.lastIndexOf('<', pos);
+                const tagEnd = val.indexOf('>', pos);
+                if (tagStart < 0 || tagEnd < 0) return false;
+                const attribute = /([\w:-]+)\s*=\s*(["'])([^"']*)$/.exec(val.slice(tagStart, pos));
+                return !!attribute && /^(?:color|bgcolor|fill|stroke|stop-color|flood-color|lighting-color)$/i.test(attribute[1]);
+            }
+            function colorTokenAt(val, start, end, lang) {
+                const pattern = /#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{4}|[0-9a-f]{3})\b|(?:rgba?|hsla?)\(\s*[^)]*\)|\b[a-z]+\b/gi;
+                const nonColorKeywords = new Set(['transparent', 'currentcolor', 'inherit', 'initial', 'unset', 'revert', 'revert-layer']);
+                let match;
+                while ((match = pattern.exec(val))) {
+                    const tokenStart = match.index, tokenEnd = tokenStart + match[0].length;
+                    if (end > start && (start < tokenStart || end > tokenEnd)) continue;
+                    if (tokenEnd < start || tokenStart > end) continue;
+                    if (/^[a-z]+$/i.test(match[0])) {
+                        const keyword = match[0].toLowerCase();
+                        if (nonColorKeywords.has(keyword)) continue;
+                        if (lang === 'js' && !isInsideString(val, tokenStart)) continue;
+                        if ((lang === 'css' || lang === 'html') &&
+                            !getColorContext(val, Math.min(tokenEnd, tokenStart + 1), lang) &&
+                            !(lang === 'html' && isHtmlColorAttribute(val, tokenStart))) continue;
+                    }
+                    if (!parseColor(match[0])) continue;
+                    return { start: tokenStart, end: tokenEnd, value: match[0] };
+                }
+                return null;
+            }
+            function getColorContext(val, pos, lang) {
                 const before = val.substring(0, pos);
-                let token = null;
+                let declarationStart = 0;
+                let declarationEnd = val.length;
                 if (lang === 'css') {
-                    const clean = before.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, '');
-                    const depth = (clean.match(/\{/g) || []).length - (clean.match(/\}/g) || []).length;
-                    if (depth <= 0) return false;
-                    const line = clean.substring(clean.lastIndexOf('\n') + 1);
-                    const declarationStart = Math.max(line.lastIndexOf(';'), line.lastIndexOf('{'), line.lastIndexOf('}')) + 1;
-                    const declaration = line.slice(declarationStart);
-                    const m = declaration.match(/^\s*([\w-]+)\s*:\s*[^;{}]*$/);
-                    token = m && m[1];
+                    const segmentStart = Math.max(before.lastIndexOf(';'), before.lastIndexOf('{'), before.lastIndexOf('}')) + 1;
+                    const semicolon = val.indexOf(';', pos);
+                    const brace = val.indexOf('}', pos);
+                    const segmentEnd = semicolon < 0 ? brace : brace < 0 ? semicolon : Math.min(semicolon, brace);
+                    declarationStart = segmentStart;
+                    declarationEnd = segmentEnd < 0 ? val.length : segmentEnd;
                 } else if (lang === 'html') {
-                    const tag = before.substring(before.lastIndexOf('<'));
-                    const styleMatch = tag.match(/\bstyle\s*=\s*(["'])([\s\S]*)$/i);
-                    if (!styleMatch) return false;
-                    const declarations = styleMatch[2];
-                    const declaration = declarations.slice(declarations.lastIndexOf(';') + 1);
-                    const m = declaration.match(/^\s*([\w-]+)\s*:\s*[^;]*$/);
-                    token = m && m[1];
-                } else { return false; }
-                return !!token && (token.toLowerCase() === 'color' || /-color$/i.test(token));
+                    const tagStart = before.lastIndexOf('<');
+                    if (tagStart < 0) return null;
+                    const tagEnd = val.indexOf('>', pos);
+                    if (tagEnd < 0) return null;
+                    const tag = val.slice(tagStart, tagEnd);
+                    const styleMatch = /\bstyle\s*=\s*(["'])/i.exec(tag);
+                    if (!styleMatch) return null;
+                    const contentStart = tagStart + styleMatch.index + styleMatch[0].length;
+                    const quoteEnd = val.indexOf(styleMatch[1], contentStart);
+                    if (quoteEnd < 0 || pos < contentStart || pos > quoteEnd) return null;
+                    const segmentStart = Math.max(val.lastIndexOf(';', pos - 1), contentStart - 1) + 1;
+                    const semicolon = val.indexOf(';', pos);
+                    declarationStart = segmentStart;
+                    declarationEnd = semicolon >= 0 && semicolon < quoteEnd ? semicolon : quoteEnd;
+                } else {
+                    return null;
+                }
+
+                if (pos < declarationStart || pos > declarationEnd) return null;
+                const declaration = val.slice(declarationStart, declarationEnd);
+                const property = /^\s*([\w-]+)\s*:\s*([\s\S]*)$/.exec(declaration);
+                if (!property) return null;
+                const name = property[1].toLowerCase();
+                const colorProperties = /^(?:color|background|background-image|border|box-shadow|text-shadow|outline|text-decoration|fill|stroke|stop-color|flood-color|lighting-color|accent-color|caret-color)$/;
+                if (!colorProperties.test(name) && !/-color$/i.test(name) && !name.startsWith('--')) return null;
+                const valueOffset = declaration.indexOf(':') + 1;
+                const rawValue = declaration.slice(valueOffset);
+                const valueStart = rawValue.trim()
+                    ? declarationStart + valueOffset + (rawValue.length - rawValue.trimStart().length)
+                    : declarationStart + valueOffset + rawValue.length;
+                const valueEnd = rawValue.trim()
+                    ? declarationStart + valueOffset + rawValue.trimEnd().length
+                    : valueStart;
+                if (pos < valueStart || pos > declarationEnd) return null;
+                return { start: valueStart, end: valueEnd, value: val.slice(valueStart, valueEnd), insertAt: pos };
+            }
+            function getTarget(ta, lang, start, end) {
+                const val = ta.value;
+                const color = colorTokenAt(val, start, end, lang);
+                if (color) return color;
+                const context = getColorContext(val, start, lang);
+                if (!context) return null;
+                if (!context.value) return { start: start, end: end, value: '' };
+                if (/^(?:#?[a-z0-9-]+|rgba?\([^)]*|hsla?\([^)]*)$/i.test(context.value.trim())) return context;
+                return null;
             }
             const measureCtx2 = document.createElement('canvas').getContext('2d');
             function caretRect2(ta, pos) {
@@ -2594,17 +2745,16 @@
                     lh: lh
                 };
             }
-            function openAt(ta, pos, lang) {
-                const rest = ta.value.substring(pos);
-                const rm = rest.match(/^[ \t]*:[ \t]*([^;\n}"']*);?/);
-                const initial = rm ? parseColor(rm[1]) : null;
-                ctx = { ta: ta, pos: pos, replaceLen: rm ? rm[0].length : 0 };
+            function openAt(ta, target) {
+                const initial = parseColor(target.value);
+                ctx = { ta: ta, start: target.start, end: target.end };
+                IntelliSense.hide();
                 if (initial) setHsv(initial, true);
                 else { h = 204; s = 0.7626; v = 0.8588; }
-                oldSw.style.background = toHex(hsvToRgb(h, s, v));
+                oldSw.style.background = initial ? toHex(hsvToRgb(h, s, v)) : 'transparent';
                 render(false);
                 el.hidden = false;
-                const c = caretRect2(ta, pos);
+                const c = caretRect2(ta, target.start);
                 const w = el.offsetWidth, hgt = el.offsetHeight;
                 let left = clamp(c.x, 8, Math.max(8, window.innerWidth - w - 8));
                 let top = c.bottom + 6;
@@ -2613,21 +2763,33 @@
                 el.style.left = left + 'px';
                 el.style.top = top + 'px';
             }
-            function onInput(ta, lang, e) {
+            function scheduleOpen(ta, lang, start, end) {
                 clearTimeout(timer); close();
-                if (lang === 'js') return;
-                if (!e || e.inputType !== 'insertText' || !e.data || e.data.toLowerCase() !== 'r') return;
-                const pos = ta.selectionStart;
-                if (!isColorContext(ta.value, pos, lang)) return;
+                const target = getTarget(ta, lang, start, end);
+                if (!target) return;
                 timer = setTimeout(function() {
-                    if (document.activeElement === ta && ta.selectionStart === pos &&
-                        isColorContext(ta.value, pos, lang)) {
-                        openAt(ta, pos, lang);
+                    const current = getTarget(ta, lang, ta.selectionStart, ta.selectionEnd);
+                    if (document.activeElement === ta && current) {
+                        openAt(ta, current);
                     }
                 }, 300);
             }
+            function onInput(ta, lang) {
+                if (applying) return;
+                scheduleOpen(ta, lang, ta.selectionStart, ta.selectionEnd);
+            }
+            function onSelection(ta, lang) {
+                const start = ta.selectionStart, end = ta.selectionEnd;
+                const target = getTarget(ta, lang, start, end);
+                if (target) {
+                    clearTimeout(timer);
+                    openAt(ta, target);
+                } else if (!target) {
+                    closeIfOpen();
+                }
+            }
             function closeIfOpen() { if (!el.hidden) close(); }
-            return { onInput, close, closeIfOpen };
+            return { onInput, onSelection, close, closeIfOpen };
         })();
 
         // ==========================================
@@ -2847,6 +3009,15 @@
                 if (autocompleteEnabled) IntelliSense.onInput(ta, lang, e);
                 else IntelliSense.hide();
                 picker.onInput(ta, lang, e);
+            });
+
+            ta.addEventListener('click', function() {
+                picker.onSelection(ta, lang);
+            });
+            ta.addEventListener('keyup', function(e) {
+                if (e.key === 'Shift' || e.key.startsWith('Arrow') || e.key === 'Home' || e.key === 'End') {
+                    picker.onSelection(ta, lang);
+                }
             });
 
             ta.addEventListener('scroll', function() {

@@ -167,6 +167,7 @@
 /* پنل کشویی فایل‌منیجر در موبایل؛ محتوای اصلی هنگام بازبودن تار و غیرفعال می‌شود */
 @media (max-width: 760px) {
     .file-explorer.file-manager-drawer-open {
+    display: flex !important;
         position: fixed;
         z-index: 7101;
         top: 10px;
@@ -208,6 +209,11 @@
 }
 
 
+/* حذف کامل نوار قدیمیِ درون‌صفحه‌ای؛ فایل‌منیجر فقط در حالت کشویی دیده می‌شود. */
+.file-explorer:not(.file-manager-drawer-open) {
+    display: none !important;
+}
+
 /* تنها حالت مجاز فایل‌منیجر: پنل کشویی روی محتوا */
 .file-explorer.file-manager-drawer-open {
     position: fixed;
@@ -241,13 +247,8 @@
 }
 .fe-drawer-mark { display: inline-flex; align-items: center; justify-content: center; }
 body.file-manager-drawer-active { overflow: hidden; }
-body.file-manager-drawer-active .container,
-body.file-manager-drawer-active .page-symbol-header,
-body.file-manager-drawer-active .toolbar-sidebar {
-    filter: blur(3px);
-    pointer-events: none;
-    user-select: none;
-}
+/* محو و غیرفعال‌شدن محتوای پشت پنل فقط توسط backdrop انجام می‌شود؛
+   از اعمال filter روی والد فایل‌منیجر جلوگیری می‌کنیم تا پنل تار یا زیر لایهٔ تیره محبوس نشود. */
 @media (max-width: 760px) {
     .file-explorer.file-manager-drawer-open {
         top: 10px;

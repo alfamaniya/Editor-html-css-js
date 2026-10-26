@@ -12,22 +12,22 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const htmlPath = resolve(root, 'index.html');
-const cssFiles = ['style.css', 'settings.css', 'suggestion-manager.css', 'backup-restore.css'];
+const cssFiles = ['style.css', 'src/features/settings/settings.css', 'src/features/suggestions/manager/suggestion-manager.css', 'src/features/backup-restore/backup-restore.css'];
 const outputPath = resolve(root, 'index-test-etitor.html');
 const temporaryPath = outputPath + '.tmp';
 
 const scriptFiles = [
-    'html-suggestions.js',
-    'css-suggestions.js',
-    'js-suggestions.js',
-    'suggestion-manager.js',
-    'next-word-suggestions.js',
-    'preview-element-inspector.js',
+    'src/features/suggestions/data/html-suggestions.js',
+    'src/features/suggestions/data/css-suggestions.js',
+    'src/features/suggestions/data/js-suggestions.js',
+    'src/features/suggestions/manager/suggestion-manager.js',
+    'src/features/suggestions/next-word/next-word-suggestions.js',
+    'src/features/live-preview/element-inspector.js',
     'script.js',
-    'settings.js',
-    'backup-restore.js',
-    'word-tree.js',
-    'github-update.js'
+    'src/features/settings/settings.js',
+    'src/features/backup-restore/backup-restore.js',
+    'src/features/word-tree/word-tree.js',
+    'src/features/integrations/github/github-update.js'
 ];
 const expectedAssetOrder = [...cssFiles, ...scriptFiles];
 

@@ -46,34 +46,37 @@
 
 ## ۲. درخت فعلی مخزن
 
-این درخت مسیر فایل‌ها را مطابق ساختار فعلی شاخهٔ `main` نشان می‌دهد.
+این درخت مسیر فایل‌ها را مطابق ساختار فعلی شاخهٔ `main` پس از انتقال نخستین گروه قابلیت‌های مستقل نشان می‌دهد.
 
 ```text
 Editor-html-css-js/
-├── .github/
-│   └── workflows/
-│       ├── build-test-editor.yml
-│       ├── check-index-integrity.yml
-│       └── check-index.yml
+├── .github/workflows/
 ├── README.md
 ├── index.html
 ├── index-test-etitor.html
 ├── script.js
 ├── style.css
-├── settings.js
-├── settings.css
-├── backup-restore.js
-├── backup-restore.css
-├── suggestion-manager.js
-├── suggestion-manager.css
-├── html-suggestions.js
-├── css-suggestions.js
-├── js-suggestions.js
-├── next-word-suggestions.js
-├── preview-element-inspector.js
-├── github-update.js
-├── word-tree.js
-├── tree-world-suggestion.md
+├── src/
+│   └── features/
+│       ├── settings/
+│       │   ├── settings.js
+│       │   └── settings.css
+│       ├── backup-restore/
+│       │   ├── backup-restore.js
+│       │   └── backup-restore.css
+│       ├── suggestions/
+│       │   ├── data/
+│       │   │   ├── html-suggestions.js
+│       │   │   ├── css-suggestions.js
+│       │   │   └── js-suggestions.js
+│       │   ├── next-word/next-word-suggestions.js
+│       │   └── manager/
+│       │       ├── suggestion-manager.js
+│       │       └── suggestion-manager.css
+│       ├── live-preview/element-inspector.js
+│       ├── word-tree/word-tree.js
+│       └── integrations/github/github-update.js
+├── docs/suggestions/tree-world-suggestion.md
 ├── scripts/
 │   ├── build-test-editor.mjs
 │   ├── check-backup-restore.mjs
@@ -81,8 +84,7 @@ Editor-html-css-js/
 │   ├── check-index-integrity.mjs
 │   ├── check-settings-dialog-keyboard.mjs
 │   └── check-standalone-editor.mjs
-└── tools/
-    └── build-single-file.js
+└── tools/build-single-file.js
 ```
 
 ### راهنمای سریع فایل‌های اصلی
@@ -92,20 +94,20 @@ Editor-html-css-js/
 | `index.html` | نقطهٔ ورود نسخهٔ اصلی ویرایشگر |
 | `index-test-etitor.html` | نسخهٔ آزمایشی ویرایشگر |
 | `script.js` و `style.css` | منطق و استایل اصلی برنامه |
-| `settings.js` و `settings.css` | منطق و ظاهر تنظیمات |
-| `backup-restore.*` | پشتیبان‌گیری و بازیابی |
-| `suggestion-manager.*` | مدیریت پیشنهادها |
-| `html-suggestions.js`، `css-suggestions.js`، `js-suggestions.js` | بانک‌ها و منطق پیشنهادهای زبان‌ها |
-| `next-word-suggestions.js` | پیشنهاد کلمهٔ بعدی |
-| `preview-element-inspector.js` | بازرسی عناصر پیش‌نمایش |
-| `github-update.js` | قابلیت‌های مرتبط با به‌روزرسانی GitHub |
-| `word-tree.js` و `tree-world-suggestion.md` | درخت کلمات و مستندات مرتبط |
+| `src/features/settings/` | منطق و ظاهر تنظیمات |
+| `src/features/backup-restore/` | پشتیبان‌گیری و بازیابی |
+| `src/features/suggestions/manager/` | مدیریت پیشنهادها |
+| `src/features/suggestions/data/` | بانک‌های پیشنهاد HTML، CSS و JavaScript |
+| `src/features/suggestions/next-word/` | پیشنهاد کلمهٔ بعدی |
+| `src/features/live-preview/element-inspector.js` | بازرسی عناصر پیش‌نمایش |
+| `src/features/integrations/github/` | قابلیت‌های مرتبط با به‌روزرسانی GitHub |
+| `src/features/word-tree/` و `docs/suggestions/` | درخت کلمات و مستندات مرتبط |
 | `scripts/` | اسکریپت‌های آزمون، بررسی و ساخت |
 | `tools/` | ابزارهای کمکی ساخت |
 
 ## ۳. ساختار هدف پیشنهادی بر اساس قابلیت‌ها
 
-این درخت، **معماری هدف** است و نه ساختار فعلی مخزن. هدف آن جداکردن قابلیت‌ها، مسئولیت‌های داخلی هر قابلیت، زیرساخت مشترک و ابزارهای توسعه است. پوشه‌ها و فایل‌های جدید فقط هنگام مهاجرت مرحله‌ای ایجاد می‌شوند؛ تا آن زمان، ساختار بخش قبل مرجع واقعی فایل‌های موجود است.
+این درخت، **معماری هدف کامل** است؛ ساختار واقعی فعلی در بخش قبل آمده است. مهاجرت مرحله‌ای آغاز شده، اما همهٔ مسئولیت‌ها هنوز به مقصد نهایی منتقل نشده‌اند.
 
 ```text
 Editor-html-css-js/
@@ -190,21 +192,21 @@ Editor-html-css-js/
 
 ### نگاشت فایل‌های فعلی به گروه‌های هدف
 
-این نگاشت برای برنامه‌ریزی مهاجرت است؛ مسیر سمت راست مقصد پیشنهادی است و **در این مرحله هیچ فایل اجرایی جابه‌جا نشده است**.
+این نگاشت وضعیت انتقال را ثبت می‌کند؛ موارد منتقل‌شده اکنون در مقصد درج‌شده قرار دارند.
 
 | فایل فعلی | مقصد پیشنهادی | ملاحظه |
 |---|---|---|
 | `script.js` | چند ماژول زیر `src/features/editor/`، `workspace/`، `live-preview/` و `export/` | فایل چندمسئولیتی است؛ ابتدا باید توابع و وابستگی‌ها تفکیک شوند، نه اینکه کل فایل یک‌جا منتقل شود. |
 | `style.css` | `src/styles/` و استایل‌های اختصاصی هر قابلیت | ابتدا قواعد عمومی از استایل‌های مختص قابلیت جدا شوند. |
-| `settings.js`، `settings.css` | `src/features/settings/` | به‌صورت یک واحد قابلیت منتقل شوند. |
-| `backup-restore.js`، `backup-restore.css` | `src/features/backup-restore/` | آزمون پشتیبان‌گیری و بازیابی باید همراه تغییر مسیر اجرا شود. |
-| `suggestion-manager.js`، `suggestion-manager.css` | `src/features/suggestions/manager/` | اتصال رابط مدیریت به بانک‌های پیشنهاد باید حفظ شود. |
-| `html-suggestions.js`، `css-suggestions.js`، `js-suggestions.js` | `src/features/suggestions/data/` | ترتیب بارگذاری و شکل داده‌ها باید حفظ شود. |
-| `next-word-suggestions.js` | `src/features/suggestions/next-word/` | وابستگی آن به تکمیل خودکار و ویرایشگر باید بررسی شود. |
-| `preview-element-inspector.js` | `src/features/live-preview/element-inspector.js` | ارتباط بازرس با DOM پیش‌نمایش و انتخاب کد باید آزموده شود. |
-| `word-tree.js` | `src/features/word-tree/` | فایل داده/مستند مرتبط نیز به‌صورت هماهنگ سامان‌دهی شود. |
-| `github-update.js` | `src/features/integrations/github/` | دریافت اطلاعات و نمایش وضعیت به‌روزرسانی حفظ شود. |
-| `tree-world-suggestion.md` | `docs/suggestions/` | مسیر ارجاع احتمالی به این سند باید بررسی شود. |
+| `settings.js`، `settings.css` | `src/features/settings/` | **منتقل شد**؛ ارجاع HTML و آزمون مرتبط به‌روزرسانی شد. |
+| `backup-restore.js`، `backup-restore.css` | `src/features/backup-restore/` | **منتقل شد**؛ آزمون مرتبط به مسیر جدید اشاره می‌کند. |
+| `suggestion-manager.js`، `suggestion-manager.css` | `src/features/suggestions/manager/` | **منتقل شد**؛ ترتیب بارگذاری در HTML حفظ شد. |
+| `html-suggestions.js`، `css-suggestions.js`، `js-suggestions.js` | `src/features/suggestions/data/` | **منتقل شد**؛ ترتیب بارگذاری در HTML حفظ شد. |
+| `next-word-suggestions.js` | `src/features/suggestions/next-word/` | **منتقل شد**؛ وابستگی‌های سراسری و ترتیب قبلی حفظ شده‌اند. |
+| `preview-element-inspector.js` | `src/features/live-preview/element-inspector.js` | **منتقل شد**؛ ارجاع HTML اصلاح شد. |
+| `word-tree.js` | `src/features/word-tree/word-tree.js` | **منتقل شد**؛ مستند مرتبط نیز منتقل شد. |
+| `github-update.js` | `src/features/integrations/github/github-update.js` | **منتقل شد**؛ ارجاع HTML اصلاح شد. |
+| `tree-world-suggestion.md` | `docs/suggestions/tree-world-suggestion.md` | **منتقل شد**. |
 | فایل‌های `scripts/*.mjs` | `scripts/build/` یا `scripts/checks/` بر اساس وظیفه | مسیرهای فراخوانی در Workflowها و دستورهای اجرا اصلاح شوند. |
 
 ## ۴. قواعد معماری برای جلوگیری از وابستگی‌های شکننده

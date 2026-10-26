@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
-const source = readFileSync('settings.js', 'utf8');
+const source = readFileSync('src/features/settings/settings.js', 'utf8');
 
 function extractRegistration(startAnchor, endMarker, description) {
     const anchor = source.indexOf(startAnchor);

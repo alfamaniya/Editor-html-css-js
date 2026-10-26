@@ -7,11 +7,11 @@ import { spawnSync } from 'node:child_process';
 
 const sourcePath = 'index.html';
 const bundlePath = 'index-test-etitor.html';
-const cssFiles = ['style.css', 'settings.css', 'suggestion-manager.css', 'backup-restore.css'];
+const cssFiles = ['style.css', 'src/features/settings/settings.css', 'src/features/suggestions/manager/suggestion-manager.css', 'src/features/backup-restore/backup-restore.css'];
 const scriptFiles = [
-    'html-suggestions.js', 'css-suggestions.js', 'js-suggestions.js',
-    'suggestion-manager.js', 'next-word-suggestions.js', 'preview-element-inspector.js',
-    'script.js', 'settings.js', 'backup-restore.js', 'word-tree.js', 'github-update.js'
+    'src/features/suggestions/data/html-suggestions.js', 'src/features/suggestions/data/css-suggestions.js', 'src/features/suggestions/data/js-suggestions.js',
+    'src/features/suggestions/manager/suggestion-manager.js', 'src/features/suggestions/next-word/next-word-suggestions.js', 'src/features/live-preview/element-inspector.js',
+    'script.js', 'src/features/settings/settings.js', 'src/features/backup-restore/backup-restore.js', 'src/features/word-tree/word-tree.js', 'src/features/integrations/github/github-update.js'
 ];
 const expectedAssets = [...cssFiles, ...scriptFiles];
 const voidTags = new Set([

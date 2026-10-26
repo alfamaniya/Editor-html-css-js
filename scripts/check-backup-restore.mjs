@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
-const source = readFileSync(new URL('../backup-restore.js', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../src/features/backup-restore/backup-restore.js', import.meta.url), 'utf8');
 const editorSource = readFileSync(new URL('../script.js', import.meta.url), 'utf8');
 const exposedWindow = {};
 const sandbox = {

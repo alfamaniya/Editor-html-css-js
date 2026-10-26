@@ -162,3 +162,54 @@
     .file-explorer { margin: 6px; border-radius: 16px; box-shadow: 0 12px 30px rgb(0 0 0 / 18%); }
     .fe-header { min-height: 48px; padding: 8px 10px; }
 }
+
+
+/* پنل کشویی فایل‌منیجر در موبایل؛ محتوای اصلی هنگام بازبودن تار و غیرفعال می‌شود */
+@media (max-width: 760px) {
+    .file-explorer.file-manager-drawer-open {
+        position: fixed;
+        z-index: 7101;
+        top: 10px;
+        right: auto;
+        bottom: 10px;
+        left: 8px;
+        width: min(82vw, 320px);
+        max-width: calc(100vw - 24px);
+        height: auto;
+        max-height: none;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        border-radius: 16px;
+        overflow: hidden;
+        transform: translateX(0);
+        visibility: visible;
+        box-shadow: 12px 0 36px rgb(0 0 0 / 32%);
+    }
+    .file-explorer.file-manager-drawer-open .fe-header {
+        flex: 0 0 auto;
+    }
+    .file-explorer.file-manager-drawer-open .fe-title,
+    .file-explorer.file-manager-drawer-open .fe-library-btn {
+        display: inline-flex;
+    }
+    .file-explorer.file-manager-drawer-open .fe-controls,
+    .file-explorer.file-manager-drawer-open .fe-list {
+        min-height: 0;
+    }
+    .file-explorer.file-manager-drawer-open .fe-list {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+    body.file-manager-drawer-active .container,
+    body.file-manager-drawer-active .page-symbol-header,
+    body.file-manager-drawer-active .tabs,
+    body.file-manager-drawer-active .search-tools-row,
+    body.file-manager-drawer-active .preview-pane {
+        filter: blur(3px);
+        pointer-events: none;
+        user-select: none;
+    }
+    body.file-manager-drawer-active { overflow: hidden; }
+}

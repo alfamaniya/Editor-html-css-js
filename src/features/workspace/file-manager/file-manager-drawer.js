@@ -53,8 +53,16 @@
             else if (!isOpen && settings.focus === 'open') openButton.focus();
         }
 
+        document.addEventListener('workspace-drawer-open', function (event) {
+            if (event.detail !== 'file-manager') setOpen(false);
+        });
+
         openButton.addEventListener('click', function () {
-            setOpen(!isOpen, { focus: isOpen ? 'open' : 'close' });
+            if (isOpen) setOpen(false, { focus: 'open' });
+            else {
+                document.dispatchEvent(new CustomEvent('workspace-drawer-open', { detail: 'file-manager' }));
+                setOpen(true, { focus: 'close' });
+            }
         });
 
         closeButton.addEventListener('click', function () {

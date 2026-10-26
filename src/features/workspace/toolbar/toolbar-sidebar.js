@@ -56,9 +56,16 @@
             else if (!isOpen && settings.focus === 'open') openButton.focus();
         }
 
+        document.addEventListener('workspace-drawer-open', function (event) {
+            if (event.detail !== 'toolbar') setOpen(false);
+        });
+
         openButton.addEventListener('click', function () {
             if (isOpen) setOpen(false, { focus: 'open' });
-            else setOpen(true, { focus: 'close' });
+            else {
+                document.dispatchEvent(new CustomEvent('workspace-drawer-open', { detail: 'toolbar' }));
+                setOpen(true, { focus: 'close' });
+            }
         });
 
         closeButton.addEventListener('click', function () {

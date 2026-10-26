@@ -430,3 +430,113 @@ body.file-manager-drawer-active { overflow: hidden; }
         padding: 8px 12px;
     }
 }
+
+/* پالت تیره و پرنشاط مشترک دو سایدبار، مستقل از تم صفحه */
+:root .toolbar-sidebar,
+:root .file-explorer,
+:root[data-theme="light"] .toolbar-sidebar,
+:root[data-theme="light"] .file-explorer {
+    color: var(--workspace-drawer-text);
+    background: var(--workspace-drawer-surface);
+    border-color: var(--workspace-drawer-border);
+    box-shadow: var(--workspace-drawer-shadow);
+}
+:root .toolbar-sidebar-heading,
+:root .fe-header,
+:root[data-theme="light"] .toolbar-sidebar-heading,
+:root[data-theme="light"] .fe-header {
+    color: var(--workspace-drawer-text);
+    background: var(--workspace-drawer-header);
+    border-color: var(--workspace-drawer-border);
+}
+:root .toolbar-sidebar .pane-label > .toolbar button,
+:root .toolbar-sidebar-close-button,
+:root .toolbar-sidebar-open-button,
+:root .file-manager-close-button,
+:root .fe-add-btn,
+:root .fe-library-btn,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar button,
+:root[data-theme="light"] .toolbar-sidebar-close-button,
+:root[data-theme="light"] .toolbar-sidebar-open-button,
+:root[data-theme="light"] .file-manager-close-button,
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .fe-library-btn {
+    border-color: var(--workspace-drawer-border);
+    background: var(--workspace-drawer-control);
+    color: var(--workspace-drawer-text);
+}
+:root .toolbar-sidebar .pane-label > .toolbar button:hover,
+:root .toolbar-sidebar-close-button:hover,
+:root .toolbar-sidebar-open-button:hover,
+:root .file-manager-close-button:hover,
+:root .fe-add-btn:hover,
+:root .fe-library-btn:hover,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar button:hover,
+:root[data-theme="light"] .toolbar-sidebar-close-button:hover,
+:root[data-theme="light"] .toolbar-sidebar-open-button:hover,
+:root[data-theme="light"] .file-manager-close-button:hover,
+:root[data-theme="light"] .fe-add-btn:hover,
+:root[data-theme="light"] .fe-library-btn:hover {
+    background: var(--workspace-drawer-control-hover);
+}
+:root .toolbar-sidebar .pane-label > .toolbar #btnSettings,
+:root .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar #btnSettings,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button {
+    border-color: #58dba9;
+    background: linear-gradient(135deg, #126859, #23775e);
+    color: #f1fff8;
+}
+:root .toolbar-sidebar .pane-label > .toolbar #btnSettings:hover,
+:root .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button:hover,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar #btnSettings:hover,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button:hover {
+    background: linear-gradient(135deg, #18836d, #2b8a68);
+}
+:root .file-explorer .fe-controls,
+:root .file-explorer .fe-new-form,
+:root[data-theme="light"] .file-explorer .fe-controls,
+:root[data-theme="light"] .file-explorer .fe-new-form {
+    background: rgb(9 31 36 / 76%);
+    border-color: var(--workspace-drawer-border);
+}
+:root .file-explorer .fe-controls input,
+:root .file-explorer .fe-controls select,
+:root .file-explorer .fe-new-form input,
+:root[data-theme="light"] .file-explorer .fe-controls input,
+:root[data-theme="light"] .file-explorer .fe-controls select,
+:root[data-theme="light"] .file-explorer .fe-new-form input {
+    border-color: var(--workspace-drawer-border);
+    background: #102d34;
+    color: var(--workspace-drawer-text);
+}
+:root .file-explorer .fe-controls input::placeholder,
+:root .file-explorer .fe-new-form input::placeholder,
+:root[data-theme="light"] .file-explorer .fe-controls input::placeholder,
+:root[data-theme="light"] .file-explorer .fe-new-form input::placeholder {
+    color: #a3c8bc;
+}
+:root .file-explorer .fe-item,
+:root[data-theme="light"] .file-explorer .fe-item { color: var(--workspace-drawer-text); }
+:root .file-explorer .fe-item:hover,
+:root[data-theme="light"] .file-explorer .fe-item:hover {
+    border-color: rgb(93 230 180 / 34%);
+    background: rgb(45 135 112 / 28%);
+}
+:root .file-explorer .fe-item.active,
+:root[data-theme="light"] .file-explorer .fe-item.active {
+    border-color: #58dba9;
+    background: rgb(39 156 120 / 34%);
+    color: #f1fff8;
+}
+:root .toolbar-sidebar button:focus-visible,
+:root .file-explorer button:focus-visible,
+:root .file-explorer input:focus-visible,
+:root .file-explorer select:focus-visible,
+:root[data-theme="light"] .toolbar-sidebar button:focus-visible,
+:root[data-theme="light"] .file-explorer button:focus-visible,
+:root[data-theme="light"] .file-explorer input:focus-visible,
+:root[data-theme="light"] .file-explorer select:focus-visible {
+    outline: 2px solid var(--workspace-drawer-accent);
+    outline-offset: 2px;
+}

@@ -40,7 +40,6 @@ body:not(.toolbar-sidebar-open) .toolbar-sidebar { transform: translateX(calc(10
     cursor: pointer;
 }
 .toolbar-sidebar-backdrop[hidden] { display: none !important; }
-.toolbar-sidebar-backdrop[hidden] { display: none !important; }
 .toolbar-sidebar .pane-label {
     width: 100%; display: flex; flex: 0 0 auto; flex-direction: column;
     align-items: stretch; justify-content: flex-start; gap: 12px; padding: 14px 12px 18px;
@@ -123,19 +122,25 @@ body.toolbar-sidebar-active .toast.show {
     --workspace-drawer-radius: 16px;
     --workspace-drawer-duration: 260ms;
     --workspace-drawer-easing: cubic-bezier(.22, 1, .36, 1);
-    --workspace-drawer-backdrop: rgb(5 10 18 / 58%);
-    --workspace-drawer-border: rgb(130 159 194 / 28%);
-    --workspace-drawer-shadow: 0 12px 34px rgb(0 0 0 / 24%);
-    --workspace-drawer-surface: linear-gradient(180deg, rgb(26 38 57 / 98%), rgb(20 32 50 / 98%));
-    --workspace-drawer-header: linear-gradient(115deg, rgb(27 47 72 / 97%), rgb(20 32 50 / 97%));
-    --workspace-drawer-text: #d8e4f4;
+    --workspace-drawer-backdrop: rgb(4 12 20 / 64%);
+    --workspace-drawer-border: rgb(93 230 180 / 34%);
+    --workspace-drawer-shadow: 0 14px 38px rgb(0 0 0 / 34%);
+    --workspace-drawer-surface: linear-gradient(155deg, #102d34, #12383d 48%, #173a50);
+    --workspace-drawer-header: linear-gradient(115deg, #14584f, #17445d);
+    --workspace-drawer-text: #e6fff5;
+    --workspace-drawer-control: #214c50;
+    --workspace-drawer-control-hover: #2b665f;
+    --workspace-drawer-accent: #80f0c3;
 }
 :root[data-theme="light"] {
-    --workspace-drawer-border: rgb(130 159 194 / 32%);
-    --workspace-drawer-shadow: 0 12px 34px rgb(30 54 80 / 12%);
-    --workspace-drawer-surface: #f8fbff;
-    --workspace-drawer-header: linear-gradient(115deg, #f8fbff, #eaf1f9);
-    --workspace-drawer-text: #283b50;
+    --workspace-drawer-border: rgb(93 230 180 / 34%);
+    --workspace-drawer-shadow: 0 14px 38px rgb(0 0 0 / 34%);
+    --workspace-drawer-surface: linear-gradient(155deg, #102d34, #12383d 48%, #173a50);
+    --workspace-drawer-header: linear-gradient(115deg, #14584f, #17445d);
+    --workspace-drawer-text: #e6fff5;
+    --workspace-drawer-control: #214c50;
+    --workspace-drawer-control-hover: #2b665f;
+    --workspace-drawer-accent: #80f0c3;
 }
 @media (max-width: 760px) {
     :root {

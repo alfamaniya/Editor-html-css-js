@@ -158,10 +158,10 @@ body { padding-top: var(--workspace-header-height); }
 .workspace-search-panel {
     position: relative;
     display: flex;
-    flex: 1 1 auto;
+    flex: 1 1 0;
     align-items: center;
     min-width: 0;
-    width: 100%;
+    width: auto;
     gap: 5px;
     padding: 4px 6px;
     border: 1px solid var(--blue-border);

@@ -18,7 +18,6 @@
             isOpen = Boolean(nextOpen);
 
             explorer.classList.toggle('file-manager-drawer-open', isOpen);
-            explorer.classList.toggle('is-collapsed', !isOpen);
             explorer.setAttribute('aria-hidden', String(!isOpen));
             openButton.setAttribute('aria-expanded', String(isOpen));
             openButton.setAttribute('aria-label', isOpen ? 'بستن فایل‌منیجر' : 'باز کردن فایل‌منیجر');

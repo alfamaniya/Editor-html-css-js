@@ -2431,10 +2431,14 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
     }
     .toolbar-sidebar { z-index: 7001; width: min(86vw, 330px); box-shadow: -12px 0 32px rgb(0 0 0 / 30%); }
     .toolbar-sidebar-backdrop { z-index: 7000; }
-    .toolbar-sidebar-open-button { top: 10px; right: 10px; }
+    .search-tools-row .toolbar-sidebar-open-button { position: static; inset: auto; flex: 0 0 40px; width: 40px; min-width: 40px; min-height: 40px; padding: 0; margin: 0; border-radius: 10px; box-shadow: none; font-size: 22px; line-height: 1; }
+    .search-tools-row { display: flex; flex-direction: row; align-items: stretch; gap: 5px; }
+    .search-tools-row .search-bar { flex: 1 1 auto; width: 0; min-width: 0; }
+    .search-tools-row .toolbar-sidebar-open-button { order: 2; }
+    .search-tools-row .search-bar { order: 1; }
     body.toolbar-sidebar-mobile-open { padding-right: 0; }
     body.toolbar-sidebar-mobile-open .container,
-    body.toolbar-sidebar-mobile-open .page-symbol-header,
+    body.toolbar-sidebar-mobile-open .page-symbol-header { pointer-events: none; }
 }
 @media (prefers-reduced-motion: reduce) { .toolbar-sidebar { transition: none; } }
 
@@ -3135,7 +3139,6 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
     
     </header>
         <div class="toolbar-sidebar-backdrop" id="toolbarSidebarBackdrop" hidden aria-hidden="true"></div>
-    <button type="button" class="toolbar-sidebar-open-button" id="toolbarSidebarOpen" aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن نوار ابزار">☰ ابزارها</button>
     <aside class="toolbar-sidebar" id="toolbarSidebar" aria-label="نوار ابزار ویرایشگر" aria-hidden="false">
         <div class="toolbar-sidebar-heading">
             <span>ابزارهای ویرایشگر</span>
@@ -3183,7 +3186,7 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
                     <button type="button" id="searchNext" title="Next result (Enter)">▼</button>
                     <button type="button" id="searchClear" title="Clear (Esc)">✕</button>
                 </div>
-
+                <button type="button" class="toolbar-sidebar-open-button" id="toolbarSidebarOpen" aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن نوار ابزار" title="باز کردن نوار ابزار">☰</button>
             </div>
             <div class="search-results" id="searchResults" hidden></div>
 

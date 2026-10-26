@@ -266,8 +266,9 @@ body.file-manager-drawer-active { overflow: hidden; }
     z-index: 7100;
     inset: 0;
     background: rgb(5 10 18 / 58%);
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    pointer-events: none;
     cursor: pointer;
 }
 .file-manager-backdrop[hidden] { display: none !important; }
@@ -391,7 +392,7 @@ body.file-manager-drawer-active { overflow: hidden; }
     opacity: 0;
     transition: opacity var(--workspace-drawer-duration, 260ms) var(--workspace-drawer-easing, cubic-bezier(.22, 1, .36, 1));
 }
-.file-manager-backdrop.is-visible { opacity: 1; }
+.file-manager-backdrop.is-visible { opacity: 1; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); pointer-events: auto; }
 .file-manager-backdrop[hidden] { display: none !important; }
 :root[data-theme="light"] .file-explorer {
     color: var(--workspace-drawer-text, #283b50);

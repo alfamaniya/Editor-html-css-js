@@ -32,7 +32,10 @@
         if (!isOpen && settings.focus === 'open') openButton.focus();
     }
 
-    openButton.addEventListener('click', function () { setOpen(true, { focus: 'close' }); });
+    openButton.addEventListener('click', function () {
+        if (isOpen) setOpen(false, { focus: 'open' });
+        else setOpen(true, { focus: 'close' });
+    });
     closeButton.addEventListener('click', function () { setOpen(false, { focus: 'open' }); });
     backdrop.addEventListener('click', function () { setOpen(false, { focus: 'open' }); });
     document.addEventListener('keydown', function (event) {

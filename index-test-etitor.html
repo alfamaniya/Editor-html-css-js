@@ -2497,6 +2497,11 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 :root[data-theme="light"] .toolbar-sidebar-open-button:hover { background: var(--accent-soft, #dcecf8); }
 @media (max-width: 760px) {
     body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: 0; }
+    body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) .toolbar-sidebar {
+        transform: translateX(calc(100% + 12px));
+        visibility: hidden;
+        pointer-events: none;
+    }
     .toolbar-sidebar { z-index: 7001; width: min(86vw, 330px); box-shadow: -12px 0 32px rgb(0 0 0 / 30%); }
     .toolbar-sidebar-backdrop { z-index: 7000; }
     .toolbar-sidebar-open-button { top: 10px; right: 10px; }
@@ -3204,7 +3209,7 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
     
     </header>
         <div class="toolbar-sidebar-backdrop" id="toolbarSidebarBackdrop" hidden aria-hidden="true"></div>
-    <button type="button" class="toolbar-sidebar-open-button" id="toolbarSidebarOpen" aria-controls="toolbarSidebar" aria-expanded="true" aria-label="باز کردن نوار ابزار">☰ ابزارها</button>
+    <button type="button" class="toolbar-sidebar-open-button" id="toolbarSidebarOpen" aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن نوار ابزار">☰ ابزارها</button>
     <aside class="toolbar-sidebar" id="toolbarSidebar" aria-label="نوار ابزار ویرایشگر" aria-hidden="false">
         <div class="toolbar-sidebar-heading">
             <span>ابزارهای ویرایشگر</span>

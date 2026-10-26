@@ -65,6 +65,11 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 :root[data-theme="light"] .toolbar-sidebar-open-button:hover { background: var(--accent-soft, #dcecf8); }
 @media (max-width: 760px) {
     body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: 0; }
+    body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) .toolbar-sidebar {
+        transform: translateX(calc(100% + 12px));
+        visibility: hidden;
+        pointer-events: none;
+    }
     .toolbar-sidebar { z-index: 7001; width: min(86vw, 330px); box-shadow: -12px 0 32px rgb(0 0 0 / 30%); }
     .toolbar-sidebar-backdrop { z-index: 7000; }
     .toolbar-sidebar-open-button { top: 10px; right: 10px; }

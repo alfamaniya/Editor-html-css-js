@@ -76,6 +76,5 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
     body.toolbar-sidebar-mobile-open { padding-right: 0; }
     body.toolbar-sidebar-mobile-open .container,
     body.toolbar-sidebar-mobile-open .page-symbol-header,
-    body.toolbar-sidebar-mobile-open .github-update { pointer-events: none; }
 }
 @media (prefers-reduced-motion: reduce) { .toolbar-sidebar { transition: none; } }

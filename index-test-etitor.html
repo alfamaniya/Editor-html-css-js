@@ -1680,49 +1680,6 @@ input {
 }
 
 
-/* Latest GitHub repository update indicator */
-.github-update {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 5px 9px;
-    width: 100%;
-    min-height: 29px;
-    padding: 5px 12px;
-    direction: rtl;
-    text-align: center;
-    background: linear-gradient(90deg, rgb(24 48 67 / 88%), rgb(28 57 72 / 88%));
-    border-bottom: 1px solid rgb(103 155 183 / 30%);
-    color: #b8d2e6;
-    font: 11px/1.5 Tahoma, "Segoe UI", sans-serif;
-}
-.github-update-dot {
-    width: 7px;
-    height: 7px;
-    flex: 0 0 7px;
-    border-radius: 50%;
-    background: #78d6a8;
-    box-shadow: 0 0 7px rgb(120 214 168 / 35%);
-}
-.github-update time {
-    color: #f0f7ff;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-.github-update a {
-    color: #8ec9f4;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-}
-.github-update a:hover { color: #fff; }
-.github-update a:focus-visible { outline: 2px solid #9bc8f0; outline-offset: 3px; }
-.github-update [role="status"] { overflow-wrap: anywhere; }
-
-@media (max-width: 560px) {
-    .github-update { gap: 3px 7px; padding: 6px 8px; font-size: 10px; }
-}
 
 
 
@@ -1859,13 +1816,6 @@ input {
     border-color: var(--accent-border);
 }
 :root[data-theme="light"] .dirty { color: #8d5a00; }
-:root[data-theme="light"] .github-update {
-    background: linear-gradient(90deg, #e8f1fa, #e4eef5);
-    border-color: #bfd2e4;
-    color: #435a70;
-}
-:root[data-theme="light"] .github-update time { color: #203d59; }
-:root[data-theme="light"] .github-update a { color: var(--accent-strong); }
 :root[data-theme="light"] .file-explorer {
     background: #f4f8fc;
     border-color: #c4d2e0;
@@ -2074,7 +2024,6 @@ input {
 /* اصلاح واکنش‌گرایی نوار ابزار، پنل فایل‌ها و فضای پیش‌نمایش */
 body,
 .page-symbol-header,
-.github-update,
 .container,
 .editor-pane,
 .preview-pane,
@@ -2116,19 +2065,6 @@ body,
     max-width: 100%;
 }
 
-.github-update {
-    box-sizing: border-box;
-    gap: clamp(3px, 1vw, 9px);
-    line-height: 1.55;
-}
-.github-update > [role="status"] {
-    min-width: 0;
-    max-width: 100%;
-}
-.github-update a {
-    flex: 0 0 auto;
-    white-space: nowrap;
-}
 
 .editor-pane,
 .preview-pane {
@@ -2159,10 +2095,6 @@ iframe#output {
         gap: 4px;
     }
 
-    .github-update {
-        padding: 7px 8px;
-        justify-content: center;
-    }
 }
 
 @media (max-width: 560px) {
@@ -2191,11 +2123,6 @@ iframe#output {
         overflow-wrap: anywhere;
     }
 
-    .github-update > [role="status"] {
-        flex: 1 1 190px;
-        text-align: center;
-        overflow-wrap: anywhere;
-    }
 }
 
 /* در چیدمان عمودی موبایل، جداکننده مخفی است؛ ارتفاع باقی‌مانده به پیش‌نمایش برسد. */
@@ -2508,7 +2435,6 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
     body.toolbar-sidebar-mobile-open { padding-right: 0; }
     body.toolbar-sidebar-mobile-open .container,
     body.toolbar-sidebar-mobile-open .page-symbol-header,
-    body.toolbar-sidebar-mobile-open .github-update { pointer-events: none; }
 }
 @media (prefers-reduced-motion: reduce) { .toolbar-sidebar { transition: none; } }
 
@@ -3234,12 +3160,6 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             </div>
         </div>
     </aside>
-    <section class="github-update" aria-label="GitHub update information">
-        <span class="github-update-dot" aria-hidden="true"></span>
-        <span id="githubUpdateStatus" role="status" aria-live="polite">در حال دریافت زمان آخرین به‌روزرسانی از GitHub…</span>
-        <time id="githubUpdateTime"></time>
-        <a id="githubUpdateLink" href="https://github.com/alfamaniya/Editor-html-css-js/commits/main/" target="_blank" rel="noopener noreferrer" hidden>مشاهده کامیت</a>
-    </section>
 
     <div class="container">
 
@@ -12552,64 +12472,6 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
         else if (!treeModal.hidden) { event.stopPropagation(); closeTree(); }
     });
 })();
-</script>
-    <script data-bundled-from="src/features/integrations/github/github-update.js">
-(() => {
-    'use strict';
-
-    const status = document.getElementById('githubUpdateStatus');
-    const time = document.getElementById('githubUpdateTime');
-    const link = document.getElementById('githubUpdateLink');
-    if (!status || !time || !link) return;
-
-    const repository = 'alfamaniya/Editor-html-css-js';
-    const apiUrl = 'https://api.github.com/repos/' + repository + '/commits?sha=main&per_page=1';
-
-    function showUnavailable() {
-        status.textContent = 'زمان آخرین به‌روزرسانی GitHub در دسترس نیست.';
-        time.textContent = '';
-        link.hidden = true;
-    }
-
-    fetch(apiUrl, {
-        headers: { Accept: 'application/vnd.github+json' },
-        cache: 'no-store'
-    })
-        .then((response) => {
-            if (!response.ok) throw new Error('GitHub API returned ' + response.status);
-            return response.json();
-        })
-        .then((commits) => {
-            const latest = Array.isArray(commits) ? commits[0] : null;
-            const dateString = latest && latest.commit &&
-                ((latest.commit.committer && latest.commit.committer.date) ||
-                 (latest.commit.author && latest.commit.author.date));
-            if (!latest || !dateString || !latest.sha || !latest.html_url) {
-                showUnavailable();
-                return;
-            }
-
-            const date = new Date(dateString);
-            if (Number.isNaN(date.getTime())) {
-                showUnavailable();
-                return;
-            }
-
-            const formatted = new Intl.DateTimeFormat('fa-IR-u-ca-persian-nu-latn', {
-                dateStyle: 'medium',
-                timeStyle: 'short',
-                timeZone: 'Asia/Tehran'
-            }).format(date);
-
-            status.textContent = 'آخرین به‌روزرسانی مخزن GitHub (شاخه main):';
-            time.textContent = formatted + ' · زمان تهران';
-            link.href = latest.html_url;
-            link.title = latest.commit.message || 'مشاهده آخرین کامیت در GitHub';
-            link.hidden = false;
-        })
-        .catch(showUnavailable);
-})();
-
 </script>
 
 </body>

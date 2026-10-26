@@ -28,9 +28,7 @@ const scriptFiles = [
     'script.js',
     'src/features/settings/settings.js',
     'src/features/backup-restore/backup-restore.js',
-    'src/features/word-tree/word-tree.js',
-    'src/features/integrations/github/github-update.js'
-];
+    'src/features/word-tree/word-tree.js',];
 const expectedAssetOrder = [...cssFiles, ...scriptFiles];
 
 async function readText(path) {

@@ -1,302 +1,66 @@
-# ویرایشگر HTML / CSS / JavaScript
+# درخت فایل‌ها و ساختار مخزن
 
-این راهنما فهرست قابلیت‌های برنامه، ساختار فعلی فایل‌ها و الگوی پیشنهادی سازمان‌دهی مخزن را مستند می‌کند. **درخت پیشنهادی صرفاً الگوی معماری است و به معنی جابه‌جایی فایل‌ها در این کامیت نیست.**
+این سند نمای ساختار واقعی شاخهٔ `main` مخزن `Editor-html-css-js` را در قالب جدول درختی ارائه می‌کند. مسیرها از درخت GitHub استخراج شده‌اند. پوشه‌های دارای `.gitkeep` فقط محل رزروشده‌اند و به معنی وجود پیاده‌سازی نیستند.
 
-## ۱. فهرست قابلیت‌ها و وضعیت بررسی
-
-جدول زیر فهرست قابلیت‌هایی را نشان می‌دهد که از رابط، فایل‌های کد و اسکریپت‌های موجود در مخزن شناسایی شده‌اند. ستون «وضعیت» عمداً خالی است تا پس از بررسی هر قابلیت، نتیجه در آن ثبت شود. درج یک قابلیت در جدول به‌تنهایی به معنی تأیید کامل عملکرد، دسترس‌پذیری همهٔ حالت‌ها یا موفقیت آزمون‌های آن نیست.
-
-| گروه | قابلیت | توضیح کوتاه | وضعیت |
+| درخت فایل‌ها | مسیر دقیق | نوع | کاربرد |
 |---|---|---|---|
-| ویرایشگر | ویرایش HTML | نوشتن و ویرایش کد HTML در زبانهٔ مستقل. |  |
-| ویرایشگر | ویرایشگر CSS | نوشتن و ویرایش استایل‌ها در زبانهٔ مستقل. |  |
-| ویرایشگر | ویرایشگر JavaScript | نوشتن و ویرایش کدهای JavaScript در زبانهٔ مستقل. |  |
-| ویرایشگر | رنگ‌آمیزی نحوی کد | نمایش ساختار کد با رنگ‌بندی متناسب با زبان. |  |
-| ویرایشگر | ابزارهای ویرایش | Undo/Redo، تغییر اندازهٔ قلم، شمارهٔ خطوط و تنظیم شکستن خطوط. |  |
-| ویرایشگر | جست‌وجو در کد | یافتن عبارت‌ها، مشاهدهٔ تعداد نتایج و جابه‌جایی میان تطبیق‌ها. |  |
-| ویرایشگر | پردازش کد چسبانده‌شده | تشخیص بخش‌های کد و مدیریت وابستگی‌های CSS و JavaScript هنگام چسباندن HTML. |  |
-| ویرایشگر | تکمیل خودکار و پیشنهاد کد | نمایش پیشنهادهای متناسب با زبان و زمینهٔ تایپ. |  |
-| پروژه و فایل‌ها | مدیریت فایل‌های پروژه | ساخت، بازکردن، تغییر نام و حذف فایل‌ها در محیط ویرایشگر. |  |
-| پروژه و فایل‌ها | جست‌وجو و فیلتر فایل‌ها | پیداکردن فایل‌ها و محدودکردن فهرست بر اساس نوع یا شیوهٔ گروه‌بندی. |  |
-| پروژه و فایل‌ها | ذخیره‌سازی پروژه | ذخیره و بارگذاری اطلاعات پروژه با استفاده از حافظهٔ مرورگر. |  |
-| پیشنهادها و درج سریع | بانک پیشنهادهای HTML، CSS و JavaScript | ارائهٔ واژه‌ها، ویژگی‌ها، مقادیر و موارد پیشنهادی مربوط به هر زبان. |  |
-| پیشنهادها و درج سریع | پیشنهاد ادامهٔ کلمه | پیشنهاد ادامهٔ عبارت بر اساس الگوها و زمینهٔ فعلی کدنویسی. |  |
-| پیشنهادها و درج سریع | مدیریت کلمات پیشنهادی | مدیریت دسته‌ها و بانک‌های سفارشی پیشنهادها از پنل مستقل. |  |
-| پیشنهادها و درج سریع | نوار درج سریع | دسترسی سریع به نمادها و قطعه‌های پرکاربرد متناسب با زبان فعال. |  |
-| پیشنهادها و درج سریع | مدیریت فهرست درج سریع | افزودن، ویرایش و حذف موارد سفارشی درج سریع. |  |
-| پیش‌نمایش و ابزارهای بصری | پیش‌نمایش زنده | نمایش نتیجهٔ اجرای HTML، CSS و JavaScript و به‌روزرسانی آن. |  |
-| پیش‌نمایش و ابزارهای بصری | تنظیم چیدمان محیط | تنظیم نسبت فضای ویرایشگر و پیش‌نمایش و انتخاب نمایش کنارهم یا روی‌هم. |  |
-| پیش‌نمایش و ابزارهای بصری | بازرس عناصر پیش‌نمایش | بررسی عنصر انتخاب‌شده و راهبری به بخش‌های مرتبط از کد منبع. |  |
-| پیش‌نمایش و ابزارهای بصری | انتخاب‌گر رنگ | انتخاب و تنظیم رنگ‌ها در زمینه‌های مرتبط با CSS. |  |
-| پروژه و کتابخانه‌ها | مدیریت کتابخانه‌ها | افزودن کتابخانه‌های CSS و JavaScript، مدیریت موارد سفارشی و انتخاب موارد آماده. |  |
-| تنظیمات و داده‌ها | تنظیمات برنامه و ظاهر | مدیریت پوسته، رنگ تأکیدی، تراکم رابط، قلم و گزینه‌های ویرایشگر. |  |
-| تنظیمات و داده‌ها | تنظیمات پیش‌نمایش و ذخیره‌سازی | کنترل به‌روزرسانی خودکار پیش‌نمایش، تأخیر آن و ذخیرهٔ تنظیمات. |  |
-| تنظیمات و داده‌ها | پشتیبان‌گیری و بازیابی | تهیهٔ فایل پشتیبان و مرور بخش‌های آن پیش از اعمال فرایند بازیابی. |  |
-| خروجی | دانلود مجموعهٔ فایل‌ها | دریافت خروجی پروژه شامل فایل‌های HTML، CSS، JavaScript و اطلاعات کتابخانه‌ها. |  |
-| خروجی | نام‌گذاری خروجی | تعیین نام برای فایل‌ها یا مجموعهٔ خروجی از پنجرهٔ دانلود. |  |
-| خروجی | ساخت فایل HTML تک‌فایلی | گزینهٔ خروجی مستقل HTML در رابط پروژه وجود دارد؛ فعال‌سازی یا تغییر رفتار آن فقط با دستور صریح کاربر مجاز است. |  |
-| راهنما و وضعیت | راهنمای برنامه | ارائهٔ راهنمای شروع کار و توضیحات ویرایش HTML، CSS، JavaScript و کتابخانه‌ها به دو زبان. |  |
-| راهنما و وضعیت | درخت کلمات | مرور، جست‌وجو، گسترش شاخه‌ها و مشاهدهٔ توضیح و نمونهٔ کد واژه‌ها. |  |
-| راهنما و وضعیت | نمایش وضعیت به‌روزرسانی GitHub | نمایش اطلاعات مربوط به آخرین به‌روزرسانی مخزن و پیوند مشاهدهٔ کامیت. |  |
-| راهنما و وضعیت | نمایش وضعیت و پیام‌ها | نمایش تغییرات ذخیره‌نشده و پیام‌های راهنما یا نتیجهٔ عملیات. |  |
-| ساخت و کنترل کیفیت | ساخت نسخهٔ آزمایشی مستقل | تولید فایل آزمایشی مستقل از منابع نسخهٔ اصلی با اسکریپت ساخت پروژه. |  |
-| ساخت و کنترل کیفیت | آزمون‌ها و کنترل صحت | اسکریپت‌ها و گردش‌کارهای خودکار برای بررسی پردازش کد، پشتیبان‌گیری، صفحهٔ اصلی و نسخهٔ مستقل. |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;build-test-editor.yml | `.github/workflows/build-test-editor.yml` | فایل | گردش‌کار ساخت و کنترل نسخهٔ مستقل |
+| &nbsp;&nbsp;&nbsp;&nbsp;check-index-integrity.yml | `.github/workflows/check-index-integrity.yml` | فایل | گردش‌کار بررسی یکپارچگی صفحه و منابع |
+| &nbsp;&nbsp;&nbsp;&nbsp;check-index.yml | `.github/workflows/check-index.yml` | فایل | گردش‌کار بررسی صحت صفحهٔ اصلی |
+| README.md | `README.md` | فایل | مستند ساختار مخزن |
+| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `docs/architecture/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای مستندات معماری |
+| &nbsp;&nbsp;&nbsp;&nbsp;tree-world-suggestion.md | `docs/suggestions/tree-world-suggestion.md` | فایل | مستند پیشنهادهای درخت کلمات |
+| index-test-etitor.html | `index-test-etitor.html` | فایل | نسخهٔ مستقل/آزمایشی تولیدشده |
+| index.html | `index.html` | فایل | صفحهٔ اصلی ویرایشگر |
+| script.js | `script.js` | فایل | منطق اصلی برنامه |
+| &nbsp;&nbsp;build-test-editor.mjs | `scripts/build-test-editor.mjs` | فایل | ساخت نسخهٔ مستقل از منابع اصلی |
+| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `scripts/build/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای اسکریپت‌های ساخت |
+| &nbsp;&nbsp;check-backup-restore.mjs | `scripts/check-backup-restore.mjs` | فایل | بررسی پشتیبان‌گیری و بازیابی |
+| &nbsp;&nbsp;check-editor-code-processing.mjs | `scripts/check-editor-code-processing.mjs` | فایل | بررسی پردازش کد |
+| &nbsp;&nbsp;check-index-integrity.mjs | `scripts/check-index-integrity.mjs` | فایل | بررسی یکپارچگی HTML و منابع |
+| &nbsp;&nbsp;check-settings-dialog-keyboard.mjs | `scripts/check-settings-dialog-keyboard.mjs` | فایل | بررسی صفحه‌کلید تنظیمات |
+| &nbsp;&nbsp;check-standalone-editor.mjs | `scripts/check-standalone-editor.mjs` | فایل | اعتبارسنجی نسخهٔ مستقل |
+| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `scripts/checks/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای اسکریپت‌های کنترل |
+| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/app/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای راه‌اندازی برنامه |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;backup-restore.css | `src/features/backup-restore/backup-restore.css` | فایل | استایل پشتیبان‌گیری و بازیابی |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;backup-restore.js | `src/features/backup-restore/backup-restore.js` | فایل | منطق پشتیبان‌گیری و بازیابی |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/autocomplete/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/color-picker/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/core/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/editing-commands/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/paste-processing/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/search/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/syntax-highlighting/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/export/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/help/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/libraries/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;element-inspector.js | `src/features/live-preview/element-inspector.js` | فایل | بازرس عناصر پیش‌نمایش زنده |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quick-insert.css | `src/features/quick-insert/quick-insert.css` | فایل | استایل نوار درج سریع |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quick-insert.js | `src/features/quick-insert/quick-insert.js` | فایل | منطق نوار درج سریع |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;settings.css | `src/features/settings/settings.css` | فایل | استایل تنظیمات |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;settings.js | `src/features/settings/settings.js` | فایل | منطق تنظیمات |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;css-suggestions.js | `src/features/suggestions/data/css-suggestions.js` | فایل | بانک پیشنهادهای CSS |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;html-suggestions.js | `src/features/suggestions/data/html-suggestions.js` | فایل | بانک پیشنهادهای HTML |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;js-suggestions.js | `src/features/suggestions/data/js-suggestions.js` | فایل | بانک پیشنهادهای JavaScript |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suggestion-manager.css | `src/features/suggestions/manager/suggestion-manager.css` | فایل | استایل مدیریت پیشنهادها |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suggestion-manager.js | `src/features/suggestions/manager/suggestion-manager.js` | فایل | مدیریت پیشنهادها |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;next-word-suggestions.js | `src/features/suggestions/next-word/next-word-suggestions.js` | فایل | پیشنهاد ادامهٔ کلمه |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;word-tree.js | `src/features/word-tree/word-tree.js` | فایل | درخت کلمات |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/workspace/file-manager/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/workspace/project-storage/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toolbar-sidebar.css | `src/features/workspace/toolbar/toolbar-sidebar.css` | فایل | استایل سایدبار ابزارها |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toolbar-sidebar.js | `src/features/workspace/toolbar/toolbar-sidebar.js` | فایل | منطق سایدبار ابزارها |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/dom/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای ابزارهای مشترک DOM |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/storage/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای ابزارهای مشترک ذخیره‌سازی |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/ui/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای ابزارهای مشترک رابط کاربری |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/validation/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای اعتبارسنجی مشترک |
+| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/styles/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای استایل‌های مشترک |
+| style.css | `style.css` | فایل | استایل اصلی برنامه |
+| &nbsp;&nbsp;build-single-file.js | `tools/build-single-file.js` | فایل | ابزار کمکی ساخت فایل مستقل |
 
-> **قاعدهٔ مهم دربارهٔ خروجی HTML تک‌فایلی:** ثبت این قابلیت در جدول به معنی مجوز فعال‌سازی یا تغییر رفتار آن نیست. هرگونه فعال‌سازی یا تغییر این گزینه فقط با دستور صریح کاربر انجام شود.
+## نکات ساختاری
 
-## ۲. درخت فعلی مخزن
-
-این درخت فایل‌های اصلی و مسیرهای دارای کد را مطابق ساختار فعلی شاخهٔ `main` پس از انتقال نخستین گروه قابلیت‌های مستقل نشان می‌دهد. چندین پوشهٔ مقصدِ معماری نیز فعلاً فقط فایل `.gitkeep` دارند؛ وجود این پوشه‌ها به معنی انتقال یا پیاده‌سازی قابلیت مربوطه نیست.
-
-```text
-Editor-html-css-js/
-├── .github/workflows/
-├── README.md
-├── index.html
-├── index-test-etitor.html
-├── script.js
-├── style.css
-├── src/
-│   └── features/
-│       ├── settings/
-│       │   ├── settings.js
-│       │   └── settings.css
-│       ├── backup-restore/
-│       │   ├── backup-restore.js
-│       │   └── backup-restore.css
-│       ├── suggestions/
-│       │   ├── data/
-│       │   │   ├── html-suggestions.js
-│       │   │   ├── css-suggestions.js
-│       │   │   └── js-suggestions.js
-│       │   ├── next-word/next-word-suggestions.js
-│       │   └── manager/
-│       │       ├── suggestion-manager.js
-│       │       └── suggestion-manager.css
-│       ├── live-preview/element-inspector.js
-│       ├── quick-insert/
-│       │   ├── quick-insert.js
-│       │   └── quick-insert.css
-│       ├── workspace/
-│       │   └── toolbar/
-│       │       ├── toolbar-sidebar.js
-│       │       └── toolbar-sidebar.css
-│       ├── word-tree/word-tree.js
-│       └── integrations/github/github-update.js
-├── docs/suggestions/tree-world-suggestion.md
-├── scripts/
-│   ├── build-test-editor.mjs
-│   ├── check-backup-restore.mjs
-│   ├── check-editor-code-processing.mjs
-│   ├── check-index-integrity.mjs
-│   ├── check-settings-dialog-keyboard.mjs
-│   └── check-standalone-editor.mjs
-└── tools/build-single-file.js
-```
-
-### راهنمای سریع فایل‌های اصلی
-
-| فایل یا گروه | کاربرد کلی |
-|---|---|
-| `index.html` | نقطهٔ ورود نسخهٔ اصلی ویرایشگر |
-| `index-test-etitor.html` | نسخهٔ آزمایشی ویرایشگر |
-| `script.js` و `style.css` | منطق و استایل اصلی برنامه |
-| `src/features/settings/` | منطق و ظاهر تنظیمات |
-| `src/features/backup-restore/` | پشتیبان‌گیری و بازیابی |
-| `src/features/suggestions/manager/` | مدیریت پیشنهادها |
-| `src/features/suggestions/data/` | بانک‌های پیشنهاد HTML، CSS و JavaScript |
-| `src/features/suggestions/next-word/` | پیشنهاد کلمهٔ بعدی |
-| `src/features/live-preview/element-inspector.js` | بازرسی عناصر پیش‌نمایش |
-| `src/features/quick-insert/` | منطق و استایل مستقل نوار درج سریع کلمات و قطعه‌کدها |
-| `src/features/workspace/toolbar/` | منطق و استایل نوار ابزار کناری ویرایشگر؛ شامل کنترل‌های دانلود، پاک‌سازی، راهنما، درخت کلمات و تنظیمات |
-| `src/features/integrations/github/` | قابلیت‌های مرتبط با به‌روزرسانی GitHub |
-| `src/features/word-tree/` و `docs/suggestions/` | درخت کلمات و مستندات مرتبط |
-| `scripts/` | اسکریپت‌های آزمون، بررسی و ساخت |
-| `tools/` | ابزارهای کمکی ساخت |
-
-### جدول فایل‌های فعلی بر اساس گروه و پوشه
-
-جدول زیر فایل‌های واقعیِ قابل‌ردیابی در شاخهٔ `main` را بر اساس مسئولیت و مسیر فعلی دسته‌بندی می‌کند. نام‌ها از درخت مخزن استخراج شده‌اند؛ پوشه‌های دارای فقط `.gitkeep` در جدول جداگانهٔ بعدی آمده‌اند تا با پوشه‌های دارای کد اشتباه گرفته نشوند.
-
-| گروه | پوشهٔ فعلی | فایل‌های موجود | کاربرد و وضعیت |
-|---|---|---|---|
-| مستندات اصلی | ریشهٔ مخزن (`.`) | `README.md` | معرفی قابلیت‌ها، ساختار فعلی، معماری هدف و روند مهاجرت |
-| نقطهٔ ورود برنامه | ریشهٔ مخزن (`.`) | `index.html` | صفحهٔ اصلی برنامه و ارجاع به منابع رابط کاربری |
-| نسخهٔ مستقل/آزمایشی | ریشهٔ مخزن (`.`) | `index-test-etitor.html` | نسخهٔ مستقل برای ساخت و بررسی؛ نام فایل عمداً با املای فعلی حفظ شده است |
-| منطق اصلی برنامه | ریشهٔ مخزن (`.`) | `script.js` | منطق اصلی برنامه؛ هنوز چندمسئولیتی است و باید پیش از انتقال بیشتر، وابستگی‌های آن تحلیل شود |
-| استایل اصلی برنامه | ریشهٔ مخزن (`.`) | `style.css` | استایل‌های کلی و بخش‌هایی از رابط؛ هنوز در ریشه قرار دارد و جداسازی آن باید مرحله‌ای باشد |
-| خودکارسازی ساخت و کنترل | `.github/workflows/` | `build-test-editor.yml`, `check-index-integrity.yml`, `check-index.yml` | گردش‌کارهای GitHub Actions برای ساخت نسخهٔ مستقل و کنترل صحت فایل‌ها |
-| تنظیمات | `src/features/settings/` | `settings.js`, `settings.css` | منطق و استایل پنل تنظیمات؛ از ریشه به پوشهٔ قابلیت منتقل شده‌اند |
-| پشتیبان‌گیری و بازیابی | `src/features/backup-restore/` | `backup-restore.js`, `backup-restore.css` | منطق و رابط تهیه و بازیابی نسخهٔ پشتیبان؛ منتقل شده‌اند |
-| بانک دادهٔ پیشنهادها | `src/features/suggestions/data/` | `html-suggestions.js`, `css-suggestions.js`, `js-suggestions.js` | داده‌های پیشنهاد مربوط به HTML، CSS و JavaScript؛ منتقل شده‌اند |
-| مدیریت پیشنهادها | `src/features/suggestions/manager/` | `suggestion-manager.js`, `suggestion-manager.css` | منطق و استایل رابط مدیریت بانک‌ها و پیشنهادهای سفارشی؛ منتقل شده‌اند |
-| پیشنهاد واژهٔ بعدی | `src/features/suggestions/next-word/` | `next-word-suggestions.js` | منطق پیشنهاد ادامهٔ کلمه یا عبارت؛ منتقل شده است |
-| بازرس عناصر پیش‌نمایش | `src/features/live-preview/` | `element-inspector.js` | ابزار بررسی عناصر پیش‌نمایش و پیوند آن‌ها با کد؛ منتقل شده است |
-| نوار درج سریع | `src/features/quick-insert/` | `quick-insert.js`, `quick-insert.css` | منطق و استایل نوار درج سریع از `script.js` و `style.css` جدا شده‌اند؛ واکنش‌گرایی تک‌ردیفه و اسکرول افقی افزوده شده است |
-| نوار ابزار کناری | `src/features/workspace/toolbar/` | `toolbar-sidebar.js`, `toolbar-sidebar.css` | کنترل‌های سربرگ قبلی به نوار کناری سمت راست منتقل شده‌اند؛ در دسکتاپ باز و در موبایل به‌صورت پوشاننده با پس‌زمینهٔ تارشده باز و بسته می‌شود |
-| درخت کلمات | `src/features/word-tree/` | `word-tree.js` | منطق نمایش و تعامل با درخت کلمات؛ منتقل شده است |
-| یکپارچه‌سازی GitHub | `src/features/integrations/github/` | `github-update.js` | نمایش اطلاعات مرتبط با به‌روزرسانی مخزن GitHub؛ منتقل شده است |
-| مستندات پیشنهادها | `docs/suggestions/` | `tree-world-suggestion.md` | مستند مرتبط با پیشنهادهای درخت کلمات؛ به پوشهٔ مستندات منتقل شده است |
-| ساخت نسخهٔ مستقل | `scripts/` | `build-test-editor.mjs` | اسکریپت ساخت نسخهٔ مستقل؛ فعلاً در مسیر فعلی `scripts/` باقی مانده است |
-| آزمون پشتیبان‌گیری | `scripts/` | `check-backup-restore.mjs` | کنترل‌های مرتبط با پشتیبان‌گیری و بازیابی |
-| بررسی پردازش کد | `scripts/` | `check-editor-code-processing.mjs` | بررسی پردازش کد در ویرایشگر |
-| بررسی صحت صفحه و ارجاع‌ها | `scripts/` | `check-index-integrity.mjs` | کنترل یکپارچگی صفحه و منابع مرتبط |
-| بررسی دسترس‌پذیری صفحه‌کلید تنظیمات | `scripts/` | `check-settings-dialog-keyboard.mjs` | کنترل تعامل صفحه‌کلید در پنجرهٔ تنظیمات |
-| بررسی نسخهٔ مستقل | `scripts/` | `check-standalone-editor.mjs` | بررسی ساختار و منابع نسخهٔ مستقل |
-| ابزار کمکی ساخت | `tools/` | `build-single-file.js` | ابزار کمکی مرتبط با ساخت فایل مستقل؛ وجود این فایل به‌تنهایی به معنی فعال بودن گزینهٔ خروجی تک‌فایلی در رابط نیست |
-
-### پوشه‌های اسکلت که فعلاً فقط فایل `.gitkeep` دارند
-
-موارد زیر در مخزن ثبت شده‌اند تا مقصد معماری آینده حفظ شود، اما در این مسیرها هنوز فایل پیاده‌سازیِ قابلیت قرار نگرفته است.
-
-| گروه | پوشه‌های دارای فقط `.gitkeep` | وضعیت |
-|---|---|---|
-| مستندات معماری | `docs/architecture/` | محل رزروشده؛ هنوز سند معماری در آن قرار نگرفته است |
-| سازمان‌دهی اسکریپت‌ها | `scripts/build/`, `scripts/checks/` | مقصدهای پیشنهادی برای تفکیک اسکریپت ساخت و کنترل؛ فایل‌های اجرایی هنوز در `scripts/` هستند |
-| راه‌اندازی برنامه | `src/app/` | اسکلت خالی؛ فایل راه‌اندازی مانند `bootstrap.js` هنوز ایجاد نشده است |
-| ابزارهای مشترک | `src/shared/dom/`, `src/shared/storage/`, `src/shared/ui/`, `src/shared/validation/` | پوشه‌های رزروشده برای ابزارهای مشترک؛ فعلاً فاقد پیاده‌سازی هستند |
-| زیرقابلیت‌های ویرایشگر | `src/features/editor/autocomplete/`, `src/features/editor/color-picker/`, `src/features/editor/core/`, `src/features/editor/editing-commands/`, `src/features/editor/paste-processing/`, `src/features/editor/search/`, `src/features/editor/syntax-highlighting/` | اسکلت‌های خالی؛ منطق متناظر هنوز از `script.js` جدا نشده یا به این مسیرها منتقل نشده است |
-| قابلیت‌های مستقل آینده | `src/features/export/`, `src/features/help/`, `src/features/libraries/` | مقصدهای معماری ثبت‌شده، اما در حال حاضر بدون فایل پیاده‌سازی |
-| مدیریت پروژه | `src/features/workspace/file-manager/`, `src/features/workspace/project-storage/` | اسکلت خالی برای جداسازی مدیریت فایل‌ها و ذخیره‌سازی پروژه |
-| استایل‌های مشترک | `src/styles/` | اسکلت خالی؛ `style.css` هنوز به استایل‌های مشترک و اختصاصی تفکیک نشده است |
-
-> **قاعدهٔ خواندن جدول‌ها:** «فایل منتقل شده» به معنی تغییر مسیر در مخزن است، نه لزوماً اثبات اجرای موفق آزمون‌های آن. پوشه‌های دارای `.gitkeep` را نیز نباید قابلیت پیاده‌سازی‌شده تلقی کرد.
-
-## ۳. ساختار هدف پیشنهادی بر اساس قابلیت‌ها
-
-این درخت، **معماری هدف کامل** است؛ ساختار واقعی فعلی در بخش قبل آمده است. مهاجرت مرحله‌ای آغاز شده، اما همهٔ مسئولیت‌ها هنوز به مقصد نهایی منتقل نشده‌اند.
-
-```text
-Editor-html-css-js/
-├── .github/
-│   └── workflows/
-│       ├── build-test-editor.yml
-│       ├── check-index-integrity.yml
-│       └── check-index.yml
-│
-├── index.html
-├── index-test-etitor.html
-├── README.md
-│
-├── src/
-│   ├── app/
-│   │   └── bootstrap.js                 # راه‌اندازی و اتصال قابلیت‌ها؛ پیشنهادی
-│   │
-│   ├── shared/
-│   │   ├── storage/                     # دسترسی مشترک به حافظهٔ مرورگر
-│   │   ├── dom/                         # ابزارهای مشترک DOM
-│   │   ├── ui/                          # اعلان‌ها و اجزای عمومی رابط
-│   │   └── validation/                  # اعتبارسنجی‌های مشترک
-│   │
-│   ├── features/
-│   │   ├── editor/
-│   │   │   ├── core/                    # هستهٔ ویرایشگر؛ تفکیک از script.js
-│   │   │   ├── editing-commands/        # ویرایش، Undo/Redo و دستورات صفحه‌کلید
-│   │   │   ├── syntax-highlighting/     # رنگ‌آمیزی و شماره‌گذاری کد
-│   │   │   ├── autocomplete/            # تکمیل خودکار و اتصال پیشنهادها
-│   │   │   ├── search/                  # جست‌وجو در کد
-│   │   │   ├── color-picker/             # انتخاب‌گر رنگ
-│   │   │   └── paste-processing/        # پردازش HTML/CSS/JS چسبانده‌شده
-│   │   │
-│   │   ├── workspace/
-│   │   │   ├── file-manager/            # ساخت، انتخاب، تغییر نام و حذف فایل
-│   │   │   └── project-storage/         # ذخیره و بازیابی وضعیت پروژه
-│   │   │
-│   │   ├── suggestions/
-│   │   │   ├── data/                    # بانک‌های HTML/CSS/JavaScript
-│   │   │   ├── next-word/               # پیشنهاد ادامهٔ عبارت
-│   │   │   └── manager/                 # مدیریت بانک‌ها و موارد سفارشی
-│   │   │
-│   │   ├── quick-insert/                # نوار و فهرست درج سریع
-│   │   ├── libraries/                   # کتابخانه‌های آماده و سفارشی
-│   │   │
-│   │   ├── live-preview/
-│   │   │   ├── preview.js               # به‌روزرسانی پیش‌نمایش
-│   │   │   ├── document-builder.js      # ساخت سند قابل اجرا
-│   │   │   └── element-inspector.js     # بازرس عناصر و اتصال به کد
-│   │   │
-│   │   ├── settings/                    # تنظیمات و ترجیحات رابط
-│   │   ├── backup-restore/              # پشتیبان‌گیری و بازیابی
-│   │   ├── export/                      # دانلود فایل‌ها و ساخت خروجی
-│   │   ├── word-tree/                   # مرور و جست‌وجوی درخت کلمات
-│   │   ├── help/                        # راهنمای درون‌برنامه‌ای
-│   │   └── integrations/
-│   │       └── github/                  # وضعیت به‌روزرسانی GitHub
-│   │
-│   └── styles/
-│       ├── tokens.css                   # متغیرهای طراحی مشترک
-│       ├── base.css                     # قواعد پایهٔ عمومی
-│       └── layout.css                   # چیدمان کلی برنامه
-│
-├── docs/
-│   ├── architecture/                    # تصمیم‌ها و نقشهٔ معماری
-│   └── suggestions/
-│       └── tree-world-suggestion.md     # مستند بانک و قواعد پیشنهادها
-│
-├── scripts/
-│   ├── build/
-│   │   └── build-test-editor.mjs        # ساخت نسخهٔ مستقل؛ محل هدف پیشنهادی
-│   └── checks/
-│       ├── check-backup-restore.mjs
-│       ├── check-editor-code-processing.mjs
-│       ├── check-index-integrity.mjs
-│       ├── check-settings-dialog-keyboard.mjs
-│       └── check-standalone-editor.mjs
-│
-└── tools/
-    └── build-single-file.js
-```
-
-### نگاشت فایل‌های فعلی به گروه‌های هدف
-
-این نگاشت وضعیت انتقال را ثبت می‌کند؛ موارد منتقل‌شده اکنون در مقصد درج‌شده قرار دارند.
-
-| فایل فعلی | مقصد پیشنهادی | ملاحظه |
-|---|---|---|
-| `script.js` | چند ماژول زیر `src/features/editor/`، `workspace/`، `live-preview/` و `export/` | فایل چندمسئولیتی است؛ ابتدا باید توابع و وابستگی‌ها تفکیک شوند، نه اینکه کل فایل یک‌جا منتقل شود. |
-| `style.css` | `src/styles/` و استایل‌های اختصاصی هر قابلیت | ابتدا قواعد عمومی از استایل‌های مختص قابلیت جدا شوند. |
-| `settings.js`، `settings.css` | `src/features/settings/` | **منتقل شد**؛ ارجاع HTML و آزمون مرتبط به‌روزرسانی شد. |
-| `backup-restore.js`، `backup-restore.css` | `src/features/backup-restore/` | **منتقل شد**؛ آزمون مرتبط به مسیر جدید اشاره می‌کند. |
-| `suggestion-manager.js`، `suggestion-manager.css` | `src/features/suggestions/manager/` | **منتقل شد**؛ ترتیب بارگذاری در HTML حفظ شد. |
-| `html-suggestions.js`، `css-suggestions.js`، `js-suggestions.js` | `src/features/suggestions/data/` | **منتقل شد**؛ ترتیب بارگذاری در HTML حفظ شد. |
-| `next-word-suggestions.js` | `src/features/suggestions/next-word/` | **منتقل شد**؛ وابستگی‌های سراسری و ترتیب قبلی حفظ شده‌اند. |
-| `preview-element-inspector.js` | `src/features/live-preview/element-inspector.js` | **منتقل شد**؛ ارجاع HTML اصلاح شد. |
-| `word-tree.js` | `src/features/word-tree/word-tree.js` | **منتقل شد**؛ مستند مرتبط نیز منتقل شد. |
-| `github-update.js` | `src/features/integrations/github/github-update.js` | **منتقل شد**؛ ارجاع HTML اصلاح شد. |
-| کنترل‌های سربرگ و نوار کناری | `src/features/workspace/toolbar/` | **منتقل شد**؛ HTML، استایل اختصاصی، کنترل باز/بسته‌شدن و منابع نسخهٔ مستقل همگام شدند. |
-| `tree-world-suggestion.md` | `docs/suggestions/tree-world-suggestion.md` | **منتقل شد**. |
-| فایل‌های `scripts/*.mjs` | مسیرهای فعلی `scripts/` | فعلاً در ریشهٔ پوشهٔ `scripts/` باقی مانده‌اند؛ انتقال آن‌ها مرحله‌ای جداگانه خواهد بود تا فراخوانی‌ها و Workflowها هماهنگ بمانند. |
-
-## ۴. قواعد معماری برای جلوگیری از وابستگی‌های شکننده
-
-1. **مرز قابلیت‌ها روشن باشد:** هر قابلیت، منطق و استایل اختصاصی خودش را نگه دارد؛ قابلیت‌ها از طریق رابط‌های مشخص با یکدیگر ارتباط بگیرند.
-2. **زیرساخت مشترک کوچک بماند:** فقط کد واقعاً مشترک به `src/shared/` منتقل شود؛ این پوشه نباید به محل تجمع منطق‌های نامرتبط تبدیل شود.
-3. **وابستگی‌ها یک‌طرفه طراحی شوند:** قابلیت‌ها می‌توانند از ابزارهای مشترک استفاده کنند؛ ابزارهای مشترک نباید به قابلیت‌های خاص وابسته شوند.
-4. **ترتیب بارگذاری حفظ شود:** تا زمانی که معماری ماژولی به‌طور کامل آماده نشده، ترتیب فعلی اسکریپت‌ها و سبک‌ها تغییر نکند.
-5. **نسخهٔ مستقل همواره قابل بازتولید باشد:** ساخت و اعتبارسنجی `index-test-etitor.html` باید از مسیرهای جدید استفاده کنند و تطابق محتوا و ترتیب منابع را کنترل کنند.
-6. **هر انتقال کوچک و قابل بازگشت باشد:** هر گروه جداگانه منتقل شود، آزمون‌های مرتبط اجرا شوند و تنها پس از موفقیت به گروه بعدی برویم.
-
-## ۵. نقشهٔ اجرای مهاجرت
-
-| مرحله | کار | معیار پایان مرحله |
-|---|---|---|
-| ۱ | ثبت ساختار هدف و نگاشت فایل‌ها در مستندات | مسیر فعلی و مقصد هر گروه روشن باشد. |
-| ۲ | تعیین مرز مسئولیت‌ها و وابستگی‌های `script.js` | فهرست توابع و مصرف‌کنندگان هر ماژول مشخص شود. |
-| ۳ | جداسازی زیرساخت مشترک با حداقل تغییر رفتاری | توابع مشترک بدون وابستگی ناخواسته در دسترس باشند. |
-| ۴ | انتقال یک قابلیت مستقل در هر نوبت | ارجاع‌ها اصلاح و آزمون مرتبط موفق باشد. |
-| ۵ | به‌روزرسانی اسکریپت ساخت و گردش‌کارهای CI | ساخت و اعتبارسنجی نسخهٔ مستقل موفق باشد. |
-| ۶ | اجرای بررسی نهایی | نسخهٔ اصلی، نسخهٔ مستقل و آزمون‌های موجود بررسی شوند. |
-
-## ۶. وضعیت فعلی مهاجرت و کنترل‌های لازم
-
-مهاجرت **به‌صورت مرحله‌ای آغاز شده و بخشی از آن انجام شده است**؛ بنابراین ساختار هدف هنوز به‌طور کامل پیاده‌سازی نشده، اما گفتن اینکه هیچ بخشی اعمال نشده نیز درست نیست. پوشه‌های مقصد ایجاد شده‌اند و نخستین گروه فایل‌های مستقل به مسیرهای جدید منتقل شده‌اند. ارجاع‌های HTML، اسکریپت ساخت نسخهٔ آزمایشی، بررسی‌گرهای مرتبط و گردش‌کارهای GitHub Actions به‌روزرسانی شده‌اند.
-
-پیش از هر انتقال بعدی باید ارجاع‌های `<script src>` و `<link href>`، واردسازی‌های JavaScript، مسیرهای اسکریپت‌های ساخت و آزمون، گردش‌کارهای GitHub Actions و مسیرهای وابسته به خروجی مستقل دوباره بررسی شوند. `script.js` و `style.css` هنوز در ریشه هستند؛ به دلیل چندمسئولیتی بودن، باید ابتدا مسئولیت‌ها و وابستگی‌هایشان تحلیل شود و سپس هر قابلیت جداگانه منتقل شود.
-
-**محدودیت مهم:** نام `index-test-etitor.html` عمداً با املای فعلی حفظ شده است. همچنین هیچ گزینه یا قابلیت خروجی تک‌فایلی فعال یا تغییر داده نمی‌شود مگر اینکه کاربر صریحاً دستور دهد.
-
-### وضعیت اعتبارسنجی و گام بعدی
-
-بررسی ایستای انجام‌شده پس از آخرین انتقال، وجود فایل‌های منتقل‌شده، نبود ارجاع محلی شکسته در `index.html` و هم‌ترازی تعداد و ترتیب منابع HTML با نشانگرهای منابع در `index-test-etitor.html` را تأیید کرده است. مسیرهای مورد انتظار در اسکریپت ساخت و بررسی‌گر نسخهٔ مستقل نیز با مسیرهای فعلی هم‌سو هستند. بااین‌حال، اجرای واقعی آزمون‌های Node.js و گردش‌کارهای GitHub Actions در آن بررسی انجام نشده است؛ بنابراین موفقیت اجرای آن‌ها را نباید قطعی فرض کرد.
-
-گام بعدی، تحلیل توابع و وابستگی‌های `script.js` و `style.css` و انتخاب یک قابلیت مستقل و کم‌ریسک برای جداسازی است. هر انتقال باید همراه با اصلاح ارجاع‌ها، اجرای آزمون‌های مرتبط و ثبت کامیت فارسی با شرح دقیق تغییرات انجام شود.
+- `index.html` ورودی نسخهٔ اصلی و `index-test-etitor.html` نسخهٔ مستقل/آزمایشی تولیدشده است.
+- قابلیت‌های جداشده در مسیرهای `src/features/` نگهداری می‌شوند.
+- `script.js` و `style.css` همچنان منابع اصلی مشترک برنامه‌اند؛ انتقال مسئولیت‌های باقی‌مانده باید مرحله‌ای و همراه با بررسی وابستگی‌ها انجام شود.
+- اسکریپت‌های `scripts/` برای ساخت و کنترل صحت استفاده می‌شوند و گردش‌کارهای `.github/workflows/` آن‌ها را در CI اجرا می‌کنند.

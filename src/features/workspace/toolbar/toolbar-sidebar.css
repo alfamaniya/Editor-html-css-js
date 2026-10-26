@@ -101,3 +101,14 @@ body:not(.toolbar-sidebar-open) .toolbar-sidebar { transform: translateX(calc(10
 :root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button:hover {
     background: var(--accent-soft, #dcecf8);
 }
+
+/* پنجره‌های عملیاتی و اعلان‌ها باید هنگام اجرای یک فرمان از سایدبار روی لایهٔ محو نمایش داده شوند. */
+body.toolbar-sidebar-active .modal-overlay,
+body.toolbar-sidebar-active .word-tree-overlay,
+body.toolbar-sidebar-active .word-detail-overlay,
+body.toolbar-sidebar-active .cp {
+    z-index: 8200;
+}
+body.toolbar-sidebar-active .toast.show {
+    z-index: 8300;
+}

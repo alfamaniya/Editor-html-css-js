@@ -1324,66 +1324,6 @@ textarea:focus-visible,
 @media (max-width: 760px) { .help-language-switch { gap: 6px; } .help-language-btn { flex: 1; } }
 
 
-/* UI refinement: file manager, compact top navigation, and responsive layout */
-.file-explorer { font-size: 13px; }
-.fe-title { font-size: 14px; }
-.fe-item {
-    gap: 7px;
-    padding: 7px 8px;
-    font-size: 13px;
-    min-height: 34px;
-}
-.fe-icon { font-size: 14px; }
-.fe-name {
-    display: block;
-    flex: 1 1 auto;
-    min-width: 0;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    line-height: 1.35;
-}
-.fe-rename, .fe-del { flex: 0 0 auto; }
-.fe-header { gap: 5px; }
-.fe-library-btn {
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
-    border: 1px solid var(--blue-border);
-    border-radius: 6px;
-    background: var(--blue-bg-3);
-    color: var(--blue-text);
-    cursor: pointer;
-    font-size: 14px;
-}
-.fe-library-btn:hover { background: var(--blue-bg-4); }
-.file-explorer.is-collapsed .fe-library-btn,
-.file-explorer.is-collapsed .fe-title { display: none; }
-.fe-new-form input { font-size: 13px; padding: 8px; }
-.fe-help { font-size: 11px; }
-.pane-label .toolbar { flex: 1 1 auto; min-width: 0; margin-inline: 0; justify-content: center; }
-#btnHelp { margin-left: 0; }
-.arrow-btn { position: static; transform: none; flex: 0 0 30px; }
-.arrow-btn:hover { transform: scale(1.04); }
-.arrow-btn:active { transform: scale(.96); }
-.dirty { position: static; margin-left: 0; white-space: nowrap; }
-.file-explorer.is-collapsed .fe-item { justify-content: center; }
-.file-explorer.is-collapsed .fe-open { flex: 0 0 auto; justify-content: center; }
-.file-explorer.is-collapsed .fe-library-btn { display: none; }
-
-@media (max-width: 760px) {
-    :root { --file-explorer-width: min(78vw, 250px); }
-    .file-explorer:not(.is-collapsed) {
-        max-width: var(--file-explorer-width);
-    }
-    .pane-label { flex-wrap: wrap; justify-content: flex-start; padding: 6px; }
-    .pane-label .toolbar { margin: 0; gap: 4px; }
-    .toolbar button { padding: 5px 7px; font-size: 11px; }
-    .dirty { margin-left: 0; font-size: 9px; }
-    .arrow-btn { width: 28px; height: 28px; flex-basis: 28px; }
-}
-
-
 /* Unified rounded components and deliberately distinct workspace surfaces. */
 /* Workspace color tokens are defined together in the main :root block. */
 body { background-color: #0e1725; }

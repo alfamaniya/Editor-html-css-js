@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const htmlPath = resolve(root, 'index.html');
-const cssFiles = ['style.css', 'src/features/quick-insert/quick-insert.css', 'src/features/workspace/toolbar/toolbar-sidebar.css', 'src/features/settings/settings.css', 'src/features/suggestions/manager/suggestion-manager.css', 'src/features/backup-restore/backup-restore.css'];
+const cssFiles = ['style.css', 'src/features/quick-insert/quick-insert.css', 'src/features/workspace/toolbar/toolbar-sidebar.css', 'src/features/workspace/file-manager/file-manager.css', 'src/features/settings/settings.css', 'src/features/suggestions/manager/suggestion-manager.css', 'src/features/backup-restore/backup-restore.css'];
 const outputPath = resolve(root, 'index-test-etitor.html');
 const temporaryPath = outputPath + '.tmp';
 

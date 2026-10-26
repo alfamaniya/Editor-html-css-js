@@ -284,7 +284,7 @@ body.file-manager-drawer-active { overflow: hidden; }
     left: var(--workspace-drawer-inset, 12px);
     box-sizing: border-box;
     width: var(--workspace-drawer-width, min(320px, calc(100vw - 24px)));
-    max-width: calc(100vw - (var(--workspace-drawer-inset, 12px) * 2));
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
     height: auto;
     max-height: none;
     margin: 0;
@@ -297,7 +297,7 @@ body.file-manager-drawer-active { overflow: hidden; }
     color: var(--workspace-drawer-text, #d8e4f4);
     background: var(--workspace-drawer-surface, #1a2639);
     box-shadow: var(--workspace-drawer-shadow, 0 12px 34px rgb(0 0 0 / 24%));
-    transform: translateX(calc(-100% - (var(--workspace-drawer-inset, 12px) * 2)));
+    transform: translateX(calc(-100% - var(--workspace-drawer-gap, 24px)));
     visibility: hidden;
     pointer-events: none;
     transition:
@@ -313,7 +313,7 @@ body.file-manager-drawer-active { overflow: hidden; }
 .file-explorer:not(.file-manager-drawer-open) {
     /* display:none باعث حذف انیمیشن خروج می‌شد؛ پنل اکنون خارج از دید قرار می‌گیرد. */
     display: flex !important;
-    transform: translateX(calc(-100% - (var(--workspace-drawer-inset, 12px) * 2)));
+    transform: translateX(calc(-100% - var(--workspace-drawer-gap, 24px)));
     visibility: hidden;
     pointer-events: none;
 }

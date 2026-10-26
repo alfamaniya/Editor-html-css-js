@@ -271,3 +271,156 @@ body.file-manager-drawer-active { overflow: hidden; }
     cursor: pointer;
 }
 .file-manager-backdrop[hidden] { display: none !important; }
+
+
+/* پوستهٔ مشترک و انیمیشن یکسان برای پنل فایل‌منیجر */
+/* فایل‌منیجر همان کارت کشویی سایدبار ابزارهاست؛ فقط جهت حرکت آن از چپ به راست معکوس است. */
+.file-explorer {
+    position: fixed;
+    z-index: 8101;
+    top: var(--workspace-drawer-inset, 12px);
+    right: auto;
+    bottom: var(--workspace-drawer-inset, 12px);
+    left: var(--workspace-drawer-inset, 12px);
+    box-sizing: border-box;
+    width: var(--workspace-drawer-width, min(320px, calc(100vw - 24px)));
+    max-width: calc(100vw - (var(--workspace-drawer-inset, 12px) * 2));
+    height: auto;
+    max-height: none;
+    margin: 0;
+    display: flex !important;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--workspace-drawer-border, rgb(130 159 194 / 28%));
+    border-radius: var(--workspace-drawer-radius, 16px);
+    color: var(--workspace-drawer-text, #d8e4f4);
+    background: var(--workspace-drawer-surface, #1a2639);
+    box-shadow: var(--workspace-drawer-shadow, 0 12px 34px rgb(0 0 0 / 24%));
+    transform: translateX(calc(-100% - (var(--workspace-drawer-inset, 12px) * 2)));
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        transform var(--workspace-drawer-duration, 260ms) var(--workspace-drawer-easing, cubic-bezier(.22, 1, .36, 1)),
+        visibility var(--workspace-drawer-duration, 260ms) var(--workspace-drawer-easing, cubic-bezier(.22, 1, .36, 1));
+}
+.file-explorer.file-manager-drawer-open {
+    display: flex !important;
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+}
+.file-explorer:not(.file-manager-drawer-open) {
+    /* display:none باعث حذف انیمیشن خروج می‌شد؛ پنل اکنون خارج از دید قرار می‌گیرد. */
+    display: flex !important;
+    transform: translateX(calc(-100% - (var(--workspace-drawer-inset, 12px) * 2)));
+    visibility: hidden;
+    pointer-events: none;
+}
+.fe-header {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    box-sizing: border-box;
+    min-height: 56px;
+    padding: 10px 14px;
+    background: var(--workspace-drawer-header, linear-gradient(115deg, #1b2f48, #142032));
+    border-bottom: 1px solid var(--workspace-drawer-border, rgb(130 159 194 / 28%));
+}
+.fe-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--workspace-drawer-text, #d8e4f4);
+    font-size: 14px;
+    font-weight: 700;
+}
+.fe-toggle-btn,
+.fe-add-btn,
+.fe-library-btn,
+.file-manager-close-button {
+    box-sizing: border-box;
+    flex: 0 0 34px;
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+    border: 1px solid var(--workspace-drawer-border, rgb(130 159 194 / 28%));
+    border-radius: 9px;
+}
+.fe-add-btn,
+.file-manager-close-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: var(--blue-bg-3, #263a50);
+    color: var(--workspace-drawer-text, #d8e4f4);
+    font: inherit;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+.file-manager-close-button { font-size: 24px; }
+.fe-add-btn:hover,
+.file-manager-close-button:hover {
+    background: var(--blue-bg-4, #344f6b);
+}
+.fe-controls,
+.fe-new-form {
+    flex: 0 0 auto;
+}
+.fe-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.file-manager-backdrop {
+    z-index: 8100;
+    background: var(--workspace-drawer-backdrop, rgb(5 10 18 / 58%));
+    opacity: 0;
+    transition: opacity var(--workspace-drawer-duration, 260ms) var(--workspace-drawer-easing, cubic-bezier(.22, 1, .36, 1));
+}
+.file-manager-backdrop.is-visible { opacity: 1; }
+.file-manager-backdrop[hidden] { display: none !important; }
+:root[data-theme="light"] .file-explorer {
+    color: var(--workspace-drawer-text, #283b50);
+    background: var(--workspace-drawer-surface, #f8fbff);
+    border-color: var(--workspace-drawer-border, rgb(130 159 194 / 32%));
+    box-shadow: var(--workspace-drawer-shadow, 0 12px 34px rgb(30 54 80 / 12%));
+}
+:root[data-theme="light"] .fe-header {
+    background: var(--workspace-drawer-header, linear-gradient(115deg, #f8fbff, #eaf1f9));
+    border-bottom-color: var(--workspace-drawer-border, rgb(130 159 194 / 32%));
+}
+:root[data-theme="light"] .fe-title,
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .file-manager-close-button {
+    color: var(--workspace-drawer-text, #283b50);
+}
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .file-manager-close-button {
+    background: linear-gradient(180deg, #fff, #dfe8f2);
+    border-color: var(--workspace-drawer-border, rgb(130 159 194 / 32%));
+}
+:root[data-theme="light"] .fe-add-btn:hover,
+:root[data-theme="light"] .file-manager-close-button:hover {
+    background: var(--accent-soft, #dcecf8);
+}
+@media (max-width: 760px) {
+    .file-explorer {
+        top: 10px;
+        bottom: 10px;
+        left: 10px;
+        max-width: calc(100vw - 20px);
+        width: var(--workspace-drawer-width, min(86vw, 330px));
+    }
+    .fe-header {
+        min-height: 52px;
+        padding: 8px 12px;
+    }
+}

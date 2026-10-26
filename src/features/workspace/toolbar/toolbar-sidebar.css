@@ -220,3 +220,10 @@ body:not(.toolbar-sidebar-open) .toolbar-sidebar {
         transition: none !important;
     }
 }
+
+:root[data-theme="light"] .toolbar-sidebar {
+    background: var(--workspace-drawer-surface);
+    color: var(--workspace-drawer-text);
+    border-color: var(--workspace-drawer-border);
+    box-shadow: var(--workspace-drawer-shadow);
+}

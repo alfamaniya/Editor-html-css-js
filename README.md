@@ -1,78 +1,143 @@
 # درخت فایل‌ها و ساختار مخزن
 
-این سند نمای ساختار واقعی شاخهٔ `main` مخزن `Editor-html-css-js` را در قالب جدول درختی ارائه می‌کند. مسیرها از درخت GitHub استخراج شده‌اند. پوشه‌های دارای `.gitkeep` فقط محل رزروشده‌اند و به معنی وجود پیاده‌سازی نیستند.
+این سند ساختار واقعی شاخهٔ `main` را بر اساس درخت Git مخزن نشان می‌دهد. درخت در تاریخ **۲۶ اکتبر ۲۰۲۶** بررسی و با مسیرهای موجود تطبیق داده شده است. فایل‌های `.gitkeep` فقط برای نگه‌داشتن پوشه‌های خالی در Git هستند و نشان‌دهندهٔ پیاده‌سازی قابلیت نیستند.
 
-| درخت فایل‌ها | مسیر دقیق | نوع | کاربرد |
-|---|---|---|---|
-| &nbsp;&nbsp;&nbsp;&nbsp;build-test-editor.yml | `.github/workflows/build-test-editor.yml` | فایل | گردش‌کار ساخت و کنترل نسخهٔ مستقل |
-| &nbsp;&nbsp;&nbsp;&nbsp;check-index-integrity.yml | `.github/workflows/check-index-integrity.yml` | فایل | گردش‌کار بررسی یکپارچگی صفحه و منابع |
-| &nbsp;&nbsp;&nbsp;&nbsp;check-index.yml | `.github/workflows/check-index.yml` | فایل | گردش‌کار بررسی صحت صفحهٔ اصلی |
-| README.md | `README.md` | فایل | مستند ساختار مخزن |
-| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `docs/architecture/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای مستندات معماری |
-| &nbsp;&nbsp;&nbsp;&nbsp;tree-world-suggestion.md | `docs/suggestions/tree-world-suggestion.md` | فایل | مستند پیشنهادهای درخت کلمات |
-| index-test-etitor.html | `index-test-etitor.html` | فایل | نسخهٔ مستقل/آزمایشی تولیدشده |
-| index.html | `index.html` | فایل | صفحهٔ اصلی ویرایشگر |
-| script.js | `script.js` | فایل | منطق اصلی برنامه |
-| &nbsp;&nbsp;build-test-editor.mjs | `scripts/build-test-editor.mjs` | فایل | ساخت نسخهٔ مستقل از منابع اصلی |
-| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `scripts/build/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای اسکریپت‌های ساخت |
-| &nbsp;&nbsp;check-backup-restore.mjs | `scripts/check-backup-restore.mjs` | فایل | بررسی پشتیبان‌گیری و بازیابی |
-| &nbsp;&nbsp;check-editor-code-processing.mjs | `scripts/check-editor-code-processing.mjs` | فایل | بررسی پردازش کد |
-| &nbsp;&nbsp;check-index-integrity.mjs | `scripts/check-index-integrity.mjs` | فایل | بررسی یکپارچگی HTML و منابع |
-| &nbsp;&nbsp;check-settings-dialog-keyboard.mjs | `scripts/check-settings-dialog-keyboard.mjs` | فایل | بررسی صفحه‌کلید تنظیمات |
-| &nbsp;&nbsp;check-standalone-editor.mjs | `scripts/check-standalone-editor.mjs` | فایل | اعتبارسنجی نسخهٔ مستقل |
-| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `scripts/checks/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای اسکریپت‌های کنترل |
-| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/app/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای راه‌اندازی برنامه |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;backup-restore.css | `src/features/backup-restore/backup-restore.css` | فایل | استایل پشتیبان‌گیری و بازیابی |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;backup-restore.js | `src/features/backup-restore/backup-restore.js` | فایل | منطق پشتیبان‌گیری و بازیابی |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/autocomplete/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/color-picker/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/core/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/editing-commands/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/paste-processing/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/search/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/editor/syntax-highlighting/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/export/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/help/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/libraries/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;element-inspector.js | `src/features/live-preview/element-inspector.js` | فایل | بازرس عناصر پیش‌نمایش زنده |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quick-insert.css | `src/features/quick-insert/quick-insert.css` | فایل | استایل نوار درج سریع |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quick-insert.js | `src/features/quick-insert/quick-insert.js` | فایل | منطق نوار درج سریع |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;settings.css | `src/features/settings/settings.css` | فایل | استایل تنظیمات |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;settings.js | `src/features/settings/settings.js` | فایل | منطق تنظیمات |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;css-suggestions.js | `src/features/suggestions/data/css-suggestions.js` | فایل | بانک پیشنهادهای CSS |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;html-suggestions.js | `src/features/suggestions/data/html-suggestions.js` | فایل | بانک پیشنهادهای HTML |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;js-suggestions.js | `src/features/suggestions/data/js-suggestions.js` | فایل | بانک پیشنهادهای JavaScript |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suggestion-manager.css | `src/features/suggestions/manager/suggestion-manager.css` | فایل | استایل مدیریت پیشنهادها |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suggestion-manager.js | `src/features/suggestions/manager/suggestion-manager.js` | فایل | مدیریت پیشنهادها |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;next-word-suggestions.js | `src/features/suggestions/next-word/next-word-suggestions.js` | فایل | پیشنهاد ادامهٔ کلمه |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;word-tree.js | `src/features/word-tree/word-tree.js` | فایل | درخت کلمات |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file-manager.css | `src/features/workspace/file-manager/file-manager.css` | فایل | استایل اختصاصی و ظاهر واکنش‌گرای سایدبار فایل‌منیجر |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file-manager.js | `src/features/workspace/file-manager/file-manager.js` | فایل | رندر و نمایش آیتم‌های فایل‌منیجر |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/workspace/project-storage/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toolbar-sidebar.css | `src/features/workspace/toolbar/toolbar-sidebar.css` | فایل | استایل سایدبار ابزارها |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toolbar-sidebar.js | `src/features/workspace/toolbar/toolbar-sidebar.js` | فایل | منطق سایدبار ابزارها |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/dom/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای ابزارهای مشترک DOM |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/storage/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای ابزارهای مشترک ذخیره‌سازی |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/ui/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای ابزارهای مشترک رابط کاربری |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/shared/validation/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای اعتبارسنجی مشترک |
-| &nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/styles/.gitkeep` | نشانگر پوشه | جایگاه رزروشده برای استایل‌های مشترک |
-| style.css | `style.css` | فایل | استایل اصلی برنامه |
-| &nbsp;&nbsp;build-single-file.js | `tools/build-single-file.js` | فایل | ابزار کمکی ساخت فایل مستقل |
+## درخت فایل‌ها
 
-## نکات ساختاری
+```text
+Editor-html-css-js/
+├── .github/
+│   └── workflows/
+│       ├── build-test-editor.yml
+│       ├── check-index-integrity.yml
+│       └── check-index.yml
+├── docs/
+│   ├── architecture/
+│   │   └── .gitkeep
+│   └── suggestions/
+│       └── tree-world-suggestion.md
+├── scripts/
+│   ├── build/
+│   │   └── .gitkeep
+│   ├── checks/
+│   │   └── .gitkeep
+│   ├── build-test-editor.mjs
+│   ├── check-backup-restore.mjs
+│   ├── check-editor-code-processing.mjs
+│   ├── check-index-integrity.mjs
+│   ├── check-settings-dialog-keyboard.mjs
+│   └── check-standalone-editor.mjs
+├── src/
+│   ├── app/
+│   │   └── .gitkeep
+│   ├── features/
+│   │   ├── backup-restore/
+│   │   │   ├── backup-restore.css
+│   │   │   └── backup-restore.js
+│   │   ├── editor/
+│   │   │   ├── autocomplete/
+│   │   │   │   └── .gitkeep
+│   │   │   ├── color-picker/
+│   │   │   │   └── .gitkeep
+│   │   │   ├── core/
+│   │   │   │   └── .gitkeep
+│   │   │   ├── editing-commands/
+│   │   │   │   └── .gitkeep
+│   │   │   ├── paste-processing/
+│   │   │   │   └── .gitkeep
+│   │   │   ├── search/
+│   │   │   │   └── .gitkeep
+│   │   │   └── syntax-highlighting/
+│   │   │       └── .gitkeep
+│   │   ├── export/
+│   │   │   └── .gitkeep
+│   │   ├── help/
+│   │   │   └── .gitkeep
+│   │   ├── libraries/
+│   │   │   └── .gitkeep
+│   │   ├── live-preview/
+│   │   │   └── element-inspector.js
+│   │   ├── quick-insert/
+│   │   │   ├── quick-insert.css
+│   │   │   └── quick-insert.js
+│   │   ├── settings/
+│   │   │   ├── settings.css
+│   │   │   └── settings.js
+│   │   ├── suggestions/
+│   │   │   ├── data/
+│   │   │   │   ├── css-suggestions.js
+│   │   │   │   ├── html-suggestions.js
+│   │   │   │   └── js-suggestions.js
+│   │   │   ├── manager/
+│   │   │   │   ├── suggestion-manager.css
+│   │   │   │   └── suggestion-manager.js
+│   │   │   └── next-word/
+│   │   │       └── next-word-suggestions.js
+│   │   ├── word-tree/
+│   │   │   └── word-tree.js
+│   │   └── workspace/
+│   │       ├── file-manager/
+│   │       │   ├── .gitkeep
+│   │       │   ├── file-manager-drawer.js
+│   │       │   ├── file-manager.css
+│   │       │   └── file-manager.js
+│   │       ├── project-storage/
+│   │       │   └── .gitkeep
+│   │       ├── search/
+│   │       │   ├── search-header.css
+│   │       │   └── search-header.js
+│   │       └── toolbar/
+│   │           ├── toolbar-sidebar.css
+│   │           └── toolbar-sidebar.js
+│   ├── shared/
+│   │   ├── dom/
+│   │   │   └── .gitkeep
+│   │   ├── storage/
+│   │   │   └── .gitkeep
+│   │   ├── ui/
+│   │   │   └── .gitkeep
+│   │   └── validation/
+│   │       └── .gitkeep
+│   └── styles/
+│       └── .gitkeep
+├── tools/
+│   └── build-single-file.js
+├── index-test-etitor.html
+├── index.html
+├── README.md
+├── script.js
+└── style.css
+```
 
-- `index.html` ورودی نسخهٔ اصلی و `index-test-etitor.html` نسخهٔ مستقل/آزمایشی تولیدشده است.
-- قابلیت‌های جداشده در مسیرهای `src/features/` نگهداری می‌شوند؛ استایل سایدبار فایل‌منیجر در `src/features/workspace/file-manager/file-manager.css` قرار دارد.
-- `script.js` و `style.css` همچنان منابع اصلی مشترک برنامه‌اند؛ انتقال مسئولیت‌های باقی‌مانده باید مرحله‌ای و همراه با بررسی وابستگی‌ها انجام شود.
-- فایل‌منیجر از دو ماژول `src/features/workspace/file-manager/file-manager.js` (رندر آیتم‌ها) و `src/features/workspace/file-manager/file-manager.css` (ظاهر اختصاصی) تشکیل شده است؛ منطق داده و عملیات ویرایش همچنان در هستهٔ ویرایشگر باقی می‌ماند.
-- آخرین تغییر بررسی‌شده در `26 اکتبر 2026` با شناسهٔ `4002d4b5367168a19b2196d24e062eb76b9add5c`، ظاهر فایل‌منیجر را در تم روشن و تیره با کارت‌های سایدبار تنظیمات هماهنگ کرده و قواعد CSS متناظر را در نسخهٔ مستقل `index-test-etitor.html` نیز قرار داده است.
-- اسکریپت‌های `scripts/` برای ساخت و کنترل صحت استفاده می‌شوند و گردش‌کارهای `.github/workflows/` آن‌ها را در CI اجرا می‌کنند.
+## نقش مسیرهای اصلی
 
-## بررسی آخرین کامیت
+| مسیر | مسئولیت |
+|---|---|
+| `index.html` | سند HTML نسخهٔ اصلی و نقطهٔ ورود رابط کاربری |
+| `style.css` | استایل‌های عمومی و مشترک رابط اصلی |
+| `script.js` | منطق اصلی برنامه و اتصال بخش‌های مختلف |
+| `index-test-etitor.html` | نسخهٔ مستقل/آزمایشی تولیدشده؛ باید پس از تغییر منابع، در صورت نیاز دوباره ساخته و اعتبارسنجی شود |
+| `src/features/settings/` | منطق و استایل صفحهٔ تنظیمات |
+| `src/features/workspace/file-manager/` | فایل‌های اختصاصی فایل‌منیجر: کنترل پنل کشویی، استایل، و نمایش آیتم‌ها |
+| `src/features/workspace/toolbar/` | منطق و استایل سایدبار ابزارها |
+| `src/features/workspace/search/` | هدر و جست‌وجوی محیط کار |
+| `src/features/suggestions/` | بانک‌های پیشنهاد HTML/CSS/JavaScript، مدیریت و پیشنهاد ادامهٔ کلمه |
+| `src/features/backup-restore/` | پشتیبان‌گیری و بازیابی |
+| `src/features/word-tree/` | منطق درخت کلمات |
+| `src/features/live-preview/` | بازرس عناصر پیش‌نمایش زنده |
+| `src/features/quick-insert/` | درج سریع |
+| `src/shared/` | جایگاه برنامه‌ریزی‌شده برای ابزارهای مشترک؛ پوشه‌های دارای فقط `.gitkeep` هنوز پیاده‌سازی ندارند |
+| `scripts/` | اسکریپت‌های ساخت و بررسی خودکار |
+| `tools/` | ابزارهای کمکی توسعه و ساخت |
+| `.github/workflows/` | گردش‌کارهای خودکار بررسی و ساخت در GitHub Actions |
+| `docs/` | مستندات پروژه |
 
-- **کامیت:** [`4002d4b`](https://github.com/alfamaniya/Editor-html-css-js/commit/4002d4b5367168a19b2196d24e062eb76b9add5c)
-- **پیام:** یکپارچه‌سازی ظاهر فایل‌منیجر با سایدبار تنظیمات در تم روشن و تیره
-- **فایل‌های تغییرکرده:** `src/features/workspace/file-manager/file-manager.css` و `index-test-etitor.html`
-- **دامنهٔ تغییر:** افزودن قواعد ظاهری برای کارت فایل‌منیجر، سربرگ، کنترل‌ها، آیتم فعال و حالت hover؛ تعریف رنگ‌های تم روشن؛ حفظ سازگاری چیدمان در نمایشگرهای کوچک.
-- **نکتهٔ بررسی:** قواعد جدید در انتهای CSS اختصاصی اضافه شده‌اند و برخی انتخابگرهای `.file-explorer` و `.fe-header` را که پیش‌تر تعریف شده بودند دوباره تعریف می‌کنند. این کار به‌خودی‌خود خطای نحوی نیست، اما ترتیب قواعد و اولویت انتخابگرها تعیین‌کننده است؛ پس از تغییرات ظاهری، آزمون بصری در تم روشن/تیره و اندازهٔ موبایل لازم است.
-- **وضعیت آزمون:** این بررسی، فراداده و فایل‌های تغییرکردهٔ کامیت و محتوای منابع مرتبط را بررسی می‌کند؛ اجرای آزمون‌های خودکار یا آزمون بصری مرورگر در این مرحله تأیید نشده است.
+## نکات دقت و نگهداری
+
+- این درخت از مسیرهای واقعی ثبت‌شده در Git ساخته شده است؛ فایل یا پوشه‌ای صرفاً بر اساس برنامهٔ آینده به آن اضافه نشده است.
+- وجود `.gitkeep` به معنی کامل‌بودن یا فعال‌بودن قابلیت متناظر نیست.
+- فایل‌های ماژولار زیر `src/features/` در کنار منابع اصلی ریشه قرار دارند؛ انتقال کامل منطق از `script.js` و `style.css` به ماژول‌ها باید مرحله‌ای و با بررسی وابستگی‌ها انجام شود.
+- `src/features/workspace/file-manager/file-manager-drawer.js` مسئول رفتار پنل کشویی فایل‌منیجر است؛ `file-manager.js` رندر آیتم‌ها را بر عهده دارد و `file-manager.css` استایل اختصاصی آن را نگه می‌دارد.
+- `src/features/workspace/toolbar/toolbar-sidebar.js` و `toolbar-sidebar.css` به‌ترتیب منطق و ظاهر سایدبار ابزارها را نگه می‌دارند.
+- بعد از تغییر منابع اصلی، وضعیت همگام‌بودن `index-test-etitor.html` را جداگانه بررسی کنید؛ به‌روزرسانی فایل‌های منبع به‌تنهایی تضمین نمی‌کند نسخهٔ مستقل نیز بازسازی شده باشد.
+- اسکریپت‌های بررسی در `scripts/check-*.mjs` قرار دارند و گردش‌کارهای `.github/workflows/` آن‌ها را برای مسیرهای مشخص‌شده اجرا می‌کنند.

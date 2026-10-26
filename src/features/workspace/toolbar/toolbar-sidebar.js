@@ -17,6 +17,8 @@
         document.body.classList.toggle('toolbar-sidebar-mobile-open', mobileModal);
         sidebar.setAttribute('aria-hidden', String(!isOpen));
         openButton.setAttribute('aria-expanded', String(isOpen));
+        openButton.setAttribute('aria-label', isOpen ? 'بستن سایدبار تنظیمات' : 'باز کردن سایدبار تنظیمات');
+        openButton.title = isOpen ? 'بستن سایدبار تنظیمات' : 'باز کردن سایدبار تنظیمات';
         if (mobileModal) {
             sidebar.setAttribute('role', 'dialog');
             sidebar.setAttribute('aria-modal', 'true');

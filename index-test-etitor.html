@@ -2440,7 +2440,7 @@ iframe#output {
 }
 
 </style>
-    <style data-bundled-from="settings.css">
+    <style data-bundled-from="src/features/settings/settings.css">
 /* استایل مستقل پنل تنظیمات و گزینه‌های ظاهری ویرایشگر */
 
 /* پنل تمام‌صفحهٔ تنظیمات؛ گزینه‌های ظاهر برنامه فعال هستند. */
@@ -2949,7 +2949,7 @@ iframe#output {
 }
 
 </style>
-    <style data-bundled-from="suggestion-manager.css">
+    <style data-bundled-from="src/features/suggestions/manager/suggestion-manager.css">
 
 /* پنجرهٔ مستقل مدیریت کلمات پیشنهادی */
 .suggestion-manager-modal { position: fixed; inset: 12px; z-index: 110000; overflow: auto; background: #101827; color: #e7eef9; border: 1px solid #40536d; border-radius: 16px; box-shadow: 0 24px 90px #000b; font: 13px/1.7 Tahoma, "Segoe UI", sans-serif; }
@@ -3093,7 +3093,7 @@ iframe#output {
 }
 
 </style>
-    <style data-bundled-from="backup-restore.css">
+    <style data-bundled-from="src/features/backup-restore/backup-restore.css">
 /* ظاهر مستقل و واکنش‌گرای پشتیبان‌گیری و بازیابی */
 .backup-restore-body { display: grid; gap: 18px; padding-top: 8px; }
 .backup-restore-intro { margin: 0; color: #aebfd4; line-height: 1.9; font-size: 12px; }
@@ -3818,7 +3818,7 @@ iframe#output {
     </section>
     <div class="toast" id="toast"></div>
 
-    <script data-bundled-from="html-suggestions.js">
+    <script data-bundled-from="src/features/suggestions/data/html-suggestions.js">
 // Expanded HTML, SVG, MathML, global attribute, and contextual attribute suggestions.
 (function () {
     'use strict';
@@ -4114,7 +4114,7 @@ iframe#output {
 })();
 
 </script>
-    <script data-bundled-from="css-suggestions.js">
+    <script data-bundled-from="src/features/suggestions/data/css-suggestions.js">
 // Expanded CSS properties, values, selectors, functions, units, and snippets.
 (function () {
     'use strict';
@@ -4566,7 +4566,7 @@ iframe#output {
 })();
 
 </script>
-    <script data-bundled-from="js-suggestions.js">
+    <script data-bundled-from="src/features/suggestions/data/js-suggestions.js">
 // Expanded JavaScript language and browser API suggestions; see extended lists below.
 (function () {
     'use strict';
@@ -4931,7 +4931,7 @@ iframe#output {
 })();
 
 </script>
-    <script data-bundled-from="suggestion-manager.js">
+    <script data-bundled-from="src/features/suggestions/manager/suggestion-manager.js">
 /* مدیریت بانک‌ها و کلمات پیشنهادی؛ متصل به بانک واقعی تکمیل خودکار */
 (function () {
     'use strict';
@@ -5596,7 +5596,7 @@ iframe#output {
     window.SuggestionWordManager = { open: openManager, refresh: renderTree };
 })();
 </script>
-    <script data-bundled-from="next-word-suggestions.js">
+    <script data-bundled-from="src/features/suggestions/next-word/next-word-suggestions.js">
 // Context-aware continuation suggestions for HTML, CSS, and JavaScript.
 // This is a curated lightweight n-gram/rule database, not an AI model or a parser.
 (function () {
@@ -6483,7 +6483,7 @@ iframe#output {
     window.EDITOR_INTELLISENSE_DATA = Object.assign(window.EDITOR_INTELLISENSE_DATA || {}, { nextWordRules: nextWordRules });
 })();
 </script>
-        <script data-bundled-from="preview-element-inspector.js">
+        <script data-bundled-from="src/features/live-preview/element-inspector.js">
 /* ابزار مستقل انتخاب المان از پیش‌نمایش و یافتن سورس */
 (function () {
     'use strict';
@@ -10091,7 +10091,7 @@ iframe#output {
     
 
 </script>
-    <script data-bundled-from="settings.js">
+    <script data-bundled-from="src/features/settings/settings.js">
 /* منطق پنل تنظیمات؛ تمام گزینه‌ها به رفتار واقعی ویرایشگر متصل‌اند. */
 (function () {
     'use strict';
@@ -10836,7 +10836,7 @@ iframe#output {
         : 'ذخیره‌سازی خودکار خاموش است؛ برای ثبت تغییرات از دکمهٔ ذخیره استفاده کنید.');
 })();
 </script>
-    <script data-bundled-from="backup-restore.js">
+    <script data-bundled-from="src/features/backup-restore/backup-restore.js">
 /* پشتیبان‌گیری و بازیابی داده‌های قابل مدیریت ویرایشگر */
 (function () {
     'use strict';
@@ -11822,7 +11822,7 @@ iframe#output {
     if (typeof document !== 'undefined') init();
 })();
 </script>
-    <script data-bundled-from="word-tree.js">
+    <script data-bundled-from="src/features/word-tree/word-tree.js">
 (function () {
     'use strict';
 
@@ -12391,7 +12391,7 @@ iframe#output {
     });
 })();
 </script>
-    <script data-bundled-from="github-update.js">
+    <script data-bundled-from="src/features/integrations/github/github-update.js">
 (() => {
     'use strict';
 

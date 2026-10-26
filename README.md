@@ -207,7 +207,7 @@ Editor-html-css-js/
 | `word-tree.js` | `src/features/word-tree/word-tree.js` | **منتقل شد**؛ مستند مرتبط نیز منتقل شد. |
 | `github-update.js` | `src/features/integrations/github/github-update.js` | **منتقل شد**؛ ارجاع HTML اصلاح شد. |
 | `tree-world-suggestion.md` | `docs/suggestions/tree-world-suggestion.md` | **منتقل شد**. |
-| فایل‌های `scripts/*.mjs` | `scripts/build/` یا `scripts/checks/` بر اساس وظیفه | مسیرهای فراخوانی در Workflowها و دستورهای اجرا اصلاح شوند. |
+| فایل‌های `scripts/*.mjs` | مسیرهای فعلی `scripts/` | فعلاً در ریشهٔ پوشهٔ `scripts/` باقی مانده‌اند؛ انتقال آن‌ها مرحله‌ای جداگانه خواهد بود تا فراخوانی‌ها و Workflowها هماهنگ بمانند. |
 
 ## ۴. قواعد معماری برای جلوگیری از وابستگی‌های شکننده
 

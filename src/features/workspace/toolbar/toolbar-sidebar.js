@@ -10,9 +10,11 @@
         if (!sidebar || !openButton || !closeButton || !backdrop) return;
 
         let isOpen = false;
+        const transitionFallbackMs = 280;
 
         function setOpen(nextOpen, options) {
             const settings = options || {};
+            const wasOpen = isOpen;
             isOpen = Boolean(nextOpen);
 
             document.body.classList.toggle('toolbar-sidebar-open', isOpen);
@@ -22,8 +24,25 @@
             openButton.setAttribute('aria-label', isOpen ? 'بستن سایدبار تنظیمات' : 'باز کردن سایدبار تنظیمات');
             openButton.title = isOpen ? 'بستن سایدبار تنظیمات' : 'باز کردن سایدبار تنظیمات';
 
-            backdrop.hidden = !isOpen;
-            backdrop.setAttribute('aria-hidden', String(!isOpen));
+            if (isOpen) {
+                backdrop.hidden = false;
+                backdrop.setAttribute('aria-hidden', 'false');
+                /* آغاز قطعی انیمیشن محوشدن پس‌زمینه؛ همان چرخهٔ فایل‌منیجر. */
+                void backdrop.offsetWidth;
+                backdrop.classList.add('is-visible');
+            } else {
+                backdrop.classList.remove('is-visible');
+                backdrop.setAttribute('aria-hidden', 'true');
+
+                if (!wasOpen || (window.matchMedia &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+                    backdrop.hidden = true;
+                } else {
+                    window.setTimeout(function () {
+                        if (!isOpen) backdrop.hidden = true;
+                    }, transitionFallbackMs);
+                }
+            }
 
             if (isOpen) {
                 sidebar.setAttribute('role', 'dialog');

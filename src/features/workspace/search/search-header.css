@@ -156,6 +156,7 @@ body { padding-top: var(--workspace-header-height); }
     transform: rotate(48deg);
     transform-origin: left center;
 }
+.workspace-search.is-expanded + .workspace-history-controls { visibility: hidden; }
 .workspace-search.is-expanded .workspace-search-toggle {
     position: absolute;
     z-index: 7201;

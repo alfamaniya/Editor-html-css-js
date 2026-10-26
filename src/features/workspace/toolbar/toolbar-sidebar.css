@@ -112,3 +112,111 @@ body.toolbar-sidebar-active .cp {
 body.toolbar-sidebar-active .toast.show {
     z-index: 8300;
 }
+
+
+/* الگوی مشترک ظاهری و حرکتی سایدبارهای محیط کار */
+/* متغیرهای مشترک؛ فایل‌منیجر از همین مقادیر استفاده می‌کند تا دو پنل یک هویت داشته باشند. */
+:root {
+    --workspace-drawer-width: min(320px, calc(100vw - 24px));
+    --workspace-drawer-inset: 12px;
+    --workspace-drawer-radius: 16px;
+    --workspace-drawer-duration: 260ms;
+    --workspace-drawer-easing: cubic-bezier(.22, 1, .36, 1);
+    --workspace-drawer-backdrop: rgb(5 10 18 / 58%);
+    --workspace-drawer-border: rgb(130 159 194 / 28%);
+    --workspace-drawer-shadow: 0 12px 34px rgb(0 0 0 / 24%);
+    --workspace-drawer-surface: linear-gradient(180deg, rgb(26 38 57 / 98%), rgb(20 32 50 / 98%));
+    --workspace-drawer-header: linear-gradient(115deg, rgb(27 47 72 / 97%), rgb(20 32 50 / 97%));
+    --workspace-drawer-text: #d8e4f4;
+}
+:root[data-theme="light"] {
+    --workspace-drawer-border: rgb(130 159 194 / 32%);
+    --workspace-drawer-shadow: 0 12px 34px rgb(30 54 80 / 12%);
+    --workspace-drawer-surface: #f8fbff;
+    --workspace-drawer-header: linear-gradient(115deg, #f8fbff, #eaf1f9);
+    --workspace-drawer-text: #283b50;
+}
+@media (max-width: 760px) {
+    :root { --workspace-drawer-width: min(86vw, 330px); }
+}
+
+.toolbar-sidebar {
+    top: var(--workspace-drawer-inset);
+    right: var(--workspace-drawer-inset);
+    bottom: var(--workspace-drawer-inset);
+    box-sizing: border-box;
+    width: var(--workspace-drawer-width);
+    max-width: calc(100vw - (var(--workspace-drawer-inset) * 2));
+    border: 1px solid var(--workspace-drawer-border);
+    border-radius: var(--workspace-drawer-radius);
+    background: var(--workspace-drawer-surface);
+    color: var(--workspace-drawer-text);
+    box-shadow: var(--workspace-drawer-shadow);
+    transition:
+        transform var(--workspace-drawer-duration) var(--workspace-drawer-easing),
+        visibility var(--workspace-drawer-duration) var(--workspace-drawer-easing);
+}
+body:not(.toolbar-sidebar-open) .toolbar-sidebar {
+    transform: translateX(calc(100% + (var(--workspace-drawer-inset) * 2)));
+    visibility: hidden;
+    pointer-events: none;
+}
+.toolbar-sidebar-heading {
+    min-height: 56px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    background: var(--workspace-drawer-header);
+    color: var(--workspace-drawer-text);
+    border-bottom-color: var(--workspace-drawer-border);
+}
+.toolbar-sidebar-close-button,
+.toolbar-sidebar-open-button {
+    border-color: var(--workspace-drawer-border);
+}
+.toolbar-sidebar-backdrop,
+.file-manager-backdrop {
+    position: fixed;
+    z-index: 8100;
+    inset: 0;
+    background: var(--workspace-drawer-backdrop);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--workspace-drawer-duration) var(--workspace-drawer-easing);
+}
+.toolbar-sidebar-backdrop.is-visible,
+.file-manager-backdrop.is-visible {
+    opacity: 1;
+}
+.toolbar-sidebar-backdrop[hidden],
+.file-manager-backdrop[hidden] {
+    display: none !important;
+}
+:root[data-theme="light"] .toolbar-sidebar-heading {
+    color: var(--workspace-drawer-text);
+    background: var(--workspace-drawer-header);
+    border-bottom-color: var(--workspace-drawer-border);
+}
+:root[data-theme="light"] .toolbar-sidebar-close-button {
+    color: var(--workspace-drawer-text);
+    background: linear-gradient(180deg, #fff, #dfe8f2);
+    border-color: var(--workspace-drawer-border);
+}
+@media (max-width: 760px) {
+    .toolbar-sidebar {
+        top: 10px;
+        right: 10px;
+        bottom: 10px;
+        max-width: calc(100vw - 20px);
+    }
+    .toolbar-sidebar-heading { min-height: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .toolbar-sidebar,
+    .toolbar-sidebar-backdrop,
+    .file-explorer,
+    .file-manager-backdrop {
+        transition: none !important;
+    }
+}

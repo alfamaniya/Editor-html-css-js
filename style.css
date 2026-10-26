@@ -252,13 +252,7 @@
         }
 
         .search-match-highlight { background: #ffeb3b; color: #202020 !important; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255,235,59,.35); }
-                /* Align the search and symbol toolbar with the code column, not the file explorer. */
-        .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
-            margin-left: 168px;
-            width: calc(100% - 168px);
-        }
-
-        @media (max-width: 760px) {
+                        @media (max-width: 760px) {
             .search-tools-row { gap: 4px; padding: 4px; }
             .search-bar { min-width: 104px; gap: 3px; }
             .search-bar .search-count { display: none; }

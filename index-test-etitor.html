@@ -8224,7 +8224,7 @@ iframe#output {
                 seen.add(normalized);
                 parts.push('/* === ' + safeCommentLabel(item.name) + (item.isLibrary ? ' (lib)' : '') + ' === */\n' + content);
             });
-            const closing = type === 'css' ? '<\\/style' : '<\\/script';
+            const closing = type === 'css' ? '<\/style' : '<\/script';
             return parts.join('\n\n').replace(type === 'css' ? /<\/style/gi : /<\/script/gi,closing);
         }
 
@@ -8264,7 +8264,7 @@ iframe#output {
                     if (!canInlineBundledScript(node,file)) return;
                     const replacement = owner.createElement('script');
                     if (node.hasAttribute('type')) replacement.setAttribute('type',node.getAttribute('type'));
-                    replacement.textContent = String(file.content).replace(/<\/script/gi,'<\\/script');
+                    replacement.textContent = String(file.content).replace(/<\/script/gi,'<\/script');
                     node.replaceWith(replacement);
                 } else {
                     if (!canInlineBundledStylesheet(node,file)) return;
@@ -8272,7 +8272,7 @@ iframe#output {
                     ['type','media','title'].forEach(function(name) {
                         if (node.hasAttribute(name)) replacement.setAttribute(name,node.getAttribute(name));
                     });
-                    replacement.textContent = String(file.content).replace(/<\/style/gi,'<\\/style');
+                    replacement.textContent = String(file.content).replace(/<\/style/gi,'<\/style');
                     node.replaceWith(replacement);
                 }
             });

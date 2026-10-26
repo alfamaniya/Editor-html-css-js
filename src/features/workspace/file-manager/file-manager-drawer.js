@@ -14,6 +14,8 @@
             backdrop.setAttribute('aria-hidden', 'false');
             document.body.classList.add('file-manager-drawer-active');
             button.setAttribute('aria-expanded', 'true');
+            button.setAttribute('aria-label', 'بستن فایل‌منیجر');
+            button.title = 'بستن فایل‌منیجر';
             explorer.setAttribute('aria-modal', 'true');
             explorer.setAttribute('role', 'dialog');
         }
@@ -24,6 +26,8 @@
             backdrop.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('file-manager-drawer-active');
             button.setAttribute('aria-expanded', 'false');
+            button.setAttribute('aria-label', 'باز کردن فایل‌منیجر');
+            button.title = 'باز کردن فایل‌منیجر';
             explorer.removeAttribute('aria-modal');
             explorer.removeAttribute('role');
         }

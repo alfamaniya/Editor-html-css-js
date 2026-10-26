@@ -46,6 +46,7 @@
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suggestion-manager.js | `src/features/suggestions/manager/suggestion-manager.js` | فایل | مدیریت پیشنهادها |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;next-word-suggestions.js | `src/features/suggestions/next-word/next-word-suggestions.js` | فایل | پیشنهاد ادامهٔ کلمه |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;word-tree.js | `src/features/word-tree/word-tree.js` | فایل | درخت کلمات |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file-manager.css | `src/features/workspace/file-manager/file-manager.css` | فایل | استایل اختصاصی و ظاهر واکنش‌گرای سایدبار فایل‌منیجر |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/workspace/file-manager/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.gitkeep | `src/features/workspace/project-storage/.gitkeep` | نشانگر پوشه | جایگاه رزروشده؛ هنوز پیاده‌سازی در این مسیر قرار ندارد |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toolbar-sidebar.css | `src/features/workspace/toolbar/toolbar-sidebar.css` | فایل | استایل سایدبار ابزارها |
@@ -61,6 +62,6 @@
 ## نکات ساختاری
 
 - `index.html` ورودی نسخهٔ اصلی و `index-test-etitor.html` نسخهٔ مستقل/آزمایشی تولیدشده است.
-- قابلیت‌های جداشده در مسیرهای `src/features/` نگهداری می‌شوند.
+- قابلیت‌های جداشده در مسیرهای `src/features/` نگهداری می‌شوند؛ استایل سایدبار فایل‌منیجر در `src/features/workspace/file-manager/file-manager.css` قرار دارد.
 - `script.js` و `style.css` همچنان منابع اصلی مشترک برنامه‌اند؛ انتقال مسئولیت‌های باقی‌مانده باید مرحله‌ای و همراه با بررسی وابستگی‌ها انجام شود.
 - اسکریپت‌های `scripts/` برای ساخت و کنترل صحت استفاده می‌شوند و گردش‌کارهای `.github/workflows/` آن‌ها را در CI اجرا می‌کنند.

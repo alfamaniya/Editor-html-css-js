@@ -74,6 +74,9 @@ Editor-html-css-js/
 │       │       ├── suggestion-manager.js
 │       │       └── suggestion-manager.css
 │       ├── live-preview/element-inspector.js
+│       ├── quick-insert/
+│       │   ├── quick-insert.js
+│       │   └── quick-insert.css
 │       ├── word-tree/word-tree.js
 │       └── integrations/github/github-update.js
 ├── docs/suggestions/tree-world-suggestion.md
@@ -100,6 +103,7 @@ Editor-html-css-js/
 | `src/features/suggestions/data/` | بانک‌های پیشنهاد HTML، CSS و JavaScript |
 | `src/features/suggestions/next-word/` | پیشنهاد کلمهٔ بعدی |
 | `src/features/live-preview/element-inspector.js` | بازرسی عناصر پیش‌نمایش |
+| `src/features/quick-insert/` | منطق و استایل مستقل نوار درج سریع کلمات و قطعه‌کدها |
 | `src/features/integrations/github/` | قابلیت‌های مرتبط با به‌روزرسانی GitHub |
 | `src/features/word-tree/` و `docs/suggestions/` | درخت کلمات و مستندات مرتبط |
 | `scripts/` | اسکریپت‌های آزمون، بررسی و ساخت |
@@ -123,6 +127,7 @@ Editor-html-css-js/
 | مدیریت پیشنهادها | `src/features/suggestions/manager/` | `suggestion-manager.js`, `suggestion-manager.css` | منطق و استایل رابط مدیریت بانک‌ها و پیشنهادهای سفارشی؛ منتقل شده‌اند |
 | پیشنهاد واژهٔ بعدی | `src/features/suggestions/next-word/` | `next-word-suggestions.js` | منطق پیشنهاد ادامهٔ کلمه یا عبارت؛ منتقل شده است |
 | بازرس عناصر پیش‌نمایش | `src/features/live-preview/` | `element-inspector.js` | ابزار بررسی عناصر پیش‌نمایش و پیوند آن‌ها با کد؛ منتقل شده است |
+| نوار درج سریع | `src/features/quick-insert/` | `quick-insert.js`, `quick-insert.css` | منطق و استایل نوار درج سریع از `script.js` و `style.css` جدا شده‌اند؛ واکنش‌گرایی تک‌ردیفه و اسکرول افقی افزوده شده است |
 | درخت کلمات | `src/features/word-tree/` | `word-tree.js` | منطق نمایش و تعامل با درخت کلمات؛ منتقل شده است |
 | یکپارچه‌سازی GitHub | `src/features/integrations/github/` | `github-update.js` | نمایش اطلاعات مرتبط با به‌روزرسانی مخزن GitHub؛ منتقل شده است |
 | مستندات پیشنهادها | `docs/suggestions/` | `tree-world-suggestion.md` | مستند مرتبط با پیشنهادهای درخت کلمات؛ به پوشهٔ مستندات منتقل شده است |
@@ -145,7 +150,7 @@ Editor-html-css-js/
 | راه‌اندازی برنامه | `src/app/` | اسکلت خالی؛ فایل راه‌اندازی مانند `bootstrap.js` هنوز ایجاد نشده است |
 | ابزارهای مشترک | `src/shared/dom/`, `src/shared/storage/`, `src/shared/ui/`, `src/shared/validation/` | پوشه‌های رزروشده برای ابزارهای مشترک؛ فعلاً فاقد پیاده‌سازی هستند |
 | زیرقابلیت‌های ویرایشگر | `src/features/editor/autocomplete/`, `src/features/editor/color-picker/`, `src/features/editor/core/`, `src/features/editor/editing-commands/`, `src/features/editor/paste-processing/`, `src/features/editor/search/`, `src/features/editor/syntax-highlighting/` | اسکلت‌های خالی؛ منطق متناظر هنوز از `script.js` جدا نشده یا به این مسیرها منتقل نشده است |
-| قابلیت‌های مستقل آینده | `src/features/export/`, `src/features/help/`, `src/features/libraries/`, `src/features/quick-insert/` | مقصدهای معماری ثبت‌شده، اما در حال حاضر بدون فایل پیاده‌سازی |
+| قابلیت‌های مستقل آینده | `src/features/export/`, `src/features/help/`, `src/features/libraries/` | مقصدهای معماری ثبت‌شده، اما در حال حاضر بدون فایل پیاده‌سازی |
 | مدیریت پروژه | `src/features/workspace/file-manager/`, `src/features/workspace/project-storage/` | اسکلت خالی برای جداسازی مدیریت فایل‌ها و ذخیره‌سازی پروژه |
 | استایل‌های مشترک | `src/styles/` | اسکلت خالی؛ `style.css` هنوز به استایل‌های مشترک و اختصاصی تفکیک نشده است |
 

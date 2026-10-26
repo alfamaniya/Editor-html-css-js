@@ -199,38 +199,36 @@ async function build() {
         'DOCTYPE declaration'
     );
 
+    const placeholders = new Map();
+
+    // Replace every source reference before inserting any asset body. This prevents
+    // markup-like strings inside embedded JavaScript from interfering with replacement.
     for (const filename of cssFiles) {
         const css = await readText(resolve(root, filename));
         const escapedFilename = filename.replace(/\./g, '\\.');
-        const stylesheetTag = new RegExp(
-            '<link rel="stylesheet" href="' + escapedFilename + '">',
-            'g'
-        );
-        html = replaceExactlyOnce(
-            html,
-            stylesheetTag,
-            '<style data-bundled-from="' + filename + '">\n' + escapeInlineStyle(css) + '\n</style>',
-            'stylesheet reference to ' + filename
-        );
-        expectedContent.set(filename, escapeInlineStyle(css));
+        const stylesheetTag = new RegExp('<link rel="stylesheet" href="' + escapedFilename + '">', 'g');
+        const placeholder = '__STANDALONE_ASSET_' + filename.replace(/\W/g, '_') + '__';
+        html = replaceExactlyOnce(html, stylesheetTag, placeholder, 'stylesheet reference to ' + filename);
+        const escapedCss = escapeInlineStyle(css);
+        expectedContent.set(filename, escapedCss);
+        placeholders.set(placeholder, '<style data-bundled-from="' + filename + '">\n' + escapedCss + '\n</style>');
     }
 
     for (const filename of scriptFiles) {
         const script = await readText(resolve(root, filename));
         const escapedFilename = filename.replace(/\./g, '\\.');
-        const scriptTag = new RegExp(
-            '<script\\s+src=["\\x27]' + escapedFilename + '["\\x27]\\s*>\\s*</script\\s*>',
-            'i'
-        );
+        const scriptTag = new RegExp('<script\\s+src=["\\x27]' + escapedFilename + '["\\x27]\\s*>\\s*</script\\s*>', 'i');
+        const placeholder = '__STANDALONE_ASSET_' + filename.replace(/\W/g, '_') + '__';
+        html = replaceExactlyOnce(html, scriptTag, placeholder, 'script reference to ' + filename);
+        const escapedScript = escapeInlineScript(script);
+        expectedContent.set(filename, escapedScript);
+        placeholders.set(placeholder, '<script data-bundled-from="' + filename + '">\n' + escapedScript + '\n</script>');
+    }
 
-        html = replaceExactlyOnce(
-            html,
-            scriptTag,
-            '<script data-bundled-from="' + filename + '">\n' +
-                escapeInlineScript(script) + '\n</script>',
-            'script reference to ' + filename
-        );
-        expectedContent.set(filename, escapeInlineScript(script));
+    for (const [placeholder, markup] of placeholders) {
+        if (!html.includes(placeholder)) throw new Error('Missing asset placeholder: ' + placeholder);
+        const position = html.lastIndexOf(placeholder);
+        html = html.slice(0, position) + markup + html.slice(position + placeholder.length);
     }
 
     assertNoUnbundledAssets(html);

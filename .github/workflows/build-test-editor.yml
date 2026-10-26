@@ -1,50 +1,50 @@
 name: Build standalone test editor
 
-# این Workflow تا دریافت دستور صریح کاربر غیرفعال است.
-# برای فعال‌سازی، ابتدا باید دستور مستقیم کاربر دریافت شود.
+# این Workflow فقط با اجرای دستی و تأیید صریح ورودی اجرا می‌شود.
 on:
   workflow_dispatch:
+    inputs:
+      confirm_build:
+        description: "تأیید صریح ساخت و ثبت فایل مستقل"
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
 
 jobs:
   build-standalone:
-    # قفل ایمنی: بدون اجازهٔ صریح کاربر اجرا نشود.
-    if: false
+    if: inputs.confirm_build == true
     runs-on: ubuntu-latest
     steps:
-      - name: Check out main
+      - name: دریافت کد مخزن
         uses: actions/checkout@v4
         with:
           ref: main
-
-      - name: Set up Node.js
+      - name: آماده‌سازی Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Check JavaScript syntax
+      - name: بررسی نحو فایل‌های جاوااسکریپت و اسکریپت‌های اعتبارسنجی
         run: |
-          for file in html-suggestions.js css-suggestions.js js-suggestions.js next-word-suggestions.js script.js settings.js word-tree.js github-update.js scripts/build-test-editor.mjs scripts/check-index-integrity.mjs scripts/check-standalone-editor.mjs tools/build-single-file.js; do
+          for file in html-suggestions.js css-suggestions.js js-suggestions.js suggestion-manager.js next-word-suggestions.js preview-element-inspector.js script.js settings.js backup-restore.js word-tree.js github-update.js scripts/*.mjs tools/build-single-file.js; do
             node --check "$file"
           done
-
-      - name: Build the single-file editor
+      - name: بررسی یکپارچگی فایل اصلی
+        run: node scripts/check-index-integrity.mjs
+      - name: ساخت فایل مستقل
         run: node scripts/build-test-editor.mjs
-
-      - name: Validate standalone HTML and embedded JavaScript
+      - name: اعتبارسنجی خروجی مستقل
         run: node scripts/check-standalone-editor.mjs
-
-      - name: Commit the updated bundle when it changed
+      - name: ثبت تغییرات فایل مستقل
         run: |
           if git diff --quiet -- index-test-etitor.html; then
-            echo "Standalone bundle is already up to date."
+            echo "فایل مستقل از قبل با منابع هماهنگ است."
             exit 0
           fi
-
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+users.noreply.github.com"
           git add index-test-etitor.html
-          git commit -m "chore: rebuild standalone test editor"
+          git commit -m "ساخت مجدد فایل مستقل ویرایشگر"
           git push

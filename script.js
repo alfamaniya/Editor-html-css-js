@@ -363,32 +363,19 @@
         const feTypeFilter = document.getElementById('feTypeFilter');
         const feGroupMode = document.getElementById('feGroupMode');
 
-        // فایل‌منیجر فقط از دکمهٔ جدید باز می‌شود؛ وضعیت قدیمی ذخیره‌شده نباید پنل درون‌صفحه‌ای را دوباره فعال کند.
+        // تمام باز و بسته‌شدن‌ها از کنترل‌کنندهٔ پنل کشویی عبور می‌کنند تا انیمیشن و پس‌زمینه هماهنگ بمانند.
         function setFileExplorerCollapsed(collapsed) {
             if (collapsed) {
                 if (fileExplorer.classList.contains('file-manager-drawer-open') && fileManagerOpenButton) {
                     fileManagerOpenButton.click();
-                    return;
                 }
-                fileExplorer.classList.remove('file-manager-drawer-open');
-                fileExplorer.classList.add('is-collapsed');
-                document.body.classList.remove('file-manager-drawer-active');
-                const backdrop = document.getElementById('fileManagerBackdrop');
-                if (backdrop) {
-                    backdrop.hidden = true;
-                    backdrop.setAttribute('aria-hidden', 'true');
-                }
-                if (fileManagerOpenButton) fileManagerOpenButton.setAttribute('aria-expanded', 'false');
-                fileExplorer.removeAttribute('aria-modal');
-                fileExplorer.removeAttribute('role');
                 return;
             }
             if (fileManagerOpenButton && !fileExplorer.classList.contains('file-manager-drawer-open')) {
                 fileManagerOpenButton.click();
             }
         }
-        // همیشه بسته آغاز شود؛ بازشدن فقط از طریق دکمهٔ کنار جست‌وجو انجام می‌شود.
-        fileExplorer.classList.add('is-collapsed');
+        // پنل بسته آغاز می‌شود؛ این وضعیت در HTML و کنترل‌کنندهٔ کشویی مدیریت می‌شود.
         if (fileManagerOpenButton) fileManagerOpenButton.setAttribute('aria-expanded', 'false');
         const feNewForm   = document.getElementById('feNewForm');
         const feNewName   = document.getElementById('feNewName');
@@ -433,7 +420,7 @@
         });
 
         feAddBtn.addEventListener('click', function() {
-            if (fileExplorer.classList.contains('is-collapsed')) {
+            if (!fileExplorer.classList.contains('file-manager-drawer-open')) {
                 setFileExplorerCollapsed(false);
             }
             feNewForm.hidden = !feNewForm.hidden;

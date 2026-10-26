@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML / CSS / JS Editor</title>
-    <style data-bundled-from="style.css">\n        * { box-sizing: border-box; margin: 0; padding: 0; }
+    <style data-bundled-from="style.css">
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
             --editor-font: 15px;
@@ -2382,7 +2383,8 @@ iframe#output {
     }
     .element-inspector-dialog h2 { font-size: 16px; }
 }
-\n</style>
+
+</style>
 <style data-bundled-from="src/features/quick-insert/quick-insert.css">
 /* نوار درج سریع: استایل‌های اختصاصی این قابلیت در همین فایل متمرکز هستند. */
 .page-symbol-header {
@@ -6718,7 +6720,8 @@ iframe#output {
 })();
 
 </script>
-<script data-bundled-from="script.js">\n    (function() {
+<script data-bundled-from="script.js">
+    (function() {
         'use strict';
 
         // ==========================================
@@ -8224,7 +8227,7 @@ iframe#output {
                 seen.add(normalized);
                 parts.push('/* === ' + safeCommentLabel(item.name) + (item.isLibrary ? ' (lib)' : '') + ' === */\n' + content);
             });
-            const closing = type === 'css' ? '<\/style' : '<\/script';
+            const closing = type === 'css' ? '<\\/style' : '<\\/script';
             return parts.join('\n\n').replace(type === 'css' ? /<\/style/gi : /<\/script/gi,closing);
         }
 
@@ -8264,7 +8267,7 @@ iframe#output {
                     if (!canInlineBundledScript(node,file)) return;
                     const replacement = owner.createElement('script');
                     if (node.hasAttribute('type')) replacement.setAttribute('type',node.getAttribute('type'));
-                    replacement.textContent = String(file.content).replace(/<\/script/gi,'<\/script');
+                    replacement.textContent = String(file.content).replace(/<\/script/gi,'<\\/script');
                     node.replaceWith(replacement);
                 } else {
                     if (!canInlineBundledStylesheet(node,file)) return;
@@ -8272,7 +8275,7 @@ iframe#output {
                     ['type','media','title'].forEach(function(name) {
                         if (node.hasAttribute(name)) replacement.setAttribute(name,node.getAttribute(name));
                     });
-                    replacement.textContent = String(file.content).replace(/<\/style/gi,'<\/style');
+                    replacement.textContent = String(file.content).replace(/<\/style/gi,'<\\/style');
                     node.replaceWith(replacement);
                 }
             });
@@ -10152,7 +10155,8 @@ iframe#output {
 
     })();
     
-\n</script>
+
+</script>
     <script data-bundled-from="src/features/settings/settings.js">
 /* منطق پنل تنظیمات؛ تمام گزینه‌ها به رفتار واقعی ویرایشگر متصل‌اند. */
 (function () {

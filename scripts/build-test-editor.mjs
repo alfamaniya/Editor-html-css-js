@@ -26,12 +26,12 @@ const scriptFiles = [
     'src/features/quick-insert/quick-insert.js',
     'src/features/workspace/toolbar/toolbar-sidebar.js',
     'src/features/workspace/file-manager/file-manager.js',
-    'src/features/workspace/file-manager/file-manager-drawer.js',
-    'src/features/workspace/search/search-header.js',
     'script.js',
     'src/features/settings/settings.js',
     'src/features/backup-restore/backup-restore.js',
-    'src/features/word-tree/word-tree.js',];
+    'src/features/word-tree/word-tree.js',
+    'src/features/workspace/file-manager/file-manager-drawer.js',
+    'src/features/workspace/search/search-header.js',];
 const expectedAssetOrder = [...cssFiles, ...scriptFiles];
 
 async function readText(path) {

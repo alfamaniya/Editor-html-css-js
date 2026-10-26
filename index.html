@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="src/features/quick-insert/quick-insert.css">
     <link rel="stylesheet" href="src/features/workspace/toolbar/toolbar-sidebar.css">
     <link rel="stylesheet" href="src/features/workspace/file-manager/file-manager.css">
+    <link rel="stylesheet" href="src/features/workspace/search/search-tools.css">
     <link rel="stylesheet" href="src/features/settings/settings.css">
     <link rel="stylesheet" href="src/features/suggestions/manager/suggestion-manager.css">
     <link rel="stylesheet" href="src/features/backup-restore/backup-restore.css">
@@ -19,6 +20,7 @@
     
     </header>
     <div class="toolbar-sidebar-backdrop" id="toolbarSidebarBackdrop" hidden aria-hidden="true"></div>
+    <div class="file-manager-backdrop" id="fileManagerBackdrop" hidden aria-hidden="true"></div>
     <aside class="toolbar-sidebar" id="toolbarSidebar" aria-label="نوار ابزار ویرایشگر" aria-hidden="false">
         <div class="toolbar-sidebar-heading">
             <span>ابزارهای ویرایشگر</span>
@@ -55,6 +57,7 @@
 
 
             <div class="search-tools-row">
+                <button type="button" class="file-manager-open-button" id="fileManagerOpenButton" aria-controls="fileExplorer" aria-expanded="false" aria-label="باز کردن فایل‌منیجر" title="باز کردن فایل‌منیجر">📁</button>
                 <div class="search-bar">
                     <label class="visually-hidden" for="searchInput">Search code</label>
                     <input type="text" class="search-input" id="searchInput"
@@ -716,5 +719,6 @@
     <script src="src/features/backup-restore/backup-restore.js"></script>
     <script src="src/features/word-tree/word-tree.js"></script>
 
+    <script src="src/features/workspace/file-manager/file-manager-drawer.js"></script>
 </body>
 </html>

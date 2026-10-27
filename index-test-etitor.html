@@ -8254,6 +8254,16 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             return !tail.trim();
         }
 
+        function getPasteClipboardCandidates(clipboardData) {
+            const candidates = [];
+            ['text/plain','text','Text','text/html'].forEach(function(type) {
+                let value = '';
+                try { value = clipboardData.getData(type); } catch (error) {}
+                if (value && value.trim() && !candidates.includes(value)) candidates.push(value);
+            });
+            return candidates;
+        }
+
         function extractPasteAssets(source) {
             const text = String(source == null ? '' : source);
             if (!text.trim()) return null;
@@ -8312,9 +8322,18 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 
         function handleHtmlEditorPaste(event) {
             if (!event || event.defaultPrevented || !event.clipboardData) return;
-            const pasted = event.clipboardData.getData('text/plain');
-            if (!pasted) return;
-            const extracted = extractPasteAssets(pasted);
+            const candidates = getPasteClipboardCandidates(event.clipboardData);
+            let extracted = null, bestScore = 0;
+            for (let i = 0; i < candidates.length; i++) {
+                const result = extractPasteAssets(candidates[i]);
+                if (!result) continue;
+                const score = (result.css.length ? 100 : 0) + (result.js.length ? 100 : 0) +
+                    result.css.length + result.js.length;
+                if (score > bestScore) {
+                    extracted = result;
+                    bestScore = score;
+                }
+            }
             if (!extracted || (!extracted.css.length && !extracted.js.length)) return;
             const htmlEditor = editors.html, cssEditor = editors.css, jsEditor = editors.js;
             if (!htmlEditor || !cssEditor || !jsEditor) return;

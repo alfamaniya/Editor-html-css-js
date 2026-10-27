@@ -8,7 +8,7 @@ const start = source.indexOf('const HTML_PASTE_VOID_TAGS');
 const end = source.indexOf('// Remove local asset references when the same files are embedded below.',start);
 assert.ok(start >= 0 && end > start,'Paste helper block was not found.');
 const context = {};
-vm.runInNewContext(source.slice(start,end) + '\nthis.api = {extractPasteAssets,appendUniqueCode,scanMarkupForPaste};',context);
+vm.runInNewContext(source.slice(start,end) + '\nthis.api = {extractPasteAssets,appendUniqueCode,scanMarkupForPaste,handleHtmlEditorPaste};',context);
 const api = context.api;
 let passed = 0;
 function test(label, fn) { fn(); passed++; console.log('PASS ' + label); }
@@ -66,5 +66,67 @@ test('doctype remains when safe CSS is extracted',() => {
 });
 test('ordinary text keeps native paste behavior',() => {
     assert.equal(api.extractPasteAssets('این فقط یک متن معمولی است.'),null);
+});
+test('HTML-only clipboard content is split by the paste handler',() => {
+    function editor(lang, value) {
+        const ta = {
+            value, selectionStart:0, selectionEnd:0,
+            setRangeText(text, start, end) {
+                this.value = this.value.slice(0,start) + text + this.value.slice(end);
+            },
+            setSelectionRange(start, end) { this.selectionStart=start; this.selectionEnd=end; },
+            dispatchEvent() {}
+        };
+        return {lang,ta,refresh(){}};
+    }
+    context.editors = {
+        html:editor('html',''), css:editor('css',''), js:editor('js','')
+    };
+    context.showToast = function() {};
+    context.getFileForLang = function() { return null; };
+    context.Event = class { constructor(type, options) { this.type=type; this.bubbles=options.bubbles; } };
+    const markup = '<!doctype html><html><head><style>body { color:red; }</style></head>' +
+        '<body><p>hello</p><script>window.ready=true;</script></body></html>';
+    const values = {'text/plain':'','text/html':markup};
+    const event = {
+        defaultPrevented:false,
+        clipboardData:{getData(type) { return values[type] || ''; }},
+        preventDefault() { this.defaultPrevented=true; }
+    };
+    api.handleHtmlEditorPaste(event);
+    assert.equal(event.defaultPrevented,true);
+    assert.match(context.editors.css.ta.value,/body \{ color:red; \}/);
+    assert.match(context.editors.js.ta.value,/window\.ready=true;/);
+    assert.doesNotMatch(context.editors.html.ta.value,/<style\b|<script\b/i);
+    assert.match(context.editors.html.ta.value,/<p>hello<\/p>/);
+});
+test('the most complete clipboard format is selected',() => {
+    function editor(lang, value) {
+        const ta = {
+            value, selectionStart:0, selectionEnd:0,
+            setRangeText(text, start, end) {
+                this.value = this.value.slice(0,start) + text + this.value.slice(end);
+            },
+            setSelectionRange(start, end) { this.selectionStart=start; this.selectionEnd=end; },
+            dispatchEvent() {}
+        };
+        return {lang,ta,refresh(){}};
+    }
+    context.editors = {
+        html:editor('html',''), css:editor('css',''), js:editor('js','')
+    };
+    const markup = '<style>h1 { color:navy; }</style><h1>rich</h1><script>alert("rich");</script>';
+    const values = {'text/plain':'h1 { color:red; }','text/html':markup};
+    const event = {
+        defaultPrevented:false,
+        clipboardData:{getData(type) { return values[type] || ''; }},
+        preventDefault() { this.defaultPrevented=true; }
+    };
+    api.handleHtmlEditorPaste(event);
+    assert.equal(event.defaultPrevented,true);
+    assert.match(context.editors.css.ta.value,/h1 \{ color:navy; \}/);
+    assert.doesNotMatch(context.editors.css.ta.value,/h1 \{ color:red; \}/);
+    assert.match(context.editors.js.ta.value,/alert\("rich"\);/);
+    assert.match(context.editors.html.ta.value,/<h1>rich<\/h1>/);
 });
 console.log('Passed ' + passed + ' paste-processing tests.');

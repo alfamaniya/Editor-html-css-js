@@ -507,3 +507,73 @@ body { padding-top: var(--workspace-header-height); }
     .app-menu-trigger { padding-inline: 4px; font-size: 10px; }
     .workspace-history-controls .header-dirty-badge { display: none; }
 }
+
+
+/* اصلاح هم‌پوشانی کنترل‌ها و جلوگیری از بریده‌شدن منوهای بازشونده */
+.workspace-header {
+    box-sizing: border-box;
+    isolation: isolate;
+}
+.app-menu-bar {
+    overflow: visible;
+    overflow-x: visible;
+    overflow-y: visible;
+    max-width: calc(100vw - 220px);
+}
+.app-menu {
+    flex: 0 0 auto;
+}
+.app-menu-dropdown {
+    max-width: min(280px, calc(100vw - 16px));
+    max-height: min(70vh, 420px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.workspace-header-center {
+    z-index: 1;
+}
+.app-menu-bar {
+    z-index: 4;
+}
+.file-manager-open-button,
+.toolbar-sidebar-open-button {
+    z-index: 5;
+}
+.workspace-search.is-expanded {
+    z-index: 6;
+}
+.workspace-search-panel {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.workspace-search-panel .search-input {
+    box-sizing: border-box;
+}
+@media (max-width: 560px) {
+    .app-menu-bar {
+        max-width: calc(100vw - 205px);
+        overflow: visible;
+    }
+    .app-menu-trigger {
+        padding-inline: 5px;
+        white-space: nowrap;
+    }
+    .app-menu-dropdown {
+        min-width: min(200px, calc(100vw - 16px));
+    }
+}
+@media (max-width: 380px) {
+    .app-menu-bar {
+        max-width: calc(100vw - 205px);
+        gap: 0;
+    }
+    .app-menu-trigger {
+        padding-inline: 3px;
+        font-size: 9px;
+        letter-spacing: -0.15px;
+    }
+    .app-menu-dropdown {
+        left: 0;
+        min-width: min(180px, calc(100vw - 16px));
+    }
+}

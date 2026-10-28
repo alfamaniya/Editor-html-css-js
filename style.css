@@ -2061,7 +2061,7 @@ iframe#output {
 
 
 /* ابزار انتخاب المان از پیش‌نمایش */
-.toolbar #btnElementInspector.element-inspector-button-active {
+#btnElementInspector.element-inspector-button-active {
     background: linear-gradient(180deg, #9a6700, #704d00);
     border-color: #fbbf24;
     color: #fff8dc;

@@ -260,13 +260,7 @@
         }
 
         .search-match-highlight { background: #ffeb3b; color: #202020 !important; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255,235,59,.35); }
-                /* Align the search and symbol toolbar with the code column, not the file explorer. */
-        .editor-pane:has(.file-explorer:not(.is-collapsed)) .search-tools-row {
-            margin-left: 168px;
-            width: calc(100% - 168px);
-        }
-
-        @media (max-width: 760px) {
+                        @media (max-width: 760px) {
             .search-tools-row { gap: 4px; padding: 4px; }
             .search-bar { min-width: 104px; gap: 3px; }
             .search-bar .search-count { display: none; }
@@ -1332,66 +1326,6 @@ textarea:focus-visible,
 @media (max-width: 760px) { .help-language-switch { gap: 6px; } .help-language-btn { flex: 1; } }
 
 
-/* UI refinement: file manager, compact top navigation, and responsive layout */
-.file-explorer { font-size: 13px; }
-.fe-title { font-size: 14px; }
-.fe-item {
-    gap: 7px;
-    padding: 7px 8px;
-    font-size: 13px;
-    min-height: 34px;
-}
-.fe-icon { font-size: 14px; }
-.fe-name {
-    display: block;
-    flex: 1 1 auto;
-    min-width: 0;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    line-height: 1.35;
-}
-.fe-rename, .fe-del { flex: 0 0 auto; }
-.fe-header { gap: 5px; }
-.fe-library-btn {
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
-    border: 1px solid var(--blue-border);
-    border-radius: 6px;
-    background: var(--blue-bg-3);
-    color: var(--blue-text);
-    cursor: pointer;
-    font-size: 14px;
-}
-.fe-library-btn:hover { background: var(--blue-bg-4); }
-.file-explorer.is-collapsed .fe-library-btn,
-.file-explorer.is-collapsed .fe-title { display: none; }
-.fe-new-form input { font-size: 13px; padding: 8px; }
-.fe-help { font-size: 11px; }
-.pane-label .toolbar { flex: 1 1 auto; min-width: 0; margin-inline: 0; justify-content: center; }
-#btnHelp { margin-left: 0; }
-.arrow-btn { position: static; transform: none; flex: 0 0 30px; }
-.arrow-btn:hover { transform: scale(1.04); }
-.arrow-btn:active { transform: scale(.96); }
-.dirty { position: static; margin-left: 0; white-space: nowrap; }
-.file-explorer.is-collapsed .fe-item { justify-content: center; }
-.file-explorer.is-collapsed .fe-open { flex: 0 0 auto; justify-content: center; }
-.file-explorer.is-collapsed .fe-library-btn { display: none; }
-
-@media (max-width: 760px) {
-    :root { --file-explorer-width: min(78vw, 250px); }
-    .file-explorer:not(.is-collapsed) {
-        max-width: var(--file-explorer-width);
-    }
-    .pane-label { flex-wrap: wrap; justify-content: flex-start; padding: 6px; }
-    .pane-label .toolbar { margin: 0; gap: 4px; }
-    .toolbar button { padding: 5px 7px; font-size: 11px; }
-    .dirty { margin-left: 0; font-size: 9px; }
-    .arrow-btn { width: 28px; height: 28px; flex-basis: 28px; }
-}
-
-
 /* Unified rounded components and deliberately distinct workspace surfaces. */
 /* Workspace color tokens are defined together in the main :root block. */
 body { background-color: #0e1725; }
@@ -2250,7 +2184,7 @@ iframe#output {
 }
 
 </style>
-<style data-bundled-from="src/features/quick-insert/quick-insert.css">
+    <style data-bundled-from="src/features/quick-insert/quick-insert.css">
 /* نوار درج سریع: استایل‌های اختصاصی این قابلیت در همین فایل متمرکز هستند. */
 .page-symbol-header {
     flex: 0 0 auto;
@@ -2356,12 +2290,14 @@ iframe#output {
 }
 
 </style>
-<style data-bundled-from="src/features/workspace/toolbar/toolbar-sidebar.css">
+    <style data-bundled-from="src/features/workspace/toolbar/toolbar-sidebar.css">
 /* نوار ابزار کناری ویرایشگر؛ مستقل از استایل‌های عمومی برنامه */
 :root { --toolbar-sidebar-width: 276px; }
-body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: var(--toolbar-sidebar-width); }
+/* سایدبار روی محتوای صفحه قرار می‌گیرد و عرض و چیدمان صفحه را تغییر نمی‌دهد. */
+body.toolbar-sidebar-active { overflow: hidden; }
+
 .toolbar-sidebar {
-    position: fixed; z-index: 6001; top: 0; right: 0; bottom: 0;
+    position: fixed; z-index: 8101; top: 0; right: 0; bottom: 0;
     width: var(--toolbar-sidebar-width); max-width: 100vw; display: flex;
     flex-direction: column; gap: 0; overflow-x: hidden; overflow-y: auto;
     overscroll-behavior: contain; direction: ltr; color: var(--blue-text);
@@ -2387,10 +2323,15 @@ body:not(.toolbar-sidebar-open) .toolbar-sidebar { transform: translateX(calc(10
 .toolbar-sidebar-close-button { flex: 0 0 34px; padding: 0; font-size: 24px; line-height: 1; }
 .toolbar-sidebar-close-button:hover, .toolbar-sidebar-open-button:hover { background: var(--blue-bg-4); }
 .toolbar-sidebar-open-button { position: fixed; z-index: 6000; top: 12px; right: 12px; box-shadow: 0 4px 18px rgb(0 0 0 / 24%); }
-body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 .toolbar-sidebar-backdrop {
-    position: fixed; z-index: 6000; inset: 0; background: rgb(5 10 18 / 58%);
-    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); cursor: pointer;
+    position: fixed;
+    z-index: 8100;
+    inset: 0;
+    background: rgb(5 10 18 / 58%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    pointer-events: none;
+    cursor: pointer;
 }
 .toolbar-sidebar-backdrop[hidden] { display: none !important; }
 .toolbar-sidebar .pane-label {
@@ -2423,27 +2364,179 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 :root[data-theme="light"] .toolbar-sidebar-close-button:hover,
 :root[data-theme="light"] .toolbar-sidebar-open-button:hover { background: var(--accent-soft, #dcecf8); }
 @media (max-width: 760px) {
-    body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) { padding-right: 0; }
-    body.toolbar-sidebar-open:not(.toolbar-sidebar-mobile-open) .toolbar-sidebar {
-        transform: translateX(calc(100% + 12px));
-        visibility: hidden;
-        pointer-events: none;
-    }
-    .toolbar-sidebar { z-index: 7001; width: min(86vw, 330px); box-shadow: -12px 0 32px rgb(0 0 0 / 30%); }
-    .toolbar-sidebar-backdrop { z-index: 7000; }
-    .search-tools-row .toolbar-sidebar-open-button { position: static; inset: auto; flex: 0 0 40px; width: 40px; min-width: 40px; min-height: 40px; padding: 0; margin: 0; border-radius: 10px; box-shadow: none; font-size: 22px; line-height: 1; }
-    .search-tools-row { display: flex; flex-direction: row; align-items: stretch; gap: 5px; }
-    .search-tools-row .search-bar { flex: 1 1 auto; width: 0; min-width: 0; }
-    .search-tools-row .toolbar-sidebar-open-button { order: 2; }
-    .search-tools-row .search-bar { order: 1; }
-    body.toolbar-sidebar-mobile-open { padding-right: 0; }
-    body.toolbar-sidebar-mobile-open .container,
-    body.toolbar-sidebar-mobile-open .page-symbol-header { pointer-events: none; }
+    .toolbar-sidebar { width: min(86vw, 330px); box-shadow: -12px 0 32px rgb(0 0 0 / 30%); }
+    .toolbar-sidebar-heading { min-height: 52px; }
 }
 @media (prefers-reduced-motion: reduce) { .toolbar-sidebar { transition: none; } }
 
+
+/* دکمهٔ مدیریت کتابخانه‌ها که از فایل‌منیجر به سایدبار ابزارها منتقل شده است */
+.toolbar-sidebar .pane-label > .toolbar .settings-libraries-button {
+    grid-column: 1 / -1;
+    min-height: 40px;
+    border: 1px solid var(--chrome-purple-border);
+    border-radius: 9px;
+    background: var(--blue-bg-3);
+    color: var(--blue-text);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.toolbar-sidebar .pane-label > .toolbar .settings-libraries-button:hover {
+    background: var(--blue-bg-4);
+}
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button {
+    color: #29415b;
+    background: linear-gradient(180deg, #fff, #dfe8f2);
+    border-color: #afc2d6;
+}
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button:hover {
+    background: var(--accent-soft, #dcecf8);
+}
+
+/* پنجره‌های عملیاتی و اعلان‌ها باید هنگام اجرای یک فرمان از سایدبار روی لایهٔ محو نمایش داده شوند. */
+body.toolbar-sidebar-active .modal-overlay,
+body.toolbar-sidebar-active .word-tree-overlay,
+body.toolbar-sidebar-active .word-detail-overlay,
+body.toolbar-sidebar-active .cp {
+    z-index: 8200;
+}
+body.toolbar-sidebar-active .toast.show {
+    z-index: 8300;
+}
+
+
+/* الگوی مشترک ظاهری و حرکتی سایدبارهای محیط کار */
+/* متغیرهای مشترک؛ فایل‌منیجر از همین مقادیر استفاده می‌کند تا دو پنل یک هویت داشته باشند. */
+:root {
+    --workspace-drawer-width: min(320px, calc(100vw - 24px));
+    --workspace-drawer-inset: 12px;
+    --workspace-drawer-gap: 24px;
+    --workspace-drawer-radius: 16px;
+    --workspace-drawer-duration: 260ms;
+    --workspace-drawer-easing: cubic-bezier(.22, 1, .36, 1);
+    --workspace-drawer-backdrop: rgb(4 12 20 / 64%);
+    --workspace-drawer-border: rgb(93 230 180 / 34%);
+    --workspace-drawer-shadow: 0 14px 38px rgb(0 0 0 / 34%);
+    --workspace-drawer-surface: linear-gradient(155deg, #102d34, #12383d 48%, #173a50);
+    --workspace-drawer-header: linear-gradient(115deg, #14584f, #17445d);
+    --workspace-drawer-text: #e6fff5;
+    --workspace-drawer-control: #214c50;
+    --workspace-drawer-control-hover: #2b665f;
+    --workspace-drawer-accent: #80f0c3;
+}
+:root[data-theme="light"] {
+    --workspace-drawer-border: rgb(93 230 180 / 34%);
+    --workspace-drawer-shadow: 0 14px 38px rgb(0 0 0 / 34%);
+    --workspace-drawer-surface: linear-gradient(155deg, #102d34, #12383d 48%, #173a50);
+    --workspace-drawer-header: linear-gradient(115deg, #14584f, #17445d);
+    --workspace-drawer-text: #e6fff5;
+    --workspace-drawer-control: #214c50;
+    --workspace-drawer-control-hover: #2b665f;
+    --workspace-drawer-accent: #80f0c3;
+}
+@media (max-width: 760px) {
+    :root {
+        --workspace-drawer-width: min(86vw, 330px);
+        --workspace-drawer-gap: 20px;
+    }
+}
+
+.toolbar-sidebar {
+    top: var(--workspace-drawer-inset);
+    right: var(--workspace-drawer-inset);
+    bottom: var(--workspace-drawer-inset);
+    box-sizing: border-box;
+    width: var(--workspace-drawer-width);
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
+    border: 1px solid var(--workspace-drawer-border);
+    border-radius: var(--workspace-drawer-radius);
+    background: var(--workspace-drawer-surface);
+    color: var(--workspace-drawer-text);
+    box-shadow: var(--workspace-drawer-shadow);
+    transition:
+        transform var(--workspace-drawer-duration) var(--workspace-drawer-easing),
+        visibility var(--workspace-drawer-duration) var(--workspace-drawer-easing);
+}
+body:not(.toolbar-sidebar-open) .toolbar-sidebar {
+    transform: translateX(calc(100% + var(--workspace-drawer-gap, 24px)));
+    visibility: hidden;
+    pointer-events: none;
+}
+.toolbar-sidebar-heading {
+    min-height: 56px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    background: var(--workspace-drawer-header);
+    color: var(--workspace-drawer-text);
+    border-bottom-color: var(--workspace-drawer-border);
+}
+.toolbar-sidebar-close-button,
+.toolbar-sidebar-open-button {
+    border-color: var(--workspace-drawer-border);
+}
+.toolbar-sidebar-backdrop,
+.file-manager-backdrop {
+    position: fixed;
+    z-index: 8100;
+    inset: 0;
+    background: var(--workspace-drawer-backdrop);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    pointer-events: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--workspace-drawer-duration) var(--workspace-drawer-easing);
+}
+.toolbar-sidebar-backdrop.is-visible,
+.file-manager-backdrop.is-visible {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    pointer-events: auto;
+}
+.toolbar-sidebar-backdrop[hidden],
+.file-manager-backdrop[hidden] {
+    display: none !important;
+}
+:root[data-theme="light"] .toolbar-sidebar-heading {
+    color: var(--workspace-drawer-text);
+    background: var(--workspace-drawer-header);
+    border-bottom-color: var(--workspace-drawer-border);
+}
+:root[data-theme="light"] .toolbar-sidebar-close-button {
+    color: var(--workspace-drawer-text);
+    background: linear-gradient(180deg, #fff, #dfe8f2);
+    border-color: var(--workspace-drawer-border);
+}
+@media (max-width: 760px) {
+    .toolbar-sidebar {
+        top: 10px;
+        right: 10px;
+        bottom: 10px;
+        max-width: calc(100vw - 20px);
+    }
+    .toolbar-sidebar-heading { min-height: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .toolbar-sidebar,
+    .toolbar-sidebar-backdrop,
+    .file-explorer,
+    .file-manager-backdrop {
+        transition: none !important;
+    }
+}
+
+:root[data-theme="light"] .toolbar-sidebar {
+    background: var(--workspace-drawer-surface);
+    color: var(--workspace-drawer-text);
+    border-color: var(--workspace-drawer-border);
+    box-shadow: var(--workspace-drawer-shadow);
+}
+
 </style>
-<style data-bundled-from="src/features/workspace/file-manager/file-manager.css">
+    <style data-bundled-from="src/features/workspace/file-manager/file-manager.css">
 /* استایل اختصاصی فایل‌منیجر؛ هماهنگ با سایدبار ابزارها و تنظیمات */
 /* UI refinement: file manager, compact top navigation, and responsive layout */
 .file-explorer { font-size: 13px; }
@@ -2608,8 +2701,758 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
     .file-explorer { margin: 6px; border-radius: 16px; box-shadow: 0 12px 30px rgb(0 0 0 / 18%); }
     .fe-header { min-height: 48px; padding: 8px 10px; }
 }
-</style>
 
+
+/* پنل کشویی فایل‌منیجر در موبایل؛ محتوای اصلی هنگام بازبودن تار و غیرفعال می‌شود */
+@media (max-width: 760px) {
+    .file-explorer.file-manager-drawer-open {
+    display: flex !important;
+        position: fixed;
+        z-index: 8201;
+        top: 10px;
+        right: auto;
+        bottom: 10px;
+        left: 8px;
+        width: min(82vw, 320px);
+        max-width: calc(100vw - 24px);
+        height: auto;
+        max-height: none;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        border-radius: 16px;
+        overflow: hidden;
+        transform: translateX(0);
+        visibility: visible;
+        box-shadow: 12px 0 36px rgb(0 0 0 / 32%);
+    }
+    .file-explorer.file-manager-drawer-open .fe-header {
+        flex: 0 0 auto;
+    }
+    .file-explorer.file-manager-drawer-open .fe-title,
+    .file-explorer.file-manager-drawer-open .fe-library-btn {
+        display: inline-flex;
+    }
+    .file-explorer.file-manager-drawer-open .fe-controls,
+    .file-explorer.file-manager-drawer-open .fe-list {
+        min-height: 0;
+    }
+    .file-explorer.file-manager-drawer-open .fe-list {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+    /* محوشدن و جلوگیری از کلیک روی صفحه توسط backdrop انجام می‌شود؛
+       این کار مانع محوشدن خود پنل کشویی نیز می‌شود. */
+    body.file-manager-drawer-active { overflow: hidden; }
+}
+
+
+/* حذف کامل نوار قدیمیِ درون‌صفحه‌ای؛ فایل‌منیجر فقط در حالت کشویی دیده می‌شود. */
+.file-explorer:not(.file-manager-drawer-open) {
+    display: none !important;
+}
+
+/* تنها حالت مجاز فایل‌منیجر: پنل کشویی روی محتوا */
+.file-explorer.file-manager-drawer-open {
+    position: fixed;
+    z-index: 8201;
+    top: 12px;
+    right: auto;
+    bottom: 12px;
+    left: 12px;
+    width: min(320px, calc(100vw - 24px));
+    max-width: calc(100vw - 24px);
+    height: auto;
+    max-height: none;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+    box-shadow: 12px 0 36px rgb(0 0 0 / 32%);
+}
+.file-explorer.file-manager-drawer-open .fe-header { flex: 0 0 auto; }
+.file-explorer.file-manager-drawer-open .fe-title { display: inline-flex; }
+.file-explorer.file-manager-drawer-open .fe-controls,
+.file-explorer.file-manager-drawer-open .fe-list { min-height: 0; }
+.file-explorer.file-manager-drawer-open .fe-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.fe-drawer-mark { display: inline-flex; align-items: center; justify-content: center; }
+body.file-manager-drawer-active { overflow: hidden; }
+/* محو و غیرفعال‌شدن محتوای پشت پنل فقط توسط backdrop انجام می‌شود؛
+   از اعمال filter روی والد فایل‌منیجر جلوگیری می‌کنیم تا پنل تار یا زیر لایهٔ تیره محبوس نشود. */
+@media (max-width: 760px) {
+    .file-explorer.file-manager-drawer-open {
+        top: 10px;
+        bottom: 10px;
+        left: 8px;
+        width: min(82vw, 320px);
+        max-width: calc(100vw - 24px);
+    }
+}
+
+
+/* لایهٔ پس‌زمینهٔ پنل کشویی فایل‌منیجر */
+.file-manager-backdrop {
+    position: fixed;
+    z-index: 7100;
+    inset: 0;
+    background: rgb(5 10 18 / 58%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    pointer-events: none;
+    cursor: pointer;
+}
+.file-manager-backdrop[hidden] { display: none !important; }
+
+
+/* پوستهٔ مشترک و انیمیشن یکسان برای پنل فایل‌منیجر */
+/* فایل‌منیجر همان کارت کشویی سایدبار ابزارهاست؛ فقط جهت حرکت آن از چپ به راست معکوس است. */
+.file-explorer {
+    position: fixed;
+    z-index: 8201;
+    top: var(--workspace-drawer-inset, 12px);
+    right: auto;
+    bottom: var(--workspace-drawer-inset, 12px);
+    left: var(--workspace-drawer-inset, 12px);
+    box-sizing: border-box;
+    width: var(--workspace-drawer-width, min(320px, calc(100vw - 24px)));
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
+    height: auto;
+    max-height: none;
+    margin: 0;
+    display: flex !important;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--workspace-drawer-border, rgb(130 159 194 / 28%));
+    border-radius: var(--workspace-drawer-radius, 16px);
+    color: var(--workspace-drawer-text, #d8e4f4);
+    background: var(--workspace-drawer-surface, #1a2639);
+    box-shadow: var(--workspace-drawer-shadow, 0 12px 34px rgb(0 0 0 / 24%));
+    transform: translateX(calc(-100% - var(--workspace-drawer-gap, 24px)));
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        transform var(--workspace-drawer-duration, 260ms) var(--workspace-drawer-easing, cubic-bezier(.22, 1, .36, 1)),
+        visibility var(--workspace-drawer-duration, 260ms) var(--workspace-drawer-easing, cubic-bezier(.22, 1, .36, 1));
+}
+.file-explorer.file-manager-drawer-open {
+    display: flex !important;
+    width: var(--workspace-drawer-width, min(320px, calc(100vw - 24px)));
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
+    margin: 0;
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+}
+.file-explorer:not(.file-manager-drawer-open) {
+    /* display:none باعث حذف انیمیشن خروج می‌شد؛ پنل اکنون خارج از دید قرار می‌گیرد. */
+    display: flex !important;
+    width: var(--workspace-drawer-width, min(320px, calc(100vw - 24px)));
+    max-width: calc(100vw - var(--workspace-drawer-gap, 24px));
+    margin: 0;
+    transform: translateX(calc(-100% - var(--workspace-drawer-gap, 24px)));
+    visibility: hidden;
+    pointer-events: none;
+}
+.fe-header {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    box-sizing: border-box;
+    min-height: 56px;
+    padding: 10px 14px;
+    background: var(--workspace-drawer-header, linear-gradient(115deg, #1b2f48, #142032));
+    border-bottom: 1px solid var(--workspace-drawer-border, rgb(130 159 194 / 28%));
+}
+.fe-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--workspace-drawer-text, #d8e4f4);
+    font-size: 14px;
+    font-weight: 700;
+}
+.fe-toggle-btn,
+.fe-add-btn,
+.fe-library-btn,
+.file-manager-close-button {
+    box-sizing: border-box;
+    flex: 0 0 34px;
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+    border: 1px solid var(--workspace-drawer-border, rgb(130 159 194 / 28%));
+    border-radius: 9px;
+}
+.fe-add-btn,
+.file-manager-close-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: var(--blue-bg-3, #263a50);
+    color: var(--workspace-drawer-text, #d8e4f4);
+    font: inherit;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+.file-manager-close-button { font-size: 24px; }
+.fe-add-btn:hover,
+.file-manager-close-button:hover {
+    background: var(--blue-bg-4, #344f6b);
+}
+.fe-controls,
+.fe-new-form {
+    flex: 0 0 auto;
+}
+.fe-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.file-manager-backdrop {
+    z-index: 8100;
+    background: var(--workspace-drawer-backdrop, rgb(5 10 18 / 58%));
+    opacity: 0;
+    transition: opacity var(--workspace-drawer-duration, 260ms) var(--workspace-drawer-easing, cubic-bezier(.22, 1, .36, 1));
+}
+.file-manager-backdrop.is-visible { opacity: 1; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); pointer-events: auto; }
+.file-manager-backdrop[hidden] { display: none !important; }
+:root[data-theme="light"] .file-explorer {
+    color: var(--workspace-drawer-text, #283b50);
+    background: var(--workspace-drawer-surface, #f8fbff);
+    border-color: var(--workspace-drawer-border, rgb(130 159 194 / 32%));
+    box-shadow: var(--workspace-drawer-shadow, 0 12px 34px rgb(30 54 80 / 12%));
+}
+:root[data-theme="light"] .fe-header {
+    background: var(--workspace-drawer-header, linear-gradient(115deg, #f8fbff, #eaf1f9));
+    border-bottom-color: var(--workspace-drawer-border, rgb(130 159 194 / 32%));
+}
+:root[data-theme="light"] .fe-title,
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .file-manager-close-button {
+    color: var(--workspace-drawer-text, #283b50);
+}
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .file-manager-close-button {
+    background: linear-gradient(180deg, #fff, #dfe8f2);
+    border-color: var(--workspace-drawer-border, rgb(130 159 194 / 32%));
+}
+:root[data-theme="light"] .fe-add-btn:hover,
+:root[data-theme="light"] .file-manager-close-button:hover {
+    background: var(--accent-soft, #dcecf8);
+}
+@media (max-width: 760px) {
+    .file-explorer {
+        top: 10px;
+        bottom: 10px;
+        left: 10px;
+        max-width: calc(100vw - 20px);
+        width: var(--workspace-drawer-width, min(86vw, 330px));
+    }
+    .fe-header {
+        min-height: 52px;
+        padding: 8px 12px;
+    }
+}
+
+/* پالت تیره و پرنشاط مشترک دو سایدبار، مستقل از تم صفحه */
+:root .toolbar-sidebar,
+:root .file-explorer,
+:root[data-theme="light"] .toolbar-sidebar,
+:root[data-theme="light"] .file-explorer {
+    color: var(--workspace-drawer-text);
+    background: var(--workspace-drawer-surface);
+    border-color: var(--workspace-drawer-border);
+    box-shadow: var(--workspace-drawer-shadow);
+}
+:root .toolbar-sidebar-heading,
+:root .fe-header,
+:root[data-theme="light"] .toolbar-sidebar-heading,
+:root[data-theme="light"] .fe-header {
+    color: var(--workspace-drawer-text);
+    background: var(--workspace-drawer-header);
+    border-color: var(--workspace-drawer-border);
+}
+:root .toolbar-sidebar .pane-label > .toolbar button,
+:root .toolbar-sidebar-close-button,
+:root .toolbar-sidebar-open-button,
+:root .file-manager-close-button,
+:root .fe-add-btn,
+:root .fe-library-btn,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar button,
+:root[data-theme="light"] .toolbar-sidebar-close-button,
+:root[data-theme="light"] .toolbar-sidebar-open-button,
+:root[data-theme="light"] .file-manager-close-button,
+:root[data-theme="light"] .fe-add-btn,
+:root[data-theme="light"] .fe-library-btn {
+    border-color: var(--workspace-drawer-border);
+    background: var(--workspace-drawer-control);
+    color: var(--workspace-drawer-text);
+}
+:root .toolbar-sidebar .pane-label > .toolbar button:hover,
+:root .toolbar-sidebar-close-button:hover,
+:root .toolbar-sidebar-open-button:hover,
+:root .file-manager-close-button:hover,
+:root .fe-add-btn:hover,
+:root .fe-library-btn:hover,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar button:hover,
+:root[data-theme="light"] .toolbar-sidebar-close-button:hover,
+:root[data-theme="light"] .toolbar-sidebar-open-button:hover,
+:root[data-theme="light"] .file-manager-close-button:hover,
+:root[data-theme="light"] .fe-add-btn:hover,
+:root[data-theme="light"] .fe-library-btn:hover {
+    background: var(--workspace-drawer-control-hover);
+}
+:root .toolbar-sidebar .pane-label > .toolbar #btnSettings,
+:root .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar #btnSettings,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button {
+    border-color: #58dba9;
+    background: linear-gradient(135deg, #126859, #23775e);
+    color: #f1fff8;
+}
+:root .toolbar-sidebar .pane-label > .toolbar #btnSettings:hover,
+:root .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button:hover,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar #btnSettings:hover,
+:root[data-theme="light"] .toolbar-sidebar .pane-label > .toolbar .settings-libraries-button:hover {
+    background: linear-gradient(135deg, #18836d, #2b8a68);
+}
+:root .file-explorer .fe-controls,
+:root .file-explorer .fe-new-form,
+:root[data-theme="light"] .file-explorer .fe-controls,
+:root[data-theme="light"] .file-explorer .fe-new-form {
+    background: rgb(9 31 36 / 76%);
+    border-color: var(--workspace-drawer-border);
+}
+:root .file-explorer .fe-controls input,
+:root .file-explorer .fe-controls select,
+:root .file-explorer .fe-new-form input,
+:root[data-theme="light"] .file-explorer .fe-controls input,
+:root[data-theme="light"] .file-explorer .fe-controls select,
+:root[data-theme="light"] .file-explorer .fe-new-form input {
+    border-color: var(--workspace-drawer-border);
+    background: #102d34;
+    color: var(--workspace-drawer-text);
+}
+:root .file-explorer .fe-controls input::placeholder,
+:root .file-explorer .fe-new-form input::placeholder,
+:root[data-theme="light"] .file-explorer .fe-controls input::placeholder,
+:root[data-theme="light"] .file-explorer .fe-new-form input::placeholder {
+    color: #a3c8bc;
+}
+:root .file-explorer .fe-item,
+:root[data-theme="light"] .file-explorer .fe-item { color: var(--workspace-drawer-text); }
+:root .file-explorer .fe-item:hover,
+:root[data-theme="light"] .file-explorer .fe-item:hover {
+    border-color: rgb(93 230 180 / 34%);
+    background: rgb(45 135 112 / 28%);
+}
+:root .file-explorer .fe-item.active,
+:root[data-theme="light"] .file-explorer .fe-item.active {
+    border-color: #58dba9;
+    background: rgb(39 156 120 / 34%);
+    color: #f1fff8;
+}
+:root .toolbar-sidebar button:focus-visible,
+:root .file-explorer button:focus-visible,
+:root .file-explorer input:focus-visible,
+:root .file-explorer select:focus-visible,
+:root[data-theme="light"] .toolbar-sidebar button:focus-visible,
+:root[data-theme="light"] .file-explorer button:focus-visible,
+:root[data-theme="light"] .file-explorer input:focus-visible,
+:root[data-theme="light"] .file-explorer select:focus-visible {
+    outline: 2px solid var(--workspace-drawer-accent);
+    outline-offset: 2px;
+}
+
+</style>
+    <style data-bundled-from="src/features/workspace/search/search-header.css">
+/* هدر ثابت جست‌وجو و دسترسی سریع به سایدبارها */
+:root { --workspace-header-height: 96px; }
+body { padding-top: var(--workspace-header-height); }
+
+.workspace-header {
+    position: fixed;
+    z-index: 6500;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--workspace-header-height);
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    grid-template-rows: 30px 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 7px;
+    direction: ltr;
+    color: var(--blue-text);
+    background: linear-gradient(135deg, var(--chrome-purple), var(--chrome-purple-deep));
+    border-bottom: 1px solid var(--chrome-purple-border);
+    box-shadow: 0 5px 18px rgb(0 0 0 / 22%);
+}
+.app-menu-bar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+    direction: ltr;
+}
+.app-menu { position: relative; }
+.app-menu-trigger {
+    min-height: 28px;
+    padding: 4px 11px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    color: inherit;
+    background: transparent;
+    font: 500 13px/1.2 'Segoe UI', Tahoma, sans-serif;
+    cursor: pointer;
+}
+.app-menu-trigger:hover,
+.app-menu-trigger[aria-expanded="true"] {
+    border-color: rgb(138 185 232 / 24%);
+    background: rgb(138 185 232 / 12%);
+}
+.app-menu-trigger:focus-visible,
+.app-menu-item:focus-visible {
+    outline: 2px solid var(--blue-accent);
+    outline-offset: 2px;
+}
+.app-menu-dropdown {
+    position: absolute;
+    z-index: 7400;
+    top: calc(100% + 5px);
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+    padding: 5px;
+    border: 1px solid var(--chrome-purple-border);
+    border-radius: 10px;
+    background: var(--blue-bg-1);
+    box-shadow: 0 12px 30px rgb(0 0 0 / 38%);
+}
+.app-menu-dropdown[hidden] { display: none !important; }
+.app-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    min-height: 34px;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 6px;
+    color: var(--blue-text);
+    background: transparent;
+    font: 400 12px/1.3 'Segoe UI', Tahoma, sans-serif;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.app-menu-item span {
+    color: #9fb4cc;
+    font-size: 10px;
+}
+.app-menu-item:hover { color: #fff; background: var(--blue-bg-4); }
+.app-menu-separator {
+    height: 1px;
+    margin: 4px 6px;
+    background: rgb(138 185 232 / 20%);
+}
+.file-manager-open-button,
+.toolbar-sidebar-open-button { grid-row: 2; }
+.file-manager-open-button { grid-column: 1; }
+.workspace-header-center { grid-column: 2; grid-row: 2; }
+.toolbar-sidebar-open-button { grid-column: 3; }
+.workspace-menu-button {
+    position: static !important;
+    inset: auto !important;
+    display: inline-flex !important;
+    flex: 0 0 42px;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    min-height: 42px;
+    padding: 0;
+    margin: 0;
+    border: 1px solid var(--chrome-purple-border);
+    border-radius: 11px;
+    color: var(--blue-text);
+    background: var(--blue-bg-3);
+    box-shadow: none;
+    cursor: pointer;
+}
+.workspace-menu-button:hover { background: var(--blue-bg-4); }
+.workspace-menu-button:focus-visible,
+.header-history-button:focus-visible,
+.workspace-search-toggle:focus-visible {
+    outline: 2px solid var(--blue-accent);
+    outline-offset: 2px;
+}
+.menu-glyph {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 18px;
+    border-top: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    border-radius: 1px;
+}
+.menu-glyph::after {
+    position: absolute;
+    top: 6px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    content: "";
+}
+.workspace-header-center {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    direction: ltr;
+}
+.workspace-history-controls {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 5px;
+    min-width: 0;
+}
+.header-history-button {
+    display: inline-flex;
+    flex: 0 0 34px;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    min-width: 34px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--blue-border);
+    border-radius: 9px;
+    color: var(--blue-text);
+    background: var(--blue-bg-3);
+    font: inherit;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+.header-history-button:hover { background: var(--blue-bg-4); }
+.workspace-history-controls .header-dirty-badge {
+    position: static;
+    margin: 0;
+    max-width: 94px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px;
+    white-space: nowrap;
+}
+ .workspace-search {
+    position: static;
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 38px;
+    gap: 6px;
+}
+.workspace-search-toggle {
+    display: inline-flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--blue-border);
+    border-radius: 11px;
+    color: var(--blue-text);
+    background: var(--blue-bg-3);
+    cursor: pointer;
+}
+.workspace-search-toggle:hover { background: var(--blue-bg-4); }
+.search-glyph {
+    position: relative;
+    display: block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    transform: translate(-2px, -2px);
+}
+.search-glyph::after {
+    position: absolute;
+    right: -6px;
+    bottom: -4px;
+    width: 7px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    content: "";
+    transform: rotate(48deg);
+    transform-origin: left center;
+}
+.workspace-search.is-expanded + .workspace-history-controls { visibility: hidden; }
+.workspace-search.is-expanded .workspace-search-toggle {
+    position: absolute;
+    z-index: 7201;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.workspace-search-panel {
+    position: absolute;
+    z-index: 7200;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    min-width: 0;
+    width: auto;
+    gap: 5px;
+    padding: 4px 6px 4px 48px;
+    border: 1px solid var(--blue-border);
+    border-radius: 11px;
+    background: var(--blue-bg-1);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 16%);
+}
+.workspace-search-panel[hidden] { display: none !important; }
+.workspace-search-panel .search-input {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 0;
+    height: 34px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 13px;
+}
+.workspace-search-panel .search-count {
+    flex: 0 0 auto;
+    min-width: 25px;
+    padding: 2px 5px;
+}
+.workspace-search-panel > button:not(.workspace-search-toggle) {
+    display: inline-flex;
+    flex: 0 0 30px;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 31px;
+    padding: 3px;
+    border: 1px solid var(--blue-border);
+    border-radius: 7px;
+    color: var(--blue-text);
+    background: var(--blue-bg-3);
+    cursor: pointer;
+}
+.workspace-search-panel > button:hover { background: var(--blue-bg-4); }
+.workspace-search-panel .search-results {
+    position: absolute;
+    z-index: 7200;
+    top: calc(100% + 7px);
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    max-height: min(38vh, 220px);
+    overflow-y: auto;
+    padding: 8px;
+    border: 1px solid var(--blue-border);
+    border-radius: 10px;
+    background: var(--blue-bg-1);
+    box-shadow: 0 10px 28px rgb(0 0 0 / 28%);
+}
+.workspace-search-panel .search-results[hidden] { display: none !important; }
+:root[data-theme="light"] .workspace-header {
+    color: #29415b;
+    background: linear-gradient(135deg, #f8fbff, #e6edf6);
+    border-bottom-color: #bdcddd;
+}
+:root[data-theme="light"] .workspace-menu-button,
+:root[data-theme="light"] .header-history-button,
+:root[data-theme="light"] .workspace-search-toggle {
+    color: #29415b;
+    background: linear-gradient(180deg, #fff, #dfe8f2);
+    border-color: #afc2d6;
+}
+:root[data-theme="light"] .workspace-menu-button:hover,
+:root[data-theme="light"] .header-history-button:hover,
+:root[data-theme="light"] .workspace-search-toggle:hover { background: var(--accent-soft, #dcecf8); }
+:root[data-theme="light"] .workspace-search-panel { background: #f4f8fc; border-color: #bdcddd; box-shadow: 0 4px 14px rgb(30 54 80 / 12%); }
+:root[data-theme="light"] .workspace-search-panel > button:not(.workspace-search-toggle) {
+    color: #29415b;
+    background: #e5edf6;
+    border-color: #afc2d6;
+}
+:root[data-theme="light"] .app-menu-dropdown {
+    background: #f4f8fc;
+    border-color: #bdcddd;
+    box-shadow: 0 12px 30px rgb(30 54 80 / 20%);
+}
+:root[data-theme="light"] .app-menu-item { color: #29415b; }
+:root[data-theme="light"] .app-menu-item span { color: #647c96; }
+:root[data-theme="light"] .app-menu-item:hover { color: #172333; background: #dcecf8; }
+@media (max-width: 760px) {
+    :root { --workspace-header-height: 94px; }
+    .workspace-header { grid-template-columns: 38px minmax(0, 1fr) 38px; grid-template-rows: 28px 1fr; gap: 5px; padding: 5px 7px 6px; }
+    .app-menu-trigger { min-height: 27px; padding: 4px 9px; }
+    .workspace-menu-button { flex-basis: 38px; width: 38px; min-width: 38px; height: 40px; min-height: 40px; border-radius: 10px; }
+    .workspace-header-center { gap: 4px; }
+    .workspace-history-controls { gap: 3px; }
+    .header-history-button { flex-basis: 30px; width: 30px; min-width: 30px; height: 36px; font-size: 20px; }
+    .workspace-history-controls .header-dirty-badge { display: none; }
+    .workspace-search { gap: 4px; }
+    .workspace-search-toggle { flex-basis: 36px; width: 36px; min-width: 36px; height: 38px; border-radius: 10px; }
+    .workspace-search-panel { gap: 3px; padding: 3px; }
+    .workspace-search-panel .search-input { height: 32px; padding: 4px 6px; font-size: 12px; }
+    .workspace-search-panel .search-count { display: none; }
+    .workspace-search-panel > button:not(.workspace-search-toggle) { flex-basis: 25px; min-width: 25px; height: 30px; }
+}
+@media (max-width: 360px) {
+    .workspace-header { grid-template-columns: 36px minmax(0, 1fr) 36px; gap: 4px; padding-inline: 5px; }
+    .app-menu-trigger { padding-inline: 7px; font-size: 12px; }
+    .workspace-menu-button { flex-basis: 36px; width: 36px; min-width: 36px; }
+    .workspace-header-center { gap: 3px; }
+    .header-history-button { flex-basis: 27px; width: 27px; min-width: 27px; }
+    .workspace-search-toggle { flex-basis: 32px; width: 32px; min-width: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .workspace-search-panel, .workspace-search-toggle { transition: none !important; }
+}
+</style>
     <style data-bundled-from="src/features/settings/settings.css">
 /* استایل مستقل پنل تنظیمات و گزینه‌های ظاهری ویرایشگر */
 
@@ -3299,25 +4142,105 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 }
 </style>
 </head>
-<body class="toolbar-sidebar-open">
+<body>
+    <header class="workspace-header" id="workspaceHeader" aria-label="جست‌وجو و ابزارهای اصلی">
+        <nav class="app-menu-bar" aria-label="Application menu">
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="fileMenu">File</button>
+                <div class="app-menu-dropdown" id="fileMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="new-file">New file <span>＋</span></button>
+                    <button type="button" class="app-menu-item" data-menu-action="open-files">Open files</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="save-project">Save project <span>Ctrl+S</span></button>
+                    <button type="button" class="app-menu-item" data-menu-action="download">Download HTML <span>Ctrl+Shift+S</span></button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="backup">Backup &amp; restore</button>
+                </div>
+            </div>
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="editMenu">Edit</button>
+                <div class="app-menu-dropdown" id="editMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="undo">Undo <span>Ctrl+Z</span></button>
+                    <button type="button" class="app-menu-item" data-menu-action="redo">Redo <span>Ctrl+Y</span></button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="find">Find in code <span>Ctrl+F</span></button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="clear-file">Clear current file</button>
+                    <button type="button" class="app-menu-item" data-menu-action="clear-all">Clear all files</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="font-increase">Increase font size</button>
+                    <button type="button" class="app-menu-item" data-menu-action="font-decrease">Decrease font size</button>
+                </div>
+            </div>
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="viewMenu">View</button>
+                <div class="app-menu-dropdown" id="viewMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="view-html">HTML editor</button>
+                    <button type="button" class="app-menu-item" data-menu-action="view-css">CSS editor</button>
+                    <button type="button" class="app-menu-item" data-menu-action="view-js">JavaScript editor</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="refresh-preview">Refresh preview</button>
+                    <button type="button" class="app-menu-item" data-menu-action="editor-tools">Editor tools</button>
+                    <button type="button" class="app-menu-item" data-menu-action="settings">Settings</button>
+                </div>
+            </div>
+            <div class="app-menu">
+                <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="helpMenu">Help</button>
+                <div class="app-menu-dropdown" id="helpMenu" hidden>
+                    <button type="button" class="app-menu-item" data-menu-action="help">Help guide</button>
+                    <button type="button" class="app-menu-item" data-menu-action="help">Keyboard shortcuts</button>
+                    <div class="app-menu-separator" role="separator"></div>
+                    <button type="button" class="app-menu-item" data-menu-action="libraries">Libraries</button>
+                </div>
+            </div>
+        </nav>
+        <button type="button" class="file-manager-open-button workspace-menu-button" id="fileManagerOpenButton"
+                aria-controls="fileExplorer" aria-expanded="false" aria-label="باز کردن فایل‌منیجر" title="باز کردن فایل‌منیجر">
+            <span class="menu-glyph" aria-hidden="true"></span>
+        </button>
+        <div class="workspace-header-center">
+            <div class="workspace-search" id="workspaceSearch">
+                <button type="button" class="workspace-search-toggle" id="searchExpandButton"
+                        aria-controls="searchPanel" aria-expanded="false" aria-label="باز کردن جست‌وجو" title="جست‌وجو در کد">
+                    <span class="search-glyph" aria-hidden="true"></span>
+                </button>
+                <div class="workspace-search-panel" id="searchPanel" hidden>
+                    <label class="visually-hidden" for="searchInput">جست‌وجو در کد</label>
+                    <input type="text" class="search-input" id="searchInput"
+                           placeholder="جست‌وجو در کد… (Ctrl+F)"
+                           dir="auto" spellcheck="false" autocomplete="off" aria-label="جست‌وجو در کد">
+                    <span class="search-count zero" id="searchCount">0</span>
+                    <button type="button" id="searchPrev" title="نتیجهٔ قبلی (Shift+Enter)" aria-label="نتیجهٔ قبلی">▲</button>
+                    <button type="button" id="searchNext" title="نتیجهٔ بعدی (Enter)" aria-label="نتیجهٔ بعدی">▼</button>
+                    <button type="button" id="searchClear" title="پاک‌کردن جست‌وجو (Esc)" aria-label="پاک‌کردن جست‌وجو">✕</button>
+                    <div class="search-results" id="searchResults" hidden></div>
+                </div>
+            </div>
+            <div class="workspace-history-controls" role="group" aria-label="تاریخچه ویرایش">
+                <button type="button" class="header-history-button" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
+                <button type="button" class="header-history-button" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
+                <span class="dirty header-dirty-badge" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
+            </div>
+        </div>
+        <button type="button" class="toolbar-sidebar-open-button workspace-menu-button" id="toolbarSidebarOpen"
+                aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار تنظیمات" title="باز کردن سایدبار تنظیمات">
+            <span class="menu-glyph" aria-hidden="true"></span>
+        </button>
+    </header>
 
     <header class="page-symbol-header" aria-label="Popular code quick inserts">
         <div class="symbol-toolbar" id="symbolToolbar" role="toolbar" aria-label="Quick inserts for the active language"></div>
     
     </header>
-        <div class="toolbar-sidebar-backdrop" id="toolbarSidebarBackdrop" hidden aria-hidden="true"></div>
-    <aside class="toolbar-sidebar" id="toolbarSidebar" aria-label="نوار ابزار ویرایشگر" aria-hidden="false">
+    <div class="toolbar-sidebar-backdrop" id="toolbarSidebarBackdrop" hidden aria-hidden="true"></div>
+    <div class="file-manager-backdrop" id="fileManagerBackdrop" hidden aria-hidden="true"></div>
+    <aside class="toolbar-sidebar" id="toolbarSidebar" aria-label="نوار ابزار ویرایشگر" aria-hidden="true">
         <div class="toolbar-sidebar-heading">
             <span>ابزارهای ویرایشگر</span>
-            <button type="button" class="toolbar-sidebar-close-button" id="toolbarSidebarClose" aria-controls="toolbarSidebar" aria-label="بستن نوار ابزار" title="بستن نوار ابزار">×</button>
+            <button type="button" class="toolbar-sidebar-close-button" id="toolbarSidebarClose" aria-controls="toolbarSidebar" aria-label="بستن سایدبار تنظیمات" title="بستن سایدبار تنظیمات">×</button>
         </div>
         <div class="pane-label">
-            <div class="toolbar-sidebar-history">
-                <button type="button" class="arrow-btn left" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
-                <button type="button" class="arrow-btn right" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
-                <span class="dirty" id="dirtyBadge" hidden>● Unsaved Changes</span>
-            </div>
-            <div class="toolbar">
+                <div class="toolbar">
                 <button id="btnDownload" title="Download with Custom Name">⬇ Download</button>
                 <button id="btnReset" title="Restore Default Code">🔁 Reset</button>
                 <button id="btnClear" title="Clear Current File">🗑 Clear</button>
@@ -3326,6 +4249,7 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
                 <button id="btnFontInc" title="Increase Font Size">A+</button>
                 <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
                 <button type="button" id="btnWordTree" title="Open the live word tree">🌳 Word Tree</button>
+                <button type="button" id="feLibraryBtn" class="settings-libraries-button" title="مدیریت کتابخانه‌ها" aria-label="مدیریت کتابخانه‌ها">📚 کتابخانه‌ها</button>
                 <button type="button" id="btnSettings" title="تنظیمات ویرایشگر" aria-controls="settingsScreen" aria-haspopup="dialog" aria-expanded="false">⚙ تنظیمات</button>
             </div>
         </div>
@@ -3341,29 +4265,15 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             </div>
 
 
-            <div class="search-tools-row">
-                <div class="search-bar">
-                    <label class="visually-hidden" for="searchInput">Search code</label>
-                    <input type="text" class="search-input" id="searchInput"
-                           placeholder="🔍 Search code... (Ctrl+F)"
-                           dir="auto" spellcheck="false" autocomplete="off"
-                           aria-label="Search code">
-                    <span class="search-count zero" id="searchCount">0</span>
-                    <button type="button" id="searchPrev" title="Previous result (Shift+Enter)">▲</button>
-                    <button type="button" id="searchNext" title="Next result (Enter)">▼</button>
-                    <button type="button" id="searchClear" title="Clear (Esc)">✕</button>
-                </div>
-                <button type="button" class="toolbar-sidebar-open-button" id="toolbarSidebarOpen" aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن نوار ابزار" title="باز کردن نوار ابزار">☰</button>
-            </div>
-            <div class="search-results" id="searchResults" hidden></div>
 
             <div class="editor-body">
-                <aside class="file-explorer is-collapsed" id="fileExplorer" aria-label="File manager">
+                <aside class="file-explorer" id="fileExplorer" aria-label="File manager" aria-hidden="true">
                     <div class="fe-header">
-                        <button type="button" class="fe-toggle-btn" id="feToggleBtn" title="Open file manager" aria-label="Open file manager" aria-controls="feList" aria-expanded="false">📁</button>
+                        <span class="fe-toggle-btn fe-drawer-mark" aria-hidden="true">📁</span>
                         <span class="fe-title">Files</span>
-                        <button type="button" class="fe-library-btn" id="feLibraryBtn" title="Open libraries" aria-label="Open libraries">📚</button>
                         <button type="button" class="fe-add-btn" id="feAddBtn" title="New file" aria-label="New file">+</button>
+                        <button type="button" class="file-manager-close-button" id="fileManagerCloseButton"
+                                aria-label="بستن فایل‌منیجر" title="بستن فایل‌منیجر">×</button>
                     </div>
                     <div class="fe-controls" id="feControls">
                         <label class="visually-hidden" for="feSearch">Search files</label>
@@ -6840,73 +7750,131 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 })();
 
 </script>
-<script data-bundled-from="src/features/workspace/toolbar/toolbar-sidebar.js">
-/* کنترل نوار ابزار کناری؛ در دسکتاپ باز و در موبایل به‌صورت پنجرهٔ پوشاننده بسته آغاز می‌شود. */
+    <script data-bundled-from="src/features/workspace/toolbar/toolbar-sidebar.js">
+/* سایدبار ابزارها در دسکتاپ و موبایل یک رفتار واحد دارد: پنل روی صفحه باز می‌شود. */
 (function () {
     'use strict';
-    const sidebar = document.getElementById('toolbarSidebar');
-    const openButton = document.getElementById('toolbarSidebarOpen');
-    const closeButton = document.getElementById('toolbarSidebarClose');
-    const backdrop = document.getElementById('toolbarSidebarBackdrop');
-    const media = window.matchMedia('(max-width: 760px)');
-    if (!sidebar || !openButton || !closeButton || !backdrop) return;
-    let isOpen = !media.matches;
 
-    function setOpen(nextOpen, options) {
-        const settings = options || {};
-        isOpen = Boolean(nextOpen);
-        const mobileModal = isOpen && media.matches;
-        document.body.classList.toggle('toolbar-sidebar-open', isOpen);
-        document.body.classList.toggle('toolbar-sidebar-mobile-open', mobileModal);
-        sidebar.setAttribute('aria-hidden', String(!isOpen));
-        openButton.setAttribute('aria-expanded', String(isOpen));
-        if (mobileModal) {
-            sidebar.setAttribute('role', 'dialog');
-            sidebar.setAttribute('aria-modal', 'true');
-            backdrop.hidden = false;
-            backdrop.setAttribute('aria-hidden', 'false');
-        } else {
-            sidebar.removeAttribute('role');
-            sidebar.removeAttribute('aria-modal');
-            backdrop.hidden = true;
-            backdrop.setAttribute('aria-hidden', 'true');
+    function init() {
+        const sidebar = document.getElementById('toolbarSidebar');
+        const openButton = document.getElementById('toolbarSidebarOpen');
+        const closeButton = document.getElementById('toolbarSidebarClose');
+        const backdrop = document.getElementById('toolbarSidebarBackdrop');
+        if (!sidebar || !openButton || !closeButton || !backdrop) return;
+
+        let isOpen = false;
+        const transitionFallbackMs = 280;
+
+        function setOpen(nextOpen, options) {
+            const settings = options || {};
+            const wasOpen = isOpen;
+            isOpen = Boolean(nextOpen);
+
+            document.body.classList.toggle('toolbar-sidebar-open', isOpen);
+            document.body.classList.toggle('toolbar-sidebar-active', isOpen);
+            sidebar.setAttribute('aria-hidden', String(!isOpen));
+            openButton.setAttribute('aria-expanded', String(isOpen));
+            openButton.setAttribute('aria-label', isOpen ? 'بستن سایدبار تنظیمات' : 'باز کردن سایدبار تنظیمات');
+            openButton.title = isOpen ? 'بستن سایدبار تنظیمات' : 'باز کردن سایدبار تنظیمات';
+
+            if (isOpen) {
+                backdrop.hidden = false;
+                backdrop.setAttribute('aria-hidden', 'false');
+                /* آغاز قطعی انیمیشن محوشدن پس‌زمینه؛ همان چرخهٔ فایل‌منیجر. */
+                void backdrop.offsetWidth;
+                backdrop.classList.add('is-visible');
+            } else {
+                backdrop.classList.remove('is-visible');
+                backdrop.setAttribute('aria-hidden', 'true');
+
+                if (!wasOpen || (window.matchMedia &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+                    backdrop.hidden = true;
+                } else {
+                    window.setTimeout(function () {
+                        if (!isOpen) backdrop.hidden = true;
+                    }, transitionFallbackMs);
+                }
+            }
+
+            if (isOpen) {
+                sidebar.setAttribute('role', 'dialog');
+                sidebar.setAttribute('aria-modal', 'true');
+            } else {
+                sidebar.removeAttribute('role');
+                sidebar.removeAttribute('aria-modal');
+            }
+
+            if (settings.focus === 'close' && isOpen) closeButton.focus();
+            else if (!isOpen && settings.focus === 'open') openButton.focus();
         }
-        if (settings.focus === 'close' && isOpen) closeButton.focus();
-        if (!isOpen && settings.focus === 'open') openButton.focus();
+
+        document.addEventListener('workspace-drawer-open', function (event) {
+            if (event.detail !== 'toolbar') setOpen(false);
+        });
+
+        openButton.addEventListener('click', function () {
+            if (isOpen) setOpen(false, { focus: 'open' });
+            else {
+                document.dispatchEvent(new CustomEvent('workspace-drawer-open', { detail: 'toolbar' }));
+                setOpen(true, { focus: 'close' });
+            }
+        });
+
+        closeButton.addEventListener('click', function () {
+            setOpen(false, { focus: 'open' });
+        });
+
+        /* همانند فایل‌منیجر، هر کلیک روی فضای بیرون پنل آن را می‌بندد. */
+        backdrop.addEventListener('click', function () {
+            setOpen(false, { focus: 'open' });
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (!isOpen) return;
+
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                setOpen(false, { focus: 'open' });
+                return;
+            }
+
+            if (event.key !== 'Tab') return;
+            const focusable = Array.from(sidebar.querySelectorAll(
+                'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )).filter(function (element) {
+                return !element.hidden &&
+                    element.getAttribute('aria-hidden') !== 'true' &&
+                    element.getClientRects().length > 0;
+            });
+
+            if (!focusable.length) {
+                event.preventDefault();
+                closeButton.focus();
+                return;
+            }
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && (document.activeElement === first || !sidebar.contains(document.activeElement))) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && (document.activeElement === last || !sidebar.contains(document.activeElement))) {
+                event.preventDefault();
+                first.focus();
+            }
+        });
+
+        /* در همهٔ اندازه‌ها سایدبار بسته آغاز می‌شود؛ تغییر اندازه ظاهر پنل را CSS مدیریت می‌کند. */
+        setOpen(false);
     }
 
-    openButton.addEventListener('click', function () { setOpen(true, { focus: 'close' }); });
-    closeButton.addEventListener('click', function () { setOpen(false, { focus: 'open' }); });
-    backdrop.addEventListener('click', function () { setOpen(false, { focus: 'open' }); });
-    document.addEventListener('keydown', function (event) {
-        if (!isOpen) return;
-        if (event.key === 'Escape') {
-            event.preventDefault();
-            setOpen(false, { focus: 'open' });
-            return;
-        }
-        if (!media.matches || event.key !== 'Tab') return;
-        const focusable = Array.from(sidebar.querySelectorAll(
-            'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        )).filter(function (element) {
-            return !element.hidden && element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0;
-        });
-        if (!focusable.length) { event.preventDefault(); closeButton.focus(); return; }
-        const first = focusable[0], last = focusable[focusable.length - 1];
-        if (event.shiftKey && (document.activeElement === first || !sidebar.contains(document.activeElement))) {
-            event.preventDefault(); last.focus();
-        } else if (!event.shiftKey && (document.activeElement === last || !sidebar.contains(document.activeElement))) {
-            event.preventDefault(); first.focus();
-        }
-    });
-    function handleViewportChange() { setOpen(!media.matches); }
-    if (typeof media.addEventListener === 'function') media.addEventListener('change', handleViewportChange);
-    else if (typeof media.addListener === 'function') media.addListener(handleViewportChange);
-    setOpen(!media.matches);
-})();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+}());
 
 </script>
-<script data-bundled-from="src/features/workspace/file-manager/file-manager.js">
+    <script data-bundled-from="src/features/workspace/file-manager/file-manager.js">
 /* File-manager presentation renderer. Data and editing actions remain in the editor core. */
 (function () {
     'use strict';
@@ -6931,7 +7899,7 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 }());
 
 </script>
-<script data-bundled-from="script.js">
+    <script data-bundled-from="script.js">
     (function() {
         'use strict';
 
@@ -7292,42 +8260,25 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
         const feList      = document.getElementById('feList');
         const feAddBtn    = document.getElementById('feAddBtn');
         const fileExplorer = document.getElementById('fileExplorer');
-        const feToggleBtn = document.getElementById('feToggleBtn');
-        const FILE_EXPLORER_KEY = 'html-editor-file-explorer-collapsed';
+        const fileManagerOpenButton = document.getElementById('fileManagerOpenButton');
         const feSearch = document.getElementById('feSearch');
         const feTypeFilter = document.getElementById('feTypeFilter');
         const feGroupMode = document.getElementById('feGroupMode');
 
-        const fileExplorerMedia = window.matchMedia('(max-width: 768px)');
-        const savedExplorerState = storageGet(FILE_EXPLORER_KEY);
-        let hasManualExplorerPreference = savedExplorerState === '1' || savedExplorerState === '0';
-
-        function setFileExplorerCollapsed(collapsed, persist) {
-            fileExplorer.classList.toggle('is-collapsed', collapsed);
-            feToggleBtn.setAttribute('aria-expanded', String(!collapsed));
-            feToggleBtn.setAttribute('aria-label', collapsed ? 'Open file manager' : 'Collapse file manager');
-            feToggleBtn.title = collapsed ? 'Open file manager' : 'Collapse file manager';
-            if (persist !== false) {
-                storageSet(FILE_EXPLORER_KEY, collapsed ? '1' : '0');
-                hasManualExplorerPreference = true;
+        // تمام باز و بسته‌شدن‌ها از کنترل‌کنندهٔ پنل کشویی عبور می‌کنند تا انیمیشن و پس‌زمینه هماهنگ بمانند.
+        function setFileExplorerCollapsed(collapsed) {
+            if (collapsed) {
+                if (fileExplorer.classList.contains('file-manager-drawer-open') && fileManagerOpenButton) {
+                    fileManagerOpenButton.click();
+                }
+                return;
+            }
+            if (fileManagerOpenButton && !fileExplorer.classList.contains('file-manager-drawer-open')) {
+                fileManagerOpenButton.click();
             }
         }
-
-        const initialExplorerCollapsed = hasManualExplorerPreference
-            ? savedExplorerState === '1'
-            : fileExplorerMedia.matches;
-        setFileExplorerCollapsed(initialExplorerCollapsed, false);
-        const handleExplorerViewportChange = function(event) {
-            if (!hasManualExplorerPreference) setFileExplorerCollapsed(event.matches, false);
-        };
-        if (typeof fileExplorerMedia.addEventListener === 'function') {
-            fileExplorerMedia.addEventListener('change', handleExplorerViewportChange);
-        } else if (typeof fileExplorerMedia.addListener === 'function') {
-            fileExplorerMedia.addListener(handleExplorerViewportChange);
-        }
-        feToggleBtn.addEventListener('click', function() {
-            setFileExplorerCollapsed(!fileExplorer.classList.contains('is-collapsed'));
-        });
+        // پنل بسته آغاز می‌شود؛ این وضعیت در HTML و کنترل‌کنندهٔ کشویی مدیریت می‌شود.
+        if (fileManagerOpenButton) fileManagerOpenButton.setAttribute('aria-expanded', 'false');
         const feNewForm   = document.getElementById('feNewForm');
         const feNewName   = document.getElementById('feNewName');
         const feLibraryBtn = document.getElementById('feLibraryBtn');
@@ -7370,8 +8321,70 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             activateTab('help');
         });
 
+        const appMenuBar = document.querySelector('.app-menu-bar');
+        function closeAppMenus() {
+            appMenuBar.querySelectorAll('.app-menu-dropdown').forEach(function(menu) {
+                menu.hidden = true;
+            });
+            appMenuBar.querySelectorAll('.app-menu-trigger').forEach(function(trigger) {
+                trigger.setAttribute('aria-expanded', 'false');
+            });
+        }
+        appMenuBar.addEventListener('click', function(event) {
+            const trigger = event.target.closest('.app-menu-trigger');
+            if (trigger) {
+                const menu = document.getElementById(trigger.getAttribute('aria-controls'));
+                const shouldOpen = trigger.getAttribute('aria-expanded') !== 'true';
+                closeAppMenus();
+                menu.hidden = !shouldOpen;
+                trigger.setAttribute('aria-expanded', String(shouldOpen));
+                return;
+            }
+
+            const item = event.target.closest('[data-menu-action]');
+            if (!item) return;
+            closeAppMenus();
+            const action = item.dataset.menuAction;
+            const clickById = function(id) { document.getElementById(id).click(); };
+            if (action === 'new-file') clickById('feAddBtn');
+            else if (action === 'open-files') clickById('fileManagerOpenButton');
+            else if (action === 'save-project') {
+                clearTimeout(autoSaveTimer);
+                clearTimeout(dirtyResetTimer);
+                if (saveProject()) {
+                    setDirty(false);
+                    showToast('✅ Project saved locally', 'success');
+                }
+            } else if (action === 'download') clickById('btnDownload');
+            else if (action === 'backup') {
+                clickById('btnSettings');
+                const backupSection = document.querySelector('[data-settings-nav="settingsBackupRestoreCard"]');
+                if (backupSection) backupSection.click();
+            } else if (action === 'undo') clickById('btnUndo');
+            else if (action === 'redo') clickById('btnRedo');
+            else if (action === 'find') clickById('searchExpandButton');
+            else if (action === 'clear-file') clickById('btnClear');
+            else if (action === 'clear-all') clickById('btnClearAll');
+            else if (action === 'font-increase') clickById('btnFontInc');
+            else if (action === 'font-decrease') clickById('btnFontDec');
+            else if (action === 'view-html') clickById('tab-html');
+            else if (action === 'view-css') clickById('tab-css');
+            else if (action === 'view-js') clickById('tab-js');
+            else if (action === 'refresh-preview') window.dispatchEvent(new Event('editor-refresh-preview'));
+            else if (action === 'editor-tools') clickById('toolbarSidebarOpen');
+            else if (action === 'settings') clickById('btnSettings');
+            else if (action === 'help') clickById('btnHelp');
+            else if (action === 'libraries') clickById('feLibraryBtn');
+        });
+        document.addEventListener('click', function(event) {
+            if (!appMenuBar.contains(event.target)) closeAppMenus();
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') closeAppMenus();
+        });
+
         feAddBtn.addEventListener('click', function() {
-            if (fileExplorer.classList.contains('is-collapsed')) {
+            if (!fileExplorer.classList.contains('file-manager-drawer-open')) {
                 setFileExplorerCollapsed(false);
             }
             feNewForm.hidden = !feNewForm.hidden;
@@ -9370,6 +10383,7 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             let h = 204, s = 0.7626, v = 0.8588;
             let ctx = null;
             let timer = null;
+            let applying = false;
 
             function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
             function hsvToRgb(hh, ss, vv) {
@@ -9441,6 +10455,17 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
                     const vv = ll + ss * Math.min(ll, 1 - ll);
                     return { h: hh, s: vv === 0 ? 0 : 2 * (1 - ll / vv), v: vv };
                 }
+                const probe = document.createElement('span');
+                probe.style.color = '';
+                probe.style.color = str;
+                if (!probe.style.color) return null;
+                probe.style.position = 'fixed';
+                probe.style.visibility = 'hidden';
+                document.body.appendChild(probe);
+                const computed = getComputedStyle(probe).color;
+                probe.remove();
+                m = computed.match(/^rgba?\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})/i);
+                if (m) return rgbToHsv(+m[1], +m[2], +m[3]);
                 return null;
             }
             function render(skipText) {
@@ -9503,11 +10528,13 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             function apply() {
                 if (!ctx) return;
                 const c = ctx;
-                const text = ': ' + formatColor(hsvToRgb(h, s, v)) + ';';
+                const text = formatColor(hsvToRgb(h, s, v));
                 close();
                 c.ta.focus();
-                c.ta.setSelectionRange(c.pos, c.pos + c.replaceLen);
-                insertText(c.ta, text);
+                c.ta.setSelectionRange(c.start, c.end);
+                applying = true;
+                try { insertText(c.ta, text); }
+                finally { applying = false; }
             }
             function close() { clearTimeout(timer); el.hidden = true; ctx = null; }
             el.querySelector('.cp-ok').addEventListener('click', apply);
@@ -9525,28 +10552,103 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             }, true);
             window.addEventListener('resize', closeIfOpen);
 
-            function isColorContext(val, pos, lang) {
+            function isInsideString(val, pos) {
+                let quote = '';
+                for (let i = 0; i < pos; i++) {
+                    if (val[i] === '\\') { i++; continue; }
+                    if (quote) {
+                        if (val[i] === quote) quote = '';
+                    } else if (val[i] === '"' || val[i] === "'" || val[i] === '`') {
+                        quote = val[i];
+                    }
+                }
+                return !!quote;
+            }
+            function isHtmlColorAttribute(val, pos) {
+                const tagStart = val.lastIndexOf('<', pos);
+                const tagEnd = val.indexOf('>', pos);
+                if (tagStart < 0 || tagEnd < 0) return false;
+                const attribute = /([\w:-]+)\s*=\s*(["'])([^"']*)$/.exec(val.slice(tagStart, pos));
+                return !!attribute && /^(?:color|bgcolor|fill|stroke|stop-color|flood-color|lighting-color)$/i.test(attribute[1]);
+            }
+            function colorTokenAt(val, start, end, lang) {
+                const pattern = /#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{4}|[0-9a-f]{3})\b|(?:rgba?|hsla?)\(\s*[^)]*\)|\b[a-z]+\b/gi;
+                const nonColorKeywords = new Set(['transparent', 'currentcolor', 'inherit', 'initial', 'unset', 'revert', 'revert-layer']);
+                let match;
+                while ((match = pattern.exec(val))) {
+                    const tokenStart = match.index, tokenEnd = tokenStart + match[0].length;
+                    if (end > start && (start < tokenStart || end > tokenEnd)) continue;
+                    if (tokenEnd < start || tokenStart > end) continue;
+                    if (/^[a-z]+$/i.test(match[0])) {
+                        const keyword = match[0].toLowerCase();
+                        if (nonColorKeywords.has(keyword)) continue;
+                        if (lang === 'js' && !isInsideString(val, tokenStart)) continue;
+                        if ((lang === 'css' || lang === 'html') &&
+                            !getColorContext(val, Math.min(tokenEnd, tokenStart + 1), lang) &&
+                            !(lang === 'html' && isHtmlColorAttribute(val, tokenStart))) continue;
+                    }
+                    if (!parseColor(match[0])) continue;
+                    return { start: tokenStart, end: tokenEnd, value: match[0] };
+                }
+                return null;
+            }
+            function getColorContext(val, pos, lang) {
                 const before = val.substring(0, pos);
-                let token = null;
+                let declarationStart = 0;
+                let declarationEnd = val.length;
                 if (lang === 'css') {
-                    const clean = before.replace(/\/\*[\s\S]*?(?:\*\/|$)/g, '');
-                    const depth = (clean.match(/\{/g) || []).length - (clean.match(/\}/g) || []).length;
-                    if (depth <= 0) return false;
-                    const line = clean.substring(clean.lastIndexOf('\n') + 1);
-                    const declarationStart = Math.max(line.lastIndexOf(';'), line.lastIndexOf('{'), line.lastIndexOf('}')) + 1;
-                    const declaration = line.slice(declarationStart);
-                    const m = declaration.match(/^\s*([\w-]+)\s*:\s*[^;{}]*$/);
-                    token = m && m[1];
+                    const segmentStart = Math.max(before.lastIndexOf(';'), before.lastIndexOf('{'), before.lastIndexOf('}')) + 1;
+                    const semicolon = val.indexOf(';', pos);
+                    const brace = val.indexOf('}', pos);
+                    const segmentEnd = semicolon < 0 ? brace : brace < 0 ? semicolon : Math.min(semicolon, brace);
+                    declarationStart = segmentStart;
+                    declarationEnd = segmentEnd < 0 ? val.length : segmentEnd;
                 } else if (lang === 'html') {
-                    const tag = before.substring(before.lastIndexOf('<'));
-                    const styleMatch = tag.match(/\bstyle\s*=\s*(["'])([\s\S]*)$/i);
-                    if (!styleMatch) return false;
-                    const declarations = styleMatch[2];
-                    const declaration = declarations.slice(declarations.lastIndexOf(';') + 1);
-                    const m = declaration.match(/^\s*([\w-]+)\s*:\s*[^;]*$/);
-                    token = m && m[1];
-                } else { return false; }
-                return !!token && (token.toLowerCase() === 'color' || /-color$/i.test(token));
+                    const tagStart = before.lastIndexOf('<');
+                    if (tagStart < 0) return null;
+                    const tagEnd = val.indexOf('>', pos);
+                    if (tagEnd < 0) return null;
+                    const tag = val.slice(tagStart, tagEnd);
+                    const styleMatch = /\bstyle\s*=\s*(["'])/i.exec(tag);
+                    if (!styleMatch) return null;
+                    const contentStart = tagStart + styleMatch.index + styleMatch[0].length;
+                    const quoteEnd = val.indexOf(styleMatch[1], contentStart);
+                    if (quoteEnd < 0 || pos < contentStart || pos > quoteEnd) return null;
+                    const segmentStart = Math.max(val.lastIndexOf(';', pos - 1), contentStart - 1) + 1;
+                    const semicolon = val.indexOf(';', pos);
+                    declarationStart = segmentStart;
+                    declarationEnd = semicolon >= 0 && semicolon < quoteEnd ? semicolon : quoteEnd;
+                } else {
+                    return null;
+                }
+
+                if (pos < declarationStart || pos > declarationEnd) return null;
+                const declaration = val.slice(declarationStart, declarationEnd);
+                const property = /^\s*([\w-]+)\s*:\s*([\s\S]*)$/.exec(declaration);
+                if (!property) return null;
+                const name = property[1].toLowerCase();
+                const colorProperties = /^(?:color|background|background-image|border|box-shadow|text-shadow|outline|text-decoration|fill|stroke|stop-color|flood-color|lighting-color|accent-color|caret-color)$/;
+                if (!colorProperties.test(name) && !/-color$/i.test(name) && !name.startsWith('--')) return null;
+                const valueOffset = declaration.indexOf(':') + 1;
+                const rawValue = declaration.slice(valueOffset);
+                const valueStart = rawValue.trim()
+                    ? declarationStart + valueOffset + (rawValue.length - rawValue.trimStart().length)
+                    : declarationStart + valueOffset + rawValue.length;
+                const valueEnd = rawValue.trim()
+                    ? declarationStart + valueOffset + rawValue.trimEnd().length
+                    : valueStart;
+                if (pos < valueStart || pos > declarationEnd) return null;
+                return { start: valueStart, end: valueEnd, value: val.slice(valueStart, valueEnd), insertAt: pos };
+            }
+            function getTarget(ta, lang, start, end) {
+                const val = ta.value;
+                const color = colorTokenAt(val, start, end, lang);
+                if (color) return color;
+                const context = getColorContext(val, start, lang);
+                if (!context) return null;
+                if (!context.value) return { start: start, end: end, value: '' };
+                if (/^(?:#?[a-z0-9-]+|rgba?\([^)]*|hsla?\([^)]*)$/i.test(context.value.trim())) return context;
+                return null;
             }
             const measureCtx2 = document.createElement('canvas').getContext('2d');
             function caretRect2(ta, pos) {
@@ -9564,17 +10666,16 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
                     lh: lh
                 };
             }
-            function openAt(ta, pos, lang) {
-                const rest = ta.value.substring(pos);
-                const rm = rest.match(/^[ \t]*:[ \t]*([^;\n}"']*);?/);
-                const initial = rm ? parseColor(rm[1]) : null;
-                ctx = { ta: ta, pos: pos, replaceLen: rm ? rm[0].length : 0 };
+            function openAt(ta, target) {
+                const initial = parseColor(target.value);
+                ctx = { ta: ta, start: target.start, end: target.end };
+                IntelliSense.hide();
                 if (initial) setHsv(initial, true);
                 else { h = 204; s = 0.7626; v = 0.8588; }
-                oldSw.style.background = toHex(hsvToRgb(h, s, v));
+                oldSw.style.background = initial ? toHex(hsvToRgb(h, s, v)) : 'transparent';
                 render(false);
                 el.hidden = false;
-                const c = caretRect2(ta, pos);
+                const c = caretRect2(ta, target.start);
                 const w = el.offsetWidth, hgt = el.offsetHeight;
                 let left = clamp(c.x, 8, Math.max(8, window.innerWidth - w - 8));
                 let top = c.bottom + 6;
@@ -9583,21 +10684,33 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
                 el.style.left = left + 'px';
                 el.style.top = top + 'px';
             }
-            function onInput(ta, lang, e) {
+            function scheduleOpen(ta, lang, start, end) {
                 clearTimeout(timer); close();
-                if (lang === 'js') return;
-                if (!e || e.inputType !== 'insertText' || !e.data || e.data.toLowerCase() !== 'r') return;
-                const pos = ta.selectionStart;
-                if (!isColorContext(ta.value, pos, lang)) return;
+                const target = getTarget(ta, lang, start, end);
+                if (!target) return;
                 timer = setTimeout(function() {
-                    if (document.activeElement === ta && ta.selectionStart === pos &&
-                        isColorContext(ta.value, pos, lang)) {
-                        openAt(ta, pos, lang);
+                    const current = getTarget(ta, lang, ta.selectionStart, ta.selectionEnd);
+                    if (document.activeElement === ta && current) {
+                        openAt(ta, current);
                     }
                 }, 300);
             }
+            function onInput(ta, lang) {
+                if (applying) return;
+                scheduleOpen(ta, lang, ta.selectionStart, ta.selectionEnd);
+            }
+            function onSelection(ta, lang) {
+                const start = ta.selectionStart, end = ta.selectionEnd;
+                const target = getTarget(ta, lang, start, end);
+                if (target) {
+                    clearTimeout(timer);
+                    openAt(ta, target);
+                } else if (!target) {
+                    closeIfOpen();
+                }
+            }
             function closeIfOpen() { if (!el.hidden) close(); }
-            return { onInput, close, closeIfOpen };
+            return { onInput, onSelection, close, closeIfOpen };
         })();
 
         // ==========================================
@@ -9817,6 +10930,15 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
                 if (autocompleteEnabled) IntelliSense.onInput(ta, lang, e);
                 else IntelliSense.hide();
                 picker.onInput(ta, lang, e);
+            });
+
+            ta.addEventListener('click', function() {
+                picker.onSelection(ta, lang);
+            });
+            ta.addEventListener('keyup', function(e) {
+                if (e.key === 'Shift' || e.key.startsWith('Arrow') || e.key === 'Home' || e.key === 'End') {
+                    picker.onSelection(ta, lang);
+                }
             });
 
             ta.addEventListener('scroll', function() {
@@ -10239,6 +11361,7 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
             if (k === 's') { e.preventDefault(); if (project) { clearTimeout(autoSaveTimer); if (saveProject()) { setDirty(false); showToast('✅ Auto-saved', 'success'); } } return; }
             if (k === 'f') {
                 e.preventDefault();
+                if (window.EditorSearchHeader) window.EditorSearchHeader.open({ focus: false, select: true });
                 searchInput.focus();
                 searchInput.select();
                 return;
@@ -12676,5 +13799,175 @@ body.toolbar-sidebar-open .toolbar-sidebar-open-button { display: none; }
 })();
 </script>
 
+    <script data-bundled-from="src/features/workspace/file-manager/file-manager-drawer.js">
+/* کنترل پنل کشویی فایل‌منیجر؛ انیمیشن و دسترس‌پذیری هم‌الگوی سایدبار ابزارهاست. */
+(function () {
+    'use strict';
+
+    function init() {
+        const openButton = document.getElementById('fileManagerOpenButton');
+        const closeButton = document.getElementById('fileManagerCloseButton');
+        const explorer = document.getElementById('fileExplorer');
+        const backdrop = document.getElementById('fileManagerBackdrop');
+        if (!openButton || !closeButton || !explorer || !backdrop) return;
+
+        let isOpen = false;
+        const transitionFallbackMs = 280;
+
+        function setOpen(nextOpen, options) {
+            const settings = options || {};
+            const wasOpen = isOpen;
+            isOpen = Boolean(nextOpen);
+
+            explorer.classList.toggle('file-manager-drawer-open', isOpen);
+            explorer.setAttribute('aria-hidden', String(!isOpen));
+            openButton.setAttribute('aria-expanded', String(isOpen));
+            openButton.setAttribute('aria-label', isOpen ? 'بستن فایل‌منیجر' : 'باز کردن فایل‌منیجر');
+            openButton.title = isOpen ? 'بستن فایل‌منیجر' : 'باز کردن فایل‌منیجر';
+
+            document.body.classList.toggle('file-manager-drawer-active', isOpen);
+
+            if (isOpen) {
+                explorer.setAttribute('role', 'dialog');
+                explorer.setAttribute('aria-modal', 'true');
+                backdrop.hidden = false;
+                backdrop.setAttribute('aria-hidden', 'false');
+                /* ایجاد یک نقطهٔ شروع مستقل برای انیمیشن محوشدن پس‌زمینه. */
+                void backdrop.offsetWidth;
+                backdrop.classList.add('is-visible');
+            } else {
+                explorer.removeAttribute('role');
+                explorer.removeAttribute('aria-modal');
+                backdrop.classList.remove('is-visible');
+                backdrop.setAttribute('aria-hidden', 'true');
+
+                if (!wasOpen || (window.matchMedia &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+                    backdrop.hidden = true;
+                } else {
+                    window.setTimeout(function () {
+                        if (!isOpen) backdrop.hidden = true;
+                    }, transitionFallbackMs);
+                }
+            }
+
+            if (settings.focus === 'close' && isOpen) closeButton.focus();
+            else if (!isOpen && settings.focus === 'open') openButton.focus();
+        }
+
+        document.addEventListener('workspace-drawer-open', function (event) {
+            if (event.detail !== 'file-manager') setOpen(false);
+        });
+
+        openButton.addEventListener('click', function () {
+            if (isOpen) setOpen(false, { focus: 'open' });
+            else {
+                document.dispatchEvent(new CustomEvent('workspace-drawer-open', { detail: 'file-manager' }));
+                setOpen(true, { focus: 'close' });
+            }
+        });
+
+        closeButton.addEventListener('click', function () {
+            setOpen(false, { focus: 'open' });
+        });
+
+        backdrop.addEventListener('click', function () {
+            setOpen(false, { focus: 'open' });
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (!isOpen) return;
+
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                setOpen(false, { focus: 'open' });
+                return;
+            }
+
+            if (event.key !== 'Tab') return;
+
+            const focusable = Array.from(explorer.querySelectorAll(
+                'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )).filter(function (element) {
+                return !element.hidden &&
+                    element.getAttribute('aria-hidden') !== 'true' &&
+                    element.getClientRects().length > 0;
+            });
+
+            if (!focusable.length) {
+                event.preventDefault();
+                closeButton.focus();
+                return;
+            }
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && (document.activeElement === first || !explorer.contains(document.activeElement))) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && (document.activeElement === last || !explorer.contains(document.activeElement))) {
+                event.preventDefault();
+                first.focus();
+            }
+        });
+
+        /* در همهٔ اندازه‌ها، فایل‌منیجر بسته آغاز می‌شود. */
+        setOpen(false);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+}());
+
+</script>
+    <script data-bundled-from="src/features/workspace/search/search-header.js">
+/* تعاملات هدر جست‌وجوی ثابت و بازشدن تدریجی کادر ورودی */
+(function () {
+    'use strict';
+    function init() {
+        const wrapper = document.getElementById('workspaceSearch');
+        const toggle = document.getElementById('searchExpandButton');
+        const panel = document.getElementById('searchPanel');
+        const input = document.getElementById('searchInput');
+        if (!wrapper || !toggle || !panel || !input) return;
+
+        function open(options) {
+            const settings = options || {};
+            wrapper.classList.add('is-expanded');
+            panel.hidden = false;
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.setAttribute('aria-label', 'بستن جست‌وجو');
+            toggle.title = 'بستن جست‌وجو';
+            if (settings.focus !== false) input.focus();
+            if (settings.select === true) input.select();
+        }
+        function close(options) {
+            const settings = options || {};
+            wrapper.classList.remove('is-expanded');
+            panel.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.setAttribute('aria-label', 'باز کردن جست‌وجو');
+            toggle.title = 'جست‌وجو در کد';
+            if (settings.focus !== false) toggle.focus();
+        }
+        toggle.addEventListener('click', function () {
+            if (wrapper.classList.contains('is-expanded')) close();
+            else open();
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && wrapper.classList.contains('is-expanded')) {
+                close({ focus: false });
+            }
+        });
+        window.EditorSearchHeader = Object.freeze({
+            open: open,
+            close: close,
+            isOpen: function () { return wrapper.classList.contains('is-expanded'); }
+        });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+}());
+</script>
 </body>
 </html>

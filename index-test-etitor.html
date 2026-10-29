@@ -3286,8 +3286,10 @@ body { padding-top: var(--workspace-header-height); }
     position: relative;
     display: flex;
     align-items: center;
-    flex: 0 0 auto;
-    min-width: 0;
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
     gap: 6px;
 }
 .workspace-search-toggle {
@@ -3447,7 +3449,13 @@ body { padding-top: var(--workspace-header-height); }
     .workspace-history-controls { gap: 2px; }
     .header-history-button { flex-basis: 29px; width: 29px; min-width: 29px; height: 32px; font-size: 19px; }
     .workspace-history-controls .header-dirty-badge { display: none; }
-    .workspace-search { gap: 3px; }
+    .workspace-search {
+        flex-basis: 32px;
+        width: 32px;
+        min-width: 32px;
+        height: 34px;
+        gap: 3px;
+    }
     .workspace-search-toggle { flex-basis: 32px; width: 32px; min-width: 32px; height: 34px; border-radius: 9px; }
     .workspace-search-panel { gap: 3px; padding: 3px 41px 3px 3px; width: min(420px, calc(100vw - 96px)); }
     .workspace-search-panel .search-input { height: 30px; padding: 4px 6px; font-size: 12px; }
@@ -3461,6 +3469,7 @@ body { padding-top: var(--workspace-header-height); }
     .app-menu-trigger { padding-inline: 5px; font-size: 11px; }
     .workspace-menu-button { flex-basis: 32px; width: 32px; min-width: 32px; height: 34px; min-height: 34px; }
     .header-history-button { flex-basis: 25px; width: 25px; min-width: 25px; height: 29px; font-size: 18px; }
+    .workspace-search { flex-basis: 30px; width: 30px; min-width: 30px; height: 32px; }
     .workspace-search-toggle { flex-basis: 30px; width: 30px; min-width: 30px; height: 32px; }
     .workspace-search-panel { width: min(360px, calc(100vw - 84px)); padding: 3px 36px 3px 3px; }
     .workspace-search-panel > button:not(.workspace-search-toggle) { flex-basis: 23px; min-width: 23px; height: 27px; }
@@ -3479,7 +3488,7 @@ body { padding-top: var(--workspace-header-height); }
     .workspace-menu-button { flex-basis: 29px; width: 29px; min-width: 29px; height: 31px; min-height: 31px; border-radius: 7px; }
     .workspace-history-controls { gap: 1px; }
     .header-history-button { flex-basis: 22px; width: 22px; min-width: 22px; height: 27px; font-size: 16px; border-radius: 6px; }
-    .workspace-search { gap: 2px; }
+    .workspace-search { flex-basis: 27px; width: 27px; min-width: 27px; height: 29px; gap: 2px; }
     .workspace-search-toggle { flex-basis: 27px; width: 27px; min-width: 27px; height: 29px; border-radius: 7px; }
     .workspace-search-panel { width: min(320px, calc(100vw - 76px)); padding: 3px 33px 3px 3px; gap: 2px; }
     .workspace-search-panel .search-input { height: 27px; padding: 3px 5px; font-size: 11px; }

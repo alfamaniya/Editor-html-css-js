@@ -4274,8 +4274,13 @@ body { padding-top: var(--workspace-header-height); }
                     <div class="search-results" id="searchResults" hidden></div>
                 </div>
             </div>
+            <button type="button" class="header-settings-button workspace-menu-button" id="btnSettings"
+                    aria-controls="settingsScreen" aria-haspopup="dialog" aria-expanded="false"
+                    aria-label="باز کردن تنظیمات ویرایشگر" title="تنظیمات ویرایشگر">
+                <span aria-hidden="true">⚙</span>
+            </button>
             <button type="button" class="toolbar-sidebar-open-button workspace-menu-button" id="toolbarSidebarOpen"
-                    aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار تنظیمات" title="باز کردن سایدبار تنظیمات">
+                    aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار ابزارها" title="باز کردن سایدبار ابزارها">
                 <span class="menu-glyph" aria-hidden="true"></span>
             </button>
         </div>
@@ -4303,7 +4308,6 @@ body { padding-top: var(--workspace-header-height); }
                 <button type="button" id="btnHelp" title="Open help guide">❔ Help</button>
                 <button type="button" id="btnWordTree" title="Open the live word tree">🌳 Word Tree</button>
                 <button type="button" id="feLibraryBtn" class="settings-libraries-button" title="مدیریت کتابخانه‌ها" aria-label="مدیریت کتابخانه‌ها">📚 کتابخانه‌ها</button>
-                <button type="button" id="btnSettings" title="تنظیمات ویرایشگر" aria-controls="settingsScreen" aria-haspopup="dialog" aria-expanded="false">⚙ تنظیمات</button>
             </div>
         </div>
     </aside>

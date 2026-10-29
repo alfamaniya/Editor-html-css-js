@@ -58,8 +58,12 @@ assert.ok(script.includes('ctx = { ta: ta, start: target.start, end: target.end,
     'بافت رنگ انتخابی باید کانال آلفا را حفظ کند.');
 
 function zIndex(source, selector) {
-    const escaped = selector.replace(/[.*+?^\x24{}()|[\]\\]/g, '\\$&');
-    const match = source.match(new RegExp(escaped + '\\s*\\{[^}]*?z-index:\\s*(\\d+)', 's'));
+    const start = source.indexOf(selector + ' {');
+    assert.ok(start >= 0, 'قاعدهٔ CSS پیدا نشد: ' + selector);
+    const end = source.indexOf('}', start);
+    assert.ok(end > start, 'پایان قاعدهٔ CSS پیدا نشد: ' + selector);
+    const rule = source.slice(start, end);
+    const match = rule.match(/z-index:\s*(\d+)/);
     assert.ok(match, 'z-index پیدا نشد: ' + selector);
     return Number(match[1]);
 }

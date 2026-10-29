@@ -3227,6 +3227,13 @@ body { padding-top: var(--workspace-header-height); }
     cursor: pointer;
 }
 .workspace-menu-button:hover { background: var(--blue-bg-4); }
+.header-settings-button {
+    font: 700 22px/1 'Segoe UI', Tahoma, sans-serif;
+}
+.header-settings-button[aria-expanded="true"] {
+    border-color: var(--blue-accent);
+    background: var(--blue-bg-4);
+}
 .workspace-menu-button:focus-visible,
 .header-history-button:focus-visible,
 .workspace-search-toggle:focus-visible {
@@ -4295,7 +4302,7 @@ body { padding-top: var(--workspace-header-height); }
     <aside class="toolbar-sidebar" id="toolbarSidebar" aria-label="نوار ابزار ویرایشگر" aria-hidden="true">
         <div class="toolbar-sidebar-heading">
             <span>ابزارهای ویرایشگر</span>
-            <button type="button" class="toolbar-sidebar-close-button" id="toolbarSidebarClose" aria-controls="toolbarSidebar" aria-label="بستن سایدبار تنظیمات" title="بستن سایدبار تنظیمات">×</button>
+            <button type="button" class="toolbar-sidebar-close-button" id="toolbarSidebarClose" aria-controls="toolbarSidebar" aria-label="بستن سایدبار ابزارها" title="بستن سایدبار ابزارها">×</button>
         </div>
         <div class="pane-label">
                 <div class="toolbar">

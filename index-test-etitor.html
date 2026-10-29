@@ -1128,7 +1128,8 @@
 
         .cp {
             position: fixed;
-            z-index: 5000;
+            /* پالت باید روی هدر (z-index: 6500) باشد، نه پشت آن. */
+            z-index: 7500;
             width: 232px;
             padding: 12px;
             background: #2b2b2b;
@@ -10445,6 +10446,7 @@ body { padding-top: var(--workspace-header-height); }
             const fmtSel = el.querySelector('.cp-fmt');
 
             let h = 204, s = 0.7626, v = 0.8588;
+            let alpha = null;
             let ctx = null;
             let timer = null;
             let applying = false;
@@ -10494,21 +10496,64 @@ body { padding-top: var(--workspace-header-height); }
                     return clamp(n, 0, 255).toString(16).padStart(2, '0');
                 }).join('');
             }
-            function formatColor(rgb) {
+            function formatColor(rgb, alphaOverride) {
                 const f = fmtSel.value;
-                if (f === 'rgb') return 'rgb(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ')';
+                const currentAlpha = arguments.length > 1 ? alphaOverride : alpha;
+                const hasAlpha = currentAlpha !== null && Number.isFinite(currentAlpha);
+                const alphaText = hasAlpha ? String(Math.round(clamp(currentAlpha, 0, 1) * 1000) / 1000) : '';
+                if (f === 'rgb') {
+                    const fn = hasAlpha ? 'rgba' : 'rgb';
+                    return fn + '(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] +
+                        (hasAlpha ? ', ' + alphaText : '') + ')';
+                }
                 if (f === 'hsl') {
                     const c = rgbToHsl(rgb[0], rgb[1], rgb[2]);
-                    return 'hsl(' + c[0] + ', ' + c[1] + '%, ' + c[2] + '%)';
+                    const fn = hasAlpha ? 'hsla' : 'hsl';
+                    return fn + '(' + c[0] + ', ' + c[1] + '%, ' + c[2] + '%' +
+                        (hasAlpha ? ', ' + alphaText : '') + ')';
                 }
-                return toHex(rgb);
+                const hex = toHex(rgb);
+                return hasAlpha
+                    ? hex + Math.round(clamp(currentAlpha, 0, 1) * 255).toString(16).padStart(2, '0')
+                    : hex;
+            }
+
+            // شفافیت رنگ را در قالب‌های HEX/RGBA/HSLA تشخیص می‌دهیم تا هنگام
+            // تغییر رنگ، کانال آلفای موجود ناخواسته حذف نشود.
+            function colorAlpha(value) {
+                const str = String(value || '').trim();
+                let match = str.match(/^#?([0-9a-f]{4}|[0-9a-f]{8})$/i);
+                if (match) {
+                    const hex = match[1];
+                    const pair = hex.length === 4
+                        ? hex.charAt(3) + hex.charAt(3)
+                        : hex.slice(6, 8);
+                    return parseInt(pair, 16) / 255;
+                }
+
+                match = str.match(/\/\s*(\d*\.?\d+%?)\s*\)$/i);
+                let rawAlpha = match ? match[1] : null;
+                if (!rawAlpha) {
+                    match = str.match(/^(?:rgba|hsla)\(.*?,\s*([+-]?(?:\d+\.?\d*|\.\d+)%?)\s*\)$/i);
+                    if (match) rawAlpha = match[1];
+                }
+                if (!rawAlpha) return null;
+
+                const parsed = parseFloat(rawAlpha);
+                if (!Number.isFinite(parsed)) return null;
+                return clamp(rawAlpha.endsWith('%') ? parsed / 100 : parsed, 0, 1);
             }
             function parseColor(str) {
                 str = (str || '').trim();
-                let m = str.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i);
+                let m = str.match(/^#?([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i);
                 if (m) {
                     let x = m[1];
-                    if (x.length === 3) x = x.charAt(0) + x.charAt(0) + x.charAt(1) + x.charAt(1) + x.charAt(2) + x.charAt(2);
+                    if (x.length === 3 || x.length === 4) {
+                        x = x.slice(0, 3).split('').map(function(ch) { return ch + ch; }).join('');
+                    } else if (x.length === 8) {
+                        // رابط رنگ، شفافیت را جداگانه نگه می‌دارد؛ HSV فقط RGB را دریافت می‌کند.
+                        x = x.slice(0, 6);
+                    }
                     return rgbToHsv(parseInt(x.substr(0, 2), 16), parseInt(x.substr(2, 2), 16), parseInt(x.substr(4, 2), 16));
                 }
                 m = str.match(/^rgba?\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})/i);
@@ -10592,12 +10637,11 @@ body { padding-top: var(--workspace-header-height); }
             function apply() {
                 if (!ctx) return;
                 const c = ctx;
-                const text = formatColor(hsvToRgb(h, s, v));
                 close();
                 c.ta.focus();
                 c.ta.setSelectionRange(c.start, c.end);
                 applying = true;
-                try { insertText(c.ta, text); }
+                try { insertText(c.ta, formatColor(hsvToRgb(h, s, v), c.alpha)); }
                 finally { applying = false; }
             }
             function close() { clearTimeout(timer); el.hidden = true; ctx = null; }
@@ -10714,25 +10758,110 @@ body { padding-top: var(--workspace-header-height); }
                 if (/^(?:#?[a-z0-9-]+|rgba?\([^)]*|hsla?\([^)]*)$/i.test(context.value.trim())) return context;
                 return null;
             }
-            const measureCtx2 = document.createElement('canvas').getContext('2d');
             function caretRect2(ta, pos) {
-                const cs = getComputedStyle(ta);
-                measureCtx2.font = cs.fontSize + ' ' + cs.fontFamily;
-                const charW = measureCtx2.measureText('M').width;
-                const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.5;
-                const lines = ta.value.substring(0, pos).split('\n');
-                const row = lines.length - 1;
-                const col = lines[row].length;
-                const r = ta.getBoundingClientRect();
+                const metrics = getComputedStyle(ta);
+                const lineHeight = parseFloat(metrics.lineHeight) || (parseFloat(metrics.fontSize) || 15) * 1.5;
+                const index = clamp(Number(pos) || 0, 0, ta.value.length);
+                const wrap = ta.closest('.code-wrap');
+                const code = wrap && wrap.querySelector('.highlight code');
+                const renderedText = code ? (code.textContent || '') : '';
+
+                // نخست از متن رندرشده‌ای مختصات می‌گیریم که دقیقاً روی textarea قرار دارد.
+                // این روش عرض واقعی نویسه‌ها، Tab و خطوط شکسته را در نظر می‌گیرد.
+                if (code && renderedText.slice(0, ta.value.length) === ta.value &&
+                    typeof document.createRange === 'function' && typeof document.createTreeWalker === 'function') {
+                    const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT);
+                    let textNode = null;
+                    let textOffset = 0;
+                    let consumed = 0;
+                    while (walker.nextNode()) {
+                        const candidate = walker.currentNode;
+                        const length = candidate.nodeValue ? candidate.nodeValue.length : 0;
+                        if (!length) continue;
+                        if (index <= consumed + length) {
+                            textNode = candidate;
+                            textOffset = index - consumed;
+                            break;
+                        }
+                        consumed += length;
+                    }
+
+                    if (textNode) {
+                        const range = document.createRange();
+                        range.setStart(textNode, textOffset);
+                        range.collapse(true);
+                        let rect = range.getBoundingClientRect();
+
+                        // بعضی مرورگرها برای مکان‌نمای انتهای گره، مستطیل صفر برمی‌گردانند.
+                        if (!rect || !rect.height) {
+                            if (textOffset < textNode.nodeValue.length) {
+                                range.setStart(textNode, textOffset);
+                                range.setEnd(textNode, textOffset + 1);
+                                rect = range.getBoundingClientRect();
+                            } else if (textOffset > 0) {
+                                range.setStart(textNode, textOffset - 1);
+                                range.setEnd(textNode, textOffset);
+                                rect = range.getBoundingClientRect();
+                                if (rect && rect.height) {
+                                    return { x: rect.right, bottom: rect.top + lineHeight, lh: lineHeight };
+                                }
+                            }
+                        }
+                        if (rect && rect.height) {
+                            return { x: rect.left, bottom: rect.top + lineHeight, lh: lineHeight };
+                        }
+                    }
+                }
+
+                // مسیر جایگزین برای مرورگرهایی که Range روی متن هایلایت‌شده مستطیل معتبر نمی‌دهد.
+                // ویژگی‌های واقعی textarea به آینه منتقل می‌شوند تا Tab و شکستن خط هم محاسبه شوند.
+                const textareaRect = ta.getBoundingClientRect();
+                const mirror = document.createElement('div');
+                const borderWidth = (parseFloat(metrics.borderLeftWidth) || 0) +
+                    (parseFloat(metrics.borderRightWidth) || 0);
+                mirror.style.position = 'fixed';
+                mirror.style.visibility = 'hidden';
+                mirror.style.pointerEvents = 'none';
+                mirror.style.left = textareaRect.left + 'px';
+                mirror.style.top = textareaRect.top + 'px';
+                mirror.style.width = (ta.clientWidth + borderWidth) + 'px';
+                mirror.style.height = 'auto';
+                mirror.style.minHeight = '0';
+                mirror.style.maxHeight = 'none';
+                mirror.style.margin = '0';
+                mirror.style.boxSizing = metrics.boxSizing;
+                [
+                    'fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'fontVariant',
+                    'fontStretch', 'lineHeight', 'letterSpacing', 'wordSpacing',
+                    'textIndent', 'textTransform', 'textAlign', 'direction', 'unicodeBidi',
+                    'tabSize', 'whiteSpace', 'overflowWrap', 'wordBreak',
+                    'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+                    'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'
+                ].forEach(function(property) {
+                    mirror.style[property] = metrics[property];
+                });
+                mirror.style.borderStyle = 'solid';
+                mirror.style.borderColor = 'transparent';
+                mirror.style.overflow = 'visible';
+                mirror.textContent = ta.value.slice(0, index);
+                const marker = document.createElement('span');
+                marker.textContent = '\u200b';
+                marker.style.cssText = 'display:inline-block;width:0;height:1em;padding:0;border:0;margin:0;overflow:hidden;vertical-align:baseline;';
+                mirror.appendChild(marker);
+                document.body.appendChild(mirror);
+                const markerRect = marker.getBoundingClientRect();
+                mirror.remove();
+
                 return {
-                    x: r.left + parseFloat(cs.paddingLeft) + col * charW - ta.scrollLeft,
-                    bottom: r.top + parseFloat(cs.paddingTop) + (row + 1) * lh - ta.scrollTop,
-                    lh: lh
+                    x: markerRect.left - ta.scrollLeft,
+                    bottom: markerRect.top + lineHeight - ta.scrollTop,
+                    lh: lineHeight
                 };
             }
             function openAt(ta, target) {
                 const initial = parseColor(target.value);
-                ctx = { ta: ta, start: target.start, end: target.end };
+                alpha = colorAlpha(target.value);
+                ctx = { ta: ta, start: target.start, end: target.end, alpha: alpha };
                 IntelliSense.hide();
                 if (initial) setHsv(initial, true);
                 else { h = 204; s = 0.7626; v = 0.8588; }

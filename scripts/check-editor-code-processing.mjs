@@ -135,7 +135,7 @@ test('complete standalone editor copied into HTML tab extracts every bundled ass
     assert.ok(result,'The standalone editor should be recognized as a complete HTML document.');
     assert.equal(result.css.length,8,'All eight bundled CSS blocks should be extracted.');
     assert.equal(result.js.length,15,'All fifteen bundled JavaScript blocks should be extracted.');
-    assert.match(result.html,/<!doctype\\s+html/i);
+    assert.match(result.html,/<!doctype\s+html/i);
     assert.match(result.html,/id="tab-html"/);
     const remaining = api.scanMarkupForPaste(result.html);
     assert.equal(remaining.invalid,false,'The remaining HTML should remain parseable.');
@@ -170,7 +170,7 @@ test('complete standalone editor copied into HTML tab extracts every bundled ass
     assert.equal(event.defaultPrevented,true,'Pasting the complete source should be intercepted.');
     assert.ok(context.editors.css.ta.value.includes(result.css[0]),'Extracted CSS should reach the CSS editor.');
     assert.ok(context.editors.js.ta.value.includes(result.js[0]),'Extracted JavaScript should reach the JS editor.');
-    assert.match(context.editors.html.ta.value,/<!doctype\\s+html/i);
+    assert.match(context.editors.html.ta.value,/<!doctype\s+html/i);
     assert.match(context.editors.html.ta.value,/id="tab-html"/);
     assert.equal(api.scanMarkupForPaste(context.editors.html.ta.value).blocks.length,0);
 });

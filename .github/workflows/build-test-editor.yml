@@ -60,6 +60,9 @@ jobs:
       - name: بررسی جایگاه دکمهٔ تنظیمات در هدر اصلی
         run: node scripts/check-settings-button-placement.mjs
 
+      - name: آزمون تشخیص رنگ و جایگاه پالت رنگ
+        run: node scripts/check-color-picker.mjs
+
       - name: آزمون پردازش و درج کدهای چسبانده‌شده
         run: node scripts/check-editor-code-processing.mjs
 

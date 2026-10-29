@@ -1120,7 +1120,8 @@
 
         .cp {
             position: fixed;
-            z-index: 5000;
+            /* پالت باید روی هدر (z-index: 6500) باشد، نه پشت آن. */
+            z-index: 7500;
             width: 232px;
             padding: 12px;
             background: #2b2b2b;

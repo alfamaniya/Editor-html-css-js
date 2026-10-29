@@ -9285,7 +9285,7 @@ body { padding-top: var(--workspace-header-height); }
         function getPasteStyleCode(block, scan) {
             if (block.templateDepth || block.parentTags.includes('template') || block.parentTags.includes('noscript')) return null;
             const attrs = block.attrs;
-            if (Object.keys(attrs).some(function(name) { return name !== 'type' && name !== 'media'; })) return null;
+            if (Object.keys(attrs).some(function(name) { return !['type', 'media', 'data-bundled-from'].includes(name); })) return null;
             const type = String(attrs.type || '').split(';')[0].trim().toLowerCase();
             if (type && type !== 'text/css') return null;
             if (!block.content.trim()) return null;
@@ -9309,7 +9309,7 @@ body { padding-top: var(--workspace-header-height); }
         function getPasteScriptCode(block) {
             if (block.templateDepth || block.parentTags.includes('template') || block.parentTags.includes('noscript') ||
                 Object.prototype.hasOwnProperty.call(block.attrs, 'src')) return null;
-            if (Object.keys(block.attrs).some(function(name) { return name !== 'type'; })) return null;
+            if (Object.keys(block.attrs).some(function(name) { return !['type', 'data-bundled-from'].includes(name); })) return null;
             const type = String(block.attrs.type || '').split(';')[0].trim().toLowerCase();
             if (!['','text/javascript','application/javascript','text/ecmascript','application/ecmascript'].includes(type)) return null;
             if (!block.content.trim() || block.parentTags.includes('head')) return null;

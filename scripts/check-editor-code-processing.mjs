@@ -129,4 +129,23 @@ test('the most complete clipboard format is selected',() => {
     assert.match(context.editors.js.ta.value,/alert\("rich"\);/);
     assert.match(context.editors.html.ta.value,/<h1>rich<\/h1>/);
 });
+test('complete standalone editor copied into HTML tab extracts every bundled asset',() => {
+    const markup = readFileSync('index-test-etitor.html','utf8');
+    const result = api.extractPasteAssets(markup);
+    assert.ok(result,'The standalone editor should be recognized as a complete HTML document.');
+    assert.equal(result.css.length,8,'All eight bundled CSS blocks should be extracted.');
+    assert.equal(result.js.length,15,'All fifteen bundled JavaScript blocks should be extracted.');
+    assert.match(result.html,/<!doctype\\s+html/i);
+    assert.match(result.html,/id="tab-html"/);
+    const remaining = api.scanMarkupForPaste(result.html);
+    assert.equal(remaining.invalid,false,'The remaining HTML should remain parseable.');
+    assert.equal(remaining.blocks.length,0,'No bundled style/script blocks should remain in HTML.');
+    assert.ok(result.js[0].includes('htmlTags'),'The first script should remain in original bundle order.');
+    assert.ok(result.js.some((code) => code.includes('window.EditorSearchHeader')),
+        'The final bundled module should not be lost during extraction.');
+});
+test('bundle metadata is allowed without allowing unrelated tag attributes',() => {
+    assert.equal(api.extractPasteAssets('<style id="unexpected">a { color:red; }</style>'),null);
+    assert.equal(api.extractPasteAssets('<body><script async>window.ready=true;</script></body>'),null);
+});
 console.log('Passed ' + passed + ' paste-processing tests.');

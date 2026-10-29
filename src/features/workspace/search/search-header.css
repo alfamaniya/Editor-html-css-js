@@ -1,5 +1,5 @@
 /* هدر ثابت جست‌وجو و دسترسی سریع به سایدبارها */
-:root { --workspace-header-height: 96px; }
+:root { --workspace-header-height: 60px; }
 body { padding-top: var(--workspace-header-height); }
 
 .workspace-header {
@@ -10,11 +10,11 @@ body { padding-top: var(--workspace-header-height); }
     right: 0;
     height: var(--workspace-header-height);
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) 42px;
-    grid-template-rows: 30px 1fr;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     align-items: center;
     gap: 8px;
-    padding: 6px 10px 7px;
+    padding: 5px 10px;
     direction: ltr;
     color: var(--blue-text);
     background: linear-gradient(135deg, var(--chrome-purple), var(--chrome-purple-deep));
@@ -22,10 +22,12 @@ body { padding-top: var(--workspace-header-height); }
     box-shadow: 0 5px 18px rgb(0 0 0 / 22%);
 }
 .app-menu-bar {
-    grid-column: 1 / -1;
+    grid-column: 2;
     grid-row: 1;
+    justify-self: center;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 3px;
     min-width: 0;
     direction: ltr;
@@ -93,11 +95,26 @@ body { padding-top: var(--workspace-header-height); }
     margin: 4px 6px;
     background: rgb(138 185 232 / 20%);
 }
+.workspace-header-side {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 8px;
+    grid-row: 1;
+}
+.workspace-header-side-start {
+    grid-column: 1;
+    justify-self: start;
+}
+.workspace-header-side-end {
+    position: relative;
+    grid-column: 3;
+    justify-self: end;
+}
 .file-manager-open-button,
-.toolbar-sidebar-open-button { grid-row: 2; }
-.file-manager-open-button { grid-column: 1; }
-.workspace-header-center { grid-column: 2; grid-row: 2; }
-.toolbar-sidebar-open-button { grid-column: 3; }
+.toolbar-sidebar-open-button {
+    flex: 0 0 42px;
+}
 .workspace-menu-button {
     position: static !important;
     inset: auto !important;
@@ -144,16 +161,7 @@ body { padding-top: var(--workspace-header-height); }
     border-radius: 2px;
     content: "";
 }
-.workspace-header-center {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    min-width: 0;
-    direction: ltr;
-}
+
 .workspace-history-controls {
     display: flex;
     align-items: center;
@@ -189,12 +197,12 @@ body { padding-top: var(--workspace-header-height); }
     font-size: 10px;
     white-space: nowrap;
 }
- .workspace-search {
-    position: static;
+.workspace-search {
+    position: relative;
     display: flex;
     align-items: center;
-    flex: 1 1 auto;
-    min-width: 38px;
+    flex: 0 0 auto;
+    min-width: 0;
     gap: 6px;
 }
 .workspace-search-toggle {
@@ -234,11 +242,11 @@ body { padding-top: var(--workspace-header-height); }
     transform: rotate(48deg);
     transform-origin: left center;
 }
-.workspace-search.is-expanded + .workspace-history-controls { visibility: hidden; }
 .workspace-search.is-expanded .workspace-search-toggle {
     position: absolute;
     z-index: 7201;
-    left: 0;
+    left: auto;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -246,16 +254,16 @@ body { padding-top: var(--workspace-header-height); }
     position: absolute;
     z-index: 7200;
     top: 50%;
-    left: 0;
+    left: auto;
     right: 0;
     transform: translateY(-50%);
     display: flex;
     flex: 1 1 0;
     align-items: center;
     min-width: 0;
-    width: auto;
+    width: min(460px, calc(100vw - 112px));
     gap: 5px;
-    padding: 4px 6px 4px 48px;
+    padding: 4px 48px 4px 6px;
     border: 1px solid var(--blue-border);
     border-radius: 11px;
     background: var(--blue-bg-1);
@@ -341,28 +349,56 @@ body { padding-top: var(--workspace-header-height); }
 :root[data-theme="light"] .app-menu-item span { color: #647c96; }
 :root[data-theme="light"] .app-menu-item:hover { color: #172333; background: #dcecf8; }
 @media (max-width: 760px) {
-    :root { --workspace-header-height: 94px; }
-    .workspace-header { grid-template-columns: 38px minmax(0, 1fr) 38px; grid-template-rows: 28px 1fr; gap: 5px; padding: 5px 7px 6px; }
-    .app-menu-trigger { min-height: 27px; padding: 4px 9px; }
-    .workspace-menu-button { flex-basis: 38px; width: 38px; min-width: 38px; height: 40px; min-height: 40px; border-radius: 10px; }
-    .workspace-header-center { gap: 4px; }
-    .workspace-history-controls { gap: 3px; }
-    .header-history-button { flex-basis: 30px; width: 30px; min-width: 30px; height: 36px; font-size: 20px; }
+    :root { --workspace-header-height: 56px; }
+    .workspace-header {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
+        gap: 5px;
+        padding: 4px 7px;
+    }
+    .workspace-header-side { gap: 4px; }
+    .app-menu-trigger { min-height: 27px; padding: 4px 7px; font-size: 12px; }
+    .workspace-menu-button { flex-basis: 34px; width: 34px; min-width: 34px; height: 36px; min-height: 36px; border-radius: 9px; }
+    .workspace-history-controls { gap: 2px; }
+    .header-history-button { flex-basis: 29px; width: 29px; min-width: 29px; height: 32px; font-size: 19px; }
     .workspace-history-controls .header-dirty-badge { display: none; }
-    .workspace-search { gap: 4px; }
-    .workspace-search-toggle { flex-basis: 36px; width: 36px; min-width: 36px; height: 38px; border-radius: 10px; }
-    .workspace-search-panel { gap: 3px; padding: 3px; }
-    .workspace-search-panel .search-input { height: 32px; padding: 4px 6px; font-size: 12px; }
+    .workspace-search { gap: 3px; }
+    .workspace-search-toggle { flex-basis: 32px; width: 32px; min-width: 32px; height: 34px; border-radius: 9px; }
+    .workspace-search-panel { gap: 3px; padding: 3px 41px 3px 3px; width: min(420px, calc(100vw - 96px)); }
+    .workspace-search-panel .search-input { height: 30px; padding: 4px 6px; font-size: 12px; }
     .workspace-search-panel .search-count { display: none; }
-    .workspace-search-panel > button:not(.workspace-search-toggle) { flex-basis: 25px; min-width: 25px; height: 30px; }
+    .workspace-search-panel > button:not(.workspace-search-toggle) { flex-basis: 25px; min-width: 25px; height: 28px; }
+}
+@media (max-width: 480px) {
+    .workspace-header { gap: 4px; padding-inline: 6px; }
+    .workspace-header-side { gap: 3px; }
+    .app-menu-bar { gap: 1px; }
+    .app-menu-trigger { padding-inline: 5px; font-size: 11px; }
+    .workspace-menu-button { flex-basis: 32px; width: 32px; min-width: 32px; height: 34px; min-height: 34px; }
+    .header-history-button { flex-basis: 25px; width: 25px; min-width: 25px; height: 29px; font-size: 18px; }
+    .workspace-search-toggle { flex-basis: 30px; width: 30px; min-width: 30px; height: 32px; }
+    .workspace-search-panel { width: min(360px, calc(100vw - 84px)); padding: 3px 36px 3px 3px; }
+    .workspace-search-panel > button:not(.workspace-search-toggle) { flex-basis: 23px; min-width: 23px; height: 27px; }
 }
 @media (max-width: 360px) {
-    .workspace-header { grid-template-columns: 36px minmax(0, 1fr) 36px; gap: 4px; padding-inline: 5px; }
-    .app-menu-trigger { padding-inline: 7px; font-size: 12px; }
-    .workspace-menu-button { flex-basis: 36px; width: 36px; min-width: 36px; }
-    .workspace-header-center { gap: 3px; }
-    .header-history-button { flex-basis: 27px; width: 27px; min-width: 27px; }
-    .workspace-search-toggle { flex-basis: 32px; width: 32px; min-width: 32px; }
+    :root { --workspace-header-height: 52px; }
+    .workspace-header {
+        grid-template-columns: max-content minmax(0, 1fr) max-content;
+        grid-template-rows: minmax(0, 1fr);
+        gap: 3px;
+        padding: 3px 5px;
+    }
+    .workspace-header-side { gap: 2px; }
+    .app-menu-bar { gap: 0; }
+    .app-menu-trigger { min-height: 24px; padding-inline: 3px; font-size: 10px; }
+    .workspace-menu-button { flex-basis: 29px; width: 29px; min-width: 29px; height: 31px; min-height: 31px; border-radius: 7px; }
+    .workspace-history-controls { gap: 1px; }
+    .header-history-button { flex-basis: 22px; width: 22px; min-width: 22px; height: 27px; font-size: 16px; border-radius: 6px; }
+    .workspace-search { gap: 2px; }
+    .workspace-search-toggle { flex-basis: 27px; width: 27px; min-width: 27px; height: 29px; border-radius: 7px; }
+    .workspace-search-panel { width: min(320px, calc(100vw - 76px)); padding: 3px 33px 3px 3px; gap: 2px; }
+    .workspace-search-panel .search-input { height: 27px; padding: 3px 5px; font-size: 11px; }
+    .workspace-search-panel > button:not(.workspace-search-toggle) { flex-basis: 21px; min-width: 21px; height: 25px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .workspace-search-panel, .workspace-search-toggle { transition: none !important; }

@@ -15,6 +15,17 @@
 </head>
 <body>
     <header class="workspace-header" id="workspaceHeader" aria-label="جست‌وجو و ابزارهای اصلی">
+        <div class="workspace-header-side workspace-header-side-start">
+            <button type="button" class="file-manager-open-button workspace-menu-button" id="fileManagerOpenButton"
+                    aria-controls="fileExplorer" aria-expanded="false" aria-label="باز کردن فایل‌منیجر" title="باز کردن فایل‌منیجر">
+                <span class="menu-glyph" aria-hidden="true"></span>
+            </button>
+            <div class="workspace-history-controls" role="group" aria-label="تاریخچه ویرایش">
+                <button type="button" class="header-history-button" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
+                <button type="button" class="header-history-button" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
+                <span class="dirty header-dirty-badge" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
+            </div>
+        </div>
         <nav class="app-menu-bar" aria-label="Application menu">
             <div class="app-menu">
                 <button type="button" class="app-menu-trigger" aria-expanded="false" aria-controls="fileMenu">File</button>
@@ -65,11 +76,7 @@
                 </div>
             </div>
         </nav>
-        <button type="button" class="file-manager-open-button workspace-menu-button" id="fileManagerOpenButton"
-                aria-controls="fileExplorer" aria-expanded="false" aria-label="باز کردن فایل‌منیجر" title="باز کردن فایل‌منیجر">
-            <span class="menu-glyph" aria-hidden="true"></span>
-        </button>
-        <div class="workspace-header-center">
+        <div class="workspace-header-side workspace-header-side-end">
             <div class="workspace-search" id="workspaceSearch">
                 <button type="button" class="workspace-search-toggle" id="searchExpandButton"
                         aria-controls="searchPanel" aria-expanded="false" aria-label="باز کردن جست‌وجو" title="جست‌وجو در کد">
@@ -87,16 +94,11 @@
                     <div class="search-results" id="searchResults" hidden></div>
                 </div>
             </div>
-            <div class="workspace-history-controls" role="group" aria-label="تاریخچه ویرایش">
-                <button type="button" class="header-history-button" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
-                <button type="button" class="header-history-button" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
-                <span class="dirty header-dirty-badge" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
-            </div>
+            <button type="button" class="toolbar-sidebar-open-button workspace-menu-button" id="toolbarSidebarOpen"
+                    aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار تنظیمات" title="باز کردن سایدبار تنظیمات">
+                <span class="menu-glyph" aria-hidden="true"></span>
+            </button>
         </div>
-        <button type="button" class="toolbar-sidebar-open-button workspace-menu-button" id="toolbarSidebarOpen"
-                aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار تنظیمات" title="باز کردن سایدبار تنظیمات">
-            <span class="menu-glyph" aria-hidden="true"></span>
-        </button>
     </header>
 
     <header class="page-symbol-header" aria-label="Popular code quick inserts">

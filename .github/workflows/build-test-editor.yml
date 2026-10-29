@@ -57,6 +57,9 @@ jobs:
       - name: بررسی یکپارچگی فایل اصلی
         run: node scripts/check-index-integrity.mjs
 
+      - name: بررسی جایگاه دکمهٔ تنظیمات در هدر اصلی
+        run: node scripts/check-settings-button-placement.mjs
+
       - name: آزمون پردازش و درج کدهای چسبانده‌شده
         run: node scripts/check-editor-code-processing.mjs
 

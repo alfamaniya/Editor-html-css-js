@@ -143,6 +143,36 @@ test('complete standalone editor copied into HTML tab extracts every bundled ass
     assert.ok(result.js[0].includes('htmlTags'),'The first script should remain in original bundle order.');
     assert.ok(result.js.some((code) => code.includes('window.EditorSearchHeader')),
         'The final bundled module should not be lost during extraction.');
+
+    function editor(lang, value) {
+        const ta = {
+            value, selectionStart:0, selectionEnd:0,
+            setRangeText(text, start, end) {
+                this.value = this.value.slice(0,start) + text + this.value.slice(end);
+            },
+            setSelectionRange(start, end) { this.selectionStart=start; this.selectionEnd=end; },
+            dispatchEvent() {}
+        };
+        return {lang,ta,refresh(){}};
+    }
+    context.editors = {
+        html:editor('html',''), css:editor('css',''), js:editor('js','')
+    };
+    context.showToast = function() {};
+    context.getFileForLang = function() { return null; };
+    context.Event = class { constructor(type, options) { this.type=type; this.bubbles=options.bubbles; } };
+    const event = {
+        defaultPrevented:false,
+        clipboardData:{getData(type) { return type === 'text/plain' ? markup : ''; }},
+        preventDefault() { this.defaultPrevented=true; }
+    };
+    api.handleHtmlEditorPaste(event);
+    assert.equal(event.defaultPrevented,true,'Pasting the complete source should be intercepted.');
+    assert.ok(context.editors.css.ta.value.includes(result.css[0]),'Extracted CSS should reach the CSS editor.');
+    assert.ok(context.editors.js.ta.value.includes(result.js[0]),'Extracted JavaScript should reach the JS editor.');
+    assert.match(context.editors.html.ta.value,/<!doctype\\s+html/i);
+    assert.match(context.editors.html.ta.value,/id="tab-html"/);
+    assert.equal(api.scanMarkupForPaste(context.editors.html.ta.value).blocks.length,0);
 });
 test('bundle metadata is allowed without allowing unrelated tag attributes',() => {
     assert.equal(api.extractPasteAssets('<style id="unexpected">a { color:red; }</style>'),null);

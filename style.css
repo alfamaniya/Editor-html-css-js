@@ -681,11 +681,17 @@
             background: transparent;
             z-index: 1;
             scrollbar-width: none;
-            padding-bottom: 40px;
-            padding-right: 40px;
         }
         .highlight::-webkit-scrollbar { display: none; }
-        .highlight code { font-family: inherit; font-size: inherit; line-height: inherit; }
+        /* همهٔ نویسه‌های لایهٔ رنگی باید معیارهای تایپوگرافی textarea را حفظ کنند. */
+        .highlight code,
+        .highlight code * {
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: normal;
+            font-style: normal;
+            line-height: inherit;
+        }
 
         .input {
             color: transparent;
@@ -699,10 +705,10 @@
         .input::selection { background: rgba(255, 138, 184, 0.45); color: transparent; }
         .input::-moz-selection { background: rgba(255, 138, 184, 0.45); color: transparent; }
 
-        .hl-tag      { color: #f92672; font-weight: bold; }
+        .hl-tag      { color: #f92672; }
         .hl-attr     { color: #a6e22e; }
         .hl-string   { color: #e6db74; }
-        .hl-comment  { color: #75715e; font-style: italic; }
+        .hl-comment  { color: #75715e; }
         .hl-doctype  { color: #66d9ef; }
         .hl-num      { color: #ae81ff; }
 

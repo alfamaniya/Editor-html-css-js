@@ -60,6 +60,9 @@ jobs:
       - name: آزمون پردازش و درج کدهای چسبانده‌شده
         run: node scripts/check-editor-code-processing.mjs
 
+      - name: آزمون هم‌ترازی لایه‌های ویرایشگر و دقت مکان‌نما
+        run: node scripts/check-editor-overlay-alignment.mjs
+
       - name: آزمون دسترس‌پذیری صفحه‌کلید در پنجرهٔ تنظیمات
         run: node scripts/check-settings-dialog-keyboard.mjs
 

@@ -2888,10 +2888,7 @@
             const ta = ed.ta;
             // Keep keyboard focus in the search field so Enter never edits the selected code.
             ta.setSelectionRange(m.start, m.end);
-            const cs = getComputedStyle(ta);
-            const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.5;
-            ta.scrollTop = Math.max(0, (m.line - 4) * lh);
-            ed.syncScroll();
+            ed.scrollToPosition(m.start, 3);
             searchIndex = idx;
             searchResults.querySelectorAll('.search-line').forEach(function(b) {
                 b.classList.toggle('active', +b.dataset.idx === idx);
@@ -2978,9 +2975,61 @@
             const highlight   = HIGHLIGHTERS[lang];
 
             function syncScroll() {
-                pre.scrollTop  = ta.scrollTop;
+                // هماهنگی با محدودهٔ قابل‌نمایش textarea؛ نوارهای پیمایش از فضای متن کم می‌کنند.
+                const width = ta.clientWidth;
+                const height = ta.clientHeight;
+                if (pre.style.width !== width + 'px') pre.style.width = width + 'px';
+                if (pre.style.height !== height + 'px') pre.style.height = height + 'px';
+                pre.scrollTop = ta.scrollTop;
                 pre.scrollLeft = ta.scrollLeft;
                 lineNumbers.scrollTop = ta.scrollTop;
+            }
+
+            // محل متن را از هندسهٔ واقعی لایهٔ رندرشده می‌خوانیم؛ شمارهٔ خط منطقی
+            // در حالت شکستن خطوط، تعداد ردیف‌های دیداری را نشان نمی‌دهد.
+            function scrollToPosition(position, visibleLines) {
+                if (!code || typeof document.createRange !== 'function') return false;
+                const renderedText = code.textContent || '';
+                if (!renderedText.length || renderedText.slice(0, ta.value.length) !== ta.value) return false;
+
+                let target = Math.max(0, Math.min(ta.value.length, Number(position) || 0));
+                while (target < renderedText.length && renderedText.charAt(target) === '\n') target++;
+                if (target >= renderedText.length) {
+                    target = Math.min(ta.value.length, renderedText.length - 1);
+                    while (target > 0 && renderedText.charAt(target) === '\n') target--;
+                }
+
+                const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT);
+                let node = null;
+                let offset = target;
+                while (walker.nextNode()) {
+                    const current = walker.currentNode;
+                    const length = current.nodeValue ? current.nodeValue.length : 0;
+                    if (!length) continue;
+                    if (offset < length) {
+                        node = current;
+                        break;
+                    }
+                    offset -= length;
+                }
+                if (!node) return false;
+
+                syncScroll();
+                const range = document.createRange();
+                range.setStart(node, offset);
+                range.setEnd(node, Math.min(node.nodeValue.length, offset + 1));
+                const rect = range.getBoundingClientRect();
+                if (!rect || !Number.isFinite(rect.top) || rect.height === 0) return false;
+
+                const containerTop = pre.getBoundingClientRect().top;
+                const contentTop = rect.top - containerTop + pre.scrollTop;
+                const metrics = getComputedStyle(ta);
+                const lineHeight = parseFloat(metrics.lineHeight) ||
+                    (parseFloat(metrics.fontSize) || 15) * 1.5;
+                const offsetTop = Math.max(0, Number(visibleLines) || 0) * lineHeight;
+                ta.scrollTop = Math.max(0, contentTop - offsetTop);
+                syncScroll();
+                return true;
             }
             function refresh() {
                 code.innerHTML = highlight(ta.value) + '\n';
@@ -2994,6 +3043,14 @@
                 lineNumbers.textContent = parts.join('\n');
                 syncScroll();
             }
+
+            if (typeof ResizeObserver === 'function') {
+                const editorResizeObserver = new ResizeObserver(syncScroll);
+                editorResizeObserver.observe(ta);
+            } else {
+                window.addEventListener('resize', syncScroll);
+            }
+            syncScroll();
 
             if (lang === 'html') ta.addEventListener('paste', handleHtmlEditorPaste);
 
@@ -3077,7 +3134,7 @@
                 }
             });
 
-            return { lang, wrap, ta, refresh, syncScroll };
+            return { lang, wrap, ta, refresh, syncScroll, scrollToPosition };
         }
 
         // ==========================================
@@ -3354,8 +3411,11 @@
                 root.dataset.lineNumbers = value;
             } else if (key === 'wrapLines') {
                 root.dataset.wrapLines = value;
-                document.querySelectorAll('.editor-wrap .input').forEach(function(ta) {
-                    ta.wrap = value === 'on' ? 'soft' : 'off';
+                LANGS.forEach(function(lang) {
+                    const editor = editors[lang];
+                    if (!editor) return;
+                    editor.ta.wrap = value === 'on' ? 'soft' : 'off';
+                    editor.refresh();
                 });
             } else if (key === 'autocomplete') {
                 autocompleteEnabled = value === 'on';
@@ -3567,13 +3627,9 @@
                 editor.refresh();
                 const start = Math.max(0, Math.min(file.content.length, Number(options.start) || 0));
                 const end = Math.max(start, Math.min(file.content.length, Number(options.end) || start));
-                const metrics = window.getComputedStyle(editor.ta);
-                const lineHeight = parseFloat(metrics.lineHeight) || (parseFloat(metrics.fontSize) || 15) * 1.5;
-                const lineNumber = file.content.slice(0, start).split('\n').length;
                 editor.ta.focus();
-                editor.ta.scrollTop = Math.max(0, (lineNumber - 2) * lineHeight);
                 editor.ta.setSelectionRange(start, end);
-                editor.syncScroll();
+                editor.scrollToPosition(start, 2);
                 return true;
             }
         };

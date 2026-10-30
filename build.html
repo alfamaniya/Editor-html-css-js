@@ -844,6 +844,15 @@
 
     /* ------------------------ Canvas -------------------------- */
     bindCanvas() {
+      // Capture selection before component-level drag handlers run. This keeps
+      // the properties panel responsive for nested content and custom markup.
+      this.canvas.addEventListener("pointerdown", (e) => {
+        const node = e.target instanceof Element ? e.target.closest("[data-id]") : null;
+        if (!node || !this.canvas.contains(node)) return;
+        const comp = this.components.find((item) => item.id === node.dataset.id);
+        if (comp && this.selected !== comp) this.select(comp);
+      }, true);
+
       this.canvasScroll.addEventListener("dragover", (e) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = "copy";
@@ -1124,9 +1133,12 @@
     renderProps() {
       if (!this.selected) {
         this.propsPanel.classList.remove("visible");
+        this.propsPanel.setAttribute("aria-hidden", "true");
         return;
       }
+      this.propsPanel.hidden = false;
       this.propsPanel.classList.add("visible");
+      this.propsPanel.setAttribute("aria-hidden", "false");
       this.propsType.textContent = `${this.selected.constructor.label} · ${this.selected.id}`;
       this.renderStyleControls(this.selected);
       this.renderHoverControls(this.selected);

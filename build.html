@@ -372,19 +372,19 @@
       const lines = [];
       if (s.opacity != null && s.opacity !== "") lines.push(`opacity: ${Math.max(0, Math.min(1, Number(s.opacity)))};`);
       if (s.zIndex != null && s.zIndex !== "") lines.push(`z-index: ${Math.round(Number(s.zIndex))};`);
-      if (s.padding !== "") lines.push(`padding: ${s.padding};`);
-      if (s.borderWidth !== "") lines.push(`border: ${s.borderWidth}px ${s.borderStyle || "solid"} ${s.borderColor || "#cbd5e1"};`);
+      if (s.padding != null && s.padding !== "") lines.push(`padding: ${s.padding};`);
+      if (s.borderWidth != null && s.borderWidth !== "") lines.push(`border: ${s.borderWidth}px ${s.borderStyle || "solid"} ${s.borderColor || "#cbd5e1"};`);
       if (s.fontWeight !== "") lines.push(`font-weight: ${s.fontWeight};`);
       if (s.textAlign) lines.push(`text-align: ${s.textAlign};`);
-      if (s.lineHeight !== "") lines.push(`line-height: ${s.lineHeight};`);
-      if (s.letterSpacing !== "") lines.push(`letter-spacing: ${s.letterSpacing}px;`);
+      if (s.lineHeight != null && s.lineHeight !== "") lines.push(`line-height: ${s.lineHeight};`);
+      if (s.letterSpacing != null && s.letterSpacing !== "") lines.push(`letter-spacing: ${s.letterSpacing}px;`);
       if (s.cursor) lines.push(`cursor: ${s.cursor};`);
       if (s.overflow) lines.push(`overflow: ${s.overflow};`);
       if (s.display) lines.push(`display: ${s.display};`);
       ["minWidth", "maxWidth", "minHeight", "maxHeight"].forEach((key) => {
-        if (s[key] !== "") lines.push(`${key.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}: ${s[key]}px;`);
+        if (s[key] != null && s[key] !== "") lines.push(`${key.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}: ${s[key]}px;`);
       });
-      if (s.margin !== "") lines.push(`margin: ${s.margin};`);
+      if (s.margin != null && s.margin !== "") lines.push(`margin: ${s.margin};`);
       if (s.fontFamily) lines.push(`font-family: ${s.fontFamily};`);
       if (s.textDecoration) lines.push(`text-decoration: ${s.textDecoration};`);
       if (s.objectFit) lines.push(`object-fit: ${s.objectFit};`);

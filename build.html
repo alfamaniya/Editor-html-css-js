@@ -291,6 +291,10 @@
           <div id="styleControls"></div>
         </section>
         <section class="props-section">
+          <h4>Hover (این المان)</h4>
+          <div id="hoverControls"></div>
+        </section>
+        <section class="props-section">
           <h4>Actions (JavaScript)</h4>
           <div id="actionList"></div>
           <button class="add-action-btn" id="addActionBtn">+ Add action</button>
@@ -431,6 +435,7 @@
       });
 
       this.actions = [];
+      this.hoverProps = { enabled: false, bgColor: "", textColor: "", scale: 1.03, opacity: 1, radius: null, shadow: "none" };
     }
 
     /* ---------- markup / css generation ---------- */
@@ -462,8 +467,23 @@
 
     get selector() { return `#${this.id}`; }
 
+    get hoverCSS() {
+      const h = this.hoverProps || {};
+      if (!h.enabled) return "";
+      const lines = ["transition: background-color .18s ease, color .18s ease, transform .18s ease, opacity .18s ease, border-radius .18s ease, box-shadow .18s ease;"];
+      if (h.bgColor) lines.push(`background: ${h.bgColor};`);
+      if (h.textColor) lines.push(`color: ${h.textColor};`);
+      if (Number.isFinite(Number(h.scale)) && Number(h.scale) !== 1) lines.push(`transform: scale(${Math.max(.5, Math.min(1.5, Number(h.scale)))});`);
+      if (Number.isFinite(Number(h.opacity)) && Number(h.opacity) !== 1) lines.push(`opacity: ${Math.max(0, Math.min(1, Number(h.opacity)))};`);
+      if (h.radius !== null && h.radius !== "" && Number.isFinite(Number(h.radius))) lines.push(`border-radius: ${Math.max(0, Number(h.radius))}px;`);
+      if (h.shadow && h.shadow !== "none" && SHADOW_PRESETS[h.shadow]) lines.push(`box-shadow: ${SHADOW_PRESETS[h.shadow]};`);
+      return lines.join("\n  ");
+    }
     toHTML() { return this.markup; }
-    toCSS()  { return `${this.selector} {\n  ${this.css}\n}`; }
+    toCSS() {
+      const base = `${this.selector} {\n  ${this.css}\n}`;
+      return this.hoverCSS ? base + `\n\n${this.selector}:hover {\n  ${this.hoverCSS}\n}` : base;
+    }
 
     createNode() {
       const tpl = document.createElement("template");
@@ -673,10 +693,60 @@
     get extraCSS() { return `border: 1px solid #c7d2fe;`; }
   }
 
+  /* ---------------------- Link ------------------------------ */
+  class LinkComponent extends Component {
+    static type = "link"; static label = "Link"; static icon = "🔗";
+    static supportedEvents = ["click", "mouseenter", "mouseleave"];
+    static styleSchema = [
+      { key: "textColor", label: "Text color", type: "color", default: "#2563eb" },
+      { key: "fontSize", label: "Font size", type: "number", default: 16 },
+      { key: "width", label: "Width", type: "number", default: 150 },
+    ];
+    get markup() { return `<a id="${this.id}" href="#">Read more</a>`; }
+    get extraCSS() { return "text-decoration: underline; cursor: pointer; font-family: system-ui, sans-serif;"; }
+  }
+  class CardComponent extends Component {
+    static type = "card"; static label = "Card"; static icon = "🗂️";
+    static supportedEvents = ["click", "mouseenter", "mouseleave"];
+    static styleSchema = [
+      { key: "bgColor", label: "Background", type: "color", default: "#ffffff" },
+      { key: "textColor", label: "Text color", type: "color", default: "#0f172a" },
+      { key: "width", label: "Width", type: "number", default: 240 },
+      { key: "height", label: "Height", type: "number", default: 150 },
+      { key: "fontSize", label: "Font size", type: "number", default: 16 },
+      { key: "radius", label: "Radius", type: "number", default: 12 },
+      { key: "shadow", label: "Shadow", type: "shadow", default: "sm" },
+    ];
+    get markup() { return `<article id="${this.id}"><strong>Card title</strong><p>Card description goes here.</p></article>`; }
+    get extraCSS() { return "padding: 16px; border: 1px solid #e2e8f0; font-family: system-ui, sans-serif; line-height: 1.5;"; }
+  }
+  class DividerComponent extends Component {
+    static type = "divider"; static label = "Divider"; static icon = "➖";
+    static supportedEvents = ["click", "mouseenter", "mouseleave"];
+    static styleSchema = [
+      { key: "width", label: "Width", type: "number", default: 220 },
+      { key: "bgColor", label: "Color", type: "color", default: "#cbd5e1" },
+    ];
+    get markup() { return `<hr id="${this.id}" />`; }
+    get extraCSS() { return "height: 2px; border: 0;"; }
+  }
+  class BadgeComponent extends Component {
+    static type = "badge"; static label = "Badge"; static icon = "🏷️";
+    static supportedEvents = ["click", "mouseenter", "mouseleave"];
+    static styleSchema = [
+      { key: "bgColor", label: "Background", type: "color", default: "#dbeafe" },
+      { key: "textColor", label: "Text color", type: "color", default: "#1d4ed8" },
+      { key: "fontSize", label: "Font size", type: "number", default: 12 },
+      { key: "radius", label: "Radius", type: "number", default: 999 },
+    ];
+    get markup() { return `<span id="${this.id}">New</span>`; }
+    get extraCSS() { return "display: inline-block; padding: 5px 10px; font-weight: 700; font-family: system-ui, sans-serif;"; }
+  }
   /* ---------------------- Registry -------------------------- */
   const COMPONENTS = [
     ButtonComponent, InputComponent, TextComponent, TextareaComponent,
     CheckboxComponent, SelectComponent, ImageComponent, BoxComponent,
+    LinkComponent, CardComponent, DividerComponent, BadgeComponent,
   ];
   const REGISTRY = Object.fromEntries(COMPONENTS.map((C) => [C.type, C]));
 
@@ -696,6 +766,8 @@
       this.propsType    = opts.propsType;
       this.styleControlsEl = opts.styleControls;
       this.actionListEl    = opts.actionList;
+      this.hoverControlsEl = opts.hoverControls;
+      this.codeDirty = false;
 
       this.lang = "html";
       this.components = [];
@@ -853,11 +925,16 @@
           document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
           tab.classList.add("active");
           this.lang = tab.dataset.lang;
+          this.codeDirty = false;
           this.render();
         });
       });
 
-      this.codeEl.addEventListener("input", () => this.updateHighlight());
+      this.codeEl.addEventListener("input", () => {
+        this.codeDirty = true;
+        this.updateHighlight();
+        this.applyCodePreview();
+      });
       this.codeEl.addEventListener("scroll", () => {
         this.highlightEl.scrollTop  = this.codeEl.scrollTop;
         this.highlightEl.scrollLeft = this.codeEl.scrollLeft;
@@ -870,6 +947,30 @@
           this.remove(this.selected);
         }
       });
+    }
+
+    applyCodePreview() {
+      const source = this.codeEl.value;
+      try {
+        if (this.lang === "css") {
+          this.styleTag.textContent = source;
+          this.statusEl.textContent = "CSS preview updated · manual code";
+          return;
+        }
+        if (this.lang === "html") {
+          const parsed = new DOMParser().parseFromString(source, "text/html");
+          const sourceCanvas = parsed.querySelector(".canvas") || parsed.body;
+          this.canvas.replaceChildren(...Array.from(sourceCanvas.childNodes).map((node) => document.importNode(node, true)));
+          this.canvas.querySelectorAll("[data-id]").forEach((node) => node.removeAttribute("data-id"));
+          this.canvas.classList.toggle("empty", !this.canvas.children.length);
+          this.statusEl.textContent = "HTML preview updated · manual code";
+          return;
+        }
+        this.statusEl.textContent = "JavaScript source edited · اجرا در پیش‌نمایش غیرفعال است";
+      } catch (error) {
+        this.statusEl.textContent = "Preview error · check your code";
+        console.warn("Live preview failed:", error);
+      }
     }
 
     /* ----------------- Properties panel UI -------------------- */
@@ -899,6 +1000,7 @@
       this.propsPanel.classList.add("visible");
       this.propsType.textContent = `${this.selected.constructor.label} · ${this.selected.id}`;
       this.renderStyleControls(this.selected);
+      this.renderHoverControls(this.selected);
       this.renderActions(this.selected);
     }
 
@@ -952,6 +1054,36 @@
         row.appendChild(input);
         container.appendChild(row);
       });
+    }
+
+    renderHoverControls(comp) {
+      const container = this.hoverControlsEl;
+      container.innerHTML = "";
+      const h = comp.hoverProps || (comp.hoverProps = {});
+      const checkboxRow = document.createElement("div"); checkboxRow.className = "prop-row";
+      const checkboxLabel = document.createElement("label"); checkboxLabel.textContent = "فعال‌سازی Hover";
+      const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = !!h.enabled;
+      checkbox.addEventListener("change", () => { h.enabled = checkbox.checked; this.render(); });
+      checkboxRow.append(checkboxLabel, checkbox); container.appendChild(checkboxRow);
+      const add = (labelText, key, type, fallback) => {
+        const row = document.createElement("div"); row.className = "prop-row";
+        const label = document.createElement("label"); label.textContent = labelText;
+        const input = document.createElement("input"); input.type = type; input.value = h[key] ?? fallback;
+        if (type === "number") { input.step = key === "scale" ? "0.01" : "0.05"; input.min = key === "opacity" ? "0" : key === "scale" ? "0.5" : "0"; input.max = key === "opacity" ? "1" : key === "scale" ? "1.5" : "100"; }
+        input.addEventListener("input", () => { h[key] = input.value === "" ? null : (type === "number" ? Number(input.value) : input.value); h.enabled = true; this.render(); });
+        row.append(label, input); container.appendChild(row);
+      };
+      add("پس‌زمینه", "bgColor", "color", "#4f46e5");
+      add("رنگ متن", "textColor", "color", "#ffffff");
+      add("بزرگ‌نمایی", "scale", "number", 1.03);
+      add("شفافیت", "opacity", "number", 1);
+      add("گردی گوشه (px)", "radius", "number", "");
+      const row = document.createElement("div"); row.className = "prop-row";
+      const label = document.createElement("label"); label.textContent = "سایه";
+      const select = document.createElement("select");
+      ["none", "sm", "md", "lg", "xl"].forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v === "none" ? "بدون سایه" : v.toUpperCase(); o.selected = (h.shadow || "none") === v; select.appendChild(o); });
+      select.addEventListener("change", () => { h.shadow = select.value; h.enabled = true; this.render(); });
+      row.append(label, select); container.appendChild(row);
     }
 
     renderActions(comp) {
@@ -1112,6 +1244,7 @@ ${body}
             x: comp.x,
             y: comp.y,
             styleProps: comp.styleProps,
+            hoverProps: comp.hoverProps,
             actions: comp.actions,
           })),
           selectedId: this.selected ? this.selected.id : null,
@@ -1138,6 +1271,7 @@ ${body}
           comp.styleProps = item.styleProps && typeof item.styleProps === "object"
             ? { ...comp.styleProps, ...item.styleProps } : comp.styleProps;
           comp.actions = Array.isArray(item.actions) ? item.actions : [];
+          if (item.hoverProps && typeof item.hoverProps === "object") comp.hoverProps = { ...comp.hoverProps, ...item.hoverProps };
 
           const match = item.id.match(/-(\d+)$/);
           if (match) counters[item.type] = Math.max(counters[item.type] || 0, Number(match[1]));
@@ -1172,7 +1306,7 @@ ${body}
       else if (this.lang === "css") code = css;
       else                          code = this.generateJS();
 
-      this.codeEl.value = code;
+      if (!this.codeDirty) this.codeEl.value = code;
       this.updateHighlight();
 
       const n = this.components.length;
@@ -1210,6 +1344,7 @@ ${body}
     propsType:    document.getElementById("propsType"),
     styleControls:document.getElementById("styleControls"),
     actionList:   document.getElementById("actionList"),
+    hoverControls: document.getElementById("hoverControls"),
   });
 
   /* Draggable code/workspace divider with persistent width. */

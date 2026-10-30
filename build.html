@@ -732,6 +732,7 @@
       const category = document.getElementById("elementCategory");
       const empty = document.getElementById("paletteEmpty");
       const count = document.getElementById("elementCount");
+      const categoryMap = { button:"Content", input:"Forms", text:"Content", textarea:"Forms", checkbox:"Forms", select:"Forms", image:"Media", box:"Layout", link:"Content", card:"Content", divider:"Layout", badge:"Content" };
       const renderItems = () => {
         const query = (search.value || "").trim().toLowerCase();
         const selectedCategory = category.value;
@@ -751,7 +752,7 @@
         item.className = "palette-item";
         item.draggable = true;
         item.dataset.type = C.type;
-        item.dataset.category = C.category || "Content";
+        item.dataset.category = C.category || categoryMap[C.type] || "Content";
         item.dataset.search = `${C.label} ${C.type} ${C.category || "Content"}`.toLowerCase();
         const icon = document.createElement("span");
         icon.className = "pi-icon";
@@ -920,6 +921,7 @@
         this.manualPreviewLang = this.lang;
         this.updateHighlight();
         this.applyCodePreview();
+        this.saveState();
       });
       this.codeEl.addEventListener("scroll", () => {
         this.highlightEl.scrollTop  = this.codeEl.scrollTop;
@@ -1285,6 +1287,8 @@ ${body}
           })),
           selectedId: this.selected ? this.selected.id : null,
           lang: this.lang,
+          codeBuffers: this.codeBuffers,
+          codeDirtyByLang: this.codeDirtyByLang,
         };
         localStorage.setItem("visual-code-editor-state-v1", JSON.stringify(state));
       } catch (error) {
@@ -1321,6 +1325,16 @@ ${body}
         });
 
         if (["html", "css", "js"].includes(state.lang)) this.lang = state.lang;
+        if (state.codeBuffers && typeof state.codeBuffers === "object") {
+          ["html", "css", "js"].forEach((language) => {
+            if (typeof state.codeBuffers[language] === "string") this.codeBuffers[language] = state.codeBuffers[language];
+          });
+        }
+        if (state.codeDirtyByLang && typeof state.codeDirtyByLang === "object") {
+          ["html", "css", "js"].forEach((language) => {
+            this.codeDirtyByLang[language] = state.codeDirtyByLang[language] === true;
+          });
+        }
         const selected = this.components.find((comp) => comp.id === state.selectedId);
         if (selected) this.select(selected);
         document.querySelectorAll(".tab").forEach((tab) => {

@@ -66,6 +66,42 @@
   @media(max-width:1100px){.app{--editor-width:43%;grid-template-columns:minmax(250px,var(--editor-width)) 7px minmax(320px,1fr)}.props-panel{width:280px;flex-basis:280px}.palette{gap:10px;padding-inline:14px}.palette-items{gap:6px}.palette-item{padding:7px 8px}}
   @media(max-width:760px){.app{--editor-width:42%;grid-template-columns:minmax(190px,var(--editor-width)) 7px minmax(240px,1fr)}.workspace-header{min-height:56px;padding-inline:14px}.palette{padding:10px 12px}.canvas-scroll{padding:12px}.props-panel{width:min(82vw,310px);flex-basis:min(82vw,310px)}}
   @media(max-width:560px){.app{--editor-width:38%;grid-template-columns:minmax(135px,var(--editor-width)) 6px minmax(190px,1fr)}.splitter{width:6px}.splitter::after{left:1px}.tabs{min-height:48px;gap:2px;padding:8px 5px 0}.tab{padding:9px 6px 10px;font-size:10px}.statusbar{min-height:42px;padding:7px;font-size:9px}.btn-ghost{padding:7px 8px;font-size:10px}.brand-copy span,.workspace-mode{display:none}.workspace-header{min-height:50px}.palette{align-items:flex-start}.palette h2{width:100%}.palette-items{gap:5px}.palette-item{padding:6px 7px;font-size:10px}.props-panel{position:absolute;z-index:8;inset-block:0;inset-inline-end:0;width:min(88vw,320px);height:100%;box-shadow:-10px 0 28px rgba(15,23,42,.16)}}
+ 
+  /* Element library */
+  .workspace{min-height:0}
+  .palette-library{display:flex;flex-direction:column;flex:0 0 auto;max-height:38%;min-height:156px;overflow:hidden;background:#fff;border-bottom:1px solid var(--line)}
+  .palette-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:13px 18px 11px;border-bottom:1px solid #edf0f5}
+  .library-heading{display:flex;align-items:baseline;gap:9px;white-space:nowrap}
+  .library-heading strong{font-size:13px;font-weight:750;color:#202a3d}
+  .library-heading span{font-size:10px;color:#9aa4b6}
+  .library-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .element-search{display:flex;align-items:center;gap:7px;width:170px;padding:7px 9px;border:1px solid #e2e7ef;border-radius:8px;background:#fbfcfe;color:#929caf}
+  .element-search:focus-within{border-color:#aaa2ff;box-shadow:0 0 0 3px rgba(112,100,235,.09)}
+  .element-search span{font-size:16px;line-height:1}
+  .element-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#263249;font-size:10px}
+  .category-filter{max-width:125px;padding:7px 8px;border:1px solid #e2e7ef;border-radius:8px;background:#fbfcfe;color:#566176;font-size:10px}
+  .view-switch{display:flex;gap:2px;padding:3px;border:1px solid #e7eaf1;border-radius:8px;background:#f6f7fb}
+  .view-btn{width:27px;height:25px;border:0;border-radius:5px;background:transparent;color:#8792a5;cursor:pointer;font-size:14px}
+  .view-btn.active{background:#fff;color:#5d52ce;box-shadow:0 1px 4px rgba(28,38,60,.12)}
+  .add-custom-btn{padding:7px 10px;border:1px solid #d8d3ff;border-radius:8px;background:#f5f3ff;color:#5c50ca;font-size:10px;font-weight:700;cursor:pointer}
+  .add-custom-btn:hover{background:#ece9ff;border-color:#b9b1ff}
+  .palette-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));align-content:start;gap:7px;flex:1;min-height:0;overflow:auto;padding:10px 16px 12px}
+  .palette-items.objects-view .palette-item{display:flex;min-height:56px;flex-direction:column;justify-content:center;gap:5px;padding:8px 5px;border:1px solid #e8ebf2;border-radius:9px;background:#fbfcfe;color:#4b566c;text-align:center;cursor:grab}
+  .palette-items.objects-view .pi-icon{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:#f0efff;color:#5d52ce;font-size:14px}
+  .palette-items.objects-view .pi-label{font-size:10px;font-weight:650}
+  .palette-items.text-view{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:3px}
+  .palette-items.text-view .palette-item{display:flex;align-items:center;justify-content:flex-start;gap:9px;padding:7px 9px;border:1px solid transparent;border-radius:6px;background:transparent;color:#59657a;text-align:left;cursor:grab}
+  .palette-items.text-view .palette-item .pi-icon{width:18px;color:#8175e8;font-size:12px}
+  .palette-items.text-view .pi-label{font-size:11px;font-weight:550}
+  .palette-item[hidden]{display:none!important}
+  .palette-empty{padding:18px;color:#9aa4b6;font-size:11px;text-align:center}
+  .palette-item:hover{border-color:#c7c1ff!important;background:#f4f2ff!important;color:#5549c8!important;box-shadow:0 3px 9px rgba(62,55,130,.06)}
+  .palette-item:active{cursor:grabbing}
+  .custom-markup-editor{width:100%;min-height:112px;resize:vertical;padding:9px;border:1px solid #dfe4ed;border-radius:8px;background:#fbfcfe;color:#263249;font:11px/1.55 ui-monospace,monospace}
+  .custom-markup-editor:focus{outline:0;border-color:#9d94ff;box-shadow:0 0 0 3px rgba(112,100,235,.1)}
+  @media(max-width:760px){.palette-library{max-height:42%;min-height:148px}.palette-toolbar{padding:10px 12px}.library-actions{gap:5px}.element-search{width:140px}}
+  @media(max-width:560px){.palette-library{max-height:46%;min-height:140px}.palette-toolbar{align-items:flex-start}.library-heading{width:100%}.library-actions{width:100%}.element-search{flex:1;width:auto}.category-filter{max-width:112px}.add-custom-btn{padding:7px}.palette-items{grid-template-columns:repeat(auto-fill,minmax(76px,1fr));padding:8px}.palette-items.text-view{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}}
+
 </style>
 </head>
 <body>
@@ -95,15 +131,25 @@
 
   <!-- ============ RIGHT : WORKSPACE ============ -->
   <section class="workspace">
-    <header class="workspace-header">
-      <div class="brand-lockup"><span class="brand-mark">V</span><div class="brand-copy"><strong>Visual Builder</strong><span>Design workspace</span></div></div>
-      <span class="workspace-mode"><span class="mode-dot"></span> LIVE CANVAS</span>
-    </header>
-    <header class="palette">
-      <h2>Elements</h2>
-      <div class="palette-items" id="palette"></div>
-      <button id="clearBtn" class="btn-ghost">Clear All</button>
-    </header>
+    <section class="palette-library" aria-label="Element library">
+      <div class="palette-toolbar">
+        <div class="library-heading"><strong>Elements</strong><span id="elementCount">18 components</span></div>
+        <div class="library-actions">
+          <label class="element-search"><span aria-hidden="true">⌕</span><input id="elementSearch" type="search" placeholder="Search elements..." autocomplete="off" /></label>
+          <select id="elementCategory" class="category-filter" aria-label="Filter elements">
+            <option value="all">All categories</option><option value="Layout">Layout</option><option value="Content">Content</option><option value="Forms">Forms</option><option value="Media">Media</option>
+          </select>
+          <div class="view-switch" role="group" aria-label="Element display">
+            <button type="button" class="view-btn active" data-view="objects" aria-pressed="true" title="Object view">▦</button>
+            <button type="button" class="view-btn" data-view="text" aria-pressed="false" title="Text view">☷</button>
+          </div>
+          <button id="addCustomBtn" class="add-custom-btn" type="button">＋ Custom HTML</button>
+          <button id="clearBtn" class="btn-ghost">Clear All</button>
+        </div>
+      </div>
+      <div class="palette-items objects-view" id="palette" aria-live="polite"></div>
+      <div class="palette-empty" id="paletteEmpty" hidden>No elements match your search.</div>
+    </section>
 
     <div class="workspace-body">
       <div class="canvas-scroll" id="canvasScroll">
@@ -579,10 +625,68 @@
     get extraCSS() { return "display: inline-block; padding: 5px 10px; font-weight: 700; font-family: system-ui, sans-serif;"; }
   }
   /* ---------------------- Registry -------------------------- */
+  class HeadingComponent extends Component {
+    static type="heading"; static label="Heading"; static icon="H"; static category="Content";
+    static styleSchema=[{key:"textColor",label:"Text Color",type:"color",default:"#172033"},{key:"fontSize",label:"Font Size",type:"number",default:30},{key:"width",label:"Width",type:"number",default:320}];
+    get markup(){return `<h2 id="${this.id}">Your heading</h2>`;}
+    get extraCSS(){return "font-family:system-ui,sans-serif;font-weight:750;line-height:1.2;";}
+  }
+  class ParagraphComponent extends Component {
+    static type="paragraph"; static label="Paragraph"; static icon="¶"; static category="Content";
+    static styleSchema=[{key:"textColor",label:"Text Color",type:"color",default:"#475569"},{key:"fontSize",label:"Font Size",type:"number",default:15},{key:"width",label:"Width",type:"number",default:300}];
+    get markup(){return `<p id="${this.id}">Add your paragraph text here.</p>`;}
+    get extraCSS(){return "font-family:system-ui,sans-serif;line-height:1.65;";}
+  }
+  class ContainerComponent extends Component {
+    static type="container"; static label="Container"; static icon="▱"; static category="Layout";
+    static styleSchema=[{key:"bgColor",label:"Background",type:"color",default:"#f8fafc"},{key:"width",label:"Width",type:"number",default:320},{key:"height",label:"Height",type:"number",default:180},{key:"radius",label:"Border Radius",type:"number",default:12}];
+    get markup(){return `<div id="${this.id}" class="builder-container"></div>`;}
+    get extraCSS(){return "border:1px dashed #cbd5e1;padding:16px;";}
+  }
+  class SectionComponent extends Component {
+    static type="section"; static label="Section"; static icon="▤"; static category="Layout";
+    static styleSchema=[{key:"bgColor",label:"Background",type:"color",default:"#eef2ff"},{key:"width",label:"Width",type:"number",default:360},{key:"height",label:"Height",type:"number",default:160},{key:"radius",label:"Border Radius",type:"number",default:10}];
+    get markup(){return `<section id="${this.id}"><h3>Section title</h3></section>`;}
+    get extraCSS(){return "padding:18px;font-family:system-ui,sans-serif;";}
+  }
+  class SpacerComponent extends Component {
+    static type="spacer"; static label="Spacer"; static icon="↕"; static category="Layout";
+    static styleSchema=[{key:"width",label:"Width",type:"number",default:120},{key:"height",label:"Height",type:"number",default:40},{key:"bgColor",label:"Guide Color",type:"color",default:"#e2e8f0"}];
+    get markup(){return `<div id="${this.id}" aria-hidden="true"></div>`;}
+    get extraCSS(){return "border:1px dashed #cbd5e1;background:repeating-linear-gradient(135deg,transparent,transparent 5px,#e2e8f0 5px,#e2e8f0 6px);";}
+  }
+  class VideoComponent extends Component {
+    static type="video"; static label="Video"; static icon="▶"; static category="Media";
+    static styleSchema=[{key:"width",label:"Width",type:"number",default:320},{key:"height",label:"Height",type:"number",default:180},{key:"radius",label:"Border Radius",type:"number",default:10}];
+    get markup(){return `<video id="${this.id}" controls playsinline aria-label="Video placeholder"></video>`;}
+    get extraCSS(){return "display:block;background:#111827;object-fit:cover;";}
+  }
+  class AvatarComponent extends Component {
+    static type="avatar"; static label="Avatar"; static icon="◉"; static category="Media";
+    static styleSchema=[{key:"width",label:"Size",type:"number",default:64},{key:"radius",label:"Border Radius",type:"number",default:999}];
+    get markup(){return `<img id="${this.id}" src="https://i.pravatar.cc/128" alt="Avatar" />`;}
+    get extraCSS(){return "height:auto;aspect-ratio:1;object-fit:cover;display:block;";}
+  }
+  class FormComponent extends Component {
+    static type="form"; static label="Form"; static icon="▣"; static category="Forms";
+    static styleSchema=[{key:"bgColor",label:"Background",type:"color",default:"#ffffff"},{key:"width",label:"Width",type:"number",default:300},{key:"height",label:"Height",type:"number",default:180},{key:"radius",label:"Border Radius",type:"number",default:10}];
+    get markup(){return `<form id="${this.id}"><label for="${this.id}-email">Email address</label><input id="${this.id}-email" type="email" placeholder="you@example.com" /><button type="submit">Submit</button></form>`;}
+    get extraCSS(){return "display:flex;flex-direction:column;gap:10px;padding:16px;border:1px solid #e2e8f0;font-family:system-ui,sans-serif;";}
+  }
+  class CustomHTMLComponent extends Component {
+    static type="custom"; static label="Custom HTML"; static icon="</>"; static category="Content";
+    static styleSchema=[{key:"width",label:"Width",type:"number",default:260},{key:"height",label:"Height",type:"number",default:100},{key:"bgColor",label:"Background",type:"color",default:"#f8fafc"},{key:"radius",label:"Border Radius",type:"number",default:8}];
+    constructor(x=20,y=20){super(x,y);this.customHTML="<p>Write your custom HTML here.</p>";}
+    get markup(){return `<div id="${this.id}">${this.customHTML}</div>`;}
+    get extraCSS(){return "padding:12px;border:1px dashed #cbd5e1;overflow:auto;";}
+  }
+
   const COMPONENTS = [
     ButtonComponent, InputComponent, TextComponent, TextareaComponent,
     CheckboxComponent, SelectComponent, ImageComponent, BoxComponent,
     LinkComponent, CardComponent, DividerComponent, BadgeComponent,
+    HeadingComponent, ParagraphComponent, ContainerComponent, SectionComponent,
+    SpacerComponent, VideoComponent, AvatarComponent, FormComponent, CustomHTMLComponent,
   ];
   const REGISTRY = Object.fromEntries(COMPONENTS.map((C) => [C.type, C]));
 
@@ -604,7 +708,10 @@
       this.actionListEl    = opts.actionList;
       this.hoverControlsEl = opts.hoverControls;
       this.codeDirty = false;
+      this.codeBuffers = { html: null, css: null, js: null };
+      this.codeDirtyByLang = { html: false, css: false, js: false };
       this.manualPreviewLang = null;
+      this.paletteView = "objects";
 
       this.lang = "html";
       this.components = [];
@@ -619,29 +726,68 @@
       this.render();
     }
 
-    /* ---------------- Palette (header objects) ---------------- */
+    /* ---------------------- Element Library ------------------- */
     buildPalette(el) {
+      const search = document.getElementById("elementSearch");
+      const category = document.getElementById("elementCategory");
+      const empty = document.getElementById("paletteEmpty");
+      const count = document.getElementById("elementCount");
+      const renderItems = () => {
+        const query = (search.value || "").trim().toLowerCase();
+        const selectedCategory = category.value;
+        let visible = 0;
+        el.querySelectorAll(".palette-item").forEach((item) => {
+          const matchesQuery = item.dataset.search.includes(query);
+          const matchesCategory = selectedCategory === "all" || item.dataset.category === selectedCategory;
+          item.hidden = !(matchesQuery && matchesCategory);
+          if (!item.hidden) visible++;
+        });
+        empty.hidden = visible > 0;
+        count.textContent = `${visible} of ${COMPONENTS.length} elements`;
+      };
       COMPONENTS.forEach((C) => {
-        const item = document.createElement("div");
+        const item = document.createElement("button");
+        item.type = "button";
         item.className = "palette-item";
         item.draggable = true;
         item.dataset.type = C.type;
-        item.innerHTML = `<span class="pi-icon">${C.icon}</span><span class="pi-label">${C.label}</span>`;
-
+        item.dataset.category = C.category || "Content";
+        item.dataset.search = `${C.label} ${C.type} ${C.category || "Content"}`.toLowerCase();
+        const icon = document.createElement("span");
+        icon.className = "pi-icon";
+        icon.textContent = C.icon;
+        const label = document.createElement("span");
+        label.className = "pi-label";
+        label.textContent = C.label;
+        item.append(icon, label);
         item.addEventListener("dragstart", (e) => {
           e.dataTransfer.setData("text/plain", C.type);
           e.dataTransfer.effectAllowed = "copy";
           item.classList.add("dragging");
         });
         item.addEventListener("dragend", () => item.classList.remove("dragging"));
-
-        // Click = quick add (touch-friendly)
-        item.addEventListener("click", () => {
-          this.add(C.type, 40, 40 + this.components.length * 24);
-        });
-
+        item.addEventListener("click", () => this.add(C.type, 40, 40 + this.components.length * 24));
         el.appendChild(item);
       });
+      search.addEventListener("input", renderItems);
+      category.addEventListener("change", renderItems);
+      document.querySelectorAll(".view-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          this.paletteView = button.dataset.view;
+          el.classList.toggle("objects-view", this.paletteView === "objects");
+          el.classList.toggle("text-view", this.paletteView === "text");
+          document.querySelectorAll(".view-btn").forEach((candidate) => {
+            const active = candidate === button;
+            candidate.classList.toggle("active", active);
+            candidate.setAttribute("aria-pressed", String(active));
+          });
+        });
+      });
+      document.getElementById("addCustomBtn").addEventListener("click", () => {
+        this.add("custom", 40, 40 + this.components.length * 24);
+      });
+      el.classList.add("objects-view");
+      renderItems();
     }
 
     /* ------------------------ Canvas -------------------------- */
@@ -759,16 +905,18 @@
     bindEditor() {
       document.querySelectorAll(".tab").forEach((tab) => {
         tab.addEventListener("click", () => {
+          this.codeBuffers[this.lang] = this.codeEl.value;
           document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
           tab.classList.add("active");
           this.lang = tab.dataset.lang;
-          this.codeDirty = false;
           this.render();
         });
       });
 
       this.codeEl.addEventListener("input", () => {
         this.codeDirty = true;
+        this.codeDirtyByLang[this.lang] = true;
+        this.codeBuffers[this.lang] = this.codeEl.value;
         this.manualPreviewLang = this.lang;
         this.updateHighlight();
         this.applyCodePreview();
@@ -877,6 +1025,23 @@
     renderStyleControls(comp) {
       const container = this.styleControlsEl;
       container.innerHTML = "";
+
+      if (comp.constructor.type === "custom") {
+        const label = document.createElement("label");
+        label.textContent = "Custom HTML markup";
+        label.style.cssText = "display:block;margin-bottom:7px;color:#566176;font-size:11px;font-weight:600";
+        const editor = document.createElement("textarea");
+        editor.className = "custom-markup-editor";
+        editor.spellcheck = false;
+        editor.value = comp.customHTML || "";
+        editor.addEventListener("input", () => {
+          comp.customHTML = editor.value;
+          const node = this.canvas.querySelector(`[data-id="${comp.id}"]`);
+          if (node) node.innerHTML = comp.customHTML;
+          this.render();
+        });
+        container.append(label, editor);
+      }
 
       (comp.constructor.styleSchema || []).forEach((schema) => {
         const row = document.createElement("div");
@@ -1116,6 +1281,7 @@ ${body}
             styleProps: comp.styleProps,
             hoverProps: comp.hoverProps,
             actions: comp.actions,
+            customHTML: comp.customHTML,
           })),
           selectedId: this.selected ? this.selected.id : null,
           lang: this.lang,
@@ -1141,6 +1307,7 @@ ${body}
           comp.styleProps = item.styleProps && typeof item.styleProps === "object"
             ? { ...comp.styleProps, ...item.styleProps } : comp.styleProps;
           comp.actions = Array.isArray(item.actions) ? item.actions : [];
+          if (Ctor.type === "custom" && typeof item.customHTML === "string") comp.customHTML = item.customHTML;
           if (item.hoverProps && typeof item.hoverProps === "object") comp.hoverProps = { ...comp.hoverProps, ...item.hoverProps };
 
           const match = item.id.match(/-(\d+)$/);
@@ -1181,25 +1348,31 @@ ${body}
     }
 
     render() {
-      this.codeDirty = false;
-      if (this.manualPreviewLang === "html") this.rebuildCanvasFromModel();
-      this.manualPreviewLang = null;
-      const css = this.generateCSS();
+      const generatedCSS = this.generateCSS();
+      const generated = {
+        html: this.generateHTML(),
+        css: generatedCSS,
+        js: this.generateJS(),
+      };
 
-      // Live preview = the exact generated stylesheet
-      this.styleTag.textContent = css;
+      // Keep manually edited source intact while model-driven edits continue.
+      // A language buffer is replaced only when the user explicitly resets it.
+      Object.keys(generated).forEach((language) => {
+        if (!this.codeDirtyByLang[language]) this.codeBuffers[language] = generated[language];
+      });
 
-      let code;
-      if (this.lang === "html")     code = this.generateHTML();
-      else if (this.lang === "css") code = css;
-      else                          code = this.generateJS();
+      if (!this.codeDirtyByLang.css) this.styleTag.textContent = generatedCSS;
 
-      if (!this.codeDirty) this.codeEl.value = code;
+      const currentCode = this.codeDirtyByLang[this.lang]
+        ? (this.codeBuffers[this.lang] ?? generated[this.lang])
+        : generated[this.lang];
+      this.codeEl.value = currentCode;
+      this.codeBuffers[this.lang] = currentCode;
       this.updateHighlight();
 
       const n = this.components.length;
-      this.statusEl.textContent = `${n} Element`;
-      this.canvas.classList.toggle("empty", n === 0);
+      this.statusEl.textContent = `${n} components`;
+      this.canvas.classList.toggle("empty", this.canvas.querySelectorAll(":scope > :not(.hint)").length === 0);
       this.saveState();
     }
 

@@ -26,6 +26,7 @@
   .statusbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:8px 16px;background:var(--editor-panel);border-top:1px solid #293144;font:500 11px/1 ui-monospace,monospace;color:#8c98ad}
   .btn-ghost{padding:8px 12px;background:#20283a;border:1px solid #333e53;border-radius:8px;color:#c3cce0;font-size:12px;font-weight:600;cursor:pointer;transition:.18s}
   .btn-ghost:hover{border-color:#766cf0;color:#fff;background:#2b3150}
+  .code-actions{display:flex;align-items:center;gap:7px}
   .workspace{display:flex;flex-direction:column;min-width:0;min-height:0;background:#f4f6fa}
   .workspace-header{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:0 22px;background:#fff;border-bottom:1px solid var(--line)}
   .brand-lockup{display:flex;align-items:center;gap:11px;min-width:0}.brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,#8175ff,#5547d9);color:#fff;font-size:17px;font-weight:800;box-shadow:0 5px 12px rgba(102,88,232,.22)}
@@ -121,7 +122,10 @@
     </div>
     <div class="statusbar">
       <span id="status">0 components</span>
-      <button id="copyBtn" class="btn-ghost">Copy Code</button>
+      <div class="code-actions">
+        <button id="syncCodeBtn" class="btn-ghost" title="Replace manual code with the current visual design">Sync from Design</button>
+        <button id="copyBtn" class="btn-ghost">Copy Code</button>
+      </div>
     </div>
   </section>
 
@@ -1477,6 +1481,15 @@ ${body}
   });
 
   document.getElementById("clearBtn").addEventListener("click", () => editor.clear());
+
+  document.getElementById("syncCodeBtn").addEventListener("click", () => {
+    const language = editor.lang;
+    editor.codeDirtyByLang[language] = false;
+    editor.codeBuffers[language] = null;
+    if (language === "html") editor.rebuildCanvasFromModel();
+    if (language === "css") editor.styleTag.textContent = editor.generateCSS();
+    editor.render();
+  });
 
   document.getElementById("copyBtn").addEventListener("click", async (e) => {
     const btn = e.currentTarget;

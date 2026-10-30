@@ -2190,6 +2190,28 @@ iframe#output {
     .element-inspector-dialog h2 { font-size: 16px; }
 }
 
+
+/* جداکننده در موبایل نیز فعال می‌ماند و نسبت پنل‌ها را عمودی تنظیم می‌کند. */
+@media (max-width: 768px) {
+    :root[data-layout="side-by-side"] .divider {
+        display: block !important;
+        width: 100% !important;
+        height: 6px !important;
+        flex: 0 0 6px !important;
+        cursor: row-resize !important;
+        touch-action: none;
+    }
+    :root[data-layout="side-by-side"] .divider::before {
+        width: 44px;
+        height: 2px;
+    }
+    :root[data-layout="side-by-side"] .divider:hover::before,
+    :root[data-layout="side-by-side"] .divider.dragging::before {
+        width: 70px;
+        height: 2px;
+    }
+}
+
 </style>
     <style data-bundled-from="src/features/quick-insert/quick-insert.css">
 /* نوار درج سریع: استایل‌های اختصاصی این قابلیت در همین فایل متمرکز هستند. */
@@ -11442,6 +11464,11 @@ body { padding-top: var(--workspace-header-height); }
         const editorPane  = document.querySelector('.editor-pane');
         const containerEl = document.querySelector('.container');
 
+        function isVerticalSplit() {
+            const layout = document.documentElement.dataset.layout;
+            return layout === 'stacked' || (layout !== 'stacked' && window.matchMedia('(max-width: 768px)').matches);
+        }
+
         function applySplitRatio(value, persist) {
             const ratio = Number(value);
             if (!Number.isFinite(ratio)) return;
@@ -11461,7 +11488,7 @@ body { padding-top: var(--workspace-header-height); }
                 dragging = true;
                 divider.classList.add('dragging');
                 document.body.style.userSelect = 'none';
-                const stacked = document.documentElement.dataset.layout === 'stacked';
+                const stacked = isVerticalSplit();
                 document.body.style.cursor = stacked ? 'row-resize' : 'col-resize';
                 try { divider.setPointerCapture(e.pointerId); } catch (err) {}
             });
@@ -11469,7 +11496,7 @@ body { padding-top: var(--workspace-header-height); }
             divider.addEventListener('pointermove', function(e) {
                 if (!dragging) return;
                 const rect = containerEl.getBoundingClientRect();
-                const stacked = document.documentElement.dataset.layout === 'stacked';
+                const stacked = isVerticalSplit();
                 const extent = stacked ? rect.height : rect.width;
                 if (extent <= 0) return;
                 let pct = ((stacked ? e.clientY - rect.top : e.clientX - rect.left) / extent) * 100;

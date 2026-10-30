@@ -716,6 +716,7 @@
       this.codeDirtyByLang = { html: false, css: false, js: false };
       this.manualPreviewLang = null;
       this.paletteView = "objects";
+      this.codeSelection = { start: 0, end: 0, language: "html" };
 
       this.lang = "html";
       this.components = [];
@@ -771,7 +772,8 @@
           item.classList.add("dragging");
         });
         item.addEventListener("dragend", () => item.classList.remove("dragging"));
-        item.addEventListener("click", () => this.add(C.type, 40, 40 + this.components.length * 24));
+        item.addEventListener("pointerdown", () => this.rememberCodeSelection());
+        item.addEventListener("click", () => this.insertAtCodeCursor(C.type));
         el.appendChild(item);
       });
       search.addEventListener("input", renderItems);
@@ -788,9 +790,9 @@
           });
         });
       });
-      document.getElementById("addCustomBtn").addEventListener("click", () => {
-        this.add("custom", 40, 40 + this.components.length * 24);
-      });
+      const customButton = document.getElementById("addCustomBtn");
+      customButton.addEventListener("pointerdown", () => this.rememberCodeSelection());
+      customButton.addEventListener("click", () => this.insertAtCodeCursor("custom"));
       el.classList.add("objects-view");
       renderItems();
     }
@@ -813,6 +815,59 @@
       this.canvasScroll.addEventListener("pointerdown", (e) => {
         if (e.target === this.canvas || e.target === this.canvasScroll) this.select(null);
       });
+    }
+
+    /* ------------------- Code insertion ----------------------- */
+    rememberCodeSelection() {
+      if (!this.codeEl) return;
+      this.codeSelection = {
+        start: this.codeEl.selectionStart ?? this.codeEl.value.length,
+        end: this.codeEl.selectionEnd ?? this.codeEl.value.length,
+        language: this.lang,
+      };
+    }
+
+    insertAtCodeCursor(type) {
+      const Ctor = REGISTRY[type];
+      if (!Ctor) return;
+
+      const comp = new Ctor(0, 0);
+      let snippet = "";
+      if (this.lang === "html") {
+        snippet = comp.toHTML();
+      } else if (this.lang === "css") {
+        snippet = comp.toCSS();
+      } else {
+        const selector = comp.id.startsWith("custom-")
+          ? `#${comp.id}`
+          : `#${comp.id}`;
+        snippet = `document.querySelector("${selector}")?.addEventListener("click", (event) => {
+  // Add your interaction code here.
+  console.log(" ${Ctor.label} clicked", event.currentTarget);
+});`;
+      }
+
+      const saved = this.codeSelection || { start: this.codeEl.selectionStart, end: this.codeEl.selectionEnd, language: this.lang };
+      const start = saved.language === this.lang ? saved.start : this.codeEl.selectionStart;
+      const end = saved.language === this.lang ? saved.end : this.codeEl.selectionEnd;
+      const value = this.codeEl.value;
+      const safeStart = Math.max(0, Math.min(Number(start) || 0, value.length));
+      const safeEnd = Math.max(safeStart, Math.min(Number(end) || safeStart, value.length));
+      const before = value.slice(0, safeStart);
+      const after = value.slice(safeEnd);
+      const prefix = before && !before.endsWith("\\n") ? "\\n" : "";
+      const suffix = after && !after.startsWith("\\n") ? "\\n" : "";
+      const insertion = prefix + snippet + suffix;
+      const caret = safeStart + insertion.length - suffix.length;
+
+      this.codeEl.focus();
+      this.codeEl.setRangeText(insertion, safeStart, safeEnd, "end");
+      this.codeEl.setSelectionRange(caret, caret);
+      this.codeSelection = { start: caret, end: caret, language: this.lang };
+      this.codeEl.dispatchEvent(new Event("input", { bubbles: true }));
+      this.codeEl.focus();
+      this.codeEl.setSelectionRange(caret, caret);
+      this.rememberCodeSelection();
     }
 
     /* ------------------- Add / Remove ------------------------- */
@@ -918,7 +973,12 @@
         });
       });
 
+      ["click", "keyup", "select", "blur"].forEach((eventName) => {
+        this.codeEl.addEventListener(eventName, () => this.rememberCodeSelection());
+      });
+
       this.codeEl.addEventListener("input", () => {
+        this.rememberCodeSelection();
         this.codeDirty = true;
         this.codeDirtyByLang[this.lang] = true;
         this.codeBuffers[this.lang] = this.codeEl.value;

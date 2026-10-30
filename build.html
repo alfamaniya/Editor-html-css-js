@@ -975,15 +975,17 @@
         if (node) node.classList.add("selected");
       }
       this.renderProps();
+      this.saveState();
     }
 
     /* ------------------- Move inside canvas ------------------- */
     makeDraggable(node, comp) {
       node.addEventListener("pointerdown", (e) => {
         if (e.button !== 0) return;
-        e.preventDefault();
+        // Keep native click/focus behavior intact; only drag from non-form controls.
         e.stopPropagation();
         this.select(comp);
+        if (e.target instanceof Element && e.target.closest("input, textarea, select, a, [contenteditable='true']")) return;
 
         const startX = e.clientX, startY = e.clientY;
         const originX = comp.x, originY = comp.y;
@@ -1067,8 +1069,15 @@
           const parsed = new DOMParser().parseFromString(source, "text/html");
           const sourceCanvas = parsed.querySelector(".canvas") || parsed.body;
           this.canvas.replaceChildren(...Array.from(sourceCanvas.childNodes).map((node) => document.importNode(node, true)));
-          this.canvas.querySelectorAll("[data-id]").forEach((node) => node.removeAttribute("data-id"));
-          this.canvas.classList.toggle("empty", !this.canvas.children.length);
+          // Reconnect preview nodes to the component model when their IDs match.
+          // Removing data-id here disabled selection and the properties panel.
+          this.canvas.querySelectorAll("[id], [data-id]").forEach((node) => {
+            const component = this.components.find((item) => item.id === (node.dataset.id || node.id));
+            if (!component) return;
+            node.dataset.id = component.id;
+            this.makeDraggable(node, component);
+          });
+          this.canvas.classList.toggle("empty", !this.canvas.querySelector(":scope > :not(.hint)"));
           this.statusEl.textContent = "HTML preview updated · Manual edit";
           return;
         }

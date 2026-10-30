@@ -326,6 +326,8 @@
         opacity: 1, zIndex: 1, padding: "", borderWidth: "", borderColor: "#cbd5e1",
         borderStyle: "solid", fontWeight: "", textAlign: "left", lineHeight: "",
         letterSpacing: "", cursor: "default", overflow: "visible", display: "",
+        minWidth: "", maxWidth: "", minHeight: "", maxHeight: "", margin: "",
+        fontFamily: "", textDecoration: "", objectFit: "cover",
       };
       (this.constructor.styleSchema || []).forEach((s) => { this.styleProps[s.key] = s.default; });
 
@@ -379,6 +381,13 @@
       if (s.cursor) lines.push(`cursor: ${s.cursor};`);
       if (s.overflow) lines.push(`overflow: ${s.overflow};`);
       if (s.display) lines.push(`display: ${s.display};`);
+      ["minWidth", "maxWidth", "minHeight", "maxHeight"].forEach((key) => {
+        if (s[key] !== "") lines.push(`${key.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}: ${s[key]}px;`);
+      });
+      if (s.margin !== "") lines.push(`margin: ${s.margin};`);
+      if (s.fontFamily) lines.push(`font-family: ${s.fontFamily};`);
+      if (s.textDecoration) lines.push(`text-decoration: ${s.textDecoration};`);
+      if (s.objectFit) lines.push(`object-fit: ${s.objectFit};`);
       return lines.join("\n  ");
     }
 
@@ -1161,6 +1170,14 @@
         { key: "cursor", label: "Mouse cursor", type: "select", options: ["default", "pointer", "text", "move", "grab", "not-allowed", "crosshair"] },
         { key: "overflow", label: "Overflow", type: "select", options: ["visible", "hidden", "auto", "scroll"] },
         { key: "display", label: "Display override", type: "select", options: ["", "block", "inline-block", "flex", "grid", "none"] },
+        { key: "minWidth", label: "Minimum width (px)", type: "number", min: 0 },
+        { key: "maxWidth", label: "Maximum width (px)", type: "number", min: 0 },
+        { key: "minHeight", label: "Minimum height (px)", type: "number", min: 0 },
+        { key: "maxHeight", label: "Maximum height (px)", type: "number", min: 0 },
+        { key: "margin", label: "Margin (CSS)", type: "text" },
+        { key: "fontFamily", label: "Font family", type: "text" },
+        { key: "textDecoration", label: "Text decoration", type: "select", options: ["", "none", "underline", "overline", "line-through"] },
+        { key: "objectFit", label: "Media fit", type: "select", options: ["fill", "contain", "cover", "none", "scale-down"] },
       ];
       const schemas = [...(comp.constructor.styleSchema || []), ...advancedSchemas];
       schemas.forEach((schema) => {

@@ -3473,6 +3473,11 @@
         const editorPane  = document.querySelector('.editor-pane');
         const containerEl = document.querySelector('.container');
 
+        function isVerticalSplit() {
+            const layout = document.documentElement.dataset.layout;
+            return layout === 'stacked' || (layout !== 'stacked' && window.matchMedia('(max-width: 768px)').matches);
+        }
+
         function applySplitRatio(value, persist) {
             const ratio = Number(value);
             if (!Number.isFinite(ratio)) return;
@@ -3492,7 +3497,7 @@
                 dragging = true;
                 divider.classList.add('dragging');
                 document.body.style.userSelect = 'none';
-                const stacked = document.documentElement.dataset.layout === 'stacked';
+                const stacked = isVerticalSplit();
                 document.body.style.cursor = stacked ? 'row-resize' : 'col-resize';
                 try { divider.setPointerCapture(e.pointerId); } catch (err) {}
             });
@@ -3500,7 +3505,7 @@
             divider.addEventListener('pointermove', function(e) {
                 if (!dragging) return;
                 const rect = containerEl.getBoundingClientRect();
-                const stacked = document.documentElement.dataset.layout === 'stacked';
+                const stacked = isVerticalSplit();
                 const extent = stacked ? rect.height : rect.width;
                 if (extent <= 0) return;
                 let pct = ((stacked ? e.clientY - rect.top : e.clientX - rect.left) / extent) * 100;

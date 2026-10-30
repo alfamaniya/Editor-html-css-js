@@ -457,6 +457,7 @@
       if (s.textColor) lines.push(`color: ${s.textColor};`);
       if (s.radius != null && s.radius !== "") lines.push(`border-radius: ${s.radius}px;`);
       if (s.shadow && s.shadow !== "none") lines.push(`box-shadow: ${SHADOW_PRESETS[s.shadow]};`);
+      if (this.hoverProps && this.hoverProps.enabled) lines.push("transition: background-color .18s ease, color .18s ease, transform .18s ease, opacity .18s ease, border-radius .18s ease, box-shadow .18s ease;");
       return lines.join("\n  ");
     }
 
@@ -470,7 +471,7 @@
     get hoverCSS() {
       const h = this.hoverProps || {};
       if (!h.enabled) return "";
-      const lines = ["transition: background-color .18s ease, color .18s ease, transform .18s ease, opacity .18s ease, border-radius .18s ease, box-shadow .18s ease;"];
+      const lines = [];
       if (h.bgColor) lines.push(`background: ${h.bgColor};`);
       if (h.textColor) lines.push(`color: ${h.textColor};`);
       if (Number.isFinite(Number(h.scale)) && Number(h.scale) !== 1) lines.push(`transform: scale(${Math.max(.5, Math.min(1.5, Number(h.scale)))});`);
@@ -1295,7 +1296,25 @@ ${body}
     }
 
     /* ------------------------ Rendering ----------------------- */
+    rebuildCanvasFromModel() {
+      this.canvas.querySelectorAll("[data-id]").forEach((node) => node.remove());
+      this.components.forEach((comp) => {
+        const node = comp.createNode();
+        node.dataset.id = comp.id;
+        this.canvas.appendChild(node);
+        this.makeDraggable(node, comp);
+      });
+      if (this.selected) {
+        const selectedNode = this.canvas.querySelector(`[data-id="${this.selected.id}"]`);
+        if (selectedNode) selectedNode.classList.add("selected");
+      }
+      this.canvas.classList.toggle("empty", this.components.length === 0);
+    }
+
     render() {
+      const wasCodeEdited = this.codeDirty;
+      this.codeDirty = false;
+      if (wasCodeEdited && this.lang === "html") this.rebuildCanvasFromModel();
       const css = this.generateCSS();
 
       // Live preview = the exact generated stylesheet

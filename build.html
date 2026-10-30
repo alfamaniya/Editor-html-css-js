@@ -969,10 +969,42 @@
           this.statusEl.textContent = "HTML preview updated · manual code";
           return;
         }
-        this.statusEl.textContent = "JavaScript source edited · اجرا در پیش‌نمایش غیرفعال است";
+        this.runJavaScriptPreview(source);
       } catch (error) {
         this.statusEl.textContent = "Preview error · check your code";
         console.warn("Live preview failed:", error);
+      }
+    }
+
+    runJavaScriptPreview(source) {
+      try {
+        this.rebuildCanvasFromModel();
+        const previewDocument = {
+          body: this.canvas,
+          getElementById: (id) => Array.from(this.canvas.querySelectorAll("[id]")).find((node) => node.id === id) || null,
+          querySelector: (selector) => this.canvas.querySelector(selector),
+          querySelectorAll: (selector) => this.canvas.querySelectorAll(selector),
+          createElement: (tag) => document.createElement(tag),
+          addEventListener: (eventName, callback) => {
+            if (eventName === "DOMContentLoaded" && typeof callback === "function") callback();
+          },
+        };
+        const previewWindow = {
+          alert: (message) => window.alert(message),
+          location: { href: "" },
+        };
+        const previewConsole = {
+          log: (...args) => console.log("[Build preview]", ...args),
+          warn: (...args) => console.warn("[Build preview]", ...args),
+          error: (...args) => console.error("[Build preview]", ...args),
+        };
+        new Function("document", "window", "alert", "console", source)(
+          previewDocument, previewWindow, previewWindow.alert, previewConsole
+        );
+        this.statusEl.textContent = "JavaScript preview updated";
+      } catch (error) {
+        this.statusEl.textContent = "JavaScript preview error · check console";
+        console.warn("JavaScript live preview failed:", error);
       }
     }
 

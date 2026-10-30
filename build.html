@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Visual Code Editor — With Style & Action Editor</title>
+<style>
+  /* ===================== Base ===================== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #0f1117; overflow: hidden;
+  }
+  button { font-family: inherit; }
+
+  .app { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
+
+  /* ===================== Left : Code editor ===================== */
+  .editor-panel {
+    display: flex; flex-direction: column; min-width: 0;
+    background: #0f1117; border-right: 1px solid #232838;
+  }
+  .tabs {
+    display: flex; gap: 2px; padding: 8px 10px 0;
+    background: #151823; border-bottom: 1px solid #232838;
+  }
+  .tab {
+    position: relative; top: 1px; padding: 8px 14px;
+    border: 1px solid transparent; border-radius: 8px 8px 0 0;
+    background: transparent; color: #7c869c;
+    font: 500 12.5px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    cursor: pointer; transition: color .15s, background .15s;
+  }
+  .tab:hover { color: #cbd5e1; }
+  .tab.active {
+    background: #0f1117; border-color: #232838;
+    border-bottom-color: #0f1117; color: #a5b4fc;
+  }
+  .code-area { position: relative; flex: 1; overflow: hidden; }
+  .code-area pre, .code-area textarea {
+    position: absolute; inset: 0; margin: 0; padding: 16px 18px;
+    font: 400 13px/1.65 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre; tab-size: 2; border: 0; overflow: auto;
+  }
+  .code-area pre { pointer-events: none; overflow: hidden; color: #cbd5e1; }
+  .code-area textarea {
+    background: transparent; color: transparent;
+    caret-color: #a5b4fc; resize: none; outline: none;
+  }
+  .t-com  { color: #4b5563; font-style: italic; }
+  .t-tag  { color: #f472b6; }
+  .t-attr { color: #93c5fd; }
+  .t-str  { color: #86efac; }
+  .t-punc { color: #64748b; }
+  .t-sel  { color: #fbbf24; }
+  .t-prop { color: #93c5fd; }
+  .t-val  { color: #86efac; }
+  .t-kw   { color: #c084fc; }
+  .t-num  { color: #fdba74; }
+
+  .statusbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 14px; background: #151823;
+    border-top: 1px solid #232838;
+    font: 500 11.5px/1 ui-monospace, monospace; color: #64748b;
+  }
+  .btn-ghost {
+    padding: 6px 12px; background: transparent;
+    border: 1px solid #2b3245; border-radius: 7px;
+    color: #94a3b8; font-size: 12px; cursor: pointer; transition: .15s;
+  }
+  .btn-ghost:hover { border-color: #6366f1; color: #c7d2fe; background: #1e2233; }
+
+  /* ===================== Right : Workspace ===================== */
+  .workspace {
+    display: flex; flex-direction: column; min-width: 0; background: #eef2f7;
+  }
+  .palette {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 12px 16px; background: #ffffff;
+    border-bottom: 1px solid #dde3ec;
+    box-shadow: 0 1px 3px rgba(15,23,42,.04);
+  }
+  .palette h2 {
+    font-size: 11px; letter-spacing: .09em; text-transform: uppercase;
+    color: #94a3b8; font-weight: 700;
+  }
+  .palette-items { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+  .palette-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 12px; background: #f8fafc;
+    border: 1px solid #e2e8f0; border-radius: 9px;
+    font-size: 13px; color: #334155;
+    cursor: grab; user-select: none;
+    transition: transform .12s, border-color .12s, background .12s, color .12s;
+  }
+  .palette-item:hover {
+    border-color: #a5b4fc; background: #eef2ff;
+    color: #4338ca; transform: translateY(-1px);
+  }
+  .palette-item:active { cursor: grabbing; }
+  .palette-item.dragging { opacity: .35; }
+  .pi-icon { font-size: 14px; line-height: 1; }
+
+  .workspace-body { flex: 1; display: flex; min-height: 0; }
+
+  .canvas-scroll { flex: 1; overflow: auto; padding: 16px; min-width: 0; }
+  .canvas {
+    position: relative; width: 100%; min-height: 100%;
+    background: #ffffff; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 6px 24px rgba(15,23,42,.07);
+    transition: box-shadow .15s;
+  }
+  .canvas.empty { box-shadow: inset 0 0 0 2px #c7d2fe, 0 6px 24px rgba(15,23,42,.07); }
+  .hint {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center; padding: 24px;
+    text-align: center; font-size: 14px; color: #94a3b8; pointer-events: none;
+  }
+  .canvas.empty .hint { display: flex; }
+  .canvas [data-id].selected {
+    outline: 2px dashed #6366f1 !important; outline-offset: 3px;
+  }
+
+  /* ===================== Properties Panel ===================== */
+  .props-panel {
+    width: 300px; flex-shrink: 0;
+    background: #fbfcfe; border-left: 1px solid #dde3ec;
+    overflow-y: auto; display: none; flex-direction: column;
+  }
+  .props-panel.visible { display: flex; }
+
+  .props-header {
+    padding: 14px 16px; border-bottom: 1px solid #e8edf4;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    position: sticky; top: 0; background: #fbfcfe; z-index: 2;
+  }
+  .props-header h3 {
+    font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 2px;
+  }
+  .props-type {
+    font-size: 11px; color: #94a3b8;
+    font-family: ui-monospace, monospace;
+  }
+  .btn-icon {
+    width: 28px; height: 28px;
+    border: 1px solid #fecaca; background: #fef2f2; color: #dc2626;
+    border-radius: 7px; cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: .15s; flex-shrink: 0;
+  }
+  .btn-icon:hover { background: #fee2e2; }
+
+  .props-section { padding: 14px 16px; border-bottom: 1px solid #eef2f7; }
+  .props-section h4 {
+    font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: #94a3b8; font-weight: 700; margin-bottom: 10px;
+  }
+
+  .prop-row {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .prop-row label { font-size: 12px; color: #475569; }
+  .prop-row input, .prop-row select {
+    font: inherit; font-size: 12px;
+    padding: 5px 8px; border: 1px solid #d6dde8;
+    border-radius: 6px; background: #fff; color: #0f172a; min-width: 0;
+  }
+  .prop-row input[type="color"] {
+    padding: 2px; width: 46px; height: 28px; cursor: pointer;
+  }
+  .prop-row input[type="number"] { width: 74px; }
+  .prop-row select { width: 100px; }
+
+  .action-row {
+    display: grid; grid-template-columns: 1fr 1fr auto;
+    gap: 6px; margin-bottom: 6px; align-items: center;
+  }
+  .action-row select, .action-row input {
+    font: inherit; font-size: 12px; padding: 5px 8px;
+    border: 1px solid #d6dde8; border-radius: 6px;
+    background: #fff; color: #0f172a; min-width: 0;
+  }
+  .action-row input { grid-column: 1 / -1; }
+  .action-remove {
+    width: 26px; height: 26px; border: 1px solid #fecaca;
+    background: #fef2f2; color: #dc2626; border-radius: 6px;
+    cursor: pointer; font-size: 16px; line-height: 1; padding: 0;
+  }
+  .action-remove:hover { background: #fee2e2; }
+  .actions-empty { font-size: 12px; color: #94a3b8; padding: 8px 0; }
+  .add-action-btn {
+    width: 100%; padding: 8px; border: 1px dashed #c7d2fe;
+    background: #eef2ff; color: #4338ca; border-radius: 8px;
+    font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 6px;
+    transition: .15s;
+  }
+  .add-action-btn:hover { background: #e0e7ff; border-color: #a5b4fc; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ LEFT : CODE EDITOR ============ -->
+  <section class="editor-panel">
+    <div class="tabs">
+      <button class="tab active" data-lang="html">index.html</button>
+      <button class="tab" data-lang="css">style.css</button>
+      <button class="tab" data-lang="js">script.js</button>
+    </div>
+    <div class="code-area">
+      <pre id="highlight" aria-hidden="true"></pre>
+      <textarea id="code" spellcheck="false" wrap="off" autocomplete="off"></textarea>
+    </div>
+    <div class="statusbar">
+      <span id="status">0 components</span>
+      <button id="copyBtn" class="btn-ghost">Copy code</button>
+    </div>
+  </section>
+
+  <!-- ============ RIGHT : WORKSPACE ============ -->
+  <section class="workspace">
+    <header class="palette">
+      <h2>Components</h2>
+      <div class="palette-items" id="palette"></div>
+      <button id="clearBtn" class="btn-ghost">Clear all</button>
+    </header>
+
+    <div class="workspace-body">
+      <div class="canvas-scroll" id="canvasScroll">
+        <div class="canvas empty" id="canvas">
+          <div class="hint">Drag a component from the header and drop it here</div>
+        </div>
+      </div>
+
+      <!-- Properties panel (shown only when a component is selected) -->
+      <aside class="props-panel" id="propsPanel">
+        <div class="props-header">
+          <div>
+            <h3>Properties</h3>
+            <span class="props-type" id="propsType">—</span>
+          </div>
+          <button class="btn-icon" id="deleteComponentBtn" title="Delete component">🗑</button>
+        </div>
+        <section class="props-section">
+          <h4>Style</h4>
+          <div id="styleControls"></div>
+        </section>
+        <section class="props-section">
+          <h4>Actions (JavaScript)</h4>
+          <div id="actionList"></div>
+          <button class="add-action-btn" id="addActionBtn">+ Add action</button>
+        </section>
+      </aside>
+    </div>
+  </section>
+
+</div>
+
+<!-- Live generated stylesheet, injected here so the canvas is a real preview -->
+<style id="preview-style"></style>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ==================================================================
+     0. HELPERS
+     ================================================================== */
+
+  const escapeHTML = (s) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const SHADOW_PRESETS = {
+    none: "none",
+    sm:   "0 1px 3px rgba(0,0,0,0.10)",
+    md:   "0 6px 16px rgba(0,0,0,0.14)",
+    lg:   "0 12px 28px rgba(0,0,0,0.20)",
+    xl:   "0 24px 48px rgba(0,0,0,0.26)",
+  };
+
+  const counters = {};
+  const nextId = (type) => {
+    counters[type] = (counters[type] || 0) + 1;
+    return `${type}-${counters[type]}`;
+  };
+
+  /* ==================================================================
+     1. SYNTAX HIGHLIGHTING
+     ================================================================== */
+
+  function highlightHTML(src) {
+    return escapeHTML(src).replace(
+      /(&lt;!--[\s\S]*?--&gt;)|(&lt;\/?)([a-zA-Z][\w-]*)|("[^"\n]*")|([\w-]+)(?=\s*=)|(\/?&gt;)/g,
+      (m, com, open, tag, str, attr, close) => {
+        if (com)   return `<span class="t-com">${com}</span>`;
+        if (open)  return `<span class="t-punc">${open}</span><span class="t-tag">${tag}</span>`;
+        if (str)   return `<span class="t-str">${str}</span>`;
+        if (attr)  return `<span class="t-attr">${attr}</span>`;
+        if (close) return `<span class="t-punc">${close}</span>`;
+        return m;
+      }
+    );
+  }
+  function highlightCSS(src) {
+    return escapeHTML(src).replace(
+      /(\/\*[\s\S]*?\*\/)|(^[^{\n]+?)(?=\s*\{)|([\w-]+)(?=\s*:)|(:\s*[^;\n]+;)/gm,
+      (m, com, sel, prop, val) => {
+        if (com)  return `<span class="t-com">${com}</span>`;
+        if (sel)  return `<span class="t-sel">${sel}</span>`;
+        if (prop) return `<span class="t-prop">${prop}</span>`;
+        if (val)  return `<span class="t-val">${val}</span>`;
+        return m;
+      }
+    );
+  }
+  function highlightJS(src) {
+    return escapeHTML(src).replace(
+      /(\/\/[^\n]*)|(\/\*[\s\S]*?\*\/)|('[^'\n]*'|"[^"\n]*"|`[^`]*`)|(\b(?:const|let|var|function|return|if|else|new|class|extends|this|document|window|console|addEventListener|querySelectorAll|forEach)\b)|(\b\d+\b)/g,
+      (m, line, block, str, kw, num) => {
+        if (line || block) return `<span class="t-com">${m}</span>`;
+        if (str)  return `<span class="t-str">${m}</span>`;
+        if (kw)   return `<span class="t-kw">${m}</span>`;
+        if (num)  return `<span class="t-num">${m}</span>`;
+        return m;
+      }
+    );
+  }
+
+  /* ==================================================================
+     2. ACTION TYPES (for JavaScript generation)
+     ================================================================== */
+
+  const ACTION_TYPES = {
+    alert: {
+      label: "Show alert",
+      params: [{ key: "message", label: "Message", default: "Hello!" }],
+      code: (comp, action) =>
+        `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    alert(${JSON.stringify(action.params.message || "")});\n  });`,
+    },
+    consoleLog: {
+      label: "Log to console",
+      params: [{ key: "message", label: "Message", default: "Clicked!" }],
+      code: (comp, action) =>
+        `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    console.log(${JSON.stringify(action.params.message || "")});\n  });`,
+    },
+    toggleClass: {
+      label: "Toggle class",
+      params: [{ key: "className", label: "Class name", default: "active" }],
+      code: (comp, action) =>
+        `document.getElementById("${comp.id}").addEventListener("${action.event}", (e) => {\n    e.currentTarget.classList.toggle(${JSON.stringify(action.params.className || "")});\n  });`,
+    },
+    hide: {
+      label: "Hide element",
+      params: [],
+      code: (comp, action) =>
+        `document.getElementById("${comp.id}").addEventListener("${action.event}", (e) => {\n    e.currentTarget.style.display = "none";\n  });`,
+    },
+    navigate: {
+      label: "Navigate to URL",
+      params: [{ key: "url", label: "URL", default: "https://example.com" }],
+      code: (comp, action) =>
+        `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    window.location.href = ${JSON.stringify(action.params.url || "")};\n  });`,
+    },
+  };
+
+  /* ==================================================================
+     3. COMPONENT SYSTEM (Object-Oriented)
+     ================================================================== */
+
+  class Component {
+    static type = "component";
+    static label = "Component";
+    static icon = "◻";
+    static styleSchema = [];
+    static supportedEvents = ["click"];
+
+    constructor(x = 20, y = 20) {
+      this.x = Math.max(0, Math.round(x));
+      this.y = Math.max(0, Math.round(y));
+      this.id = nextId(this.constructor.type);
+
+      // Copy defaults from schema into live styleProps
+      this.styleProps = {};
+      (this.constructor.styleSchema || []).forEach((s) => {
+        this.styleProps[s.key] = s.default;
+      });
+
+      this.actions = [];
+    }
+
+    /* ---------- markup / css generation ---------- */
+
+    get markup() { return ""; }
+    get extraCSS() { return ""; }
+
+    get baseCSS() {
+      const s = this.styleProps;
+      const lines = [
+        `position: absolute;`,
+        `left: ${this.x}px;`,
+        `top: ${this.y}px;`,
+      ];
+      if (s.width  != null && s.width  !== "") lines.push(`width: ${s.width}px;`);
+      if (s.height != null && s.height !== "") lines.push(`height: ${s.height}px;`);
+      if (s.fontSize != null && s.fontSize !== "") lines.push(`font-size: ${s.fontSize}px;`);
+      if (s.bgColor) lines.push(`background: ${s.bgColor};`);
+      if (s.textColor) lines.push(`color: ${s.textColor};`);
+      if (s.radius != null && s.radius !== "") lines.push(`border-radius: ${s.radius}px;`);
+      if (s.shadow && s.shadow !== "none") lines.push(`box-shadow: ${SHADOW_PRESETS[s.shadow]};`);
+      return lines.join("\n  ");
+    }
+
+    get css() {
+      const extra = this.extraCSS.trim();
+      return extra ? `${this.baseCSS}\n  ${extra}` : this.baseCSS;
+    }
+
+    get selector() { return `#${this.id}`; }
+
+    toHTML() { return this.markup; }
+    toCSS()  { return `${this.selector} {\n  ${this.css}\n}`; }
+
+    createNode() {
+      const tpl = document.createElement("template");
+      tpl.innerHTML = this.markup.trim();
+      return tpl.content.firstElementChild;
+    }
+  }
+
+  /* ------------------------- Button ------------------------- */
+  class ButtonComponent extends Component {
+    static type = "button";
+    static label = "Button";
+    static icon = "🔘";
+    static supportedEvents = ["click", "dblclick", "mouseenter", "mouseleave"];
+    static styleSchema = [
+      { key: "bgColor",   label: "Background", type: "color",  default: "#4f46e5" },
+      { key: "textColor", label: "Text color", type: "color",  default: "#ffffff" },
+      { key: "width",     label: "Width",      type: "number", default: 160 },
+      { key: "height",    label: "Height",     type: "number", default: 42 },
+      { key: "fontSize",  label: "Font size",  type: "number", default: 15 },
+      { key: "radius",    label: "Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
+    ];
+
+    get markup() { return `<button id="${this.id}">Click me</button>`; }
+    get extraCSS() {
+      return `padding: 0 22px;
+  border: 0;
+  font-weight: 600;
+  font-family: system-ui, sans-serif;
+  line-height: 1.4;
+  cursor: pointer;`;
+    }
+  }
+
+  /* ------------------------- Input -------------------------- */
+  class InputComponent extends Component {
+    static type = "input";
+    static label = "Input";
+    static icon = "⌨️";
+    static supportedEvents = ["input", "change", "focus", "blur"];
+    static styleSchema = [
+      { key: "bgColor",   label: "Background", type: "color",  default: "#ffffff" },
+      { key: "textColor", label: "Text color", type: "color",  default: "#0f172a" },
+      { key: "width",     label: "Width",      type: "number", default: 220 },
+      { key: "height",    label: "Height",     type: "number", default: 42 },
+      { key: "fontSize",  label: "Font size",  type: "number", default: 14 },
+      { key: "radius",    label: "Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
+    ];
+
+    get markup() {
+      return `<input id="${this.id}" type="text" placeholder="Enter text..." />`;
+    }
+    get extraCSS() {
+      return `padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-family: system-ui, sans-serif;
+  font-weight: 400;`;
+    }
+  }
+
+  /* -------------------------- Text -------------------------- */
+  class TextComponent extends Component {
+    static type = "text";
+    static label = "Heading";
+    static icon = "🔤";
+    static supportedEvents = ["click", "mouseenter", "mouseleave"];
+    static styleSchema = [
+      { key: "textColor", label: "Color",     type: "color",  default: "#0f172a" },
+      { key: "fontSize",  label: "Font size", type: "number", default: 28 },
+      { key: "width",     label: "Width",     type: "number", default: null },
+      { key: "shadow",    label: "Shadow",    type: "shadow", default: "none" },
+    ];
+
+    get markup() { return `<h2 id="${this.id}">Hello World</h2>`; }
+    get extraCSS() {
+      return `margin: 0;
+  font-weight: 700;
+  line-height: 1.25;
+  font-family: system-ui, sans-serif;`;
+    }
+  }
+
+  /* ------------------------ Textarea ------------------------ */
+  class TextareaComponent extends Component {
+    static type = "textarea";
+    static label = "Textarea";
+    static icon = "📝";
+    static supportedEvents = ["input", "change", "focus", "blur"];
+    static styleSchema = [
+      { key: "bgColor",   label: "Background", type: "color",  default: "#ffffff" },
+      { key: "textColor", label: "Text color", type: "color",  default: "#0f172a" },
+      { key: "width",     label: "Width",      type: "number", default: 240 },
+      { key: "height",    label: "Height",     type: "number", default: 100 },
+      { key: "fontSize",  label: "Font size",  type: "number", default: 14 },
+      { key: "radius",    label: "Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
+    ];
+
+    get markup() {
+      return `<textarea id="${this.id}" rows="4" placeholder="Type here..."></textarea>`;
+    }
+    get extraCSS() {
+      return `padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  resize: vertical;
+  outline: none;
+  font-family: system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;`;
+    }
+  }
+
+  /* ------------------------ Checkbox ------------------------ */
+  class CheckboxComponent extends Component {
+    static type = "checkbox";
+    static label = "Checkbox";
+    static icon = "☑️";
+    static supportedEvents = ["change", "click"];
+    static styleSchema = [
+      { key: "textColor", label: "Text color", type: "color",  default: "#0f172a" },
+      { key: "fontSize",  label: "Font size",  type: "number", default: 14 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
+    ];
+
+    get markup() {
+      return `<label id="${this.id}"><input type="checkbox" /> Remember me</label>`;
+    }
+    get extraCSS() {
+      return `display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: system-ui, sans-serif;
+  font-weight: 400;`;
+    }
+  }
+
+  /* ------------------------- Select ------------------------- */
+  class SelectComponent extends Component {
+    static type = "select";
+    static label = "Select";
+    static icon = "🔽";
+    static supportedEvents = ["change", "focus", "blur"];
+    static styleSchema = [
+      { key: "bgColor",   label: "Background", type: "color",  default: "#ffffff" },
+      { key: "textColor", label: "Text color", type: "color",  default: "#0f172a" },
+      { key: "width",     label: "Width",      type: "number", default: 200 },
+      { key: "height",    label: "Height",     type: "number", default: 42 },
+      { key: "fontSize",  label: "Font size",  type: "number", default: 14 },
+      { key: "radius",    label: "Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
+    ];
+
+    get markup() {
+      return `<select id="${this.id}"><option>Option 1</option><option>Option 2</option><option>Option 3</option></select>`;
+    }
+    get extraCSS() {
+      return `padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-family: system-ui, sans-serif;
+  font-weight: 400;
+  cursor: pointer;`;
+    }
+  }
+
+  /* -------------------------- Image ------------------------- */
+  class ImageComponent extends Component {
+    static type = "image";
+    static label = "Image";
+    static icon = "🖼️";
+    static supportedEvents = ["click", "load"];
+    static styleSchema = [
+      { key: "width",  label: "Width",  type: "number", default: 200 },
+      { key: "height", label: "Height", type: "number", default: 120 },
+      { key: "radius", label: "Radius", type: "number", default: 10 },
+      { key: "shadow", label: "Shadow", type: "shadow", default: "none" },
+    ];
+
+    get markup() {
+      return `<img id="${this.id}" src="https://picsum.photos/200/120" alt="Placeholder image" />`;
+    }
+    get extraCSS() {
+      return `object-fit: cover;
+  display: block;`;
+    }
+  }
+
+  /* --------------------------- Box -------------------------- */
+  class BoxComponent extends Component {
+    static type = "box";
+    static label = "Box";
+    static icon = "⬛";
+    static supportedEvents = ["click", "mouseenter", "mouseleave"];
+    static styleSchema = [
+      { key: "bgColor", label: "Background", type: "color",  default: "#e0e7ff" },
+      { key: "width",   label: "Width",      type: "number", default: 200 },
+      { key: "height",  label: "Height",     type: "number", default: 120 },
+      { key: "radius",  label: "Radius",     type: "number", default: 12 },
+      { key: "shadow",  label: "Shadow",     type: "shadow", default: "none" },
+    ];
+
+    get markup() { return `<div id="${this.id}"></div>`; }
+    get extraCSS() { return `border: 1px solid #c7d2fe;`; }
+  }
+
+  /* ---------------------- Registry -------------------------- */
+  const COMPONENTS = [
+    ButtonComponent, InputComponent, TextComponent, TextareaComponent,
+    CheckboxComponent, SelectComponent, ImageComponent, BoxComponent,
+  ];
+  const REGISTRY = Object.fromEntries(COMPONENTS.map((C) => [C.type, C]));
+
+  /* ==================================================================
+     4. EDITOR  (main controller)
+     ================================================================== */
+
+  class Editor {
+    constructor(opts) {
+      this.canvas       = opts.canvas;
+      this.canvasScroll = opts.canvasScroll;
+      this.codeEl       = opts.code;
+      this.highlightEl  = opts.highlight;
+      this.styleTag     = opts.styleTag;
+      this.statusEl     = opts.status;
+      this.propsPanel   = opts.propsPanel;
+      this.propsType    = opts.propsType;
+      this.styleControlsEl = opts.styleControls;
+      this.actionListEl    = opts.actionList;
+
+      this.lang = "html";
+      this.components = [];
+      this.selected = null;
+
+      this.buildPalette(opts.palette);
+      this.bindCanvas();
+      this.bindEditor();
+      this.bindPropertiesPanel();
+
+      this.render();
+    }
+
+    /* ---------------- Palette (header objects) ---------------- */
+    buildPalette(el) {
+      COMPONENTS.forEach((C) => {
+        const item = document.createElement("div");
+        item.className = "palette-item";
+        item.draggable = true;
+        item.dataset.type = C.type;
+        item.innerHTML = `<span class="pi-icon">${C.icon}</span><span class="pi-label">${C.label}</span>`;
+
+        item.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", C.type);
+          e.dataTransfer.effectAllowed = "copy";
+          item.classList.add("dragging");
+        });
+        item.addEventListener("dragend", () => item.classList.remove("dragging"));
+
+        // Click = quick add (touch-friendly)
+        item.addEventListener("click", () => {
+          this.add(C.type, 40, 40 + this.components.length * 24);
+        });
+
+        el.appendChild(item);
+      });
+    }
+
+    /* ------------------------ Canvas -------------------------- */
+    bindCanvas() {
+      this.canvasScroll.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      });
+
+      this.canvasScroll.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const type = e.dataTransfer.getData("text/plain");
+        if (!REGISTRY[type]) return;
+        const rect = this.canvas.getBoundingClientRect();
+        this.add(type, e.clientX - rect.left - 10, e.clientY - rect.top - 10);
+      });
+
+      this.canvasScroll.addEventListener("pointerdown", (e) => {
+        if (e.target === this.canvas || e.target === this.canvasScroll) this.select(null);
+      });
+    }
+
+    /* ------------------- Add / Remove ------------------------- */
+    add(type, x, y) {
+      const Ctor = REGISTRY[type];
+      if (!Ctor) return;
+
+      const comp = new Ctor(x, y);
+      const node = comp.createNode();
+      node.dataset.id = comp.id;
+
+      this.canvas.appendChild(node);
+      this.components.push(comp);
+
+      this.makeDraggable(node, comp);
+      this.select(comp);
+      this.render();
+    }
+
+    remove(comp) {
+      const i = this.components.indexOf(comp);
+      if (i === -1) return;
+      this.components.splice(i, 1);
+
+      const node = this.canvas.querySelector(`[data-id="${comp.id}"]`);
+      if (node) node.remove();
+
+      if (this.selected === comp) this.select(null);
+      this.render();
+    }
+
+    clear() {
+      this.components.forEach((c) => {
+        const n = this.canvas.querySelector(`[data-id="${c.id}"]`);
+        if (n) n.remove();
+      });
+      this.components = [];
+      this.select(null);
+      this.render();
+    }
+
+    /* ---------------------- Selection ------------------------- */
+    select(comp) {
+      if (this.selected) {
+        const prev = this.canvas.querySelector(`[data-id="${this.selected.id}"]`);
+        if (prev) prev.classList.remove("selected");
+      }
+      this.selected = comp;
+      if (comp) {
+        const node = this.canvas.querySelector(`[data-id="${comp.id}"]`);
+        if (node) node.classList.add("selected");
+      }
+      this.renderProps();
+    }
+
+    /* ------------------- Move inside canvas ------------------- */
+    makeDraggable(node, comp) {
+      node.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        this.select(comp);
+
+        const startX = e.clientX, startY = e.clientY;
+        const originX = comp.x, originY = comp.y;
+        let moved = false;
+
+        const onMove = (ev) => {
+          const dx = ev.clientX - startX;
+          const dy = ev.clientY - startY;
+          if (!moved && Math.abs(dx) + Math.abs(dy) < 3) return;
+          moved = true;
+
+          comp.x = Math.max(0, Math.round(originX + dx));
+          comp.y = Math.max(0, Math.round(originY + dy));
+          node.style.left = comp.x + "px";
+          node.style.top  = comp.y + "px";
+          this.render();
+        };
+
+        const onUp = () => {
+          window.removeEventListener("pointermove", onMove);
+          window.removeEventListener("pointerup", onUp);
+          node.style.left = "";
+          node.style.top  = "";
+          this.render();
+        };
+
+        window.addEventListener("pointermove", onMove);
+        window.addEventListener("pointerup", onUp);
+      });
+    }
+
+    /* --------------------- Code editor UI --------------------- */
+    bindEditor() {
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+          this.lang = tab.dataset.lang;
+          this.render();
+        });
+      });
+
+      this.codeEl.addEventListener("input", () => this.updateHighlight());
+      this.codeEl.addEventListener("scroll", () => {
+        this.highlightEl.scrollTop  = this.codeEl.scrollTop;
+        this.highlightEl.scrollLeft = this.codeEl.scrollLeft;
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.target === this.codeEl) return;
+        if ((e.key === "Delete" || e.key === "Backspace") && this.selected) {
+          e.preventDefault();
+          this.remove(this.selected);
+        }
+      });
+    }
+
+    /* ----------------- Properties panel UI -------------------- */
+    bindPropertiesPanel() {
+      document.getElementById("deleteComponentBtn").addEventListener("click", () => {
+        if (this.selected) this.remove(this.selected);
+      });
+
+      document.getElementById("addActionBtn").addEventListener("click", () => {
+        if (!this.selected) return;
+        const comp = this.selected;
+        comp.actions.push({
+          event: comp.constructor.supportedEvents[0] || "click",
+          type: "alert",
+          params: { message: "Hello!" },
+        });
+        this.renderActions(comp);
+        this.render();
+      });
+    }
+
+    renderProps() {
+      if (!this.selected) {
+        this.propsPanel.classList.remove("visible");
+        return;
+      }
+      this.propsPanel.classList.add("visible");
+      this.propsType.textContent = `${this.selected.constructor.label} · ${this.selected.id}`;
+      this.renderStyleControls(this.selected);
+      this.renderActions(this.selected);
+    }
+
+    renderStyleControls(comp) {
+      const container = this.styleControlsEl;
+      container.innerHTML = "";
+
+      (comp.constructor.styleSchema || []).forEach((schema) => {
+        const row = document.createElement("div");
+        row.className = "prop-row";
+
+        const label = document.createElement("label");
+        label.textContent = schema.label;
+        row.appendChild(label);
+
+        let input;
+        if (schema.type === "color") {
+          input = document.createElement("input");
+          input.type = "color";
+          input.value = comp.styleProps[schema.key] || "#000000";
+        } else if (schema.type === "number") {
+          input = document.createElement("input");
+          input.type = "number";
+          const v = comp.styleProps[schema.key];
+          input.value = v == null ? "" : v;
+        } else if (schema.type === "shadow") {
+          input = document.createElement("select");
+          ["none", "sm", "md", "lg", "xl"].forEach((preset) => {
+            const opt = document.createElement("option");
+            opt.value = preset;
+            opt.textContent = preset === "none" ? "None" : preset.toUpperCase();
+            if (comp.styleProps[schema.key] === preset) opt.selected = true;
+            input.appendChild(opt);
+          });
+        } else {
+          input = document.createElement("input");
+          input.type = "text";
+          input.value = comp.styleProps[schema.key] ?? "";
+        }
+
+        input.addEventListener("input", () => {
+          if (schema.type === "number") {
+            comp.styleProps[schema.key] =
+              input.value === "" ? null : Number(input.value);
+          } else {
+            comp.styleProps[schema.key] = input.value;
+          }
+          this.render();
+        });
+
+        row.appendChild(input);
+        container.appendChild(row);
+      });
+    }
+
+    renderActions(comp) {
+      const container = this.actionListEl;
+      container.innerHTML = "";
+
+      if (comp.actions.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "actions-empty";
+        empty.textContent = "No actions yet";
+        container.appendChild(empty);
+        return;
+      }
+
+      comp.actions.forEach((action, idx) => {
+        const row = document.createElement("div");
+        row.className = "action-row";
+
+        // --- Event select ---
+        const evSel = document.createElement("select");
+        (comp.constructor.supportedEvents || ["click"]).forEach((ev) => {
+          const opt = document.createElement("option");
+          opt.value = ev;
+          opt.textContent = "on " + ev;
+          if (action.event === ev) opt.selected = true;
+          evSel.appendChild(opt);
+        });
+        evSel.addEventListener("change", () => {
+          action.event = evSel.value;
+          this.render();
+        });
+        row.appendChild(evSel);
+
+        // --- Action type select ---
+        const typeSel = document.createElement("select");
+        Object.entries(ACTION_TYPES).forEach(([key, def]) => {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = def.label;
+          if (action.type === key) opt.selected = true;
+          typeSel.appendChild(opt);
+        });
+        typeSel.addEventListener("change", () => {
+          action.type = typeSel.value;
+          action.params = {};
+          const def = ACTION_TYPES[action.type];
+          if (def && def.params[0]) {
+            action.params[def.params[0].key] = def.params[0].default;
+          }
+          this.renderActions(comp);
+          this.render();
+        });
+        row.appendChild(typeSel);
+
+        // --- Remove button ---
+        const rm = document.createElement("button");
+        rm.className = "action-remove";
+        rm.textContent = "×";
+        rm.title = "Remove action";
+        rm.addEventListener("click", () => {
+          comp.actions.splice(idx, 1);
+          this.renderActions(comp);
+          this.render();
+        });
+        row.appendChild(rm);
+
+        // --- Param inputs (below, full width) ---
+        const def = ACTION_TYPES[action.type];
+        if (def) {
+          def.params.forEach((p) => {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = p.label;
+            input.value = action.params[p.key] ?? p.default ?? "";
+            input.addEventListener("input", () => {
+              action.params[p.key] = input.value;
+              this.render();
+            });
+            row.appendChild(input);
+          });
+        }
+
+        container.appendChild(row);
+      });
+    }
+
+    /* --------------------- Code generation -------------------- */
+    generateHTML() {
+      const body = this.components.length
+        ? this.components
+            .map((c) => "    " + c.toHTML().split("\n").join("\n    "))
+            .join("\n")
+        : "    <!-- Drop components here -->";
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="canvas">
+${body}
+  </div>
+  <script src="script.js"><\/script>
+</body>
+</html>`;
+    }
+
+    generateCSS() {
+      const base = `.canvas {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  background: #ffffff;
+}`;
+      if (!this.components.length) return base;
+
+      const blocks = this.components.map(
+        (c) => `/* ${c.constructor.label} · ${c.id} */\n${c.toCSS()}`
+      );
+      return base + "\n\n" + blocks.join("\n\n");
+    }
+
+    generateJS() {
+      const handlers = [];
+
+      this.components.forEach((comp) => {
+        comp.actions.forEach((action) => {
+          const def = ACTION_TYPES[action.type];
+          if (!def) return;
+          const code = def.code(comp, action);
+          handlers.push(`  // ${comp.constructor.label} · ${comp.id}\n  ${code}`);
+        });
+      });
+
+      const body = handlers.length
+        ? handlers.join("\n\n")
+        : "  // No actions configured yet";
+
+      return `// script.js — generated by Visual Code Editor
+
+document.addEventListener("DOMContentLoaded", () => {
+${body}
+});`;
+    }
+
+    /* ------------------------ Rendering ----------------------- */
+    render() {
+      const css = this.generateCSS();
+
+      // Live preview = the exact generated stylesheet
+      this.styleTag.textContent = css;
+
+      let code;
+      if (this.lang === "html")     code = this.generateHTML();
+      else if (this.lang === "css") code = css;
+      else                          code = this.generateJS();
+
+      this.codeEl.value = code;
+      this.updateHighlight();
+
+      const n = this.components.length;
+      this.statusEl.textContent = `${n} component${n === 1 ? "" : "s"}`;
+      this.canvas.classList.toggle("empty", n === 0);
+    }
+
+    updateHighlight() {
+      const code = this.codeEl.value;
+      let html;
+      if (this.lang === "html")     html = highlightHTML(code);
+      else if (this.lang === "css") html = highlightCSS(code);
+      else                          html = highlightJS(code);
+
+      this.highlightEl.innerHTML = html + "\n";
+      this.highlightEl.scrollTop  = this.codeEl.scrollTop;
+      this.highlightEl.scrollLeft = this.codeEl.scrollLeft;
+    }
+  }
+
+  /* ==================================================================
+     5. BOOTSTRAP
+     ================================================================== */
+
+  const editor = new Editor({
+    canvas:       document.getElementById("canvas"),
+    canvasScroll: document.getElementById("canvasScroll"),
+    palette:      document.getElementById("palette"),
+    code:         document.getElementById("code"),
+    highlight:    document.getElementById("highlight"),
+    styleTag:     document.getElementById("preview-style"),
+    status:       document.getElementById("status"),
+    propsPanel:   document.getElementById("propsPanel"),
+    propsType:    document.getElementById("propsType"),
+    styleControls:document.getElementById("styleControls"),
+    actionList:   document.getElementById("actionList"),
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", () => editor.clear());
+
+  document.getElementById("copyBtn").addEventListener("click", async (e) => {
+    const btn = e.currentTarget;
+    const original = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(editor.codeEl.value);
+      btn.textContent = "Copied ✓";
+    } catch {
+      editor.codeEl.select();
+      document.execCommand("copy");
+      btn.textContent = "Copied ✓";
+    }
+    setTimeout(() => (btn.textContent = original), 1300);
+  });
+})();
+</script>
+</body>
+</html>

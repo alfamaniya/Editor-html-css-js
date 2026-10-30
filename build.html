@@ -297,11 +297,11 @@
     },
     setText: { label: "Change Text", params: [{ key: "text", label: "New text", default: "Updated text" }], code: (comp, action) => `document.getElementById("${comp.id}").textContent = ${JSON.stringify(action.params.text || "")};` },
     setBackground: { label: "Change Background", params: [{ key: "color", label: "CSS color", default: "#4f46e5" }], code: (comp, action) => `document.getElementById("${comp.id}").style.backgroundColor = ${JSON.stringify(action.params.color || "#4f46e5")};` },
-    toggleVisibility: { label: "Toggle Visibility", params: [], code: (comp) => `(() => { const el = document.getElementById("${comp.id}"); el.hidden = !el.hidden; })();` },
-    focus: { label: "Focus Element", params: [], code: (comp) => `document.getElementById("${comp.id}").focus();` },
-    scrollIntoView: { label: "Scroll to Element", params: [], code: (comp) => `document.getElementById("${comp.id}").scrollIntoView({ behavior: "smooth", block: "center" });` },
-    copyText: { label: "Copy Text", params: [{ key: "text", label: "Text to copy", default: "Copied!" }], code: (comp, action) => `navigator.clipboard.writeText(${JSON.stringify(action.params.text || "")});` },
-    confirm: { label: "Confirm Action", params: [{ key: "message", label: "Confirmation message", default: "Are you sure?" }], code: (comp, action) => `if (confirm(${JSON.stringify(action.params.message || "Are you sure?")})) console.log("Confirmed: ${comp.id}");` },
+    toggleVisibility: { label: "Toggle Visibility", params: [], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", (e) => { const el = e.currentTarget; el.hidden = !el.hidden; });` },
+    focus: { label: "Focus Element", params: [], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", () => document.getElementById("${comp.id}").focus());` },
+    scrollIntoView: { label: "Scroll to Element", params: [], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", () => document.getElementById("${comp.id}").scrollIntoView({ behavior: "smooth", block: "center" }));` },
+    copyText: { label: "Copy Text", params: [{ key: "text", label: "Text to copy", default: "Copied!" }], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", () => navigator.clipboard.writeText(${JSON.stringify(action.params.text || "")}));` },
+    confirm: { label: "Confirm Action", params: [{ key: "message", label: "Confirmation message", default: "Are you sure?" }], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", () => { if (confirm(${JSON.stringify(action.params.message || "Are you sure?")})) console.log("Confirmed: ${comp.id}"); });` },
 
   };
 
@@ -1145,7 +1145,25 @@
         container.append(label, editor);
       }
 
-      (comp.constructor.styleSchema || []).forEach((schema) => {
+      const advancedSchemas = [
+        { key: "x", label: "Position X", type: "number", min: 0, step: 1 },
+        { key: "y", label: "Position Y", type: "number", min: 0, step: 1 },
+        { key: "opacity", label: "Opacity", type: "range", min: 0, max: 1, step: 0.05 },
+        { key: "zIndex", label: "Layer order", type: "number", min: 0, max: 9999 },
+        { key: "padding", label: "Padding (CSS)", type: "text" },
+        { key: "borderWidth", label: "Border width (px)", type: "number", min: 0 },
+        { key: "borderColor", label: "Border color", type: "color" },
+        { key: "borderStyle", label: "Border style", type: "select", options: ["none", "solid", "dashed", "dotted", "double"] },
+        { key: "fontWeight", label: "Font weight", type: "select", options: ["", "300", "400", "500", "600", "700", "800", "900"] },
+        { key: "textAlign", label: "Text alignment", type: "select", options: ["left", "center", "right", "justify"] },
+        { key: "lineHeight", label: "Line height", type: "text" },
+        { key: "letterSpacing", label: "Letter spacing (px)", type: "number", step: 0.1 },
+        { key: "cursor", label: "Mouse cursor", type: "select", options: ["default", "pointer", "text", "move", "grab", "not-allowed", "crosshair"] },
+        { key: "overflow", label: "Overflow", type: "select", options: ["visible", "hidden", "auto", "scroll"] },
+        { key: "display", label: "Display override", type: "select", options: ["", "block", "inline-block", "flex", "grid", "none"] },
+      ];
+      const schemas = [...(comp.constructor.styleSchema || []), ...advancedSchemas];
+      schemas.forEach((schema) => {
         const row = document.createElement("div");
         row.className = "prop-row";
 
@@ -1163,28 +1181,29 @@
           input.type = "number";
           const v = comp.styleProps[schema.key];
           input.value = v == null ? "" : v;
-        } else if (schema.type === "shadow") {
+        } else if (schema.type === "shadow" || schema.type === "select") {
           input = document.createElement("select");
-          ["none", "sm", "md", "lg", "xl"].forEach((preset) => {
+          const options = schema.type === "shadow" ? ["none", "sm", "md", "lg", "xl"] : schema.options;
+          options.forEach((option) => {
             const opt = document.createElement("option");
-            opt.value = preset;
-            opt.textContent = preset === "none" ? "No shadow" : ({ sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" }[preset] || preset);
-            if (comp.styleProps[schema.key] === preset) opt.selected = true;
+            opt.value = option;
+            opt.textContent = schema.type === "shadow" ? (option === "none" ? "No shadow" : ({ sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" }[option] || option)) : (option || "Default");
+            if ((comp.styleProps[schema.key] ?? "") === option) opt.selected = true;
             input.appendChild(opt);
           });
         } else {
           input = document.createElement("input");
-          input.type = "text";
-          input.value = comp.styleProps[schema.key] ?? "";
+          input.type = schema.type === "range" ? "range" : schema.type === "number" ? "number" : "text";
+          input.value = schema.key === "x" ? comp.x : schema.key === "y" ? comp.y : (comp.styleProps[schema.key] ?? "");
+          if (schema.min != null) input.min = schema.min;
+          if (schema.max != null) input.max = schema.max;
+          if (schema.step != null) input.step = schema.step;
         }
 
         input.addEventListener("input", () => {
-          if (schema.type === "number") {
-            comp.styleProps[schema.key] =
-              input.value === "" ? null : Number(input.value);
-          } else {
-            comp.styleProps[schema.key] = input.value;
-          }
+          const value = input.value === "" ? null : (["number", "range"].includes(schema.type) ? Number(input.value) : input.value);
+          if (schema.key === "x" || schema.key === "y") comp[schema.key] = Math.max(0, Number(value) || 0);
+          else comp.styleProps[schema.key] = value;
           this.render();
         });
 
@@ -1241,7 +1260,7 @@
 
         // --- Event select ---
         const evSel = document.createElement("select");
-        (comp.constructor.supportedEvents || ["click"]).forEach((ev) => {
+        [...new Set([...(comp.constructor.supportedEvents || ["click"]), "click", "dblclick", "mouseenter", "mouseleave", "focus", "blur", "input", "change", "submit", "keydown", "keyup", "pointerdown", "pointerup"])].forEach((ev) => {
           const opt = document.createElement("option");
           opt.value = ev;
           opt.textContent = ({ click: "On click", mouseenter: "On pointer enter", mouseleave: "On pointer leave", load: "On load", change: "On change" }[ev] || ev);

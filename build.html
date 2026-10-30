@@ -1240,6 +1240,16 @@
       ["none", "sm", "md", "lg", "xl"].forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v === "none" ? "No shadow" : v.toUpperCase(); o.selected = (h.shadow || "none") === v; select.appendChild(o); });
       select.addEventListener("change", () => { h.shadow = select.value; h.enabled = true; this.render(); });
       row.append(label, select); container.appendChild(row);
+      add("Border color", "borderColor", "color", "#4f46e5");
+      add("Border width (px)", "borderWidth", "number", "");
+      add("Rotation (deg)", "rotate", "number", 0);
+      add("Vertical movement (px)", "translateY", "number", 0);
+      add("Filter", "filter", "text", "");
+      add("Transition (ms)", "duration", "number", 180);
+      const help = document.createElement("p");
+      help.textContent = "Hover styles are generated in the element's :hover CSS rule.";
+      help.style.cssText = "margin-top:9px;color:#9aa4b6;font-size:10px;line-height:1.5";
+      container.appendChild(help);
     }
 
     renderActions(comp) {

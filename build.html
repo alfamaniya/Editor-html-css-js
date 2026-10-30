@@ -769,6 +769,7 @@
       this.actionListEl    = opts.actionList;
       this.hoverControlsEl = opts.hoverControls;
       this.codeDirty = false;
+      this.manualPreviewLang = null;
 
       this.lang = "html";
       this.components = [];
@@ -933,6 +934,7 @@
 
       this.codeEl.addEventListener("input", () => {
         this.codeDirty = true;
+        this.manualPreviewLang = this.lang;
         this.updateHighlight();
         this.applyCodePreview();
       });
@@ -1312,9 +1314,9 @@ ${body}
     }
 
     render() {
-      const wasCodeEdited = this.codeDirty;
       this.codeDirty = false;
-      if (wasCodeEdited && this.lang === "html") this.rebuildCanvasFromModel();
+      if (this.manualPreviewLang === "html") this.rebuildCanvasFromModel();
+      this.manualPreviewLang = null;
       const css = this.generateCSS();
 
       // Live preview = the exact generated stylesheet

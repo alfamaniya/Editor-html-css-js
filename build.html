@@ -855,8 +855,8 @@
       const safeEnd = Math.max(safeStart, Math.min(Number(end) || safeStart, value.length));
       const before = value.slice(0, safeStart);
       const after = value.slice(safeEnd);
-      const prefix = before && !before.endsWith("\\n") ? "\\n" : "";
-      const suffix = after && !after.startsWith("\\n") ? "\\n" : "";
+      const prefix = before && !before.endsWith("\n") ? "\n" : "";
+      const suffix = after && !after.startsWith("\n") ? "\n" : "";
       const insertion = prefix + snippet + suffix;
       const caret = safeStart + insertion.length - suffix.length;
 

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>محیط ساخت بصری صفحه</title>
+<title>Visual Builder Studio</title>
 <style>
   /* ===================== Base ===================== */
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -267,26 +267,26 @@
     </div>
     <div class="statusbar">
       <span id="status">0 components</span>
-      <button id="copyBtn" class="btn-ghost">کپی کد</button>
+      <button id="copyBtn" class="btn-ghost">Copy Code</button>
     </div>
   </section>
 
   <div class="splitter" id="splitter" role="separator" tabindex="0"
-       aria-label="تغییر اندازه پنل ویرایش کد و محیط طراحی"
-       aria-orientation="vertical" title="برای تغییر اندازه بکشید"></div>
+       aria-label="Resize code editor and design workspace"
+       aria-orientation="vertical" title="Drag to resize panels"></div>
 
   <!-- ============ RIGHT : WORKSPACE ============ -->
   <section class="workspace">
     <header class="palette">
-      <h2>المان‌ها</h2>
+      <h2>Elements</h2>
       <div class="palette-items" id="palette"></div>
-      <button id="clearBtn" class="btn-ghost">پاک‌کردن همه</button>
+      <button id="clearBtn" class="btn-ghost">Clear All</button>
     </header>
 
     <div class="workspace-body">
       <div class="canvas-scroll" id="canvasScroll">
         <div class="canvas empty" id="canvas">
-          <div class="hint">یک المان را از نوار بالا بکشید و اینجا رها کنید</div>
+          <div class="hint">Drag an element from the toolbar and drop it here</div>
         </div>
       </div>
 
@@ -294,23 +294,23 @@
       <aside class="props-panel" id="propsPanel">
         <div class="props-header">
           <div>
-            <h3>تنظیمات المان</h3>
+            <h3>Element Settings</h3>
             <span class="props-type" id="propsType">—</span>
           </div>
-          <button class="btn-icon" id="deleteComponentBtn" title="حذف المان">🗑</button>
+          <button class="btn-icon" id="deleteComponentBtn" title="Delete element">🗑</button>
         </div>
         <section class="props-section">
-          <h4>ظاهر</h4>
+          <h4>Appearance</h4>
           <div id="styleControls"></div>
         </section>
         <section class="props-section">
-          <h4>حالت هاور این المان</h4>
+          <h4>Hover Effects</h4>
           <div id="hoverControls"></div>
         </section>
         <section class="props-section">
-          <h4>رویدادها و عملکردها</h4>
+          <h4>Interactions</h4>
           <div id="actionList"></div>
-          <button class="add-action-btn" id="addActionBtn">+ افزودن عملکرد</button>
+          <button class="add-action-btn" id="addActionBtn">+ Add Interaction</button>
         </section>
       </aside>
     </div>
@@ -394,32 +394,32 @@
 
   const ACTION_TYPES = {
     alert: {
-      label: "نمایش پیام",
-      params: [{ key: "message", label: "پیام", default: "Hello!" }],
+      label: "Show Alert",
+      params: [{ key: "message", label: "Message", default: "Hello!" }],
       code: (comp, action) =>
         `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    alert(${JSON.stringify(action.params.message || "")});\n  });`,
     },
     consoleLog: {
-      label: "ثبت در کنسول",
-      params: [{ key: "message", label: "پیام", default: "Clicked!" }],
+      label: "Log to Console",
+      params: [{ key: "message", label: "Message", default: "Clicked!" }],
       code: (comp, action) =>
         `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    console.log(${JSON.stringify(action.params.message || "")});\n  });`,
     },
     toggleClass: {
-      label: "تغییر کلاس",
-      params: [{ key: "className", label: "نام کلاس", default: "active" }],
+      label: "Toggle Class",
+      params: [{ key: "className", label: "Class Name", default: "active" }],
       code: (comp, action) =>
         `document.getElementById("${comp.id}").addEventListener("${action.event}", (e) => {\n    e.currentTarget.classList.toggle(${JSON.stringify(action.params.className || "")});\n  });`,
     },
     hide: {
-      label: "پنهان‌کردن المان",
+      label: "Hide Element",
       params: [],
       code: (comp, action) =>
         `document.getElementById("${comp.id}").addEventListener("${action.event}", (e) => {\n    e.currentTarget.style.display = "none";\n  });`,
     },
     navigate: {
-      label: "رفتن به نشانی",
-      params: [{ key: "url", label: "نشانی اینترنتی", default: "https://example.com" }],
+      label: "Navigate to URL",
+      params: [{ key: "url", label: "URL", default: "https://example.com" }],
       code: (comp, action) =>
         `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    window.location.href = ${JSON.stringify(action.params.url || "")};\n  });`,
     },
@@ -431,7 +431,7 @@
 
   class Component {
     static type = "component";
-    static label = "المان";
+    static label = "Element";
     static icon = "◻";
     static styleSchema = [];
     static supportedEvents = ["click"];
@@ -509,17 +509,17 @@
   /* ------------------------- Button ------------------------- */
   class ButtonComponent extends Component {
     static type = "button";
-    static label = "دکمه";
+    static label = "Button";
     static icon = "🔘";
     static supportedEvents = ["click", "dblclick", "mouseenter", "mouseleave"];
     static styleSchema = [
-      { key: "bgColor",   label: "رنگ پس‌زمینه", type: "color",  default: "#4f46e5" },
-      { key: "textColor", label: "رنگ متن", type: "color",  default: "#ffffff" },
-      { key: "width",     label: "عرض",      type: "number", default: 160 },
-      { key: "height",    label: "ارتفاع",     type: "number", default: 42 },
-      { key: "fontSize",  label: "اندازه قلم",  type: "number", default: 15 },
-      { key: "radius",    label: "گردی گوشه",     type: "number", default: 8 },
-      { key: "shadow",    label: "سایه",     type: "shadow", default: "none" },
+      { key: "bgColor",   label: "Background", type: "color",  default: "#4f46e5" },
+      { key: "textColor", label: "Text Color", type: "color",  default: "#ffffff" },
+      { key: "width",     label: "Width",      type: "number", default: 160 },
+      { key: "height",    label: "Height",     type: "number", default: 42 },
+      { key: "fontSize",  label: "Font Size",  type: "number", default: 15 },
+      { key: "radius",    label: "Border Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
     ];
 
     get markup() { return `<button id="${this.id}">Click me</button>`; }
@@ -536,17 +536,17 @@
   /* ------------------------- Input -------------------------- */
   class InputComponent extends Component {
     static type = "input";
-    static label = "ورودی";
+    static label = "Input";
     static icon = "⌨️";
     static supportedEvents = ["input", "change", "focus", "blur"];
     static styleSchema = [
-      { key: "bgColor",   label: "رنگ پس‌زمینه", type: "color",  default: "#ffffff" },
-      { key: "textColor", label: "رنگ متن", type: "color",  default: "#0f172a" },
-      { key: "width",     label: "عرض",      type: "number", default: 220 },
-      { key: "height",    label: "ارتفاع",     type: "number", default: 42 },
-      { key: "fontSize",  label: "اندازه قلم",  type: "number", default: 14 },
-      { key: "radius",    label: "گردی گوشه",     type: "number", default: 8 },
-      { key: "shadow",    label: "سایه",     type: "shadow", default: "none" },
+      { key: "bgColor",   label: "Background", type: "color",  default: "#ffffff" },
+      { key: "textColor", label: "Text Color", type: "color",  default: "#0f172a" },
+      { key: "width",     label: "Width",      type: "number", default: 220 },
+      { key: "height",    label: "Height",     type: "number", default: 42 },
+      { key: "fontSize",  label: "Font Size",  type: "number", default: 14 },
+      { key: "radius",    label: "Border Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
     ];
 
     get markup() {
@@ -564,14 +564,14 @@
   /* -------------------------- Text -------------------------- */
   class TextComponent extends Component {
     static type = "text";
-    static label = "عنوان متنی";
+    static label = "Text";
     static icon = "🔤";
     static supportedEvents = ["click", "mouseenter", "mouseleave"];
     static styleSchema = [
-      { key: "textColor", label: "رنگ",     type: "color",  default: "#0f172a" },
-      { key: "fontSize",  label: "اندازه قلم", type: "number", default: 28 },
-      { key: "width",     label: "عرض",     type: "number", default: null },
-      { key: "shadow",    label: "سایه",    type: "shadow", default: "none" },
+      { key: "textColor", label: "Color",     type: "color",  default: "#0f172a" },
+      { key: "fontSize",  label: "Font Size", type: "number", default: 28 },
+      { key: "width",     label: "Width",     type: "number", default: null },
+      { key: "shadow",    label: "Shadow",    type: "shadow", default: "none" },
     ];
 
     get markup() { return `<h2 id="${this.id}">Hello World</h2>`; }
@@ -586,17 +586,17 @@
   /* ------------------------ Textarea ------------------------ */
   class TextareaComponent extends Component {
     static type = "textarea";
-    static label = "متن چندخطی";
+    static label = "Textarea";
     static icon = "📝";
     static supportedEvents = ["input", "change", "focus", "blur"];
     static styleSchema = [
-      { key: "bgColor",   label: "رنگ پس‌زمینه", type: "color",  default: "#ffffff" },
-      { key: "textColor", label: "رنگ متن", type: "color",  default: "#0f172a" },
-      { key: "width",     label: "عرض",      type: "number", default: 240 },
-      { key: "height",    label: "ارتفاع",     type: "number", default: 100 },
-      { key: "fontSize",  label: "اندازه قلم",  type: "number", default: 14 },
-      { key: "radius",    label: "گردی گوشه",     type: "number", default: 8 },
-      { key: "shadow",    label: "سایه",     type: "shadow", default: "none" },
+      { key: "bgColor",   label: "Background", type: "color",  default: "#ffffff" },
+      { key: "textColor", label: "Text Color", type: "color",  default: "#0f172a" },
+      { key: "width",     label: "Width",      type: "number", default: 240 },
+      { key: "height",    label: "Height",     type: "number", default: 100 },
+      { key: "fontSize",  label: "Font Size",  type: "number", default: 14 },
+      { key: "radius",    label: "Border Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
     ];
 
     get markup() {
@@ -616,13 +616,13 @@
   /* ------------------------ Checkbox ------------------------ */
   class CheckboxComponent extends Component {
     static type = "checkbox";
-    static label = "چک‌باکس";
+    static label = "Checkbox";
     static icon = "☑️";
     static supportedEvents = ["change", "click"];
     static styleSchema = [
-      { key: "textColor", label: "رنگ متن", type: "color",  default: "#0f172a" },
-      { key: "fontSize",  label: "اندازه قلم",  type: "number", default: 14 },
-      { key: "shadow",    label: "سایه",     type: "shadow", default: "none" },
+      { key: "textColor", label: "Text Color", type: "color",  default: "#0f172a" },
+      { key: "fontSize",  label: "Font Size",  type: "number", default: 14 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
     ];
 
     get markup() {
@@ -641,17 +641,17 @@
   /* ------------------------- Select ------------------------- */
   class SelectComponent extends Component {
     static type = "select";
-    static label = "فهرست انتخاب";
+    static label = "Select";
     static icon = "🔽";
     static supportedEvents = ["change", "focus", "blur"];
     static styleSchema = [
-      { key: "bgColor",   label: "رنگ پس‌زمینه", type: "color",  default: "#ffffff" },
-      { key: "textColor", label: "رنگ متن", type: "color",  default: "#0f172a" },
-      { key: "width",     label: "عرض",      type: "number", default: 200 },
-      { key: "height",    label: "ارتفاع",     type: "number", default: 42 },
-      { key: "fontSize",  label: "اندازه قلم",  type: "number", default: 14 },
-      { key: "radius",    label: "گردی گوشه",     type: "number", default: 8 },
-      { key: "shadow",    label: "سایه",     type: "shadow", default: "none" },
+      { key: "bgColor",   label: "Background", type: "color",  default: "#ffffff" },
+      { key: "textColor", label: "Text Color", type: "color",  default: "#0f172a" },
+      { key: "width",     label: "Width",      type: "number", default: 200 },
+      { key: "height",    label: "Height",     type: "number", default: 42 },
+      { key: "fontSize",  label: "Font Size",  type: "number", default: 14 },
+      { key: "radius",    label: "Border Radius",     type: "number", default: 8 },
+      { key: "shadow",    label: "Shadow",     type: "shadow", default: "none" },
     ];
 
     get markup() {
@@ -670,14 +670,14 @@
   /* -------------------------- Image ------------------------- */
   class ImageComponent extends Component {
     static type = "image";
-    static label = "تصویر";
+    static label = "Image";
     static icon = "🖼️";
     static supportedEvents = ["click", "load"];
     static styleSchema = [
-      { key: "width",  label: "عرض",  type: "number", default: 200 },
-      { key: "height", label: "ارتفاع", type: "number", default: 120 },
-      { key: "radius", label: "گردی گوشه", type: "number", default: 10 },
-      { key: "shadow", label: "سایه", type: "shadow", default: "none" },
+      { key: "width",  label: "Width",  type: "number", default: 200 },
+      { key: "height", label: "Height", type: "number", default: 120 },
+      { key: "radius", label: "Border Radius", type: "number", default: 10 },
+      { key: "shadow", label: "Shadow", type: "shadow", default: "none" },
     ];
 
     get markup() {
@@ -692,15 +692,15 @@
   /* --------------------------- Box -------------------------- */
   class BoxComponent extends Component {
     static type = "box";
-    static label = "کادر";
+    static label = "Box";
     static icon = "⬛";
     static supportedEvents = ["click", "mouseenter", "mouseleave"];
     static styleSchema = [
-      { key: "bgColor", label: "رنگ پس‌زمینه", type: "color",  default: "#e0e7ff" },
-      { key: "width",   label: "عرض",      type: "number", default: 200 },
-      { key: "height",  label: "ارتفاع",     type: "number", default: 120 },
-      { key: "radius",  label: "گردی گوشه",     type: "number", default: 12 },
-      { key: "shadow",  label: "سایه",     type: "shadow", default: "none" },
+      { key: "bgColor", label: "Background", type: "color",  default: "#e0e7ff" },
+      { key: "width",   label: "Width",      type: "number", default: 200 },
+      { key: "height",  label: "Height",     type: "number", default: 120 },
+      { key: "radius",  label: "Border Radius",     type: "number", default: 12 },
+      { key: "shadow",  label: "Shadow",     type: "shadow", default: "none" },
     ];
 
     get markup() { return `<div id="${this.id}"></div>`; }
@@ -709,49 +709,49 @@
 
   /* ---------------------- Link ------------------------------ */
   class LinkComponent extends Component {
-    static type = "link"; static label = "پیوند"; static icon = "🔗";
+    static type = "link"; static label = "Link"; static icon = "🔗";
     static supportedEvents = ["click", "mouseenter", "mouseleave"];
     static styleSchema = [
-      { key: "textColor", label: "رنگ متن", type: "color", default: "#2563eb" },
-      { key: "fontSize", label: "اندازه قلم", type: "number", default: 16 },
-      { key: "width", label: "عرض", type: "number", default: 150 },
+      { key: "textColor", label: "Text Color", type: "color", default: "#2563eb" },
+      { key: "fontSize", label: "Font Size", type: "number", default: 16 },
+      { key: "width", label: "Width", type: "number", default: 150 },
     ];
     get markup() { return `<a id="${this.id}" href="#">Read more</a>`; }
     get extraCSS() { return "text-decoration: underline; cursor: pointer; font-family: system-ui, sans-serif;"; }
   }
   class CardComponent extends Component {
-    static type = "card"; static label = "کارت"; static icon = "🗂️";
+    static type = "card"; static label = "Card"; static icon = "🗂️";
     static supportedEvents = ["click", "mouseenter", "mouseleave"];
     static styleSchema = [
-      { key: "bgColor", label: "رنگ پس‌زمینه", type: "color", default: "#ffffff" },
-      { key: "textColor", label: "رنگ متن", type: "color", default: "#0f172a" },
-      { key: "width", label: "عرض", type: "number", default: 240 },
-      { key: "height", label: "ارتفاع", type: "number", default: 150 },
-      { key: "fontSize", label: "اندازه قلم", type: "number", default: 16 },
-      { key: "radius", label: "گردی گوشه", type: "number", default: 12 },
-      { key: "shadow", label: "سایه", type: "shadow", default: "sm" },
+      { key: "bgColor", label: "Background", type: "color", default: "#ffffff" },
+      { key: "textColor", label: "Text Color", type: "color", default: "#0f172a" },
+      { key: "width", label: "Width", type: "number", default: 240 },
+      { key: "height", label: "Height", type: "number", default: 150 },
+      { key: "fontSize", label: "Font Size", type: "number", default: 16 },
+      { key: "radius", label: "Border Radius", type: "number", default: 12 },
+      { key: "shadow", label: "Shadow", type: "shadow", default: "sm" },
     ];
     get markup() { return `<article id="${this.id}"><strong>Card title</strong><p>Card description goes here.</p></article>`; }
     get extraCSS() { return "padding: 16px; border: 1px solid #e2e8f0; font-family: system-ui, sans-serif; line-height: 1.5;"; }
   }
   class DividerComponent extends Component {
-    static type = "divider"; static label = "جداکننده"; static icon = "➖";
+    static type = "divider"; static label = "Divider"; static icon = "➖";
     static supportedEvents = ["click", "mouseenter", "mouseleave"];
     static styleSchema = [
-      { key: "width", label: "عرض", type: "number", default: 220 },
-      { key: "bgColor", label: "رنگ", type: "color", default: "#cbd5e1" },
+      { key: "width", label: "Width", type: "number", default: 220 },
+      { key: "bgColor", label: "Color", type: "color", default: "#cbd5e1" },
     ];
     get markup() { return `<hr id="${this.id}" />`; }
     get extraCSS() { return "height: 2px; border: 0;"; }
   }
   class BadgeComponent extends Component {
-    static type = "badge"; static label = "نشان"; static icon = "🏷️";
+    static type = "badge"; static label = "Badge"; static icon = "🏷️";
     static supportedEvents = ["click", "mouseenter", "mouseleave"];
     static styleSchema = [
-      { key: "bgColor", label: "رنگ پس‌زمینه", type: "color", default: "#dbeafe" },
-      { key: "textColor", label: "رنگ متن", type: "color", default: "#1d4ed8" },
-      { key: "fontSize", label: "اندازه قلم", type: "number", default: 12 },
-      { key: "radius", label: "گردی گوشه", type: "number", default: 999 },
+      { key: "bgColor", label: "Background", type: "color", default: "#dbeafe" },
+      { key: "textColor", label: "Text Color", type: "color", default: "#1d4ed8" },
+      { key: "fontSize", label: "Font Size", type: "number", default: 12 },
+      { key: "radius", label: "Border Radius", type: "number", default: 999 },
     ];
     get markup() { return `<span id="${this.id}">New</span>`; }
     get extraCSS() { return "display: inline-block; padding: 5px 10px; font-weight: 700; font-family: system-ui, sans-serif;"; }
@@ -970,7 +970,7 @@
       try {
         if (this.lang === "css") {
           this.styleTag.textContent = source;
-          this.statusEl.textContent = "پیش‌نمایش CSS به‌روزرسانی شد · ویرایش دستی";
+          this.statusEl.textContent = "CSS preview updated · Manual edit";
           return;
         }
         if (this.lang === "html") {
@@ -979,12 +979,12 @@
           this.canvas.replaceChildren(...Array.from(sourceCanvas.childNodes).map((node) => document.importNode(node, true)));
           this.canvas.querySelectorAll("[data-id]").forEach((node) => node.removeAttribute("data-id"));
           this.canvas.classList.toggle("empty", !this.canvas.children.length);
-          this.statusEl.textContent = "پیش‌نمایش HTML به‌روزرسانی شد · ویرایش دستی";
+          this.statusEl.textContent = "HTML preview updated · Manual edit";
           return;
         }
         this.runJavaScriptPreview(source);
       } catch (error) {
-        this.statusEl.textContent = "خطا در پیش‌نمایش · کد را بررسی کنید";
+        this.statusEl.textContent = "Preview error · Check your code";
         console.warn("Live preview failed:", error);
       }
     }
@@ -1014,9 +1014,9 @@
         new Function("document", "window", "alert", "console", source)(
           previewDocument, previewWindow, previewWindow.alert, previewConsole
         );
-        this.statusEl.textContent = "پیش‌نمایش JavaScript به‌روزرسانی شد";
+        this.statusEl.textContent = "JavaScript preview updated";
       } catch (error) {
-        this.statusEl.textContent = "خطای اجرای JavaScript · کنسول را بررسی کنید";
+        this.statusEl.textContent = "JavaScript runtime error · Check the console";
         console.warn("JavaScript live preview failed:", error);
       }
     }
@@ -1079,7 +1079,7 @@
           ["none", "sm", "md", "lg", "xl"].forEach((preset) => {
             const opt = document.createElement("option");
             opt.value = preset;
-            opt.textContent = preset === "none" ? "بدون سایه" : ({ sm: "کوچک", md: "متوسط", lg: "بزرگ", xl: "خیلی بزرگ" }[preset] || preset);
+            opt.textContent = preset === "none" ? "No shadow" : ({ sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" }[preset] || preset);
             if (comp.styleProps[schema.key] === preset) opt.selected = true;
             input.appendChild(opt);
           });
@@ -1109,7 +1109,7 @@
       container.innerHTML = "";
       const h = comp.hoverProps || (comp.hoverProps = {});
       const checkboxRow = document.createElement("div"); checkboxRow.className = "prop-row";
-      const checkboxLabel = document.createElement("label"); checkboxLabel.textContent = "فعال‌سازی Hover";
+      const checkboxLabel = document.createElement("label"); checkboxLabel.textContent = "Enable hover effects";
       const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = !!h.enabled;
       checkbox.addEventListener("change", () => { h.enabled = checkbox.checked; this.render(); });
       checkboxRow.append(checkboxLabel, checkbox); container.appendChild(checkboxRow);
@@ -1121,15 +1121,15 @@
         input.addEventListener("input", () => { h[key] = input.value === "" ? null : (type === "number" ? Number(input.value) : input.value); h.enabled = true; this.render(); });
         row.append(label, input); container.appendChild(row);
       };
-      add("پس‌زمینه", "bgColor", "color", "#4f46e5");
-      add("رنگ متن", "textColor", "color", "#ffffff");
-      add("بزرگ‌نمایی", "scale", "number", 1.03);
-      add("شفافیت", "opacity", "number", 1);
-      add("گردی گوشه (px)", "radius", "number", "");
+      add("Background", "bgColor", "color", "#4f46e5");
+      add("Text Color", "textColor", "color", "#ffffff");
+      add("Scale", "scale", "number", 1.03);
+      add("Opacity", "opacity", "number", 1);
+      add("Border radius (px)", "radius", "number", "");
       const row = document.createElement("div"); row.className = "prop-row";
-      const label = document.createElement("label"); label.textContent = "سایه";
+      const label = document.createElement("label"); label.textContent = "Shadow";
       const select = document.createElement("select");
-      ["none", "sm", "md", "lg", "xl"].forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v === "none" ? "بدون سایه" : v.toUpperCase(); o.selected = (h.shadow || "none") === v; select.appendChild(o); });
+      ["none", "sm", "md", "lg", "xl"].forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v === "none" ? "No shadow" : v.toUpperCase(); o.selected = (h.shadow || "none") === v; select.appendChild(o); });
       select.addEventListener("change", () => { h.shadow = select.value; h.enabled = true; this.render(); });
       row.append(label, select); container.appendChild(row);
     }
@@ -1141,7 +1141,7 @@
       if (comp.actions.length === 0) {
         const empty = document.createElement("div");
         empty.className = "actions-empty";
-        empty.textContent = "هنوز عملکردی تعریف نشده است";
+        empty.textContent = "No interactions configured yet";
         container.appendChild(empty);
         return;
       }
@@ -1155,7 +1155,7 @@
         (comp.constructor.supportedEvents || ["click"]).forEach((ev) => {
           const opt = document.createElement("option");
           opt.value = ev;
-          opt.textContent = ({ click: "با کلیک", mouseenter: "با ورود نشانگر", mouseleave: "با خروج نشانگر", load: "پس از بارگذاری", change: "با تغییر" }[ev] || ev);
+          opt.textContent = ({ click: "On click", mouseenter: "On pointer enter", mouseleave: "On pointer leave", load: "On load", change: "On change" }[ev] || ev);
           if (action.event === ev) opt.selected = true;
           evSel.appendChild(opt);
         });
@@ -1190,7 +1190,7 @@
         const rm = document.createElement("button");
         rm.className = "action-remove";
         rm.textContent = "×";
-        rm.title = "حذف عملکرد";
+        rm.title = "Remove interaction";
         rm.addEventListener("click", () => {
           comp.actions.splice(idx, 1);
           this.renderActions(comp);
@@ -1376,7 +1376,7 @@ ${body}
       this.updateHighlight();
 
       const n = this.components.length;
-      this.statusEl.textContent = `${n} المان`;
+      this.statusEl.textContent = `${n} Element`;
       this.canvas.classList.toggle("empty", n === 0);
       this.saveState();
     }
@@ -1474,11 +1474,11 @@ ${body}
     const original = btn.textContent;
     try {
       await navigator.clipboard.writeText(editor.codeEl.value);
-      btn.textContent = "کپی شد ✓";
+      btn.textContent = "Copied ✓";
     } catch {
       editor.codeEl.select();
       document.execCommand("copy");
-      btn.textContent = "کپی شد ✓";
+      btn.textContent = "Copied ✓";
     }
     setTimeout(() => (btn.textContent = original), 1300);
   });

@@ -1139,7 +1139,7 @@ ${body}
             ? { ...comp.styleProps, ...item.styleProps } : comp.styleProps;
           comp.actions = Array.isArray(item.actions) ? item.actions : [];
 
-          const match = item.id.match(/-(\\d+)$/);
+          const match = item.id.match(/-(\d+)$/);
           if (match) counters[item.type] = Math.max(counters[item.type] || 0, Number(match[1]));
 
           const node = comp.createNode();

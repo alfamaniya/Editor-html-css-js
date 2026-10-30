@@ -74,7 +74,7 @@
     background: #0f1117; border-color: #232838;
     border-bottom-color: #0f1117; color: #a5b4fc;
   }
-  .code-area { position: relative; flex: 1; overflow: hidden; }
+  .code-area { position: relative; flex: 1; overflow: hidden; direction: ltr; }
   .code-area pre, .code-area textarea {
     position: absolute; inset: 0; margin: 0; padding: 16px 18px;
     font: 400 13px/1.65 "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -267,7 +267,7 @@
     </div>
     <div class="statusbar">
       <span id="status">0 components</span>
-      <button id="copyBtn" class="btn-ghost">Copy code</button>
+      <button id="copyBtn" class="btn-ghost">کپی کد</button>
     </div>
   </section>
 
@@ -1478,7 +1478,7 @@ ${body}
     } catch {
       editor.codeEl.select();
       document.execCommand("copy");
-      btn.textContent = "Copied ✓";
+      btn.textContent = "کپی شد ✓";
     }
     setTimeout(() => (btn.textContent = original), 1300);
   });

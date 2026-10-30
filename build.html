@@ -374,7 +374,7 @@
       if (s.zIndex != null && s.zIndex !== "") lines.push(`z-index: ${Math.round(Number(s.zIndex))};`);
       if (s.padding != null && s.padding !== "") lines.push(`padding: ${s.padding};`);
       if (s.borderWidth != null && s.borderWidth !== "") lines.push(`border: ${s.borderWidth}px ${s.borderStyle || "solid"} ${s.borderColor || "#cbd5e1"};`);
-      if (s.fontWeight !== "") lines.push(`font-weight: ${s.fontWeight};`);
+      if (s.fontWeight != null && s.fontWeight !== "") lines.push(`font-weight: ${s.fontWeight};`);
       if (s.textAlign) lines.push(`text-align: ${s.textAlign};`);
       if (s.lineHeight != null && s.lineHeight !== "") lines.push(`line-height: ${s.lineHeight};`);
       if (s.letterSpacing != null && s.letterSpacing !== "") lines.push(`letter-spacing: ${s.letterSpacing}px;`);
@@ -399,14 +399,14 @@
       const lines = [];
       if (h.bgColor) lines.push(`background: ${h.bgColor};`);
       if (h.textColor) lines.push(`color: ${h.textColor};`);
-      if (Number.isFinite(Number(h.scale)) && Number(h.scale) !== 1) lines.push(`transform: scale(${Math.max(.5, Math.min(1.5, Number(h.scale)))});`);
-      if (Number.isFinite(Number(h.opacity)) && Number(h.opacity) !== 1) lines.push(`opacity: ${Math.max(0, Math.min(1, Number(h.opacity)))};`);
+      if (h.scale != null && h.scale !== "" && Number.isFinite(Number(h.scale)) && Number(h.scale) !== 1) lines.push(`transform: scale(${Math.max(.5, Math.min(1.5, Number(h.scale)))});`);
+      if (h.opacity != null && h.opacity !== "" && Number.isFinite(Number(h.opacity)) && Number(h.opacity) !== 1) lines.push(`opacity: ${Math.max(0, Math.min(1, Number(h.opacity)))};`);
       if (h.radius !== null && h.radius !== "" && Number.isFinite(Number(h.radius))) lines.push(`border-radius: ${Math.max(0, Number(h.radius))}px;`);
       if (h.shadow && h.shadow !== "none" && SHADOW_PRESETS[h.shadow]) lines.push(`box-shadow: ${SHADOW_PRESETS[h.shadow]};`);
       if (h.borderColor) lines.push(`border-color: ${h.borderColor};`);
       if (h.borderWidth !== null && h.borderWidth !== "" && Number.isFinite(Number(h.borderWidth))) lines.push(`border-width: ${Math.max(0, Number(h.borderWidth))}px;`);
-      if (Number.isFinite(Number(h.rotate)) && Number(h.rotate) !== 0) lines.push(`rotate: ${Math.max(-180, Math.min(180, Number(h.rotate)))}deg;`);
-      if (Number.isFinite(Number(h.translateY)) && Number(h.translateY) !== 0) lines.push(`translate: 0 ${Math.max(-100, Math.min(100, Number(h.translateY)))}px;`);
+      if (h.rotate != null && h.rotate !== "" && Number.isFinite(Number(h.rotate)) && Number(h.rotate) !== 0) lines.push(`rotate: ${Math.max(-180, Math.min(180, Number(h.rotate)))}deg;`);
+      if (h.translateY != null && h.translateY !== "" && Number.isFinite(Number(h.translateY)) && Number(h.translateY) !== 0) lines.push(`translate: 0 ${Math.max(-100, Math.min(100, Number(h.translateY)))}px;`);
       if (h.filter) lines.push(`filter: ${h.filter};`);
       return lines.join("\n  ");
     }

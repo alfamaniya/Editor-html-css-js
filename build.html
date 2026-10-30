@@ -295,6 +295,14 @@
       code: (comp, action) =>
         `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    window.location.href = ${JSON.stringify(action.params.url || "")};\n  });`,
     },
+    setText: { label: "Change Text", params: [{ key: "text", label: "New text", default: "Updated text" }], code: (comp, action) => `document.getElementById("${comp.id}").textContent = ${JSON.stringify(action.params.text || "")};` },
+    setBackground: { label: "Change Background", params: [{ key: "color", label: "CSS color", default: "#4f46e5" }], code: (comp, action) => `document.getElementById("${comp.id}").style.backgroundColor = ${JSON.stringify(action.params.color || "#4f46e5")};` },
+    toggleVisibility: { label: "Toggle Visibility", params: [], code: (comp) => `(() => { const el = document.getElementById("${comp.id}"); el.hidden = !el.hidden; })();` },
+    focus: { label: "Focus Element", params: [], code: (comp) => `document.getElementById("${comp.id}").focus();` },
+    scrollIntoView: { label: "Scroll to Element", params: [], code: (comp) => `document.getElementById("${comp.id}").scrollIntoView({ behavior: "smooth", block: "center" });` },
+    copyText: { label: "Copy Text", params: [{ key: "text", label: "Text to copy", default: "Copied!" }], code: (comp, action) => `navigator.clipboard.writeText(${JSON.stringify(action.params.text || "")});` },
+    confirm: { label: "Confirm Action", params: [{ key: "message", label: "Confirmation message", default: "Are you sure?" }], code: (comp, action) => `if (confirm(${JSON.stringify(action.params.message || "Are you sure?")})) console.log("Confirmed: ${comp.id}");` },
+
   };
 
   /* ==================================================================
@@ -314,13 +322,19 @@
       this.id = nextId(this.constructor.type);
 
       // Copy defaults from schema into live styleProps
-      this.styleProps = {};
-      (this.constructor.styleSchema || []).forEach((s) => {
-        this.styleProps[s.key] = s.default;
-      });
+      this.styleProps = {
+        opacity: 1, zIndex: 1, padding: "", borderWidth: "", borderColor: "#cbd5e1",
+        borderStyle: "solid", fontWeight: "", textAlign: "left", lineHeight: "",
+        letterSpacing: "", cursor: "default", overflow: "visible", display: "",
+      };
+      (this.constructor.styleSchema || []).forEach((s) => { this.styleProps[s.key] = s.default; });
 
       this.actions = [];
-      this.hoverProps = { enabled: false, bgColor: "", textColor: "", scale: 1.03, opacity: 1, radius: null, shadow: "none" };
+      this.hoverProps = {
+        enabled: false, bgColor: "", textColor: "", scale: 1.03, opacity: 1,
+        radius: null, shadow: "none", borderColor: "", borderWidth: null,
+        rotate: 0, translateY: 0, filter: "", duration: 180,
+      };
     }
 
     /* ---------- markup / css generation ---------- */
@@ -342,13 +356,30 @@
       if (s.textColor) lines.push(`color: ${s.textColor};`);
       if (s.radius != null && s.radius !== "") lines.push(`border-radius: ${s.radius}px;`);
       if (s.shadow && s.shadow !== "none") lines.push(`box-shadow: ${SHADOW_PRESETS[s.shadow]};`);
-      if (this.hoverProps && this.hoverProps.enabled) lines.push("transition: background-color .18s ease, color .18s ease, transform .18s ease, opacity .18s ease, border-radius .18s ease, box-shadow .18s ease;");
+      if (this.hoverProps && this.hoverProps.enabled) lines.push(`transition: all ${Math.max(0, Math.min(2000, Number(this.hoverProps.duration) || 180))}ms ease;`);
       return lines.join("\n  ");
     }
 
     get css() {
       const extra = this.extraCSS.trim();
-      return extra ? `${this.baseCSS}\n  ${extra}` : this.baseCSS;
+      return [this.baseCSS, extra, this.advancedCSS].filter(Boolean).join("\n  ");
+    }
+
+    get advancedCSS() {
+      const s = this.styleProps || {};
+      const lines = [];
+      if (s.opacity != null && s.opacity !== "") lines.push(`opacity: ${Math.max(0, Math.min(1, Number(s.opacity)))};`);
+      if (s.zIndex != null && s.zIndex !== "") lines.push(`z-index: ${Math.round(Number(s.zIndex))};`);
+      if (s.padding !== "") lines.push(`padding: ${s.padding};`);
+      if (s.borderWidth !== "") lines.push(`border: ${s.borderWidth}px ${s.borderStyle || "solid"} ${s.borderColor || "#cbd5e1"};`);
+      if (s.fontWeight !== "") lines.push(`font-weight: ${s.fontWeight};`);
+      if (s.textAlign) lines.push(`text-align: ${s.textAlign};`);
+      if (s.lineHeight !== "") lines.push(`line-height: ${s.lineHeight};`);
+      if (s.letterSpacing !== "") lines.push(`letter-spacing: ${s.letterSpacing}px;`);
+      if (s.cursor) lines.push(`cursor: ${s.cursor};`);
+      if (s.overflow) lines.push(`overflow: ${s.overflow};`);
+      if (s.display) lines.push(`display: ${s.display};`);
+      return lines.join("\n  ");
     }
 
     get selector() { return `#${this.id}`; }
@@ -363,6 +394,11 @@
       if (Number.isFinite(Number(h.opacity)) && Number(h.opacity) !== 1) lines.push(`opacity: ${Math.max(0, Math.min(1, Number(h.opacity)))};`);
       if (h.radius !== null && h.radius !== "" && Number.isFinite(Number(h.radius))) lines.push(`border-radius: ${Math.max(0, Number(h.radius))}px;`);
       if (h.shadow && h.shadow !== "none" && SHADOW_PRESETS[h.shadow]) lines.push(`box-shadow: ${SHADOW_PRESETS[h.shadow]};`);
+      if (h.borderColor) lines.push(`border-color: ${h.borderColor};`);
+      if (h.borderWidth !== null && h.borderWidth !== "" && Number.isFinite(Number(h.borderWidth))) lines.push(`border-width: ${Math.max(0, Number(h.borderWidth))}px;`);
+      if (Number.isFinite(Number(h.rotate)) && Number(h.rotate) !== 0) lines.push(`rotate: ${Math.max(-180, Math.min(180, Number(h.rotate)))}deg;`);
+      if (Number.isFinite(Number(h.translateY)) && Number(h.translateY) !== 0) lines.push(`translate: 0 ${Math.max(-100, Math.min(100, Number(h.translateY)))}px;`);
+      if (h.filter) lines.push(`filter: ${h.filter};`);
       return lines.join("\n  ");
     }
     toHTML() { return this.markup; }

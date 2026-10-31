@@ -3780,6 +3780,10 @@
                 editor.ta.dispatchEvent(new Event('input', { bubbles: true }));
                 editor.ta.focus();
                 return true;
+            },
+            refreshPreview: function () {
+                updatePreviewNow();
+                return true;
             }
         };
 

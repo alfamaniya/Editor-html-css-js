@@ -846,12 +846,17 @@
     bindCanvas() {
       // Capture selection before component-level drag handlers run. This keeps
       // the properties panel responsive for nested content and custom markup.
-      this.canvas.addEventListener("pointerdown", (e) => {
+      const selectCanvasComponent = (e) => {
         const node = e.target instanceof Element ? e.target.closest("[data-id]") : null;
         if (!node || !this.canvas.contains(node)) return;
         const comp = this.components.find((item) => item.id === node.dataset.id);
         if (comp && this.selected !== comp) this.select(comp);
-      }, true);
+      };
+
+      // Pointer selection handles mouse/touch; click also covers keyboard
+      // activation and preview nodes recreated by manual HTML editing.
+      this.canvas.addEventListener("pointerdown", selectCanvasComponent, true);
+      this.canvas.addEventListener("click", selectCanvasComponent, true);
 
       this.canvasScroll.addEventListener("dragover", (e) => {
         e.preventDefault();
@@ -918,10 +923,25 @@
       this.codeEl.setRangeText(insertion, safeStart, safeEnd, "end");
       this.codeEl.setSelectionRange(caret, caret);
       this.codeSelection = { start: caret, end: caret, language: this.lang };
+
+      // HTML palette insertion must also create a model entry. Without it the
+      // parsed preview has no matching component, so it cannot be selected,
+      // dragged, edited, or included in generated CSS and saved state.
+      const registerInVisualModel = this.lang === "html";
+      if (registerInVisualModel) this.components.push(comp);
+
       this.codeEl.dispatchEvent(new Event("input", { bubbles: true }));
       this.codeEl.focus();
       this.codeEl.setSelectionRange(caret, caret);
       this.rememberCodeSelection();
+
+      if (registerInVisualModel) {
+        // The input event has already rebuilt the HTML preview and attached
+        // data-id/draggable behavior. Refresh generated CSS and persistence,
+        // then open settings for the component that was just inserted.
+        this.render();
+        this.select(comp);
+      }
     }
 
     /* ------------------- Add / Remove ------------------------- */

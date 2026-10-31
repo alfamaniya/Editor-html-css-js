@@ -180,4 +180,6 @@
       }
     }
   });
+  document.documentElement.dataset.visualEditorReady = "true";
+  send({ editorVisualEditorReady: true });
 })();

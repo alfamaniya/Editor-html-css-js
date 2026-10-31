@@ -164,8 +164,13 @@
     if (event.data.editorVisualEditorFinished) {
       const result = event.data.editorVisualEditorFinished;
       if (result.ok) {
+        waiting = false;
+        target = null;
+        changes = Object.create(null);
+        previewNode = null;
         const status = byId("externalTargetStatus");
         if (status) status.textContent = result.action === "cancel" ? "تغییرات لغو شد." : "تغییرات در کد اصلی ثبت شد.";
+        send({ editorVisualEditorResetting: true });
         setTimeout(() => window.location.reload(), 80);
       } else {
         waiting = false;

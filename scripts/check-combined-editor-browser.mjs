@@ -89,6 +89,8 @@ try {
   if (!remoteUi.buttons.some(button => button.id === 'remoteTargetApply')) throw new Error('دکمهٔ ثبت در نوار Visual Editor بعد از اعمال تغییر زنده حذف شده است.');
   await remoteVisual.locator('#remoteTargetApply').click();
   await page.waitForFunction(() => document.getElementById('visual-frame').hidden && !document.getElementById('editor-frame').hidden, null, { timeout: 10000 });
+  await remoteVisual.locator('#externalTargetBar').waitFor({ state: 'detached', timeout: 10000 });
+  await remoteVisual.locator('#elementSearch').waitFor({ state: 'visible', timeout: 10000 });
   for (let attempt = 0; attempt < 40; attempt++) {
     liveFontSize = await output.locator('h1').evaluate(node => getComputedStyle(node).fontSize);
     if (liveFontSize === '40px') break;

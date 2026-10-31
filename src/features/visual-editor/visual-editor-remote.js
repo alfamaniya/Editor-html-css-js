@@ -166,7 +166,7 @@
       const rejected = event.data.editorVisualEditorStyleRejected;
       const status = byId("externalTargetStatus");
       if (target && rejected.receivedSessionId === target.sessionId && status) {
-        status.textContent = "پیش‌نمایش اصلی پیام تغییر را نپذیرفت؛ نشست پیش‌نمایش با نشست ویرایش هماهنگ نیست.";
+        status.textContent = "Preview پیام تغییر را نپذیرفت؛ شناسهٔ ارسال‌شده: " + (rejected.receivedSessionId || "ندارد") + "؛ شناسهٔ فعال در Preview: " + (rejected.activeSessionId || "ندارد") + "؛ وجود المان انتخاب‌شده: " + (rejected.hasSelected ? "بله" : "خیر") + ".";
       }
       return;
     }

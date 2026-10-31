@@ -84,6 +84,9 @@ try {
     await page.waitForTimeout(100);
   }
   if (liveFontSize !== '40px') throw new Error('تغییر زندهٔ اندازهٔ متن به پیش‌نمایش اصلی منتقل نشد.');
+  const remoteUi = await remoteVisual.locator('#externalTargetBar').evaluate(node => ({ html: node.outerHTML, buttons: Array.from(node.querySelectorAll('button')).map(button => ({ id: button.id, text: button.textContent, disabled: button.disabled })) }));
+  console.log('گزارش رابط ثبت ویرایش بصری: ' + JSON.stringify(remoteUi));
+  if (!remoteUi.buttons.some(button => button.id === 'remoteTargetApply')) throw new Error('دکمهٔ ثبت در نوار Visual Editor بعد از اعمال تغییر زنده حذف شده است.');
   await remoteVisual.locator('#remoteTargetApply').click();
   await page.waitForFunction(() => document.getElementById('visual-frame').hidden && !document.getElementById('editor-frame').hidden, null, { timeout: 10000 });
   for (let attempt = 0; attempt < 40; attempt++) {

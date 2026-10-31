@@ -106,6 +106,21 @@ try {
   await output.locator('h1').click();
   await remoteVisual.locator('#externalTargetBar').waitFor({ timeout: 10000 });
   await remoteVisual.locator('#remote-style-font-size').fill('55');
+  const secondRemoteState = await remoteVisual.locator('#externalTargetBar').evaluate(node => {
+    const copy = document.querySelector('.external-preview-shell > *');
+    return {
+      toolbar: node.outerHTML,
+      previewStyle: copy?.getAttribute('style') || '',
+      previewFontSize: copy ? getComputedStyle(copy).fontSize : '',
+      appClass: document.querySelector('.app')?.className || '',
+      ready: document.documentElement.dataset.visualEditorReady || ''
+    };
+  });
+  const secondMainState = await output.locator('h1').evaluate(node => ({
+    style: node.getAttribute('style') || '',
+    fontSize: getComputedStyle(node).fontSize
+  }));
+  console.log('گزارش نشست دوم ویرایش بصری: ' + JSON.stringify({ secondRemoteState, secondMainState }));
   let temporaryFontSize = '';
   for (let attempt = 0; attempt < 30; attempt++) {
     temporaryFontSize = await output.locator('h1').evaluate(node => getComputedStyle(node).fontSize);

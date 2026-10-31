@@ -4,6 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML / CSS / JS Editor</title>
+    <script>
+        // GitHub Pages must open the integrated Editor + Visual Editor bundle.
+        // The source editor is embedded in that bundle, so only redirect top-level visits.
+        if (window.top === window.self &&
+            location.hostname === 'alfamaniya.github.io' &&
+            /^\\/Editor-html-css-js\\/?(?:index\\.html)?$/i.test(location.pathname)) {
+            location.replace(new URL('editor%20v.html', location.href).href);
+        }
+    </script>
+    <style>
+        .visual-editor-pick-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 116px;
+            padding-inline: 12px;
+            white-space: nowrap;
+            font-weight: 650;
+        }
+        .visual-editor-pick-icon {
+            display: block;
+            flex: 0 0 18px;
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .visual-editor-pick-button[aria-pressed="true"] {
+            border-color: #a78bfa;
+            background: linear-gradient(135deg, #6d28d9, #4f46e5);
+            color: #fff;
+            box-shadow: 0 0 0 2px rgb(167 139 250 / 22%);
+        }
+        .visual-editor-pick-button:focus-visible {
+            outline: 2px solid #c4b5fd;
+            outline-offset: 3px;
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="src/features/quick-insert/quick-insert.css">
     <link rel="stylesheet" href="src/features/workspace/toolbar/toolbar-sidebar.css">
@@ -23,7 +65,7 @@
             <div class="workspace-history-controls" role="group" aria-label="تاریخچه ویرایش">
                 <button type="button" class="header-history-button" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
                 <button type="button" class="header-history-button" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
-                <button type="button" class="header-history-button visual-editor-pick-button" id="btnVisualEditorPick" title="انتخاب المان از پیش‌نمایش و بازکردن Visual Editor" aria-label="انتخاب المان برای ویرایش بصری" aria-pressed="false">✎ بصری</button>
+                <button type="button" class="header-history-button visual-editor-pick-button" id="btnVisualEditorPick" title="انتخاب المان از پیش‌نمایش و بازکردن Visual Editor" aria-label="انتخاب المان برای ویرایش بصری" aria-pressed="false"><svg class="visual-editor-pick-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/></svg><span>ویرایش بصری</span></button>
                 <span class="dirty header-dirty-badge" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
             </div>
         </div>

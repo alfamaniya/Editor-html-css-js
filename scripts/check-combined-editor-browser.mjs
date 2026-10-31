@@ -6,8 +6,14 @@ import { resolve } from 'node:path';
 
 const file = resolve('editor v.html');
 const html = await readFile(file);
+const indexHtml = await readFile(resolve('index.html'));
 const server = createServer((request, response) => {
-  if (request.url === '/' || request.url === '/editor%20v.html') {
+  if (request.url === '/' || request.url === '/index.html') {
+    response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-length': indexHtml.length });
+    response.end(indexHtml);
+    return;
+  }
+  if (request.url === '/editor%20v.html') {
     response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-length': html.length });
     response.end(html);
     return;
@@ -23,6 +29,11 @@ await new Promise((resolveListen, reject) => {
 let browser;
 try {
   browser = await chromium.launch({ headless: true });
+  const rootPage = await browser.newPage();
+  await rootPage.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded' });
+  await rootPage.waitForURL('**/editor%20v.html', { timeout: 10000 });
+  await rootPage.close();
+
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const runtimeErrors = [];
   page.on('pageerror', error => runtimeErrors.push(error.message));
@@ -72,7 +83,12 @@ try {
   await page.locator('[data-target="editor"]').click();
   const output = editor.frameLocator('#output');
   await output.locator('h1').waitFor();
-  await editor.locator('#btnVisualEditorPick').click();
+  const visualPicker = editor.locator('#btnVisualEditorPick');
+  if (await visualPicker.locator('svg.visual-editor-pick-icon').count() !== 1 ||
+      (await visualPicker.innerText()).trim() !== 'ویرایش بصری') {
+    throw new Error('دکمهٔ ویرایش بصری باید آیکون مداد و برچسب خوانا داشته باشد.');
+  }
+  await visualPicker.click();
   await output.locator('h1').click();
   await page.frameLocator('#visual-frame').locator('#externalTargetBar').waitFor({ timeout: 10000 });
   const remoteVisual = page.frameLocator('#visual-frame');

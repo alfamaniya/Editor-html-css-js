@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+import { readFile, writeFile, rename, rm } from 'node:fs/promises';
+import { resolve } from 'node:path';
+const inputs=['index-test-etitor.html','standalone-visual-editor.html'];
+const output=resolve('editor v.html'),temp=output+'.tmp';
+async function readDoc(path){
+ const html=await readFile(path,'utf8');
+ if(!html.trim()||! /<!doctype\s+html\s*>/i.test(html)||!/<html\b/i.test(html)||!/<head\b/i.test(html)||!/<body\b/i.test(html)||!/<\/body\s*>/i.test(html)||!/<\/html\s*>/i.test(html))throw new Error('سند مستقل ناقص یا نامعتبر است: '+path);
+ return html;
+}
+async function main(){
+ const editor=await readDoc(inputs[0]),visual=await readDoc(inputs[1]);
+ const a=Buffer.from(editor,'utf8').toString('base64'),b=Buffer.from(visual,'utf8').toString('base64');
+ const shell=[
+ '<!doctype html>','<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Editor V — ویرایشگر یکپارچه</title>',
+ '<style>*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}body{font-family:Tahoma,Arial,sans-serif;background:#eef1f7;color:#202a3d}#shell{height:100%;display:flex;flex-direction:column}.topbar{display:flex;align-items:center;gap:12px;min-height:58px;padding:9px 16px;background:#171d2b;color:#fff}.brand{font-weight:800;white-space:nowrap}.brand small{display:block;margin-top:3px;color:#aab4c7;font-size:10px;font-weight:400}nav{display:flex;gap:7px;flex-wrap:wrap}.nav-btn{border:1px solid #414b61;border-radius:8px;padding:9px 14px;background:#252e40;color:#dce3f0;font:600 12px Tahoma,Arial;cursor:pointer}.nav-btn[aria-pressed="true"]{background:#6658e8;border-color:#8c82ff;color:#fff}#viewport{position:relative;flex:1;min-height:0}iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}iframe[hidden]{display:none}@media(max-width:560px){.topbar{align-items:flex-start;flex-direction:column;gap:8px;padding:9px 12px}.brand small{display:none}.nav-btn{padding:8px 10px}}</style></head><body>',
+ '<div id="shell"><header class="topbar"><div class="brand">EDITOR V<small>محیط یکپارچهٔ ویرایش کد و طراحی بصری</small></div><nav aria-label="انتخاب محیط ویرایش"><button class="nav-btn" type="button" data-target="editor" aria-pressed="true">ویرایشگر اصلی</button><button class="nav-btn" type="button" data-target="visual" aria-pressed="false">ویرایشگر بصری</button></nav></header><main id="viewport"><iframe id="editor-frame" title="ویرایشگر اصلی" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads allow-modals allow-popups"></iframe><iframe id="visual-frame" title="ویرایشگر بصری" hidden sandbox="allow-scripts allow-same-origin allow-forms allow-downloads allow-modals allow-popups"></iframe></main></div>',
+ '<template id="editor-document">__EDITOR_PAYLOAD__</template><template id="visual-document">__VISUAL_PAYLOAD__</template>',
+ '<script>(()=>{"use strict";const decode=id=>{const binary=atob(document.getElementById(id).textContent.trim());const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));return new TextDecoder("utf-8").decode(bytes)};const editor=document.getElementById("editor-frame"),visual=document.getElementById("visual-frame");editor.srcdoc=decode("editor-document");visual.srcdoc=decode("visual-document");document.querySelectorAll("[data-target]").forEach(button=>button.addEventListener("click",()=>{const showVisual=button.dataset.target==="visual";editor.hidden=showVisual;visual.hidden=!showVisual;document.querySelectorAll("[data-target]").forEach(item=>item.setAttribute("aria-pressed",String(item===button)))}))})();</script>',
+ '</body></html>'
+ ].join('\n').replace('__EDITOR_PAYLOAD__',a).replace('__VISUAL_PAYLOAD__',b);
+ await rm(temp,{force:true});await writeFile(temp,shell,'utf8');await rename(temp,output);
+ console.log('فایل editor v.html ساخته شد ('+Buffer.byteLength(shell,'utf8')+' بایت).');
+}
+main().catch(async error=>{console.error('ساخت فایل یکپارچه ناموفق بود:',error);await rm(temp,{force:true}).catch(()=>{});process.exitCode=1});

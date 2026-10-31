@@ -88,19 +88,25 @@ jobs:
       - name: اعتبارسنجی نسخهٔ مستقل کامل Visual Editor
         run: node scripts/check-standalone-visual-editor.mjs
 
-      - name: ثبت و انتشار خروجی‌های مستقل
+      - name: ساخت فایل یکپارچهٔ نهایی
+        run: node scripts/build-combined-editor.mjs
+
+      - name: اعتبارسنجی فایل یکپارچهٔ نهایی
+        run: node scripts/check-combined-editor.mjs
+
+      - name: ثبت و انتشار فایل یکپارچه
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+users.noreply.github.com"
-          # فایل تازه‌ساخته‌شده ممکن است در .gitignore باشد؛ هر دو خروجی را صریحاً stage می‌کنیم.
-          git add -f index-test-etitor.html standalone-visual-editor.html
-          if git diff --cached --quiet -- index-test-etitor.html standalone-visual-editor.html; then
-            echo "هر دو فایل مستقل از قبل با منابع هماهنگ هستند."
+          git add -f "editor v.html"
+          git rm -f --ignore-unmatch index-test-etitor.html standalone-visual-editor.html
+          if git diff --cached --quiet -- "editor v.html" index-test-etitor.html standalone-visual-editor.html; then
+            echo "فایل یکپارچه از قبل با منابع هماهنگ است."
             exit 0
           fi
           git commit \
-            -m "ساخت و همگام‌سازی نسخه‌های مستقل Editor و Visual Editor" \
-            -m "فایل موجود Editor از منابع اصلی بازسازی و اعتبارسنجی شد." \
-            -m "نسخهٔ مستقل Visual Editor با جاسازی کامل HTML، CSS و کنترل‌کننده‌های JavaScript تولید شد." \
-            -m "ساختار HTML، تطابق محتوای منابع جاسازی‌شده و نحو JavaScript پیش از ثبت بررسی شد."
+            -m "تولید و انتشار فایل یکپارچهٔ editor v.html" \
+            -m "محیط Editor اصلی و Visual Editor در یک سند HTML مستقل بسته‌بندی شدند." \
+            -m "منابع CSS و JavaScript هر دو محیط به‌صورت داخلی جاسازی و تطابق محتوای اسناد بررسی شد." \
+            -m "خروجی‌های قدیمی index-test-etitor.html و standalone-visual-editor.html حذف شدند."
           git push origin HEAD:main

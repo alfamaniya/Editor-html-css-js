@@ -1,119 +1,60 @@
-name: ارسال دو نسخه پروژه به ایمیل شرکت
-
+name: ارسال کد کامل editor v.html به ایمیل شرکت
 on:
   workflow_dispatch:
     inputs:
       confirm_send:
-        description: "ارسال دو ایمیل جداگانه برای Editor و Visual Editor را تأیید می‌کنم"
+        description: "ارسال محتوای کامل فایل editor v.html در متن ایمیل را تأیید می‌کنم"
         required: true
         type: boolean
         default: false
-
 permissions:
   contents: read
-
 concurrency:
   group: company-delivery-${{ github.ref }}
   cancel-in-progress: false
-
 jobs:
-  prepare:
-    name: بررسی و آماده‌سازی محتوای دو ایمیل
+  send:
+    name: اعتبارسنجی و ارسال فایل یکپارچه
     if: inputs.confirm_send == true
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
-      - name: دریافت کد مخزن
+      - name: دریافت نسخهٔ ثبت‌شده در مخزن
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: main
           persist-credentials: false
-
       - name: آماده‌سازی Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
-
-      - name: بررسی نحو اسکریپت‌های اعتبارسنجی
-        run: |
-          node --check scripts/check-standalone-editor.mjs
-          node --check scripts/build-standalone-visual-editor.mjs
-          node --check scripts/check-standalone-visual-editor.mjs
-
-      - name: بررسی یکپارچگی فایل اصلی
-        run: node scripts/check-index-integrity.mjs
-
-      - name: اعتبارسنجی فایل موجود Editor بدون بازتولید
+      - name: بررسی فایل نهایی بدون بازتولید
+        shell: bash
         run: |
           set -euo pipefail
-          test -s index-test-etitor.html
-          node scripts/check-standalone-editor.mjs
-          echo "فایل موجود index-test-etitor.html کامل و منطبق با منابع فعلی است؛ بازتولید نشد."
-
-      - name: ساخت نسخهٔ مستقل کامل Visual Editor برای تحویل
-        run: node scripts/build-standalone-visual-editor.mjs
-
-      - name: اعتبارسنجی کامل نسخهٔ مستقل Visual Editor
-        run: node scripts/check-standalone-visual-editor.mjs
-
-      - name: آماده‌سازی متن کامل ایمیل Editor
+          test -s "editor v.html"
+          node --check scripts/check-combined-editor.mjs
+          node scripts/check-combined-editor.mjs
+          echo "نسخهٔ ثبت‌شده اعتبارسنجی شد؛ این Workflow فایل را بازتولید نمی‌کند."
+      - name: آماده‌سازی متن کامل ایمیل
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p dist/company-delivery
           {
-            printf 'پروژه: Editor-html-css-js | بخش: Editor\n'
-            printf 'فایل منبع: index-test-etitor.html (نسخهٔ موجود مخزن؛ بدون بازتولید)\n'
-            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
-            printf 'شاخه: %s\n' "$GITHUB_REF_NAME"
-            printf 'شناسهٔ کامیت: %s\n' "$GITHUB_SHA"
-            printf 'زمان آماده‌سازی (UTC): %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S')"
-            printf '%s\n' '============================================================'
-            printf '%s\n\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
-            cat index-test-etitor.html
-          } > dist/company-delivery/editor-email-body.txt
-          test -s dist/company-delivery/editor-email-body.txt
-
-      - name: آماده‌سازی متن کامل ایمیل Visual Editor
-        shell: bash
-        run: |
-          set -euo pipefail
-          {
-            printf 'پروژه: Editor-html-css-js | بخش: Visual Editor\n'
-            printf 'فایل منبع: standalone-visual-editor.html (نسخهٔ مستقل کامل و خودکفا)\n'
-            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
-            printf 'شاخه: %s\n' "$GITHUB_REF_NAME"
-            printf 'شناسهٔ کامیت: %s\n' "$GITHUB_SHA"
-            printf 'زمان آماده‌سازی (UTC): %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S')"
-            printf '%s\n' '============================================================'
-            printf '%s\n\n' 'محتوای کامل فایل HTML مستقل Visual Editor در ادامه آمده است:'
-            cat standalone-visual-editor.html
-          } > dist/company-delivery/visual-editor-email-body.txt
-          test -s dist/company-delivery/visual-editor-email-body.txt
-          echo "حجم متن ایمیل Visual Editor: $(wc -c < dist/company-delivery/visual-editor-email-body.txt) بایت"
-
-      - name: نگهداری متن دو ایمیل به‌عنوان Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: company-delivery-bodies-${{ github.sha }}
-          path: dist/company-delivery/*.txt
-          if-no-files-found: error
-          retention-days: 14
-
-  send-editor:
-    name: ارسال ایمیل پروژه اصلی Editor
-    if: inputs.confirm_send == true
-    needs: prepare
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: دریافت متن ایمیل
-        uses: actions/download-artifact@v4
-        with:
-          name: company-delivery-bodies-${{ github.sha }}
-          path: dist/company-delivery
-
-      - name: بررسی متن و تنظیمات SMTP
+            printf 'پروژه: Editor-html-css-js\\n'
+            printf 'فایل تحویلی: editor v.html\\n'
+            printf 'محتوا: نسخهٔ یکپارچهٔ Editor و Visual Editor\\n'
+            printf 'مخزن: %s\\n' "$GITHUB_REPOSITORY"
+            printf 'شاخهٔ فایل تحویلی: main\\n'
+            printf 'شناسهٔ کامیت اجرا: %s\\n' "$GITHUB_SHA"
+            printf '%s\\n' '============================================================'
+            printf '%s\\n\\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
+            cat "editor v.html"
+          } > dist/company-delivery/editor-v-email-body.txt
+          test -s dist/company-delivery/editor-v-email-body.txt
+          echo "حجم متن ایمیل: $(wc -c < dist/company-delivery/editor-v-email-body.txt) بایت"
+      - name: بررسی تنظیمات SMTP
         env:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -124,14 +65,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s dist/company-delivery/editor-email-body.txt
           for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD COMPANY_EMAIL; do
             if [[ -z "${!name:-}" ]]; then echo "::error::Secret ${name} تنظیم نشده است."; exit 1; fi
           done
           if [[ ! "$SMTP_PORT" =~ ^[0-9]+$ ]]; then echo "::error::SMTP_PORT باید عدد معتبر باشد."; exit 1; fi
           if [[ -n "$SMTP_SECURE" && "$SMTP_SECURE" != "true" && "$SMTP_SECURE" != "false" ]]; then echo "::error::SMTP_SECURE فقط می‌تواند true یا false باشد."; exit 1; fi
-
-      - name: ارسال ایمیل Editor با محتوای کامل در متن پیام
+      - name: ارسال کد کامل در متن ایمیل
         uses: dawidd6/action-send-mail@v4
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
@@ -139,51 +78,7 @@ jobs:
           secure: ${{ secrets.SMTP_SECURE == 'true' }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "نسخه کامل پروژه Editor - ${{ github.sha }}"
+          subject: "نسخهٔ کامل و یکپارچهٔ Editor V - ${{ github.sha }}"
           to: ${{ secrets.COMPANY_EMAIL }}
           from: ${{ secrets.SMTP_USERNAME }}
-          body: "file://dist/company-delivery/editor-email-body.txt"
-
-  send-visual-editor:
-    name: ارسال ایمیل پروژه مستقل Visual Editor
-    if: inputs.confirm_send == true
-    needs: prepare
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: دریافت متن ایمیل
-        uses: actions/download-artifact@v4
-        with:
-          name: company-delivery-bodies-${{ github.sha }}
-          path: dist/company-delivery
-
-      - name: بررسی متن و تنظیمات SMTP
-        env:
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          COMPANY_EMAIL: ${{ secrets.COMPANY_EMAIL }}
-          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -s dist/company-delivery/visual-editor-email-body.txt
-          for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD COMPANY_EMAIL; do
-            if [[ -z "${!name:-}" ]]; then echo "::error::Secret ${name} تنظیم نشده است."; exit 1; fi
-          done
-          if [[ ! "$SMTP_PORT" =~ ^[0-9]+$ ]]; then echo "::error::SMTP_PORT باید عدد معتبر باشد."; exit 1; fi
-          if [[ -n "$SMTP_SECURE" && "$SMTP_SECURE" != "true" && "$SMTP_SECURE" != "false" ]]; then echo "::error::SMTP_SECURE فقط می‌تواند true یا false باشد."; exit 1; fi
-
-      - name: ارسال ایمیل Visual Editor با محتوای کامل در متن پیام
-        uses: dawidd6/action-send-mail@v4
-        with:
-          server_address: ${{ secrets.SMTP_SERVER }}
-          server_port: ${{ secrets.SMTP_PORT }}
-          secure: ${{ secrets.SMTP_SECURE == 'true' }}
-          username: ${{ secrets.SMTP_USERNAME }}
-          password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "نسخه مستقل کامل Visual Editor - ${{ github.sha }}"
-          to: ${{ secrets.COMPANY_EMAIL }}
-          from: ${{ secrets.SMTP_USERNAME }}
-          body: "file://dist/company-delivery/visual-editor-email-body.txt"
+          body: "file://dist/company-delivery/editor-v-email-body.txt"

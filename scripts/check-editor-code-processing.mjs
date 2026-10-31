@@ -129,15 +129,24 @@ test('the most complete clipboard format is selected',() => {
     assert.match(context.editors.js.ta.value,/alert\("rich"\);/);
     assert.match(context.editors.html.ta.value,/<h1>rich<\/h1>/);
 });
-test('complete standalone editor copied into HTML tab extracts every bundled asset',() => {
-    const bundle = readFileSync('editor v.html','utf8');
-    const embeddedEditor = bundle.match(/<template id="editor-document">([\s\S]*?)<\/template>/);
-    assert.ok(embeddedEditor, 'The final editor bundle should contain the main editor document.');
-    const markup = Buffer.from(embeddedEditor[1].trim(), 'base64').toString('utf8');
+test('current standalone editor build copied into HTML tab extracts every bundled asset',() => {
+    const markup = readFileSync('index-test-etitor.html','utf8');
+    const sourceScan = api.scanMarkupForPaste(markup);
+    assert.equal(sourceScan.invalid,false,'The freshly built standalone editor should be valid markup.');
     const result = api.extractPasteAssets(markup);
     assert.ok(result,'The standalone editor should be recognized as a complete HTML document.');
-    assert.equal(result.css.length,8,'All eight bundled CSS blocks should be extracted.');
-    assert.equal(result.js.length,15,'All fifteen bundled JavaScript blocks should be extracted.');
+    const bundledCssBlocks = sourceScan.blocks.filter((block) => block.name === 'style' && block.attrs['data-bundled-from']);
+    const bundledJsBlocks = sourceScan.blocks.filter((block) => block.name === 'script' && block.attrs['data-bundled-from']);
+    assert.ok(bundledCssBlocks.length > 0,'The standalone build should contain marked bundled CSS assets.');
+    assert.ok(bundledJsBlocks.length > 0,'The standalone build should contain marked bundled JavaScript assets.');
+    for (const block of bundledCssBlocks) {
+        assert.ok(result.css.some((code) => code.trim() === block.content.trim()),
+            'Every bundled CSS asset should be extracted: ' + block.attrs['data-bundled-from']);
+    }
+    for (const block of bundledJsBlocks) {
+        assert.ok(result.js.some((code) => code.trim() === block.content.trim()),
+            'Every bundled JavaScript asset should be extracted: ' + block.attrs['data-bundled-from']);
+    }
     assert.match(result.html,/<!doctype\s+html/i);
     assert.match(result.html,/id="tab-html"/);
     const remaining = api.scanMarkupForPaste(result.html);

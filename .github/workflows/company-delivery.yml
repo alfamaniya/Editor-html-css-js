@@ -1,0 +1,133 @@
+name: ارسال نسخه مستقل به ایمیل شرکت
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_send:
+        description: "با ساخت فایل متنی و ارسال آن به ایمیل شرکت موافقم"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: company-delivery-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-send:
+    name: ساخت و ارسال نسخه مستقل
+    if: inputs.confirm_send == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: دریافت کد مخزن
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: آماده‌سازی Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: بررسی تنظیمات محرمانه ایمیل
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          COMPANY_EMAIL: ${{ secrets.COMPANY_EMAIL }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD COMPANY_EMAIL; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Secret ${name} تنظیم نشده است."
+              exit 1
+            fi
+          done
+          if [[ ! "$SMTP_PORT" =~ ^[0-9]+$ ]]; then
+            echo "::error::SMTP_PORT باید عدد معتبر باشد."
+            exit 1
+          fi
+          if [[ -n "$SMTP_SECURE" && "$SMTP_SECURE" != "true" && "$SMTP_SECURE" != "false" ]]; then
+            echo "::error::SMTP_SECURE فقط می‌تواند true یا false باشد."
+            exit 1
+          fi
+
+      - name: بررسی نحو اسکریپت ساخت
+        run: node --check scripts/build-test-editor.mjs
+
+      - name: بررسی یکپارچگی فایل اصلی
+        run: node scripts/check-index-integrity.mjs
+
+      - name: ساخت نسخه مستقل از منابع اصلی
+        run: node scripts/build-test-editor.mjs
+
+      - name: اعتبارسنجی نسخه مستقل
+        run: node scripts/check-standalone-editor.mjs
+
+      - name: آماده‌سازی فایل متنی پیوست
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE="index-test-etitor.html"
+          test -s "$SOURCE"
+          mkdir -p dist/company-delivery
+          OUTPUT="dist/company-delivery/Editor-html-css-js-${GITHUB_SHA::7}.txt"
+          {
+            printf 'پروژه: Editor-html-css-js\n'
+            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
+            printf 'شاخه: %s\n' "$GITHUB_REF_NAME"
+            printf 'شناسه کامیت: %s\n' "$GITHUB_SHA"
+            printf 'زمان ساخت (UTC): %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S')"
+            printf 'فایل مبنا: %s\n' "$SOURCE"
+            printf '%s\n\n' '============================================================'
+            cat "$SOURCE"
+          } > "$OUTPUT"
+          test -s "$OUTPUT"
+          echo "attachment=$OUTPUT" >> "$GITHUB_OUTPUT"
+          echo "نام فایل پیوست: $OUTPUT"
+          echo "حجم فایل: $(wc -c < "$OUTPUT") بایت"
+
+      - name: نگهداری نسخه ارسالی به‌عنوان خروجی قابل دریافت
+        uses: actions/upload-artifact@v4
+        with:
+          name: company-delivery-${{ github.sha }}
+          path: ${{ steps.package.outputs.attachment }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: ارسال ایمیل و فایل متنی پیوست
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          secure: ${{ secrets.SMTP_SECURE == 'true' }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "نسخه جدید ویرایشگر HTML/CSS/JavaScript - ${{ github.sha }}"
+          to: ${{ secrets.COMPANY_EMAIL }}
+          from: ${{ secrets.SMTP_USERNAME }}
+          body: |
+            سلام،
+
+            نسخه مستقل پروژه Editor-html-css-js آماده و پس از اعتبارسنجی ارسال شده است.
+
+            شاخه: ${{ github.ref_name }}
+            شناسه کامیت: ${{ github.sha }}
+            اجراکننده: ${{ github.actor }}
+            شماره اجرای GitHub Actions: ${{ github.run_number }}
+
+            فایل TXT پیوست شامل محتوای کامل نسخه مستقل HTML و اطلاعات ساخت است.
+            این فایل را با رمزگذاری UTF-8 باز کنید و در صورت نیاز محتوای HTML را از آن استخراج کنید.
+
+            با احترام
+          attachments: ${{ steps.package.outputs.attachment }}

@@ -27,7 +27,7 @@ function checkDoc(html,label){
 }
 try{
  const out=read('editor v.html'),a=embedded(out,'editor-document'),b=embedded(out,'visual-document');
- assert(/template\.content\.textContent\.trim\(\)/.test(out),'پوسته باید محتوای template را از content.textContent بخواند؛ textContent خود template خالی است.');
+ assert(out.includes('template.content.textContent.trim()'),'پوسته باید محتوای template را از content.textContent بخواند؛ textContent خود template خالی است.');
  if(existsSync('index-test-etitor.html'))assert(a===read('index-test-etitor.html'),'محتوای Editor جاسازی‌شده با منبع برابر نیست');
  if(existsSync('standalone-visual-editor.html'))assert(b===read('standalone-visual-editor.html'),'محتوای Visual Editor جاسازی‌شده با منبع برابر نیست');
  const count=(value,pattern)=>(value.match(pattern)||[]).length;

@@ -47,7 +47,7 @@ function main() {
   }
   assert((html.match(/data-bundled-from=/g) || []).length === assets.length,
     'تعداد منابع جاسازی‌شده صحیح نیست یا منبع تکراری وجود دارد.');
-  console.log('اعتبارسنجی Visual Editor مستقل موفق بود: ساختار HTML، سه منبع جاسازی‌شده و نحو JavaScript بررسی شدند.');
+  console.log('اعتبارسنجی Visual Editor مستقل موفق بود: ساختار HTML، چهار منبع جاسازی‌شده و نحو JavaScript بررسی شدند.');
 }
 try { main(); } catch (error) {
   console.error('اعتبارسنجی Visual Editor مستقل ناموفق بود: ' + error.message);

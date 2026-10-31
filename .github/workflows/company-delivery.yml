@@ -42,14 +42,14 @@ jobs:
           set -euo pipefail
           mkdir -p dist/company-delivery
           {
-            printf 'پروژه: Editor-html-css-js\\n'
-            printf 'فایل تحویلی: editor v.html\\n'
-            printf 'محتوا: نسخهٔ یکپارچهٔ Editor و Visual Editor\\n'
-            printf 'مخزن: %s\\n' "$GITHUB_REPOSITORY"
-            printf 'شاخهٔ فایل تحویلی: main\\n'
-            printf 'شناسهٔ کامیت اجرا: %s\\n' "$GITHUB_SHA"
-            printf '%s\\n' '============================================================'
-            printf '%s\\n\\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
+            printf 'پروژه: Editor-html-css-js\n'
+            printf 'فایل تحویلی: editor v.html\n'
+            printf 'محتوا: نسخهٔ یکپارچهٔ Editor و Visual Editor\n'
+            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
+            printf 'شاخهٔ فایل تحویلی: main\n'
+            printf 'شناسهٔ کامیت اجرا: %s\n' "$GITHUB_SHA"
+            printf '%s\n' '============================================================'
+            printf '%s\n\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
             cat "editor v.html"
           } > dist/company-delivery/editor-v-email-body.txt
           test -s dist/company-delivery/editor-v-email-body.txt

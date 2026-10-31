@@ -42,7 +42,7 @@ try {
 
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const runtimeErrors = [];
-  page.on('pageerror', error => runtimeErrors.push(error.message));
+  page.on('pageerror', error => runtimeErrors.push(error.stack || error.message));
 
   await page.goto('http://127.0.0.1:4173/editor%20v.html', { waitUntil: 'load' });
   await page.waitForFunction(() => {

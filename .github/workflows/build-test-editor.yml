@@ -93,6 +93,13 @@ jobs:
 
       - name: اعتبارسنجی فایل یکپارچهٔ نهایی
         run: node scripts/check-combined-editor.mjs
+      - name: نصب Playwright و مرورگر Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+
+      - name: آزمون واقعی دو محیط در مرورگر
+        run: node scripts/check-combined-editor-browser.mjs
 
       - name: ثبت و انتشار فایل یکپارچه
         run: |

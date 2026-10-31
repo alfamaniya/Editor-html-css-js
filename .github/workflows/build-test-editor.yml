@@ -90,13 +90,14 @@ jobs:
 
       - name: ثبت و انتشار خروجی‌های مستقل
         run: |
-          if git diff --quiet -- index-test-etitor.html standalone-visual-editor.html; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+users.noreply.github.com"
+          # فایل تازه‌ساخته‌شده ممکن است در .gitignore باشد؛ هر دو خروجی را صریحاً stage می‌کنیم.
+          git add -f index-test-etitor.html standalone-visual-editor.html
+          if git diff --cached --quiet -- index-test-etitor.html standalone-visual-editor.html; then
             echo "هر دو فایل مستقل از قبل با منابع هماهنگ هستند."
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+users.noreply.github.com"
-          git add index-test-etitor.html standalone-visual-editor.html
           git commit \
             -m "ساخت و همگام‌سازی نسخه‌های مستقل Editor و Visual Editor" \
             -m "فایل موجود Editor از منابع اصلی بازسازی و اعتبارسنجی شد." \

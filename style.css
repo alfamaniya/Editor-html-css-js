@@ -2203,3 +2203,11 @@ iframe#output {
         height: 2px;
     }
 }
+
+
+/* دکمهٔ انتخاب مستقیم المان برای ورود به Visual Editor */
+.visual-editor-pick-button { min-width: 62px; padding-inline: 9px; font-size: 11px; white-space: nowrap; }
+.visual-editor-pick-button[aria-pressed="true"],
+.visual-editor-pick-button.element-inspector-button-active { background: linear-gradient(180deg, #6d5ce7, #5141bd); border-color: #a79bff; color: #fff; box-shadow: 0 0 0 2px rgba(139, 124, 255, .2); }
+.visual-editor-pick-button:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 2px; }
+@media (max-width: 560px) { .visual-editor-pick-button { min-width: 54px; padding-inline: 6px; } }

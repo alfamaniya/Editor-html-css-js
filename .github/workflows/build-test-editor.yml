@@ -1,7 +1,6 @@
 name: Build standalone test editor
 
 on:
-  # همگام‌سازی خودکار خروجی مستقل پس از تغییر هر منبع مؤثر بر آن.
   push:
     branches:
       - main
@@ -13,17 +12,14 @@ on:
       - "scripts/**"
       - "tools/build-single-file.js"
       - ".github/workflows/build-test-editor.yml"
-
-  # اجرای دستی همچنان نیازمند تأیید صریح است.
   workflow_dispatch:
     inputs:
       confirm_build:
-        description: "تأیید صریح ساخت و ثبت فایل مستقل"
+        description: "تأیید صریح ساخت و ثبت فایل‌های مستقل"
         required: true
         type: boolean
         default: false
 
-# از اجرای هم‌زمان چند بازسازی روی شاخهٔ اصلی جلوگیری می‌کند.
 concurrency:
   group: build-test-editor-main
   cancel-in-progress: false
@@ -35,22 +31,27 @@ jobs:
   build-standalone:
     if: github.event_name == 'push' || inputs.confirm_build == true
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
+    timeout-minutes: 20
     steps:
       - name: دریافت کد مخزن
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: آماده‌سازی نسخهٔ پشتیبانی‌شدهٔ Node.js
-        uses: actions/setup-node@v7
+      - name: آماده‌سازی Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - name: بررسی نحو فایل‌های جاوااسکریپت و اسکریپت‌های اعتبارسنجی
+      - name: بررسی نحو اسکریپت‌های ساخت و اعتبارسنجی
         run: |
-          for file in src/features/suggestions/data/html-suggestions.js src/features/suggestions/data/css-suggestions.js src/features/suggestions/data/js-suggestions.js src/features/suggestions/manager/suggestion-manager.js src/features/suggestions/next-word/next-word-suggestions.js src/features/live-preview/element-inspector.js script.js src/features/settings/settings.js src/features/backup-restore/backup-restore.js src/features/word-tree/word-tree.js scripts/*.mjs tools/build-single-file.js; do
+          for file in scripts/*.mjs tools/build-single-file.js; do
+            node --check "$file"
+          done
+
+      - name: بررسی نحو فایل‌های JavaScript اصلی
+        run: |
+          for file in src/features/suggestions/data/html-suggestions.js src/features/suggestions/data/css-suggestions.js src/features/suggestions/data/js-suggestions.js src/features/suggestions/manager/suggestion-manager.js src/features/suggestions/next-word/next-word-suggestions.js src/features/live-preview/element-inspector.js script.js src/features/settings/settings.js src/features/backup-restore/backup-restore.js src/features/word-tree/word-tree.js src/features/visual-editor/visual-editor-session.js src/features/visual-editor/visual-editor.js; do
             node --check "$file"
           done
 
@@ -75,25 +76,30 @@ jobs:
       - name: آزمون اعتبارسنجی و بازیابی نسخهٔ پشتیبان
         run: node scripts/check-backup-restore.mjs
 
-      - name: ساخت فایل مستقل از منابع اصلی
+      - name: ساخت فایل مستقل Editor
         run: node scripts/build-test-editor.mjs
 
-      - name: اعتبارسنجی کامل فایل مستقل تولیدشده
+      - name: اعتبارسنجی فایل مستقل Editor
         run: node scripts/check-standalone-editor.mjs
 
-      - name: ثبت تغییرات فایل مستقل
+      - name: ساخت نسخهٔ مستقل کامل Visual Editor
+        run: node scripts/build-standalone-visual-editor.mjs
+
+      - name: اعتبارسنجی نسخهٔ مستقل کامل Visual Editor
+        run: node scripts/check-standalone-visual-editor.mjs
+
+      - name: ثبت و انتشار خروجی‌های مستقل
         run: |
-          if git diff --quiet -- index-test-etitor.html; then
-            echo "فایل مستقل از قبل با منابع هماهنگ است."
+          if git diff --quiet -- index-test-etitor.html standalone-visual-editor.html; then
+            echo "هر دو فایل مستقل از قبل با منابع هماهنگ هستند."
             exit 0
           fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+users.noreply.github.com"
-          git add index-test-etitor.html
+          git add index-test-etitor.html standalone-visual-editor.html
           git commit \
-            -m "بازسازی فایل مستقل ویرایشگر و همگام‌سازی با منابع" \
-            -m "منابع HTML، CSS و JavaScript در خروجی مستقل بازتولید شدند." \
-            -m "اعتبارسنجی ساختار HTML، نحو اسکریپت‌ها و یکپارچگی منابع جاسازی‌شده انجام شد." \
-            -m "آزمون‌های پردازش کد، صفحه‌کلید تنظیمات و بازیابی نسخهٔ پشتیبان اجرا شدند."
+            -m "ساخت و همگام‌سازی نسخه‌های مستقل Editor و Visual Editor" \
+            -m "فایل موجود Editor از منابع اصلی بازسازی و اعتبارسنجی شد." \
+            -m "نسخهٔ مستقل Visual Editor با جاسازی کامل HTML، CSS و کنترل‌کننده‌های JavaScript تولید شد." \
+            -m "ساختار HTML، تطابق محتوای منابع جاسازی‌شده و نحو JavaScript پیش از ثبت بررسی شد."
           git push origin HEAD:main

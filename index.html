@@ -4,19 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML / CSS / JS Editor</title>
-    <script>
-        // GitHub Pages must open the integrated Editor + Visual Editor bundle.
-        // The source editor is embedded in that bundle, so only redirect top-level visits.
-        const pagePath = location.pathname.endsWith('/')
-            ? location.pathname.slice(0, -1)
-            : location.pathname;
-        const isGitHubPages = location.hostname === 'alfamaniya.github.io' ||
-            (location.hostname === '127.0.0.1' && location.search === '?__github_pages_test=1');
-        if (window.top === window.self && isGitHubPages &&
-            (pagePath === '/Editor-html-css-js' || pagePath === '/Editor-html-css-js/index.html')) {
-            location.replace(new URL('editor%20v.html', location.href).href);
-        }
-    </script>
     <style>
         .visual-editor-pick-button {
             display: inline-flex;

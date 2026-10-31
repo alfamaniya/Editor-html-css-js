@@ -30,8 +30,14 @@ let browser;
 try {
   browser = await chromium.launch({ headless: true });
   const rootPage = await browser.newPage();
-  await rootPage.goto('http://127.0.0.1:4173/Editor-html-css-js/?__github_pages_test=1', { waitUntil: 'domcontentloaded' });
-  await rootPage.waitForURL('**/Editor-html-css-js/editor%20v.html', { timeout: 10000 });
+  const sourcePageUrl = 'http://127.0.0.1:4173/Editor-html-css-js/';
+  await rootPage.goto(sourcePageUrl, { waitUntil: 'domcontentloaded' });
+  if (rootPage.url() !== sourcePageUrl) {
+    throw new Error('نشانی اصلی باید روی index.html باقی بماند و به فایل آزمایشی منتقل نشود.');
+  }
+  if (await rootPage.locator('#btnVisualEditorPick').count() !== 1) {
+    throw new Error('صفحهٔ اصلی باید رابط Editor مبتنی بر index.html را نمایش دهد.');
+  }
   await rootPage.close();
 
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });

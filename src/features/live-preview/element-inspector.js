@@ -100,6 +100,7 @@
         }
         const updated=file.content.slice(0,match.start)+updatedOpening+file.content.slice(match.end);
         if(!a.updateFileContent(match.fileId,updated))throw new Error("ذخیرهٔ تغییرات در فایل HTML انجام نشد.");
+        if(typeof a.refreshPreview==="function")a.refreshPreview();
         return true;
     }
     function handleVisualHostMessage(event){

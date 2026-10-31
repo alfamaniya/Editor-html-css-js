@@ -30,7 +30,7 @@ function main() {
   assert(/Visual Builder Studio/.test(html), 'عنوان Visual Editor در خروجی نیست.');
   assert(/id=["']propsPanel["']/.test(html) && /id=["']canvas["']/.test(html) &&
     /id=["']styleControls["']/.test(html), 'بخش‌های اصلی محیط ویرایش در خروجی ناقص‌اند.');
-  assert(!/\b(?:src|href)=["'](?:\.\/)?visual-editor\.(?:css|js)|visual-editor-session\.js["']/i.test(html),
+  assert(!/\b(?:src|href)=["'](?:\.\/)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js)["']/i.test(html),
     'ارجاع خارجی به منابع Visual Editor باقی مانده است.');
 
   for (const [path, tag] of assets) {

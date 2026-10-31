@@ -41,7 +41,7 @@ async function main() {
     html = once(html, asset.pattern, replacement, 'ارجاع منبع ' + asset.path);
     expected.set(asset.path, embedded);
   }
-  if (/\b(?:src|href)=["'](?:\.\/)?visual-editor\.(?:css|js)|visual-editor-session\.js["']/i.test(html)) {
+  if (/\b(?:src|href)=["'](?:\.\/)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js)["']/i.test(html)) {
     throw new Error('پس از ساخت، ارجاع خارجی به فایل‌های Visual Editor باقی مانده است.');
   }
   for (const [path, content] of expected) {

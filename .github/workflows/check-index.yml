@@ -26,6 +26,8 @@ on:
       - "README.md"
       - ".github/workflows/check-index.yml"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/build-test-editor.mjs"
+      - "src/**"
       - "scripts/check-settings-dialog-keyboard.mjs"
   pull_request:
     branches:
@@ -136,6 +138,9 @@ jobs:
 
           console.log(`Checked ${new Set(references).size} local asset reference(s); all exist.`);
           NODE
+
+      - name: Build current standalone Editor for paste-processing tests
+        run: node scripts/build-test-editor.mjs
 
       - name: Test HTML paste processing
         run: node scripts/check-editor-code-processing.mjs

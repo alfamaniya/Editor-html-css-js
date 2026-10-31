@@ -9,6 +9,14 @@
 </head>
 <body>
 
+<header class="workspace-mode-bar" id="workspaceModeBar" aria-label="انتخاب محیط ویرایش" hidden>
+  <strong>EDITOR V</strong>
+  <nav class="workspace-mode-switch" aria-label="انتخاب محیط ویرایش">
+    <button type="button" class="workspace-mode-button" data-workspace-mode="editor" aria-pressed="false">ویرایشگر اصلی</button>
+    <button type="button" class="workspace-mode-button" data-workspace-mode="visual" aria-pressed="true">ویرایشگر بصری</button>
+  </nav>
+</header>
+
 <div class="app">
 
   <!-- ============ LEFT : CODE EDITOR ============ -->
@@ -99,5 +107,25 @@
   <script src="./visual-editor-session.js" defer></script>
   <script src="./visual-editor.js" defer></script>
   <script src="./visual-editor-remote.js" defer></script>
+  <script>
+    (function () {
+      const bar = document.getElementById('workspaceModeBar');
+      if (!bar || window.parent === window) return;
+      bar.hidden = false;
+      document.body.classList.add('integrated');
+      bar.addEventListener('click', function (event) {
+        const button = event.target.closest('[data-workspace-mode]');
+        if (button) window.parent.postMessage({ editorVSwitch: button.dataset.workspaceMode }, '*');
+      });
+      window.addEventListener('message', function (event) {
+        if (event.source !== window.parent || !event.data) return;
+        const target = event.data.editorVSetMode;
+        if (target !== 'editor' && target !== 'visual') return;
+        bar.querySelectorAll('[data-workspace-mode]').forEach(function (button) {
+          button.setAttribute('aria-pressed', String(button.dataset.workspaceMode === target));
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

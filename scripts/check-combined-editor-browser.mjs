@@ -49,6 +49,11 @@ try {
   }, null, { timeout: 30000 });
 
   const editor = page.frameLocator('#editor-frame');
+  if (await page.locator('.topbar').count()) throw new Error('هدر بالایی پوسته باید حذف شده باشد.');
+  await editor.locator('#workspaceModeSwitch [data-workspace-mode="visual"]').waitFor({ state: 'visible' });
+  if ((await editor.locator('.workspace-brand strong').textContent()).trim() !== 'EDITOR V') {
+    throw new Error('عنوان برنامه به هدر اصلی منتقل نشده است.');
+  }
   await editor.locator('#btnSettings').click();
   if (!await editor.locator('#settingsScreen').isVisible()) {
     throw new Error('پنجرهٔ تنظیمات Editor پس از کلیک باز نشد.');
@@ -58,8 +63,10 @@ try {
     throw new Error('پنجرهٔ تنظیمات Editor پس از ذخیره بسته نشد.');
   }
 
-  await page.locator('[data-target="visual"]').click();
+  await editor.locator('#workspaceModeSwitch [data-workspace-mode="visual"]').click();
+  await page.waitForFunction(() => document.getElementById('visual-frame').hidden === false);
   const visual = page.frameLocator('#visual-frame');
+  await visual.locator('#workspaceModeBar [data-workspace-mode="visual"]').waitFor({ state: 'visible' });
   await visual.locator('.palette-item').first().click();
   if (!await visual.locator('#propsPanel').isVisible()) {
     throw new Error('پنل تنظیمات المان Visual Editor پس از انتخاب المان باز نشد.');
@@ -80,13 +87,18 @@ try {
   await editor.locator('body').evaluate((body, key) => localStorage.removeItem(key), storageProbe);
 
   // Select a real element from the main editor's preview and open Visual Editor.
-  await page.locator('[data-target="editor"]').click();
+  await visual.locator('#workspaceModeBar [data-workspace-mode="editor"]').click();
+  await page.waitForFunction(() => document.getElementById('editor-frame').hidden === false);
   const output = editor.frameLocator('#output');
   await output.locator('h1').waitFor();
   const visualPicker = editor.locator('#btnVisualEditorPick');
   if (await visualPicker.locator('svg.visual-editor-pick-icon').count() !== 1 ||
       (await visualPicker.innerText()).trim() !== 'ویرایش بصری') {
     throw new Error('دکمهٔ ویرایش بصری باید آیکون مداد و برچسب خوانا داشته باشد.');
+  }
+  const pickerLayout = await visualPicker.evaluate(button => ({ width: button.getBoundingClientRect().width, contentWidth: button.scrollWidth }));
+  if (pickerLayout.width < 110 || pickerLayout.contentWidth > pickerLayout.width + 1) {
+    throw new Error('آیکون و برچسب دکمهٔ ویرایش بصری باید داخل قاب دکمه جا شوند.');
   }
   await visualPicker.click();
   await output.locator('h1').click();

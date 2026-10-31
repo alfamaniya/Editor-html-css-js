@@ -152,6 +152,14 @@
                     aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار ابزارها" title="باز کردن سایدبار ابزارها">
                 <span class="menu-glyph" aria-hidden="true"></span>
             </button>
+            <nav class="workspace-mode-switch" id="workspaceModeSwitch" aria-label="انتخاب محیط ویرایش" hidden>
+                <button type="button" class="workspace-mode-button" data-workspace-mode="editor" aria-pressed="true">ویرایشگر اصلی</button>
+                <button type="button" class="workspace-mode-button" data-workspace-mode="visual" aria-pressed="false">ویرایشگر بصری</button>
+            </nav>
+            <div class="workspace-brand" aria-label="EDITOR V، محیط یکپارچهٔ ویرایش کد و طراحی بصری">
+                <strong>EDITOR V</strong>
+                <span>محیط یکپارچهٔ ویرایش کد و طراحی بصری</span>
+            </div>
         </div>
     </header>
 
@@ -841,5 +849,25 @@
 
     <script src="src/features/workspace/file-manager/file-manager-drawer.js"></script>
     <script src="src/features/workspace/search/search-header.js"></script>
+    <script>
+        (function () {
+            const modeSwitch = document.getElementById('workspaceModeSwitch');
+            if (!modeSwitch) return;
+            modeSwitch.addEventListener('click', function (event) {
+                const button = event.target.closest('[data-workspace-mode]');
+                if (!button || window.parent === window) return;
+                window.parent.postMessage({ editorVSwitch: button.dataset.workspaceMode }, '*');
+            });
+            window.addEventListener('message', function (event) {
+                if (event.source !== window.parent || !event.data) return;
+                const target = event.data.editorVSetMode;
+                if (target !== 'editor' && target !== 'visual') return;
+                modeSwitch.hidden = false;
+                modeSwitch.querySelectorAll('[data-workspace-mode]').forEach(function (button) {
+                    button.setAttribute('aria-pressed', String(button.dataset.workspaceMode === target));
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

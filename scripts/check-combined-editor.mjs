@@ -35,7 +35,9 @@ try{
  assert(count(b,/data-bundled-from=/g)===4,'تعداد منابع جاسازی‌شدهٔ Visual Editor برابر ۴ نیست');
  checkDoc(a,'Editor');checkDoc(b,'Visual Editor');
  assert(/id="editor-frame"/.test(out)&&/id="visual-frame"/.test(out),'هر دو محیط در خروجی وجود ندارند');
- assert(/data-target="editor"/.test(out)&&/data-target="visual"/.test(out),'ناوبری دو محیط ناقص است');
+ assert(!/<header class="topbar">/.test(out),'هدر بالایی باید از پوستهٔ فایل یکپارچه حذف شود');
+ assert(/id="workspaceModeSwitch"/.test(a)&&/data-workspace-mode="editor"/.test(a)&&/data-workspace-mode="visual"/.test(a),'انتقال انتخاب‌گر محیط به هدر ویرایشگر ناقص است');
+ assert(/editorVSwitch/.test(a)&&/editorVSwitch/.test(b)&&/editorVSetMode/.test(out),'ارتباط انتخاب‌گر محیط با پوستهٔ فایل یکپارچه ناقص است');
  for(const m of out.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)){const r=spawnSync(process.execPath,['--check'],{input:m[1],encoding:'utf8'});assert(r.status===0,'نحو پوسته نامعتبر است: '+(r.stderr||r.stdout))}
  console.log('اعتبارسنجی فایل یکپارچه موفق بود: دو سند کامل، تطابق دقیق منابع و نحو JavaScript بررسی شد');
 }catch(e){console.error('اعتبارسنجی ناموفق بود:',e.message);process.exitCode=1}

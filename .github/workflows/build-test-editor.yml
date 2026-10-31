@@ -64,6 +64,9 @@ jobs:
       - name: آزمون تشخیص رنگ و جایگاه پالت رنگ
         run: node scripts/check-color-picker.mjs
 
+      - name: ساخت فایل مستقل Editor
+        run: node scripts/build-test-editor.mjs
+
       - name: آزمون پردازش و درج کدهای چسبانده‌شده
         run: node scripts/check-editor-code-processing.mjs
 
@@ -75,9 +78,6 @@ jobs:
 
       - name: آزمون اعتبارسنجی و بازیابی نسخهٔ پشتیبان
         run: node scripts/check-backup-restore.mjs
-
-      - name: ساخت فایل مستقل Editor
-        run: node scripts/build-test-editor.mjs
 
       - name: اعتبارسنجی فایل مستقل Editor
         run: node scripts/check-standalone-editor.mjs

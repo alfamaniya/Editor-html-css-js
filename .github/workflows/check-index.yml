@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - "index.html"
+      - "editor v.html"
+      - "scripts/check-combined-editor.mjs"
       - "style.css"
       - "script.js"
       - "src/features/settings/settings.css"
@@ -137,6 +139,11 @@ jobs:
 
       - name: Test HTML paste processing
         run: node scripts/check-editor-code-processing.mjs
+
+      - name: Validate the complete standalone Editor V bundle
+        run: |
+          node --check scripts/check-combined-editor.mjs
+          node scripts/check-combined-editor.mjs
 
       - name: Test nested settings dialog keyboard handling
         run: node scripts/check-settings-dialog-keyboard.mjs

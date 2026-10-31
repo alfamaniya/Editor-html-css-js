@@ -10,7 +10,8 @@ const bundlePath = 'standalone-visual-editor.html';
 const assets = [
   ['src/features/visual-editor/visual-editor.css', 'style'],
   ['src/features/visual-editor/visual-editor-session.js', 'script'],
-  ['src/features/visual-editor/visual-editor.js', 'script']
+  ['src/features/visual-editor/visual-editor.js', 'script'],
+  ['src/features/visual-editor/visual-editor-remote.js', 'script']
 ];
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const read = path => {
@@ -30,7 +31,7 @@ function main() {
   assert(/Visual Builder Studio/.test(html), 'عنوان Visual Editor در خروجی نیست.');
   assert(/id=["']propsPanel["']/.test(html) && /id=["']canvas["']/.test(html) &&
     /id=["']styleControls["']/.test(html), 'بخش‌های اصلی محیط ویرایش در خروجی ناقص‌اند.');
-  assert(!/\b(?:src|href)=["'](?:\.\/)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js)["']/i.test(html),
+  assert(!/\b(?:src|href)=["'](?:\.\/)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js|visual-editor-remote\.js)["']/i.test(html),
     'ارجاع خارجی به منابع Visual Editor باقی مانده است.');
 
   for (const [path, tag] of assets) {

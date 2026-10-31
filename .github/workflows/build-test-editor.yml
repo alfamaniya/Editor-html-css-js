@@ -51,7 +51,7 @@ jobs:
 
       - name: بررسی نحو فایل‌های JavaScript اصلی
         run: |
-          for file in src/features/suggestions/data/html-suggestions.js src/features/suggestions/data/css-suggestions.js src/features/suggestions/data/js-suggestions.js src/features/suggestions/manager/suggestion-manager.js src/features/suggestions/next-word/next-word-suggestions.js src/features/live-preview/element-inspector.js script.js src/features/settings/settings.js src/features/backup-restore/backup-restore.js src/features/word-tree/word-tree.js src/features/visual-editor/visual-editor-session.js src/features/visual-editor/visual-editor.js; do
+          for file in src/features/suggestions/data/html-suggestions.js src/features/suggestions/data/css-suggestions.js src/features/suggestions/data/js-suggestions.js src/features/suggestions/manager/suggestion-manager.js src/features/suggestions/next-word/next-word-suggestions.js src/features/live-preview/element-inspector.js script.js src/features/settings/settings.js src/features/backup-restore/backup-restore.js src/features/word-tree/word-tree.js src/features/visual-editor/visual-editor-session.js src/features/visual-editor/visual-editor.js src/features/visual-editor/visual-editor-remote.js; do
             node --check "$file"
           done
 

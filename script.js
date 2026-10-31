@@ -1661,6 +1661,8 @@
             ].join('\n');
             const inspectorHook = forExport || typeof window.EditorElementInspectorPreviewHook !== 'string'
                 ? '' : window.EditorElementInspectorPreviewHook;
+            const visualEditorHook = forExport || typeof window.EditorVisualEditorPreviewHook !== 'string'
+                ? '' : window.EditorVisualEditorPreviewHook;
             const safeTitle = String(project.documentTitle || 'My Page')
                 .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             let output;
@@ -1675,6 +1677,7 @@
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
                 if (inspectorHook) headParts.push(inspectorHook);
+                if (visualEditorHook) headParts.push(visualEditorHook);
                 if (externalAssetBaseName) {
                     if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
                 } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
@@ -1694,6 +1697,7 @@
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
                 if (inspectorHook) headParts.push(inspectorHook);
+                if (visualEditorHook) headParts.push(visualEditorHook);
                 if (externalAssetBaseName) {
                     if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
                 } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
@@ -3763,6 +3767,18 @@
                 editor.ta.focus();
                 editor.ta.setSelectionRange(start, end);
                 editor.scrollToPosition(start, 2);
+                return true;
+            },
+            updateFileContent: function (fileId, content) {
+                const file = getFile(fileId);
+                if (!file || typeof content !== 'string' || !editors[file.type]) return false;
+                project.activeFileId = file.id;
+                project.lastActiveByLang[file.type] = file.id;
+                activateTab(file.type);
+                const editor = editors[file.type];
+                editor.ta.value = content;
+                editor.ta.dispatchEvent(new Event('input', { bubbles: true }));
+                editor.ta.focus();
                 return true;
             }
         };

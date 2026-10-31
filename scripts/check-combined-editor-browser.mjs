@@ -68,6 +68,61 @@ try {
   if (stored !== 'visual-ok') throw new Error('ذخیره‌سازی مرورگر در iframe بصری کار نمی‌کند.');
   await editor.locator('body').evaluate((body, key) => localStorage.removeItem(key), storageProbe);
 
+  // Select a real element from the main editor's preview and open Visual Editor.
+  await page.locator('[data-target="editor"]').click();
+  const output = editor.frameLocator('#output');
+  await output.locator('h1').waitFor();
+  await editor.locator('#btnVisualEditorPick').click();
+  await output.locator('h1').click();
+  await page.frameLocator('#visual-frame').locator('#externalTargetBar').waitFor({ timeout: 10000 });
+  const remoteVisual = page.frameLocator('#visual-frame');
+  await remoteVisual.locator('#remote-style-font-size').fill('40');
+  let liveFontSize = '';
+  for (let attempt = 0; attempt < 30; attempt++) {
+    liveFontSize = await output.locator('h1').evaluate(node => getComputedStyle(node).fontSize);
+    if (liveFontSize === '40px') break;
+    await page.waitForTimeout(100);
+  }
+  if (liveFontSize !== '40px') throw new Error('تغییر زندهٔ اندازهٔ متن به پیش‌نمایش اصلی منتقل نشد.');
+  await remoteVisual.locator('#remoteTargetApply').click();
+  await page.waitForFunction(() => document.getElementById('visual-frame').hidden && !document.getElementById('editor-frame').hidden, null, { timeout: 10000 });
+  for (let attempt = 0; attempt < 40; attempt++) {
+    liveFontSize = await output.locator('h1').evaluate(node => getComputedStyle(node).fontSize);
+    if (liveFontSize === '40px') break;
+    await page.waitForTimeout(150);
+  }
+  if (liveFontSize !== '40px') throw new Error('پس از ثبت، اندازهٔ متن در پیش‌نمایش اصلی باقی نماند.');
+  const htmlAfterCommit = await editor.locator('#panel-html textarea').inputValue();
+  if (!/font-size:\s*40px\s*!important/i.test(htmlAfterCommit)) {
+    throw new Error('تغییر بصری در کد HTML اصلی ذخیره نشد.');
+  }
+
+  // A second edit must be reversible without changing the source HTML.
+  await editor.locator('#btnVisualEditorPick').click();
+  await output.locator('h1').click();
+  await remoteVisual.locator('#externalTargetBar').waitFor({ timeout: 10000 });
+  await remoteVisual.locator('#remote-style-font-size').fill('55');
+  let temporaryFontSize = '';
+  for (let attempt = 0; attempt < 30; attempt++) {
+    temporaryFontSize = await output.locator('h1').evaluate(node => getComputedStyle(node).fontSize);
+    if (temporaryFontSize === '55px') break;
+    await page.waitForTimeout(100);
+  }
+  if (temporaryFontSize !== '55px') throw new Error('پیش‌نمایش موقت ویرایش دوم اعمال نشد.');
+  await remoteVisual.locator('#remoteTargetCancel').click();
+  await page.waitForFunction(() => document.getElementById('visual-frame').hidden && !document.getElementById('editor-frame').hidden, null, { timeout: 10000 });
+  let restoredFontSize = '';
+  for (let attempt = 0; attempt < 30; attempt++) {
+    restoredFontSize = await output.locator('h1').evaluate(node => getComputedStyle(node).fontSize);
+    if (restoredFontSize === '40px') break;
+    await page.waitForTimeout(100);
+  }
+  if (restoredFontSize !== '40px') throw new Error('انصراف از ویرایش، استایل قبلی المان را بازنگرداند.');
+  const htmlAfterCancel = await editor.locator('#panel-html textarea').inputValue();
+  if (!/font-size:\s*40px\s*!important/i.test(htmlAfterCancel) || /font-size:\s*55px\s*!important/i.test(htmlAfterCancel)) {
+    throw new Error('انصراف نباید کد ذخیره‌شدهٔ HTML را تغییر دهد.');
+  }
+
   if (runtimeErrors.length) throw new Error('خطای زمان اجرا: ' + runtimeErrors.join(' | '));
   console.log('آزمون مرورگر موفق بود: بارگذاری هر دو iframe، باز و بسته‌شدن تنظیمات Editor، انتخاب المان و بازشدن پنل ویژگی‌های Visual Editor، و localStorage بررسی شدند.');
 } finally {

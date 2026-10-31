@@ -12,7 +12,8 @@ const htmlFile = base + 'visual-editor.html';
 const assets = [
   { path: base + 'visual-editor.css', tag: 'style', pattern: /<link\s+rel=["']stylesheet["']\s+href=["']\.\/visual-editor\.css["']\s*>/i },
   { path: base + 'visual-editor-session.js', tag: 'script', pattern: /<script\s+src=["']\.\/visual-editor-session\.js["']\s+defer\s*>\s*<\/script>/i },
-  { path: base + 'visual-editor.js', tag: 'script', pattern: /<script\s+src=["']\.\/visual-editor\.js["']\s+defer\s*>\s*<\/script>/i }
+  { path: base + 'visual-editor.js', tag: 'script', pattern: /<script\s+src=["']\.\/visual-editor\.js["']\s+defer\s*>\s*<\/script>/i },
+  { path: base + 'visual-editor-remote.js', tag: 'script', pattern: /<script\s+src=["']\.\/visual-editor-remote\.js["']\s+defer\s*>\s*<\/script>/i }
 ];
 const output = resolve(root, 'standalone-visual-editor.html');
 const temporary = output + '.tmp';
@@ -41,7 +42,7 @@ async function main() {
     html = once(html, asset.pattern, replacement, 'ارجاع منبع ' + asset.path);
     expected.set(asset.path, embedded);
   }
-  if (/\b(?:src|href)=["'](?:\.\/)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js)["']/i.test(html)) {
+  if (/\b(?:src|href)=["'](?:\.\/)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js|visual-editor-remote\.js)["']/i.test(html)) {
     throw new Error('پس از ساخت، ارجاع خارجی به فایل‌های Visual Editor باقی مانده است.');
   }
   for (const [path, content] of expected) {

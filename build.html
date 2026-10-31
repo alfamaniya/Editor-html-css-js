@@ -954,12 +954,10 @@
     }
 
     clear() {
-      this.components.forEach((c) => {
-        const n = this.canvas.querySelector(`[data-id="${c.id}"]`);
-        if (n) n.remove();
-      });
       this.components = [];
       this.select(null);
+      // Remove manually previewed nodes as well as model-backed components.
+      this.rebuildCanvasFromModel();
       this.render();
     }
 
@@ -1069,6 +1067,7 @@
           const parsed = new DOMParser().parseFromString(source, "text/html");
           const sourceCanvas = parsed.querySelector(".canvas") || parsed.body;
           this.canvas.replaceChildren(...Array.from(sourceCanvas.childNodes).map((node) => document.importNode(node, true)));
+          this.ensureCanvasHint();
           // Reconnect preview nodes to the component model when their IDs match.
           // Removing data-id here disabled selection and the properties panel.
           this.canvas.querySelectorAll("[id], [data-id]").forEach((node) => {
@@ -1522,16 +1521,31 @@ ${body}
     }
 
     /* ------------------------ Rendering ----------------------- */
+    ensureCanvasHint() {
+      let hint = this.canvas.querySelector(":scope > .hint");
+      if (!hint) {
+        hint = document.createElement("div");
+        hint.className = "hint";
+        hint.textContent = "Drag an element from the toolbar and drop it here";
+        this.canvas.appendChild(hint);
+      }
+      return hint;
+    }
+
     rebuildCanvasFromModel() {
-      this.canvas.querySelectorAll("[data-id]").forEach((node) => node.remove());
+      // Rebuild from the model instead of leaving orphaned manual-preview nodes.
+      this.canvas.replaceChildren();
       this.components.forEach((comp) => {
         const node = comp.createNode();
+        if (!node) return;
         node.dataset.id = comp.id;
         this.canvas.appendChild(node);
         this.makeDraggable(node, comp);
       });
+      this.ensureCanvasHint();
       if (this.selected) {
-        const selectedNode = this.canvas.querySelector(`[data-id="${this.selected.id}"]`);
+        const selectedNode = Array.from(this.canvas.querySelectorAll("[data-id]"))
+          .find((node) => node.dataset.id === this.selected.id);
         if (selectedNode) selectedNode.classList.add("selected");
       }
       this.canvas.classList.toggle("empty", this.components.length === 0);

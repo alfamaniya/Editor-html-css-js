@@ -87,14 +87,17 @@
   }
 
   function translateTextNode(node) {
-    if (!node || !node.nodeValue || isExcluded(node.parentElement)) return;
+    if (!(node instanceof Text) || !node.nodeValue) return;
+
+    // MutationObserver can deliver a characterData record after its text node
+    // has already been detached from the document. Skip detached nodes safely.
+    const parent = node.parentElement;
+    if (!(parent instanceof Element) || !parent.isConnected || isExcluded(parent)) return;
+
     const value = node.nodeValue;
     const trimmed = value.trim();
     if (!trimmed) return;
-    const viewMenu = node.parentElement.closest('.app-menu-trigger[aria-controls="viewMenu"]');
-    const translated = viewMenu && language === "en" && trimmed === "نمایش"
-      ? "View"
-      : translateText(trimmed);
+    const translated = translateText(trimmed);
     if (translated === trimmed) return;
     const start = value.indexOf(trimmed);
     node.nodeValue = value.slice(0, start) + translated + value.slice(start + trimmed.length);

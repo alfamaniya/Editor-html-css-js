@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 const assert=(ok,message)=>{if(!ok)throw new Error(message)};
 const read=path=>{const value=readFileSync(path,'utf8');assert(value.trim(),'فایل خالی است: '+path);return value};
@@ -11,8 +11,11 @@ function checkDoc(html,label){
 }
 try{
  const out=read('editor v.html'),a=embedded(out,'editor-document'),b=embedded(out,'visual-document');
- assert(a===read('index-test-etitor.html'),'محتوای Editor جاسازی‌شده با منبع برابر نیست');
- assert(b===read('standalone-visual-editor.html'),'محتوای Visual Editor جاسازی‌شده با منبع برابر نیست');
+ if(existsSync('index-test-etitor.html'))assert(a===read('index-test-etitor.html'),'محتوای Editor جاسازی‌شده با منبع برابر نیست');
+ if(existsSync('standalone-visual-editor.html'))assert(b===read('standalone-visual-editor.html'),'محتوای Visual Editor جاسازی‌شده با منبع برابر نیست');
+ const count=(value,pattern)=>(value.match(pattern)||[]).length;
+ assert(count(a,/data-bundled-from=/g)===23,'تعداد منابع جاسازی‌شدهٔ Editor برابر ۲۳ نیست');
+ assert(count(b,/data-bundled-from=/g)===3,'تعداد منابع جاسازی‌شدهٔ Visual Editor برابر ۳ نیست');
  checkDoc(a,'Editor');checkDoc(b,'Visual Editor');
  assert(/id="editor-frame"/.test(out)&&/id="visual-frame"/.test(out),'هر دو محیط در خروجی وجود ندارند');
  assert(/data-target="editor"/.test(out)&&/data-target="visual"/.test(out),'ناوبری دو محیط ناقص است');

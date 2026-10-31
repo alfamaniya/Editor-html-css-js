@@ -1470,8 +1470,11 @@ ${body}
         if (!state || state.version !== 1 || !Array.isArray(state.components)) return;
 
         state.components.forEach((item) => {
+          if (!item || typeof item !== "object") return;
           const Ctor = REGISTRY[item.type];
-          if (!Ctor || typeof item.id !== "string") return;
+          // IDs are embedded in CSS selectors and generated JavaScript; only
+          // accept the stable IDs produced by this editor.
+          if (!Ctor || typeof item.id !== "string" || !new RegExp("^" + item.type + "-\\d+$").test(item.id)) return;
           const comp = new Ctor(Number(item.x) || 0, Number(item.y) || 0);
           comp.id = item.id;
           comp.styleProps = item.styleProps && typeof item.styleProps === "object"
@@ -1480,7 +1483,8 @@ ${body}
             ? item.actions
                 .filter((action) => action && typeof action === "object" && ACTION_TYPES[action.type])
                 .map((action) => ({
-                  event: typeof action.event === "string" ? action.event : "click",
+                  event: ["click", "dblclick", "mouseenter", "mouseleave", "focus", "blur", "input", "change", "submit", "keydown", "keyup", "pointerdown", "pointerup", "load"].includes(action.event)
+                    ? action.event : (Ctor.supportedEvents[0] || "click"),
                   type: action.type,
                   params: action.params && typeof action.params === "object" && !Array.isArray(action.params)
                     ? { ...action.params } : {},

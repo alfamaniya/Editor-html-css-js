@@ -8,7 +8,7 @@ const file = resolve('editor v.html');
 const html = await readFile(file);
 const indexHtml = await readFile(resolve('index.html'));
 const server = createServer((request, response) => {
-  if (request.url === '/' || request.url === '/index.html') {
+  if (request.url === '/' || request.url === '/index.html' || request.url.startsWith('/Editor-html-css-js/')) {
     response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-length': indexHtml.length });
     response.end(indexHtml);
     return;
@@ -30,8 +30,8 @@ let browser;
 try {
   browser = await chromium.launch({ headless: true });
   const rootPage = await browser.newPage();
-  await rootPage.goto('http://127.0.0.1:4173/', { waitUntil: 'domcontentloaded' });
-  await rootPage.waitForURL('**/editor%20v.html', { timeout: 10000 });
+  await rootPage.goto('http://127.0.0.1:4173/Editor-html-css-js/?__github_pages_test=1', { waitUntil: 'domcontentloaded' });
+  await rootPage.waitForURL('**/Editor-html-css-js/editor%20v.html', { timeout: 10000 });
   await rootPage.close();
 
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });

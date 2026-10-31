@@ -1,10 +1,10 @@
-name: ارسال نسخه مستقل به ایمیل شرکت
+name: ارسال دو نسخه پروژه به ایمیل شرکت
 
 on:
   workflow_dispatch:
     inputs:
       confirm_send:
-        description: "با ساخت فایل متنی و ارسال آن به ایمیل شرکت موافقم"
+        description: "ارسال دو ایمیل جداگانه برای Editor و Build را تأیید می‌کنم"
         required: true
         type: boolean
         default: false
@@ -17,8 +17,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-send:
-    name: ساخت و ارسال نسخه مستقل
+  prepare:
+    name: بررسی و آماده‌سازی محتوای دو ایمیل
     if: inputs.confirm_send == true
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -35,7 +35,89 @@ jobs:
         with:
           node-version: 24
 
-      - name: بررسی تنظیمات محرمانه ایمیل
+      - name: بررسی نحو اسکریپت اعتبارسنجی
+        run: node --check scripts/check-standalone-editor.mjs
+
+      - name: بررسی یکپارچگی فایل اصلی
+        run: node scripts/check-index-integrity.mjs
+
+      - name: اعتبارسنجی کامل فایل مستقل Editor بدون بازتولید
+        run: |
+          set -euo pipefail
+          test -s index-test-etitor.html
+          node scripts/check-standalone-editor.mjs
+          echo "فایل موجود index-test-etitor.html کامل و منطبق با تمام منابع فعلی است."
+
+      - name: بررسی وجود و ساختار فایل مستقل Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s build.html
+          grep -Eiq '<!doctype[[:space:]]+html' build.html
+          grep -Eiq '<html([[:space:]>])' build.html
+          grep -Eiq '</html[[:space:]]*>' build.html
+          echo "build.html موجود و دارای ساختار کامل سند HTML است."
+          echo "حجم فایل: $(wc -c < build.html) بایت"
+
+      - name: آماده‌سازی متن کامل ایمیل Editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/company-delivery
+          {
+            printf 'پروژه: Editor-html-css-js | بخش: Editor\n'
+            printf 'فایل منبع: index-test-etitor.html (نسخه موجود مخزن؛ بدون بازتولید)\n'
+            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
+            printf 'شاخه: %s\n' "$GITHUB_REF_NAME"
+            printf 'شناسه کامیت: %s\n' "$GITHUB_SHA"
+            printf 'زمان آماده‌سازی (UTC): %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S')"
+            printf '%s\n' '============================================================'
+            printf '%s\n\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
+            cat index-test-etitor.html
+          } > dist/company-delivery/editor-email-body.txt
+          test -s dist/company-delivery/editor-email-body.txt
+          echo "حجم متن ایمیل Editor: $(wc -c < dist/company-delivery/editor-email-body.txt) بایت"
+
+      - name: آماده‌سازی متن کامل ایمیل Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            printf 'پروژه: Editor-html-css-js | بخش: Build\n'
+            printf 'فایل منبع: build.html\n'
+            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
+            printf 'شاخه: %s\n' "$GITHUB_REF_NAME"
+            printf 'شناسه کامیت: %s\n' "$GITHUB_SHA"
+            printf 'زمان آماده‌سازی (UTC): %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S')"
+            printf '%s\n' '============================================================'
+            printf '%s\n\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
+            cat build.html
+          } > dist/company-delivery/build-email-body.txt
+          test -s dist/company-delivery/build-email-body.txt
+          echo "حجم متن ایمیل Build: $(wc -c < dist/company-delivery/build-email-body.txt) بایت"
+
+      - name: نگهداری متن دو ایمیل به‌عنوان Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: company-delivery-bodies-${{ github.sha }}
+          path: dist/company-delivery/*.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  send-editor:
+    name: ارسال ایمیل پروژه اصلی Editor
+    if: inputs.confirm_send == true
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: دریافت متن ایمیل
+        uses: actions/download-artifact@v4
+        with:
+          name: company-delivery-bodies-${{ github.sha }}
+          path: dist/company-delivery
+
+      - name: بررسی متن و تنظیمات SMTP
         env:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -46,6 +128,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test -s dist/company-delivery/editor-email-body.txt
           for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD COMPANY_EMAIL; do
             if [[ -z "${!name:-}" ]]; then
               echo "::error::Secret ${name} تنظیم نشده است."
@@ -61,51 +144,7 @@ jobs:
             exit 1
           fi
 
-      - name: بررسی نحو اسکریپت ساخت
-        run: node --check scripts/build-test-editor.mjs
-
-      - name: بررسی یکپارچگی فایل اصلی
-        run: node scripts/check-index-integrity.mjs
-
-      - name: ساخت نسخه مستقل از منابع اصلی
-        run: node scripts/build-test-editor.mjs
-
-      - name: اعتبارسنجی نسخه مستقل
-        run: node scripts/check-standalone-editor.mjs
-
-      - name: آماده‌سازی فایل متنی پیوست
-        id: package
-        shell: bash
-        run: |
-          set -euo pipefail
-          SOURCE="index-test-etitor.html"
-          test -s "$SOURCE"
-          mkdir -p dist/company-delivery
-          OUTPUT="dist/company-delivery/Editor-html-css-js-${GITHUB_SHA::7}.txt"
-          {
-            printf 'پروژه: Editor-html-css-js\n'
-            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
-            printf 'شاخه: %s\n' "$GITHUB_REF_NAME"
-            printf 'شناسه کامیت: %s\n' "$GITHUB_SHA"
-            printf 'زمان ساخت (UTC): %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S')"
-            printf 'فایل مبنا: %s\n' "$SOURCE"
-            printf '%s\n\n' '============================================================'
-            cat "$SOURCE"
-          } > "$OUTPUT"
-          test -s "$OUTPUT"
-          echo "attachment=$OUTPUT" >> "$GITHUB_OUTPUT"
-          echo "نام فایل پیوست: $OUTPUT"
-          echo "حجم فایل: $(wc -c < "$OUTPUT") بایت"
-
-      - name: نگهداری نسخه ارسالی به‌عنوان خروجی قابل دریافت
-        uses: actions/upload-artifact@v4
-        with:
-          name: company-delivery-${{ github.sha }}
-          path: ${{ steps.package.outputs.attachment }}
-          if-no-files-found: error
-          retention-days: 14
-
-      - name: ارسال ایمیل و فایل متنی پیوست
+      - name: ارسال ایمیل Editor با محتوای کامل در متن پیام
         uses: dawidd6/action-send-mail@v4
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
@@ -113,21 +152,60 @@ jobs:
           secure: ${{ secrets.SMTP_SECURE == 'true' }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "نسخه جدید ویرایشگر HTML/CSS/JavaScript - ${{ github.sha }}"
+          subject: "نسخه کامل پروژه Editor - ${{ github.sha }}"
           to: ${{ secrets.COMPANY_EMAIL }}
           from: ${{ secrets.SMTP_USERNAME }}
-          body: |
-            سلام،
+          body: "file://dist/company-delivery/editor-email-body.txt"
 
-            نسخه مستقل پروژه Editor-html-css-js آماده و پس از اعتبارسنجی ارسال شده است.
+  send-build:
+    name: ارسال ایمیل پروژه جدید Build
+    if: inputs.confirm_send == true
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: دریافت متن ایمیل
+        uses: actions/download-artifact@v4
+        with:
+          name: company-delivery-bodies-${{ github.sha }}
+          path: dist/company-delivery
 
-            شاخه: ${{ github.ref_name }}
-            شناسه کامیت: ${{ github.sha }}
-            اجراکننده: ${{ github.actor }}
-            شماره اجرای GitHub Actions: ${{ github.run_number }}
+      - name: بررسی متن و تنظیمات SMTP
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          COMPANY_EMAIL: ${{ secrets.COMPANY_EMAIL }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s dist/company-delivery/build-email-body.txt
+          for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD COMPANY_EMAIL; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Secret ${name} تنظیم نشده است."
+              exit 1
+            fi
+          done
+          if [[ ! "$SMTP_PORT" =~ ^[0-9]+$ ]]; then
+            echo "::error::SMTP_PORT باید عدد معتبر باشد."
+            exit 1
+          fi
+          if [[ -n "$SMTP_SECURE" && "$SMTP_SECURE" != "true" && "$SMTP_SECURE" != "false" ]]; then
+            echo "::error::SMTP_SECURE فقط می‌تواند true یا false باشد."
+            exit 1
+          fi
 
-            فایل TXT پیوست شامل محتوای کامل نسخه مستقل HTML و اطلاعات ساخت است.
-            این فایل را با رمزگذاری UTF-8 باز کنید و در صورت نیاز محتوای HTML را از آن استخراج کنید.
-
-            با احترام
-          attachments: ${{ steps.package.outputs.attachment }}
+      - name: ارسال ایمیل Build با محتوای کامل در متن پیام
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          secure: ${{ secrets.SMTP_SECURE == 'true' }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "نسخه کامل پروژه Build - ${{ github.sha }}"
+          to: ${{ secrets.COMPANY_EMAIL }}
+          from: ${{ secrets.SMTP_USERNAME }}
+          body: "file://dist/company-delivery/build-email-body.txt"

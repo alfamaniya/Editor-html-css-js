@@ -28,6 +28,11 @@ on:
       - "scripts/check-editor-code-processing.mjs"
       - "scripts/build-test-editor.mjs"
       - "src/**"
+      - "scripts/build-standalone-visual-editor.mjs"
+      - "scripts/build-combined-editor.mjs"
+      - "src/features/visual-editor/**"
+      - "locales/**"
+      - "src/shared/i18n/**"
       - "scripts/check-settings-dialog-keyboard.mjs"
   pull_request:
     branches:
@@ -52,6 +57,11 @@ on:
       - "README.md"
       - ".github/workflows/check-index.yml"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/build-test-editor.mjs"
+      - "scripts/build-standalone-visual-editor.mjs"
+      - "scripts/build-combined-editor.mjs"
+      - "src/**"
+      - "locales/**"
       - "scripts/check-settings-dialog-keyboard.mjs"
   workflow_dispatch:
 
@@ -144,6 +154,12 @@ jobs:
 
       - name: Test HTML paste processing
         run: node scripts/check-editor-code-processing.mjs
+
+      - name: Build the standalone Visual Editor
+        run: node scripts/build-standalone-visual-editor.mjs
+
+      - name: Build the current combined Editor V bundle
+        run: node scripts/build-combined-editor.mjs
 
       - name: Validate the complete standalone Editor V bundle
         run: |

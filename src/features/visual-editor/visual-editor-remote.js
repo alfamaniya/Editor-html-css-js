@@ -116,7 +116,7 @@
         if (previewNode) { if (value) previewNode.style.setProperty(definition.property, value); else previewNode.style.removeProperty(definition.property); }
         send({ editorVisualEditorApplyStyle: { sessionId: target.sessionId, property: definition.property, value } });
         const status = byId("externalTargetStatus");
-        if (status) status.textContent = "پیش‌نمایش زنده است؛ برای ذخیره در HTML دکمهٔ ثبت تغییرات را بزنید.";
+        if (status) status.textContent = "در حال اعمال تغییر روی المان اصلی در پیش‌نمایش Editor…";
       });
       row.append(label, input); styleControls.appendChild(row);
     });
@@ -154,6 +154,30 @@
   window.addEventListener("message", event => {
     if (event.source !== window.parent || !event.data) return;
     if (event.data.editorVisualEditorSelection) { begin(event.data.editorVisualEditorSelection); return; }
+    if (event.data.editorVisualEditorStyleApplied) {
+      const ack = event.data.editorVisualEditorStyleApplied;
+      if (target && ack.sessionId === target.sessionId) {
+        const status = byId("externalTargetStatus");
+        if (status) status.textContent = "تغییر روی المان اصلی اعمال شد؛ برای ذخیرهٔ آن در HTML دکمهٔ ثبت را بزنید.";
+      }
+      return;
+    }
+    if (event.data.editorVisualEditorStyleRejected) {
+      const rejected = event.data.editorVisualEditorStyleRejected;
+      const status = byId("externalTargetStatus");
+      if (target && rejected.receivedSessionId === target.sessionId && status) {
+        status.textContent = "پیش‌نمایش اصلی پیام تغییر را نپذیرفت؛ نشست پیش‌نمایش با نشست ویرایش هماهنگ نیست.";
+      }
+      return;
+    }
+    if (event.data.editorVisualEditorStyleHostRejected) {
+      const rejected = event.data.editorVisualEditorStyleHostRejected;
+      const status = byId("externalTargetStatus");
+      if (target && rejected.receivedSessionId === target.sessionId && status) {
+        status.textContent = "Editor اصلی تغییر را رد کرد: " + (rejected.reason || "نشست انتخاب معتبر نیست.");
+      }
+      return;
+    }
     if (event.data.editorVisualEditorError) {
       waiting = false;
       const apply = byId("remoteTargetApply"), cancel = byId("remoteTargetCancel");

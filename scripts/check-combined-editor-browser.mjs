@@ -122,11 +122,15 @@ try {
   }));
   console.log('گزارش نشست دوم ویرایش بصری: ' + JSON.stringify({ secondRemoteState, secondMainState }));
   let temporaryFontSize = '';
+  let styleAckStatus = '';
   for (let attempt = 0; attempt < 30; attempt++) {
     temporaryFontSize = await output.locator('h1').evaluate(node => getComputedStyle(node).fontSize);
-    if (temporaryFontSize === '55px') break;
+    styleAckStatus = await remoteVisual.locator('#externalTargetStatus').textContent();
+    if (temporaryFontSize === '55px' || /رد کرد|نپذیرفت/.test(styleAckStatus)) break;
     await page.waitForTimeout(100);
   }
+  console.log('وضعیت تأیید تغییر نشست دوم: ' + styleAckStatus);
+
   if (temporaryFontSize !== '55px') throw new Error('پیش‌نمایش موقت ویرایش دوم اعمال نشد.');
   await remoteVisual.locator('#remoteTargetCancel').click();
   await page.waitForFunction(() => document.getElementById('visual-frame').hidden && !document.getElementById('editor-frame').hidden, null, { timeout: 10000 });

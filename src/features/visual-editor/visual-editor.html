@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Visual Builder Studio</title>
+
+  <link rel="stylesheet" href="./visual-editor.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ LEFT : CODE EDITOR ============ -->
+  <section class="editor-panel">
+    <div class="tabs">
+      <button class="tab active" data-lang="html">index.html</button>
+      <button class="tab" data-lang="css">style.css</button>
+      <button class="tab" data-lang="js">script.js</button>
+    </div>
+    <div class="code-area">
+      <pre id="highlight" aria-hidden="true"></pre>
+      <textarea id="code" spellcheck="false" wrap="off" autocomplete="off"></textarea>
+    </div>
+    <div class="statusbar">
+      <span id="status">0 components</span>
+      <div class="code-actions">
+        <button id="syncCodeBtn" class="btn-ghost" title="Replace manual code with the current visual design">Sync from Design</button>
+        <button id="copyBtn" class="btn-ghost">Copy Code</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="splitter" id="splitter" role="separator" tabindex="0"
+       aria-label="Resize code editor and design workspace"
+       aria-orientation="vertical" title="Drag to resize panels"></div>
+
+  <!-- ============ RIGHT : WORKSPACE ============ -->
+  <section class="workspace">
+    <section class="palette-library" aria-label="Element library">
+      <div class="palette-toolbar">
+        <div class="library-heading"><strong>Elements</strong><span id="elementCount">21 components</span></div>
+        <div class="library-actions">
+          <label class="element-search"><span aria-hidden="true">⌕</span><input id="elementSearch" type="search" placeholder="Search elements..." autocomplete="off" /></label>
+          <select id="elementCategory" class="category-filter" aria-label="Filter elements">
+            <option value="all">All categories</option><option value="Layout">Layout</option><option value="Content">Content</option><option value="Forms">Forms</option><option value="Media">Media</option>
+          </select>
+          <div class="view-switch" role="group" aria-label="Element display">
+            <button type="button" class="view-btn active" data-view="objects" aria-pressed="true" title="Object view">▦</button>
+            <button type="button" class="view-btn" data-view="text" aria-pressed="false" title="Text view">☷</button>
+          </div>
+          <button id="addCustomBtn" class="add-custom-btn" type="button">＋ Custom HTML</button>
+          <button id="clearBtn" class="btn-ghost">Clear All</button>
+        </div>
+      </div>
+      <div class="palette-items objects-view" id="palette" aria-live="polite"></div>
+      <div class="palette-empty" id="paletteEmpty" hidden>No elements match your search.</div>
+    </section>
+
+    <div class="workspace-body">
+      <div class="canvas-scroll" id="canvasScroll">
+        <div class="canvas empty" id="canvas">
+          <div class="hint">Drag an element from the toolbar and drop it here</div>
+        </div>
+      </div>
+
+      <!-- Properties panel (shown only when a component is selected) -->
+      <aside class="props-panel" id="propsPanel">
+        <div class="props-header">
+          <div>
+            <h3>Element Settings</h3>
+            <span class="props-type" id="propsType">—</span>
+          </div>
+          <button class="btn-icon" id="deleteComponentBtn" title="Delete element">🗑</button>
+        </div>
+        <section class="props-section">
+          <h4>Appearance</h4>
+          <div id="styleControls"></div>
+        </section>
+        <section class="props-section">
+          <h4>Hover Effects</h4>
+          <div id="hoverControls"></div>
+        </section>
+        <section class="props-section">
+          <h4>Interactions</h4>
+          <div id="actionList"></div>
+          <button class="add-action-btn" id="addActionBtn">+ Add Interaction</button>
+        </section>
+      </aside>
+    </div>
+  </section>
+
+</div>
+
+<!-- Live generated stylesheet, injected here so the canvas is a real preview -->
+<style id="preview-style"></style>
+
+
+  <script src="./visual-editor.js" defer></script>
+</body>
+</html>

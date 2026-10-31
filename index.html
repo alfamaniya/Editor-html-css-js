@@ -7,9 +7,10 @@
     <script>
         // GitHub Pages must open the integrated Editor + Visual Editor bundle.
         // The source editor is embedded in that bundle, so only redirect top-level visits.
+        const pagePath = location.pathname.replace(/\\/+$/, '');
         if (window.top === window.self &&
             location.hostname === 'alfamaniya.github.io' &&
-            /^\\/Editor-html-css-js\\/?(?:index\\.html)?$/i.test(location.pathname)) {
+            (pagePath === '/Editor-html-css-js' || pagePath === '/Editor-html-css-js/index.html')) {
             location.replace(new URL('editor%20v.html', location.href).href);
         }
     </script>

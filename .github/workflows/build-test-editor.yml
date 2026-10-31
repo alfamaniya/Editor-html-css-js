@@ -1,4 +1,4 @@
-name: Build standalone test editor
+name: ساخت و انتشار فایل مستقل editor v.html
 
 on:
   push:

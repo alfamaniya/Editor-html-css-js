@@ -130,7 +130,10 @@ test('the most complete clipboard format is selected',() => {
     assert.match(context.editors.html.ta.value,/<h1>rich<\/h1>/);
 });
 test('complete standalone editor copied into HTML tab extracts every bundled asset',() => {
-    const markup = readFileSync('index-test-etitor.html','utf8');
+    const bundle = readFileSync('editor v.html','utf8');
+    const embeddedEditor = bundle.match(/<template id="editor-document">([\s\S]*?)<\/template>/);
+    assert.ok(embeddedEditor, 'The final editor bundle should contain the main editor document.');
+    const markup = Buffer.from(embeddedEditor[1].trim(), 'base64').toString('utf8');
     const result = api.extractPasteAssets(markup);
     assert.ok(result,'The standalone editor should be recognized as a complete HTML document.');
     assert.equal(result.css.length,8,'All eight bundled CSS blocks should be extracted.');

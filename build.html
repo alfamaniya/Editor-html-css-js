@@ -137,7 +137,7 @@
   <section class="workspace">
     <section class="palette-library" aria-label="Element library">
       <div class="palette-toolbar">
-        <div class="library-heading"><strong>Elements</strong><span id="elementCount">18 components</span></div>
+        <div class="library-heading"><strong>Elements</strong><span id="elementCount">21 components</span></div>
         <div class="library-actions">
           <label class="element-search"><span aria-hidden="true">⌕</span><input id="elementSearch" type="search" placeholder="Search elements..." autocomplete="off" /></label>
           <select id="elementCategory" class="category-filter" aria-label="Filter elements">
@@ -295,8 +295,8 @@
       code: (comp, action) =>
         `document.getElementById("${comp.id}").addEventListener("${action.event}", () => {\n    window.location.href = ${JSON.stringify(action.params.url || "")};\n  });`,
     },
-    setText: { label: "Change Text", params: [{ key: "text", label: "New text", default: "Updated text" }], code: (comp, action) => `document.getElementById("${comp.id}").textContent = ${JSON.stringify(action.params.text || "")};` },
-    setBackground: { label: "Change Background", params: [{ key: "color", label: "CSS color", default: "#4f46e5" }], code: (comp, action) => `document.getElementById("${comp.id}").style.backgroundColor = ${JSON.stringify(action.params.color || "#4f46e5")};` },
+    setText: { label: "Change Text", params: [{ key: "text", label: "New text", default: "Updated text" }], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", (event) => { event.currentTarget.textContent = ${JSON.stringify(action.params.text || "")}; });` },
+    setBackground: { label: "Change Background", params: [{ key: "color", label: "CSS color", default: "#4f46e5" }], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", (event) => { event.currentTarget.style.backgroundColor = ${JSON.stringify(action.params.color || "#4f46e5")}; });` },
     toggleVisibility: { label: "Toggle Visibility", params: [], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", (e) => { const el = e.currentTarget; el.hidden = !el.hidden; });` },
     focus: { label: "Focus Element", params: [], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", () => document.getElementById("${comp.id}").focus());` },
     scrollIntoView: { label: "Scroll to Element", params: [], code: (comp, action) => `document.getElementById("${comp.id}").addEventListener("${action.event}", () => document.getElementById("${comp.id}").scrollIntoView({ behavior: "smooth", block: "center" }));` },
@@ -1477,7 +1477,16 @@ ${body}
           comp.id = item.id;
           comp.styleProps = item.styleProps && typeof item.styleProps === "object"
             ? { ...comp.styleProps, ...item.styleProps } : comp.styleProps;
-          comp.actions = Array.isArray(item.actions) ? item.actions : [];
+          comp.actions = Array.isArray(item.actions)
+            ? item.actions
+                .filter((action) => action && typeof action === "object" && ACTION_TYPES[action.type])
+                .map((action) => ({
+                  event: typeof action.event === "string" ? action.event : "click",
+                  type: action.type,
+                  params: action.params && typeof action.params === "object" && !Array.isArray(action.params)
+                    ? { ...action.params } : {},
+                }))
+            : [];
           if (Ctor.type === "custom" && typeof item.customHTML === "string") comp.customHTML = item.customHTML;
           if (item.hoverProps && typeof item.hoverProps === "object") comp.hoverProps = { ...comp.hoverProps, ...item.hoverProps };
 

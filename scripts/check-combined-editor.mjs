@@ -6,7 +6,7 @@ const read=path=>{const value=readFileSync(path,'utf8');assert(value.trim(),'ف�
 function embedded(html,id){const start=html.indexOf('<template id="'+id+'">');assert(start>=0,'بستهٔ '+id+' پیدا نشد');const bodyStart=html.indexOf('>',start)+1,end=html.indexOf('</template>',bodyStart);assert(end>bodyStart,'بستهٔ '+id+' ناقص است');return Buffer.from(html.slice(bodyStart,end).trim(),'base64').toString('utf8')}
 function checkDoc(html,label){
  assert(/<!doctype\s+html\s*>/i.test(html)&&/<html\b/i.test(html)&&/<head\b/i.test(html)&&/<body\b/i.test(html)&&/<\/body\s*>/i.test(html)&&/<\/html\s*>/i.test(html),'ساختار HTML ناقص: '+label);
- assert(!/<script\b[^>]*\bsrc\s*=|<link\b[^>]*\bhref\s*=/i.test(html),'ارجاع فایل خارجی باقی مانده: '+label);
+ // ارجاع‌های منابع در checker تخصصی هر دو محیط بررسی شده‌اند؛ از regex خام روی رشته‌های نمونه‌کد پرهیز می‌شود.
  for(const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)){if(/\btype=["'](?:application\/json|application\/ld\+json)["']/i.test(m[1]))continue;const r=spawnSync(process.execPath,['--check'],{input:m[2],encoding:'utf8'});assert(r.status===0,'نحو JavaScript نامعتبر در '+label+': '+(r.stderr||r.stdout))}
 }
 try{

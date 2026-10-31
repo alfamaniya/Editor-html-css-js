@@ -285,6 +285,10 @@ node scripts/check-settings-dialog-keyboard.mjs
 node scripts/check-backup-restore.mjs
 node scripts/build-test-editor.mjs
 node scripts/check-standalone-editor.mjs
+node scripts/build-standalone-visual-editor.mjs
+node scripts/check-standalone-visual-editor.mjs
+node scripts/build-combined-editor.mjs
+node scripts/check-combined-editor.mjs
 ~~~
 
 | آزمون | حوزهٔ بررسی |
@@ -296,9 +300,11 @@ node scripts/check-standalone-editor.mjs
 | check-editor-overlay-alignment.mjs | هم‌ترازی لایه‌های ویرایشگر، موقعیت دیداری، جست‌وجو و انتخاب |
 | check-settings-dialog-keyboard.mjs | سناریوهای صفحه‌کلید در پنجره‌های تو‌در‌توی تنظیمات |
 | check-backup-restore.mjs | قالب پشتیبان، اعتبارسنجی، Unicode، ادغام و بازگردانی پس از خطا |
-| check-standalone-editor.mjs | اعتبارسنجی بستهٔ مستقل Editor اصلی |\n| check-standalone-visual-editor.mjs | اعتبارسنجی بستهٔ مستقل Visual Editor |\n| check-combined-editor.mjs | بررسی تطابق دو سند جاسازی‌شده، ساختار و نحو JavaScript فایل نهایی |
+| check-standalone-editor.mjs | اعتبارسنجی بستهٔ مستقل Editor اصلی |
+| check-standalone-visual-editor.mjs | اعتبارسنجی بستهٔ مستقل Visual Editor |
+| check-combined-editor.mjs | بررسی تطابق دو سند جاسازی‌شده، ساختار و نحو JavaScript فایل نهایی |
 
-این آزمون‌ها کنترل‌های خودکار تعریف‌شده در اسکریپت‌های مخزن هستند و جایگزین آزمون دستی رفتار رابط در مرورگرهای مختلف نمی‌شوند. برای محیط Build در حال حاضر آزمون خودکار عملکردیِ مستقلی در این مجموعه تعریف نشده است؛ گردش‌کار ارسال فقط وجود فایل و ساختار پایهٔ HTML آن را بررسی می‌کند.
+این آزمون‌ها کنترل‌های خودکار تعریف‌شده در اسکریپت‌های مخزن هستند و جایگزین آزمون دستی رفتار رابط در مرورگرهای مختلف نمی‌شوند. اعتبارسنج فایل یکپارچه، دو سند جاسازی‌شده، تعداد منابع، ساختار HTML و نحو JavaScript را کنترل می‌کند.
 
 ## ۷. گردش‌کارهای GitHub Actions
 
@@ -312,7 +318,8 @@ node scripts/check-standalone-editor.mjs
 2. آزمون‌های یکپارچگی، پردازش کد، رنگ، صفحه‌کلید، هم‌ترازی و بازیابی را اجرا می‌کند.
 3. نسخه‌های واسط Editor و Visual Editor را از منابع اصلی می‌سازد و سپس آن‌ها را در فایل نهایی editor v.html بسته‌بندی می‌کند.
 4. خروجی را اعتبارسنجی می‌کند.
-5. خروجی نهایی editor v.html را اعتبارسنجی می‌کند.\n6. فایل نهایی را در main ثبت می‌کند و دو خروجی واسط قدیمی را حذف می‌کند.
+5. خروجی نهایی editor v.html را اعتبارسنجی می‌کند.
+6. فایل نهایی را در main ثبت می‌کند و دو خروجی واسط قدیمی را حذف می‌کند.
 
 اجرای دستی همین گردش‌کار از زبانهٔ Actions امکان‌پذیر است، اما ورودی تأیید ساخت باید فعال شود.
 

@@ -50,6 +50,23 @@ try {
 
   const editor = page.frameLocator('#editor-frame');
   if (await page.locator('.topbar').count()) throw new Error('هدر بالایی پوسته باید حذف شده باشد.');
+  await editor.locator('#languageToggleButton').waitFor({ state: 'visible' });
+  if (await editor.locator('html').getAttribute('lang') !== 'fa') {
+    throw new Error('زبان پیش‌فرض رابط باید فارسی باشد.');
+  }
+  await editor.locator('#languageToggleButton').click();
+  await page.waitForFunction(() => {
+    const frame = document.getElementById('editor-frame');
+    return frame?.contentDocument?.documentElement.dataset.language === 'en';
+  });
+  if ((await editor.locator('.app-menu-trigger[aria-controls="fileMenu"]').innerText()).trim() !== 'File') {
+    throw new Error('تغییر زبان به انگلیسی، متن منوی اصلی را به‌روز نکرد.');
+  }
+  await editor.locator('#languageToggleButton').click();
+  await page.waitForFunction(() => {
+    const frame = document.getElementById('editor-frame');
+    return frame?.contentDocument?.documentElement.dataset.language === 'fa';
+  });
   await editor.locator('#workspaceModeSwitch [data-workspace-mode="visual"]').waitFor({ state: 'visible' });
   if ((await editor.locator('.workspace-brand strong').textContent()).trim() !== 'EDITOR V') {
     throw new Error('عنوان برنامه به هدر اصلی منتقل نشده است.');
@@ -67,6 +84,9 @@ try {
   await page.waitForFunction(() => document.getElementById('visual-frame').hidden === false);
   const visual = page.frameLocator('#visual-frame');
   await visual.locator('#workspaceModeBar [data-workspace-mode="visual"]').waitFor({ state: 'visible' });
+  if (await visual.locator('html').getAttribute('lang') !== 'fa') {
+    throw new Error('Visual Editor زبان انتخاب‌شده در هدر اصلی را به ارث نبرد.');
+  }
   await visual.locator('.palette-item').first().click();
   if (!await visual.locator('#propsPanel').isVisible()) {
     throw new Error('پنل تنظیمات المان Visual Editor پس از انتخاب المان باز نشد.');

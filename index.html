@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -148,6 +148,8 @@
                     aria-label="باز کردن تنظیمات ویرایشگر" title="تنظیمات ویرایشگر">
                 <span aria-hidden="true">⚙</span>
             </button>
+            <button type="button" class="language-toggle-button workspace-menu-button" id="languageToggleButton"
+                    aria-label="Switch language to English" title="Switch language to English">EN</button>
             <button type="button" class="toolbar-sidebar-open-button workspace-menu-button" id="toolbarSidebarOpen"
                     aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار ابزارها" title="باز کردن سایدبار ابزارها">
                 <span class="menu-glyph" aria-hidden="true"></span>
@@ -545,7 +547,7 @@
         </div>
     </div>
 
-    <section id="settingsScreen" class="settings-screen" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" lang="fa" dir="rtl" hidden>
+    <section id="settingsScreen" class="settings-screen" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" lang="fa" dir="rtl" data-i18n-direction hidden>
         <div class="settings-shell">
             <header class="settings-topbar">
                 <div class="settings-heading">
@@ -849,6 +851,9 @@
 
     <script src="src/features/workspace/file-manager/file-manager-drawer.js"></script>
     <script src="src/features/workspace/search/search-header.js"></script>
+    <script src="locales/en.js"></script>
+    <script src="locales/fa.js"></script>
+    <script src="src/shared/i18n/i18n.js"></script>
     <script>
         (function () {
             const modeSwitch = document.getElementById('workspaceModeSwitch');

@@ -9,6 +9,9 @@ const htmlPath = 'src/features/visual-editor/visual-editor.html';
 const bundlePath = 'standalone-visual-editor.html';
 const assets = [
   ['src/features/visual-editor/visual-editor.css', 'style'],
+  ['locales/en.js', 'script'],
+  ['locales/fa.js', 'script'],
+  ['src/shared/i18n/i18n.js', 'script'],
   ['src/features/visual-editor/visual-editor-session.js', 'script'],
   ['src/features/visual-editor/visual-editor.js', 'script'],
   ['src/features/visual-editor/visual-editor-remote.js', 'script']
@@ -28,10 +31,10 @@ function main() {
   assert(/<!doctype\s+html\s*>/i.test(html), 'DOCTYPE در خروجی وجود ندارد.');
   assert(/<html\b/i.test(html) && /<head\b/i.test(html) && /<body\b/i.test(html) &&
     /<\/body\s*>/i.test(html) && /<\/html\s*>/i.test(html), 'ساختار کامل سند HTML وجود ندارد.');
-  assert(/Visual Builder Studio/.test(html), 'عنوان Visual Editor در خروجی نیست.');
+  assert(/استودیوی طراحی بصری/.test(html), 'عنوان Visual Editor در خروجی نیست.');
   assert(/id=["']propsPanel["']/.test(html) && /id=["']canvas["']/.test(html) &&
     /id=["']styleControls["']/.test(html), 'بخش‌های اصلی محیط ویرایش در خروجی ناقص‌اند.');
-  assert(!/\b(?:src|href)=["'](?:\.\/)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js|visual-editor-remote\.js)["']/i.test(html),
+  assert(!/\b(?:src|href)=["'](?:(?:\.\/|\.\.\/)+)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js|visual-editor-remote\.js|locales\/(?:en|fa)\.js|shared\/i18n\/i18n\.js)["']/i.test(html),
     'ارجاع خارجی به منابع Visual Editor باقی مانده است.');
 
   for (const [path, tag] of assets) {

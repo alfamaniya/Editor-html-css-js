@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fa" dir="ltr">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Visual Builder Studio</title>
+<title>استودیوی طراحی بصری</title>
 
   <link rel="stylesheet" href="./visual-editor.css">
 </head>
 <body>
 
-<header class="workspace-mode-bar" id="workspaceModeBar" aria-label="انتخاب محیط ویرایش" hidden>
+<header class="workspace-mode-bar" id="workspaceModeBar" dir="rtl" data-i18n-direction aria-label="انتخاب محیط ویرایش" hidden>
   <strong>EDITOR V</strong>
   <nav class="workspace-mode-switch" aria-label="انتخاب محیط ویرایش">
     <button type="button" class="workspace-mode-button" data-workspace-mode="editor" aria-pressed="false">ویرایشگر اصلی</button>
@@ -31,68 +31,82 @@
       <textarea id="code" spellcheck="false" wrap="off" autocomplete="off"></textarea>
     </div>
     <div class="statusbar">
-      <span id="status">0 components</span>
+      <span id="status" role="status" aria-live="polite">۰ جزء</span>
       <div class="code-actions">
-        <button id="syncCodeBtn" class="btn-ghost" title="Replace manual code with the current visual design">Sync from Design</button>
-        <button id="copyBtn" class="btn-ghost">Copy Code</button>
+        <button id="syncCodeBtn" class="btn-ghost" title="جایگزینی کد دستی با طرح فعلی">همگام‌سازی طرح</button>
+        <button id="copyBtn" class="btn-ghost">کپی کد</button>
       </div>
     </div>
   </section>
 
   <div class="splitter" id="splitter" role="separator" tabindex="0"
-       aria-label="Resize code editor and design workspace"
-       aria-orientation="vertical" title="Drag to resize panels"></div>
+       aria-label="تغییر اندازهٔ ویرایشگر کد و فضای طراحی"
+       aria-orientation="vertical" title="برای تغییر اندازهٔ پنل‌ها بکشید"></div>
 
   <!-- ============ RIGHT : WORKSPACE ============ -->
-  <section class="workspace">
-    <section class="palette-library" aria-label="Element library">
+  <section class="workspace" dir="rtl" data-i18n-direction>
+    <header class="workspace-header" dir="rtl">
+      <div class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <div class="brand-copy">
+          <strong>استودیوی طراحی بصری</strong>
+          <span>ساخت و ویرایش رابط کاربری</span>
+        </div>
+      </div>
+      <span class="workspace-mode"><span class="mode-dot" aria-hidden="true"></span>پیش‌نمایش زنده</span>
+    </header>
+    <section class="palette-library" aria-label="کتابخانهٔ اجزا">
       <div class="palette-toolbar">
-        <div class="library-heading"><strong>Elements</strong><span id="elementCount">21 components</span></div>
+        <div class="library-heading"><strong>اجزا</strong><span id="elementCount">۲۱ جزء</span></div>
         <div class="library-actions">
-          <label class="element-search"><span aria-hidden="true">⌕</span><input id="elementSearch" type="search" placeholder="Search elements..." autocomplete="off" /></label>
-          <select id="elementCategory" class="category-filter" aria-label="Filter elements">
-            <option value="all">All categories</option><option value="Layout">Layout</option><option value="Content">Content</option><option value="Forms">Forms</option><option value="Media">Media</option>
+          <label class="element-search"><span aria-hidden="true">⌕</span><input id="elementSearch" type="search" placeholder="جست‌وجوی اجزا..." autocomplete="off" aria-label="جست‌وجوی اجزا" /></label>
+          <select id="elementCategory" class="category-filter" aria-label="دسته‌بندی اجزا">
+            <option value="all">همهٔ دسته‌ها</option><option value="Layout">چیدمان</option><option value="Content">محتوا</option><option value="Forms">فرم‌ها</option><option value="Media">رسانه</option>
           </select>
-          <div class="view-switch" role="group" aria-label="Element display">
-            <button type="button" class="view-btn active" data-view="objects" aria-pressed="true" title="Object view">▦</button>
-            <button type="button" class="view-btn" data-view="text" aria-pressed="false" title="Text view">☷</button>
+          <div class="view-switch" role="group" aria-label="نحوهٔ نمایش اجزا">
+            <button type="button" class="view-btn active" data-view="objects" aria-pressed="true" aria-label="نمایش شبکه‌ای" title="نمایش شبکه‌ای">▦</button>
+            <button type="button" class="view-btn" data-view="text" aria-pressed="false" aria-label="نمایش فهرستی" title="نمایش فهرستی">☷</button>
           </div>
-          <button id="addCustomBtn" class="add-custom-btn" type="button">＋ Custom HTML</button>
-          <button id="clearBtn" class="btn-ghost">Clear All</button>
+          <button id="addCustomBtn" class="add-custom-btn" type="button">＋ کد HTML دلخواه</button>
+          <button id="clearBtn" class="btn-ghost">پاک‌کردن همه</button>
         </div>
       </div>
       <div class="palette-items objects-view" id="palette" aria-live="polite"></div>
-      <div class="palette-empty" id="paletteEmpty" hidden>No elements match your search.</div>
+      <div class="palette-empty" id="paletteEmpty" hidden>جزئی با این عبارت پیدا نشد.</div>
     </section>
 
     <div class="workspace-body">
       <div class="canvas-scroll" id="canvasScroll">
         <div class="canvas empty" id="canvas">
-          <div class="hint">Drag an element from the toolbar and drop it here</div>
+          <div class="hint">
+            <span class="hint-icon" aria-hidden="true">＋</span>
+            <strong>شروع طراحی</strong>
+            <span>یک جزء را از فهرست بالا بکشید و اینجا رها کنید، یا برای افزودن آن روی جزء کلیک کنید.</span>
+          </div>
         </div>
       </div>
 
       <!-- Properties panel (shown only when a component is selected) -->
-      <aside class="props-panel" id="propsPanel">
+      <aside class="props-panel" id="propsPanel" dir="rtl" data-i18n-direction aria-label="تنظیمات جزء" aria-hidden="true">
         <div class="props-header">
           <div>
-            <h3>Element Settings</h3>
+            <h3>تنظیمات جزء</h3>
             <span class="props-type" id="propsType">—</span>
           </div>
-          <button class="btn-icon" id="deleteComponentBtn" title="Delete element">🗑</button>
+          <button class="btn-icon" id="deleteComponentBtn" title="حذف جزء" aria-label="حذف جزء">🗑</button>
         </div>
         <section class="props-section">
-          <h4>Appearance</h4>
+          <h4>ظاهر</h4>
           <div id="styleControls"></div>
         </section>
         <section class="props-section">
-          <h4>Hover Effects</h4>
+          <h4>حالتِ شناور</h4>
           <div id="hoverControls"></div>
         </section>
         <section class="props-section">
-          <h4>Interactions</h4>
+          <h4>تعامل‌ها</h4>
           <div id="actionList"></div>
-          <button class="add-action-btn" id="addActionBtn">+ Add Interaction</button>
+          <button class="add-action-btn" id="addActionBtn">＋ افزودن تعامل</button>
         </section>
       </aside>
     </div>
@@ -104,6 +118,9 @@
 <style id="preview-style"></style>
 
 
+  <script src="../../../locales/en.js" defer></script>
+  <script src="../../../locales/fa.js" defer></script>
+  <script src="../../shared/i18n/i18n.js" defer></script>
   <script src="./visual-editor-session.js" defer></script>
   <script src="./visual-editor.js" defer></script>
   <script src="./visual-editor-remote.js" defer></script>

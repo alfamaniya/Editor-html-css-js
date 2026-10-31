@@ -541,6 +541,62 @@
     HeadingComponent, ParagraphComponent, ContainerComponent, SectionComponent,
     SpacerComponent, VideoComponent, AvatarComponent, FormComponent, CustomHTMLComponent,
   ];
+  const UI_TRANSLATIONS = {
+    Button: "دکمه", Input: "ورودی", Text: "متن", Textarea: "متن چندخطی",
+    Checkbox: "چک‌باکس", Select: "فهرست انتخاب", Image: "تصویر", Box: "باکس",
+    Link: "پیوند", Card: "کارت", Divider: "جداکننده", Badge: "نشان",
+    Heading: "عنوان", Paragraph: "پاراگراف", Container: "ظرف", Section: "بخش",
+    Spacer: "فاصله", Video: "ویدیو", Avatar: "آواتار", Form: "فرم",
+    "Custom HTML": "HTML دلخواه",
+    "Show Alert": "نمایش پیام", "Log to Console": "ثبت در کنسول",
+    "Toggle Class": "تغییر کلاس", "Hide Element": "پنهان‌کردن جزء",
+    "Navigate to URL": "رفتن به نشانی", "Change Text": "تغییر متن",
+    "Change Background": "تغییر پس‌زمینه", "Toggle Visibility": "تغییر وضعیت نمایش",
+    "Focus Element": "انتقال تمرکز", "Scroll to Element": "رفتن به جزء",
+    "Copy Text": "کپی متن", "Confirm Action": "تأیید عملیات",
+    Background: "پس‌زمینه", "Text Color": "رنگ متن", Width: "عرض", Height: "ارتفاع",
+    "Font Size": "اندازهٔ قلم", "Border Radius": "گردی گوشه", Shadow: "سایه",
+    Color: "رنگ", Size: "اندازه", "Guide Color": "رنگ راهنما",
+    "Position X": "موقعیت افقی", "Position Y": "موقعیت عمودی", Opacity: "شفافیت",
+    "Layer order": "ترتیب لایه", "Padding (CSS)": "فاصلهٔ داخلی (CSS)",
+    "Border width (px)": "ضخامت حاشیه (px)", "Border color": "رنگ حاشیه",
+    "Border style": "سبک حاشیه", "Font weight": "ضخامت قلم",
+    "Text alignment": "تراز متن", "Line height": "ارتفاع خط",
+    "Letter spacing (px)": "فاصلهٔ حروف (px)", "Mouse cursor": "نشانگر ماوس",
+    Overflow: "سرریز", "Display override": "نوع نمایش",
+    "Minimum width (px)": "حداقل عرض (px)", "Maximum width (px)": "حداکثر عرض (px)",
+    "Minimum height (px)": "حداقل ارتفاع (px)", "Maximum height (px)": "حداکثر ارتفاع (px)",
+    "Margin (CSS)": "حاشیه (CSS)", "Font family": "خانوادهٔ قلم",
+    "Text decoration": "تزیین متن", "Media fit": "جای‌گیری رسانه",
+    "Custom HTML markup": "کد HTML دلخواه",
+    "Enable hover effects": "فعال‌کردن افکت هنگام اشاره",
+    Scale: "مقیاس", "Border radius (px)": "گردی گوشه (px)",
+    "Rotation (deg)": "چرخش (درجه)", "Vertical movement (px)": "جابه‌جایی عمودی (px)",
+    Filter: "فیلتر", "Transition (ms)": "مدت تغییر (ms)",
+    "Hover styles are generated in the element's :hover CSS rule.": "استایل‌های این بخش در قانون :hover کد CSS ساخته می‌شوند.",
+    "No interactions configured yet": "هنوز تعاملی تنظیم نشده است.",
+    "No shadow": "بدون سایه", Small: "کوچک", Medium: "متوسط",
+    Large: "بزرگ", "Extra large": "خیلی بزرگ", Default: "پیش‌فرض",
+    "On click": "هنگام کلیک", "On pointer enter": "با ورود نشانگر",
+    "On pointer leave": "با خروج نشانگر", "On load": "هنگام بارگذاری",
+    "On change": "هنگام تغییر", "On double click": "هنگام دوبارکلیک",
+    "On focus": "هنگام انتخاب", "On blur": "هنگام خروج از تمرکز",
+    "On input": "هنگام ورود داده", "On submit": "هنگام ارسال",
+    "On key down": "با فشردن کلید", "On key up": "با رهاکردن کلید",
+    "On pointer down": "با فشردن نشانگر", "On pointer up": "با رهاکردن نشانگر",
+    "Remove interaction": "حذف تعامل",
+    Message: "پیام", "Class Name": "نام کلاس", URL: "نشانی",
+    "New text": "متن جدید", "CSS color": "رنگ CSS", "Text to copy": "متن برای کپی",
+    "Confirmation message": "پیام تأیید",
+    left: "چپ", center: "وسط", right: "راست", justify: "تراز دوطرفه",
+    none: "هیچ‌کدام", solid: "پیوسته", dashed: "خط‌چین", dotted: "نقطه‌چین",
+    double: "دوتایی",
+  };
+  const translateUI = (text) => {
+    const translated = UI_TRANSLATIONS[text] || text;
+    return window.ProjectI18n ? window.ProjectI18n.t(translated) : translated;
+  };
+  const formatNumber = (value) => new Intl.NumberFormat("fa-IR").format(value);
   const REGISTRY = Object.fromEntries(COMPONENTS.map((C) => [C.type, C]));
 
   /* ==================================================================
@@ -598,7 +654,7 @@
           if (!item.hidden) visible++;
         });
         empty.hidden = visible > 0;
-        count.textContent = `${visible} of ${COMPONENTS.length} elements`;
+        count.textContent = `${formatNumber(visible)} از ${formatNumber(COMPONENTS.length)} جزء`;
       };
       COMPONENTS.forEach((C) => {
         const item = document.createElement("button");
@@ -607,13 +663,14 @@
         item.draggable = true;
         item.dataset.type = C.type;
         item.dataset.category = C.category || categoryMap[C.type] || "Content";
-        item.dataset.search = `${C.label} ${C.type} ${C.category || "Content"}`.toLowerCase();
+        const categoryLabel = translateUI(C.category || "Content");
+        item.dataset.search = `${C.label} ${translateUI(C.label)} ${C.type} ${C.category || "Content"} ${categoryLabel}`.toLowerCase();
         const icon = document.createElement("span");
         icon.className = "pi-icon";
         icon.textContent = C.icon;
         const label = document.createElement("span");
         label.className = "pi-label";
-        label.textContent = C.label;
+        label.textContent = translateUI(C.label);
         item.append(icon, label);
         item.addEventListener("dragstart", (e) => {
           e.dataTransfer.setData("text/plain", C.type);
@@ -884,7 +941,7 @@
       try {
         if (this.lang === "css") {
           this.styleTag.textContent = source;
-          this.statusEl.textContent = "CSS preview updated · Manual edit";
+          this.statusEl.textContent = "پیش‌نمایش CSS به‌روز شد · ویرایش دستی";
           return;
         }
         if (this.lang === "html") {
@@ -901,12 +958,12 @@
             this.makeDraggable(node, component);
           });
           this.canvas.classList.toggle("empty", !this.canvas.querySelector(":scope > :not(.hint)"));
-          this.statusEl.textContent = "HTML preview updated · Manual edit";
+          this.statusEl.textContent = "پیش‌نمایش HTML به‌روز شد · ویرایش دستی";
           return;
         }
         this.runJavaScriptPreview(source);
       } catch (error) {
-        this.statusEl.textContent = "Preview error · Check your code";
+        this.statusEl.textContent = "خطا در پیش‌نمایش · کد را بررسی کنید";
         console.warn("Live preview failed:", error);
       }
     }
@@ -936,9 +993,9 @@
         new Function("document", "window", "alert", "console", source)(
           previewDocument, previewWindow, previewWindow.alert, previewConsole
         );
-        this.statusEl.textContent = "JavaScript preview updated";
+        this.statusEl.textContent = "پیش‌نمایش JavaScript به‌روز شد";
       } catch (error) {
-        this.statusEl.textContent = "JavaScript runtime error · Check the console";
+        this.statusEl.textContent = "خطای اجرای JavaScript · کنسول را بررسی کنید";
         console.warn("JavaScript live preview failed:", error);
       }
     }
@@ -971,7 +1028,7 @@
       this.propsPanel.hidden = false;
       this.propsPanel.classList.add("visible");
       this.propsPanel.setAttribute("aria-hidden", "false");
-      this.propsType.textContent = `${this.selected.constructor.label} · ${this.selected.id}`;
+      this.propsType.textContent = `${translateUI(this.selected.constructor.label)} · ${this.selected.id}`;
       this.renderStyleControls(this.selected);
       this.renderHoverControls(this.selected);
       this.renderActions(this.selected);
@@ -983,7 +1040,7 @@
 
       if (comp.constructor.type === "custom") {
         const label = document.createElement("label");
-        label.textContent = "Custom HTML markup";
+        label.textContent = translateUI("Custom HTML markup");
         label.style.cssText = "display:block;margin-bottom:7px;color:#566176;font-size:11px;font-weight:600";
         const editor = document.createElement("textarea");
         editor.className = "custom-markup-editor";
@@ -1029,7 +1086,7 @@
         row.className = "prop-row";
 
         const label = document.createElement("label");
-        label.textContent = schema.label;
+        label.textContent = translateUI(schema.label);
         row.appendChild(label);
 
         let input;
@@ -1048,7 +1105,9 @@
           options.forEach((option) => {
             const opt = document.createElement("option");
             opt.value = option;
-            opt.textContent = schema.type === "shadow" ? (option === "none" ? "No shadow" : ({ sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" }[option] || option)) : (option || "Default");
+            opt.textContent = schema.type === "shadow"
+              ? translateUI(option === "none" ? "No shadow" : ({ sm: "Small", md: "Medium", lg: "Large", xl: "Extra large" }[option] || option))
+              : translateUI(option || "Default");
             if ((comp.styleProps[schema.key] ?? "") === option) opt.selected = true;
             input.appendChild(opt);
           });
@@ -1078,13 +1137,13 @@
       container.innerHTML = "";
       const h = comp.hoverProps || (comp.hoverProps = {});
       const checkboxRow = document.createElement("div"); checkboxRow.className = "prop-row";
-      const checkboxLabel = document.createElement("label"); checkboxLabel.textContent = "Enable hover effects";
+      const checkboxLabel = document.createElement("label"); checkboxLabel.textContent = translateUI("Enable hover effects");
       const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = !!h.enabled;
       checkbox.addEventListener("change", () => { h.enabled = checkbox.checked; this.render(); });
       checkboxRow.append(checkboxLabel, checkbox); container.appendChild(checkboxRow);
       const add = (labelText, key, type, fallback) => {
         const row = document.createElement("div"); row.className = "prop-row";
-        const label = document.createElement("label"); label.textContent = labelText;
+        const label = document.createElement("label"); label.textContent = translateUI(labelText);
         const input = document.createElement("input"); input.type = type; input.value = h[key] ?? fallback;
         if (type === "number") { input.step = key === "scale" ? "0.01" : "0.05"; input.min = key === "opacity" ? "0" : key === "scale" ? "0.5" : "0"; input.max = key === "opacity" ? "1" : key === "scale" ? "1.5" : "100"; }
         input.addEventListener("input", () => { h[key] = input.value === "" ? null : (type === "number" ? Number(input.value) : input.value); h.enabled = true; this.render(); });
@@ -1096,9 +1155,9 @@
       add("Opacity", "opacity", "number", 1);
       add("Border radius (px)", "radius", "number", "");
       const row = document.createElement("div"); row.className = "prop-row";
-      const label = document.createElement("label"); label.textContent = "Shadow";
+      const label = document.createElement("label"); label.textContent = translateUI("Shadow");
       const select = document.createElement("select");
-      ["none", "sm", "md", "lg", "xl"].forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v === "none" ? "No shadow" : v.toUpperCase(); o.selected = (h.shadow || "none") === v; select.appendChild(o); });
+      ["none", "sm", "md", "lg", "xl"].forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v === "none" ? "بدون سایه" : ({ sm: "کوچک", md: "متوسط", lg: "بزرگ", xl: "خیلی بزرگ" }[v]); o.selected = (h.shadow || "none") === v; select.appendChild(o); });
       select.addEventListener("change", () => { h.shadow = select.value; h.enabled = true; this.render(); });
       row.append(label, select); container.appendChild(row);
       add("Border color", "borderColor", "color", "#4f46e5");
@@ -1108,7 +1167,7 @@
       add("Filter", "filter", "text", "");
       add("Transition (ms)", "duration", "number", 180);
       const help = document.createElement("p");
-      help.textContent = "Hover styles are generated in the element's :hover CSS rule.";
+      help.textContent = translateUI("Hover styles are generated in the element's :hover CSS rule.");
       help.style.cssText = "margin-top:9px;color:#9aa4b6;font-size:10px;line-height:1.5";
       container.appendChild(help);
     }
@@ -1120,7 +1179,7 @@
       if (comp.actions.length === 0) {
         const empty = document.createElement("div");
         empty.className = "actions-empty";
-        empty.textContent = "No interactions configured yet";
+        empty.textContent = translateUI("No interactions configured yet");
         container.appendChild(empty);
         return;
       }
@@ -1134,7 +1193,13 @@
         [...new Set([...(comp.constructor.supportedEvents || ["click"]), "click", "dblclick", "mouseenter", "mouseleave", "focus", "blur", "input", "change", "submit", "keydown", "keyup", "pointerdown", "pointerup"])].forEach((ev) => {
           const opt = document.createElement("option");
           opt.value = ev;
-          opt.textContent = ({ click: "On click", mouseenter: "On pointer enter", mouseleave: "On pointer leave", load: "On load", change: "On change" }[ev] || ev);
+          opt.textContent = translateUI(({
+            click: "On click", dblclick: "On double click", mouseenter: "On pointer enter",
+            mouseleave: "On pointer leave", load: "On load", change: "On change",
+            focus: "On focus", blur: "On blur", input: "On input", submit: "On submit",
+            keydown: "On key down", keyup: "On key up",
+            pointerdown: "On pointer down", pointerup: "On pointer up",
+          }[ev] || ev));
           if (action.event === ev) opt.selected = true;
           evSel.appendChild(opt);
         });
@@ -1149,7 +1214,7 @@
         Object.entries(ACTION_TYPES).forEach(([key, def]) => {
           const opt = document.createElement("option");
           opt.value = key;
-          opt.textContent = def.label;
+          opt.textContent = translateUI(def.label);
           if (action.type === key) opt.selected = true;
           typeSel.appendChild(opt);
         });
@@ -1169,7 +1234,7 @@
         const rm = document.createElement("button");
         rm.className = "action-remove";
         rm.textContent = "×";
-        rm.title = "Remove interaction";
+        rm.title = translateUI("Remove interaction");
         rm.addEventListener("click", () => {
           comp.actions.splice(idx, 1);
           this.renderActions(comp);
@@ -1183,7 +1248,7 @@
           def.params.forEach((p) => {
             const input = document.createElement("input");
             input.type = "text";
-            input.placeholder = p.label;
+            input.placeholder = translateUI(p.label);
             input.value = action.params[p.key] ?? p.default ?? "";
             input.addEventListener("input", () => {
               action.params[p.key] = input.value;
@@ -1354,7 +1419,7 @@ ${body}
       if (!hint) {
         hint = document.createElement("div");
         hint.className = "hint";
-        hint.textContent = "Drag an element from the toolbar and drop it here";
+        hint.textContent = "برای شروع، یک جزء را از فهرست بالا بکشید و اینجا رها کنید.";
         this.canvas.appendChild(hint);
       }
       return hint;
@@ -1403,7 +1468,7 @@ ${body}
       this.updateHighlight();
 
       const n = this.components.length;
-      this.statusEl.textContent = `${n} components`;
+      this.statusEl.textContent = `${formatNumber(n)} جزء`;
       this.canvas.classList.toggle("empty", this.canvas.querySelectorAll(":scope > :not(.hint)").length === 0);
       this.saveState();
     }
@@ -1510,11 +1575,11 @@ ${body}
     const original = btn.textContent;
     try {
       await navigator.clipboard.writeText(editor.codeEl.value);
-      btn.textContent = "Copied ✓";
+      btn.textContent = "کپی شد ✓";
     } catch {
       editor.codeEl.select();
       document.execCommand("copy");
-      btn.textContent = "Copied ✓";
+      btn.textContent = "کپی شد ✓";
     }
     setTimeout(() => (btn.textContent = original), 1300);
   });

@@ -31,7 +31,10 @@ const scriptFiles = [
     'src/features/backup-restore/backup-restore.js',
     'src/features/word-tree/word-tree.js',
     'src/features/workspace/file-manager/file-manager-drawer.js',
-    'src/features/workspace/search/search-header.js',];
+    'src/features/workspace/search/search-header.js',
+    'locales/en.js',
+    'locales/fa.js',
+    'src/shared/i18n/i18n.js'];
 const expectedAssetOrder = [...cssFiles, ...scriptFiles];
 
 async function readText(path) {

@@ -82,9 +82,9 @@
         const file=project.files.find(item=>item.id===match.fileId);
         if(!file||file.content!==match.source)throw new Error("کد HTML پس از انتخاب المان تغییر کرده است؛ انتخاب را دوباره انجام دهید.");
         const opening=file.content.slice(match.start,match.end);
-        const styleMatch=opening.match(/\sstyle\s*=\s*(["'])([\s\S]*?)\1/i);
+        const styleMatch=opening.match(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
         const holder=document.createElement("span");
-        if(styleMatch)holder.setAttribute("style",styleMatch[2]);
+        if(styleMatch)holder.setAttribute("style",styleMatch[1]??styleMatch[2]??styleMatch[3]??"");
         Object.entries(styles||{}).forEach(([property,value])=>{
             if(!VISUAL_PROPERTIES.has(property))return;
             if(value===null||value===undefined||String(value)==="")holder.style.removeProperty(property);

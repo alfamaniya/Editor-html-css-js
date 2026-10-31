@@ -32,7 +32,7 @@ try{
  if(existsSync('standalone-visual-editor.html'))assert(b===read('standalone-visual-editor.html'),'محتوای Visual Editor جاسازی‌شده با منبع برابر نیست');
  const count=(value,pattern)=>(value.match(pattern)||[]).length;
  assert(count(a,/data-bundled-from=/g)===23,'تعداد منابع جاسازی‌شدهٔ Editor برابر ۲۳ نیست');
- assert(count(b,/data-bundled-from=/g)===3,'تعداد منابع جاسازی‌شدهٔ Visual Editor برابر ۳ نیست');
+ assert(count(b,/data-bundled-from=/g)===4,'تعداد منابع جاسازی‌شدهٔ Visual Editor برابر ۴ نیست');
  checkDoc(a,'Editor');checkDoc(b,'Visual Editor');
  assert(/id="editor-frame"/.test(out)&&/id="visual-frame"/.test(out),'هر دو محیط در خروجی وجود ندارند');
  assert(/data-target="editor"/.test(out)&&/data-target="visual"/.test(out),'ناوبری دو محیط ناقص است');

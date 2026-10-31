@@ -45,8 +45,32 @@ async function main() {
     html = once(html, asset.pattern, replacement, 'ارجاع منبع ' + asset.path);
     expected.set(asset.path, embedded);
   }
-  if (/\b(?:src|href)=["'](?:(?:\.\/|\.\.\/)+)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js|visual-editor-remote\.js|locales\/(?:en|fa)\.js|(?:\.\.\/\.\.\/)?shared\/i18n\/i18n\.js)["']/i.test(html)) {
-    throw new Error('پس از ساخت، ارجاع خارجی به فایل‌های Visual Editor باقی مانده است.');
+  // Inspect actual HTML tag attributes only. Raw script/style text may contain
+  // strings or regular expressions that look like asset references.
+  const remainingReferences = [];
+  const tagPattern = /<!--[\\s\\S]*?-->|<![^>]*>|<\\/?([a-zA-Z][\\w:.-]*)\\b[^>]*>/g;
+  let tagMatch;
+  while ((tagMatch = tagPattern.exec(html)) !== null) {
+    const token = tagMatch[0];
+    if (token.startsWith('<!--') || token.startsWith('<!') || /^<\\s*\\//.test(token)) continue;
+    const name = tagMatch[1].toLowerCase();
+    const attributePattern = /\\b(?:src|href)\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))/gi;
+    let attributeMatch;
+    while ((attributeMatch = attributePattern.exec(token)) !== null) {
+      const reference = attributeMatch[1] ?? attributeMatch[2] ?? attributeMatch[3] ?? '';
+      if (/^(?:(?:\\.\\/|\\.\\.\\/)+)?(?:visual-editor\\.css|visual-editor\\.js|visual-editor-session\\.js|visual-editor-remote\\.js|locales\\/(?:en|fa)\\.js|(?:\\.\\.\\/\\.\\.\\/)?shared\\/i18n\\/i18n\\.js)$/i.test(reference)) {
+        remainingReferences.push(reference);
+      }
+    }
+    if (name === 'script' || name === 'style') {
+      const closePattern = new RegExp('</\\\\s*' + name + '\\\\s*>', 'ig');
+      closePattern.lastIndex = tagPattern.lastIndex;
+      const close = closePattern.exec(html);
+      if (close) tagPattern.lastIndex = close.index + close[0].length;
+    }
+  }
+  if (remainingReferences.length) {
+    throw new Error('پس از ساخت، ارجاع خارجی به فایل‌های Visual Editor باقی مانده است: ' + remainingReferences.join(', '));
   }
   for (const [path, content] of expected) {
     const escaped = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

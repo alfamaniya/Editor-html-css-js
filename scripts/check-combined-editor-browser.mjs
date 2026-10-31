@@ -65,8 +65,16 @@ try {
     const frame = document.getElementById('editor-frame');
     return frame?.contentDocument?.documentElement.dataset.language === 'en';
   });
-  if ((await editor.locator('.app-menu-trigger[aria-controls="fileMenu"]').innerText()).trim() !== 'File') {
-    throw new Error('تغییر زبان به انگلیسی، متن منوی اصلی را به‌روز نکرد.');
+  const removedMenus = ['fileMenu', 'editMenu', 'viewMenu', 'helpMenu'];
+  for (const menuId of removedMenus) {
+    if (await editor.locator('[aria-controls="' + menuId + '"]').count() !== 0) {
+      throw new Error('منوی قدیمی باید از نوار بالایی حذف شده باشد: ' + menuId);
+    }
+  }
+  const visualEditorPageLink = editor.locator('.app-menu-bar a[href="src/features/visual-editor/visual-editor.html"]');
+  if (await visualEditorPageLink.count() !== 1 ||
+      (await visualEditorPageLink.innerText()).trim() !== 'Visual Editor Page') {
+    throw new Error('پیوند میانی باید با عنوان Visual Editor Page نمایش داده شود.');
   }
   await editor.locator('#languageToggleButton').click();
   await page.waitForFunction(() => {
@@ -74,8 +82,8 @@ try {
     return frame?.contentDocument?.documentElement.dataset.language === 'fa';
   });
   await editor.locator('#workspaceModeSwitch [data-workspace-mode="visual"]').waitFor({ state: 'visible' });
-  if ((await editor.locator('.workspace-brand strong').textContent()).trim() !== 'EDITOR V') {
-    throw new Error('عنوان برنامه به هدر اصلی منتقل نشده است.');
+  if (await editor.locator('.workspace-brand').count() !== 0) {
+    throw new Error('برند و عنوان قدیمی باید از هدر اصلی حذف شده باشند.');
   }
   await editor.locator('#btnSettings').click();
   if (!await editor.locator('#settingsScreen').isVisible()) {

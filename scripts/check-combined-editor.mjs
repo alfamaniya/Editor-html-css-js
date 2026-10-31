@@ -5,18 +5,18 @@ const assert=(ok,message)=>{if(!ok)throw new Error(message)};
 const read=path=>{const value=readFileSync(path,'utf8');assert(value.trim(),'فایل خالی است: '+path);return value};
 function embedded(html,id){const start=html.indexOf('<template id="'+id+'">');assert(start>=0,'بستهٔ '+id+' پیدا نشد');const bodyStart=html.indexOf('>',start)+1,end=html.indexOf('</template>',bodyStart);assert(end>bodyStart,'بستهٔ '+id+' ناقص است');return Buffer.from(html.slice(bodyStart,end).trim(),'base64').toString('utf8')}
 function assetReferences(markup){
- const refs=[],pattern=/<!--[\\s\\S]*?-->|<![^>]*>|<\\/?([a-zA-Z][\\w:.-]*)\\b[^>]*>/g;
+ const refs=[],pattern=/<!--[\s\S]*?-->|<![^>]*>|<\/?([a-zA-Z][\w:.-]*)\b[^>]*>/g;
  let match;
  while((match=pattern.exec(markup))!==null){
   const tag=match[0];if(tag.startsWith('<!--')||tag.startsWith('<!'))continue;
-  const name=match[1].toLowerCase(),closing=/^<\\s*\\//.test(tag);
+  const name=match[1].toLowerCase(),closing=/^<\s*\//.test(tag);
   if(closing)continue;
   if(name==='script'||name==='style'){
-   if(name==='script'){const src=tag.match(/\\bsrc\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))/i);if(src)refs.push(src[1]||src[2]||src[3]);}
-   const close=new RegExp('</\\\\s*'+name+'\\\\s*>','ig');close.lastIndex=pattern.lastIndex;
+   if(name==='script'){const src=tag.match(/\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);if(src)refs.push(src[1]||src[2]||src[3]);}
+   const close=new RegExp('</\\s*'+name+'\\s*>','ig');close.lastIndex=pattern.lastIndex;
    const end=close.exec(markup);assert(end,'تگ '+name+' بسته نشده است.');pattern.lastIndex=end.index+end[0].length;continue;
   }
-  if(name==='link'){const href=tag.match(/\\bhref\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))/i);if(href)refs.push(href[1]||href[2]||href[3]);}
+  if(name==='link'){const href=tag.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);if(href)refs.push(href[1]||href[2]||href[3]);}
  }
  return refs;
 }

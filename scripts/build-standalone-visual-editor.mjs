@@ -28,7 +28,7 @@ function escapeInline(content, tag) {
 function once(source, pattern, replacement, label) {
   const matches = source.match(new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g')) || [];
   if (matches.length !== 1) throw new Error(label + ': دقیقاً یک ارجاع لازم است؛ تعداد یافت‌شده ' + matches.length);
-  return source.replace(pattern, replacement);
+  return source.replace(pattern, () => replacement);
 }
 async function main() {
   let html = await readFile(resolve(root, htmlFile), 'utf8');

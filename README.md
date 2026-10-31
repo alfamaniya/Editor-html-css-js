@@ -213,14 +213,15 @@ Editor-html-css-js/
 │   ├── check-index-integrity.mjs
 │   ├── check-settings-button-placement.mjs
 │   ├── check-settings-dialog-keyboard.mjs
-│   └── check-standalone-editor.mjs
+│   ├── check-standalone-editor.mjs
+│   ├── build-combined-editor.mjs
+│   └── check-combined-editor.mjs
 ├── tools/
 │   └── build-single-file.js
 ├── index.html
 ├── style.css
 ├── script.js
-├── build.html
-├── index-test-etitor.html
+├── editor v.html
 └── README.md
 ~~~
 
@@ -316,10 +317,9 @@ node scripts/check-combined-editor.mjs
 
 1. نحو فایل‌های JavaScript و اسکریپت‌های آزمون را بررسی می‌کند.
 2. آزمون‌های یکپارچگی، پردازش کد، رنگ، صفحه‌کلید، هم‌ترازی و بازیابی را اجرا می‌کند.
-3. نسخه‌های واسط Editor و Visual Editor را از منابع اصلی می‌سازد و سپس آن‌ها را در فایل نهایی editor v.html بسته‌بندی می‌کند.
-4. خروجی را اعتبارسنجی می‌کند.
-5. خروجی نهایی editor v.html را اعتبارسنجی می‌کند.
-6. فایل نهایی را در main ثبت می‌کند و دو خروجی واسط قدیمی را حذف می‌کند.
+3. نسخه‌های واسط Editor و Visual Editor را از منابع اصلی می‌سازد.
+4. دو محیط را در فایل نهایی editor v.html بسته‌بندی و اعتبارسنجی می‌کند.
+5. فایل نهایی را در main ثبت می‌کند و خروجی‌های واسط را از مخزن حذف می‌کند.
 
 اجرای دستی همین گردش‌کار از زبانهٔ Actions امکان‌پذیر است، اما ورودی تأیید ساخت باید فعال شود.
 

@@ -126,7 +126,9 @@
     try {
       target = selection; changes = Object.create(null); waiting = false;
       const app = document.querySelector(".app"), editorPanel = document.querySelector(".editor-panel"), splitter = document.querySelector(".splitter");
-      const canvas = byId("canvas"), summary = addToolbar();
+      const canvas = byId("canvas");
+      addToolbar();
+      const summary = byId("externalTargetSummary");
       app.classList.add("external-target-mode");
       if (editorPanel) editorPanel.hidden = true; if (splitter) splitter.hidden = true;
       const title = document.createElement("span");

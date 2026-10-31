@@ -47,7 +47,7 @@ jobs:
             printf 'محتوا: نسخهٔ یکپارچهٔ Editor و Visual Editor\n'
             printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
             printf 'شاخهٔ فایل تحویلی: main\n'
-            printf 'شناسهٔ کامیت اجرا: %s\n' "$GITHUB_SHA"
+            printf 'شناسهٔ کامیت فایل تحویلی: %s\n' "$(git rev-parse HEAD)"
             printf '%s\n' '============================================================'
             printf '%s\n\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
             cat "editor v.html"
@@ -78,7 +78,7 @@ jobs:
           secure: ${{ secrets.SMTP_SECURE == 'true' }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "نسخهٔ کامل و یکپارچهٔ Editor V - ${{ github.sha }}"
+          subject: "نسخهٔ کامل و یکپارچهٔ Editor V"
           to: ${{ secrets.COMPANY_EMAIL }}
           from: ${{ secrets.SMTP_USERNAME }}
           body: "file://dist/company-delivery/editor-v-email-body.txt"

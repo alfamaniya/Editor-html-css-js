@@ -192,3 +192,24 @@
   .props-pane[hidden]{display:none!important}
   .props-pane{flex:1 0 auto}
   @media(max-width:560px){.props-tabs{top:65px;padding:8px}.props-tab{padding:8px 3px;font-size:10px}}
+
+  /* دسترسی دائمی به پنجرهٔ کد و کنترل نمایش آن */
+  .workspace-header-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .code-panel-toggle{min-height:34px;padding:0 11px;border:1px solid #dfe3ef;border-radius:8px;background:#f7f8fc;color:#58647b;font:600 11px Tahoma,"Segoe UI",sans-serif;cursor:pointer;transition:background .16s,border-color .16s,color .16s}
+  .code-panel-toggle:hover{border-color:#b8b0ff;background:#f0eeff;color:#5549c8}
+  .code-panel-toggle:focus-visible{outline:2px solid #9d94ff;outline-offset:2px}
+  .app.code-hidden{grid-template-columns:minmax(0,0fr) 0 minmax(0,1fr)}
+  .app.code-hidden .editor-panel,.app.code-hidden .splitter{display:none}
+  .props-help{margin:0 0 12px;color:#8490a5;font-size:10px;line-height:1.8}
+  .behavior-preset-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;margin-bottom:13px}
+  .behavior-preset-row select{min-width:0;max-width:100%;padding:8px;border:1px solid #dfe4ed;border-radius:7px;background:#fbfcfe;color:#263249;font-size:10px}
+  .behavior-preset-row .add-action-btn{margin:0;padding:8px 10px;white-space:nowrap}
+  .hover-preset-row{margin-bottom:15px;padding-bottom:12px;border-bottom:1px solid #edf0f5}
+  @media(max-width:760px){
+    .app{grid-template-columns:minmax(0,42%) 5px minmax(0,1fr)}
+    .props-panel{width:min(280px,48vw);flex-basis:min(280px,48vw)}
+    .workspace-header{padding:0 12px}
+    .workspace-header-actions{gap:5px}
+    .workspace-mode{display:none}
+    .code-panel-toggle{font-size:10px;padding:0 8px}
+  }

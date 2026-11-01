@@ -80,10 +80,10 @@ jobs:
           IFS=',;' read -r -a raw_recipients <<< "$COMPANY_EMAIL"
           recipients=""
           for recipient in "${raw_recipients[@]}"; do
-            recipient="${recipient#"\${recipient%%[![:space:]]*}"}"
-            recipient="${recipient%"\${recipient##*[![:space:]]}"}"
+            recipient="${recipient#"${recipient%%[![:space:]]*}"}"
+            recipient="${recipient%"${recipient##*[![:space:]]}"}"
             [[ -n "$recipient" ]] || continue
-            if [[ ! "$recipient" =~ ^[^[:space:]@,;]+@[^[:space:]@,;]+\\.[^[:space:]@,;]+$ ]]; then
+            if [[ ! "$recipient" =~ ^[^[:space:]@,;]+@[^[:space:]@,;]+\.[^[:space:]@,;]+$ ]]; then
               echo "::error::یکی از آدرس‌های COMPANY_EMAIL معتبر نیست."
               exit 1
             fi

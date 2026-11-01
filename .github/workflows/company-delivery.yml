@@ -70,6 +70,34 @@ jobs:
           done
           if [[ ! "$SMTP_PORT" =~ ^[0-9]+$ ]]; then echo "::error::SMTP_PORT باید عدد معتبر باشد."; exit 1; fi
           if [[ -n "$SMTP_SECURE" && "$SMTP_SECURE" != "true" && "$SMTP_SECURE" != "false" ]]; then echo "::error::SMTP_SECURE فقط می‌تواند true یا false باشد."; exit 1; fi
+      - name: پردازش و اعتبارسنجی گیرندگان ایمیل
+        id: recipients
+        env:
+          COMPANY_EMAIL: ${{ secrets.COMPANY_EMAIL }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          IFS=',;' read -r -a raw_recipients <<< "$COMPANY_EMAIL"
+          recipients=""
+          for recipient in "${raw_recipients[@]}"; do
+            recipient="${recipient#"\${recipient%%[![:space:]]*}"}"
+            recipient="${recipient%"\${recipient##*[![:space:]]}"}"
+            [[ -n "$recipient" ]] || continue
+            if [[ ! "$recipient" =~ ^[^[:space:]@,;]+@[^[:space:]@,;]+\\.[^[:space:]@,;]+$ ]]; then
+              echo "::error::یکی از آدرس‌های COMPANY_EMAIL معتبر نیست."
+              exit 1
+            fi
+            if [[ -n "$recipients" ]]; then
+              recipients+=", "
+            fi
+            recipients+="$recipient"
+          done
+          if [[ -z "$recipients" ]]; then
+            echo "::error::حداقل یک گیرنده معتبر باید در COMPANY_EMAIL ثبت شود."
+            exit 1
+          fi
+          printf 'to=%s\n' "$recipients" >> "$GITHUB_OUTPUT"
+
       - name: ارسال کد کامل در متن ایمیل
         uses: dawidd6/action-send-mail@v4
         with:
@@ -79,6 +107,6 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "نسخهٔ کامل و یکپارچهٔ Editor V"
-          to: ${{ secrets.COMPANY_EMAIL }}
+          to: ${{ steps.recipients.outputs.to }}
           from: ${{ secrets.SMTP_USERNAME }}
           body: "file://dist/company-delivery/editor-v-email-body.txt"

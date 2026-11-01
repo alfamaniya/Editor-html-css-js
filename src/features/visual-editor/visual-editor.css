@@ -181,3 +181,14 @@
     .palette-items.text-view{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))}
     .canvas-scroll{padding:10px}
   }
+
+
+  /* تب‌های مستقل تنظیمات المان */
+  .props-tabs{position:sticky;top:69px;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:9px 12px;background:#fff;border-bottom:1px solid #edf0f5}
+  .props-tab{min-width:0;padding:9px 5px;border:1px solid transparent;border-radius:8px;background:#f6f7fb;color:#7b869a;font:600 11px Tahoma,"Segoe UI",sans-serif;cursor:pointer;transition:background .16s,color .16s,border-color .16s}
+  .props-tab:hover{background:#efedff;color:#5d52ce}
+  .props-tab.active{border-color:#d9d4ff;background:#f0eeff;color:#5549c8;box-shadow:inset 0 -2px 0 #7669ed}
+  .props-tab:focus-visible{outline:2px solid #9d94ff;outline-offset:2px}
+  .props-pane[hidden]{display:none!important}
+  .props-pane{flex:1 0 auto}
+  @media(max-width:560px){.props-tabs{top:65px;padding:8px}.props-tab{padding:8px 3px;font-size:10px}}

@@ -125,7 +125,15 @@
         const opening=htmlFile.content.slice(match.start,match.end);
         const className=visualClassName({...selection,start:match.start,end:match.end},htmlFile);
         const selector="."+className;
-        const updatedOpening=addClassToOpening(opening,className);
+        let updatedOpening=addClassToOpening(opening,className);
+        const inlineStyle=updatedOpening.match(/\\sstyle\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))/i);
+        if(inlineStyle){
+            const holder=document.createElement("span");
+            holder.setAttribute("style",inlineStyle[1]??inlineStyle[2]??inlineStyle[3]??"");
+            Object.keys(styles||{}).forEach(property=>{if(VISUAL_PROPERTIES.has(property))holder.style.removeProperty(property);});
+            const remaining=holder.getAttribute("style")||"";
+            updatedOpening=remaining?updatedOpening.replace(inlineStyle[0],' style="'+remaining.replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'"'):updatedOpening.replace(inlineStyle[0],"");
+        }
         const updatedHtml=htmlFile.content.slice(0,match.start)+updatedOpening+htmlFile.content.slice(match.end);
         const updatedCss=updateDedicatedCss(cssFile.content,selector,styles);
         if(updatedCss===cssFile.content&&!updatedOpening.includes(className))throw new Error("هیچ تغییری برای ثبت وجود ندارد.");

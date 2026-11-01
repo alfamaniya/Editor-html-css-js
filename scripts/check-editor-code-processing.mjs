@@ -157,7 +157,7 @@ test('current standalone editor build copied into HTML tab extracts every bundle
     assert.equal(remaining.blocks.length,retainedEntryScripts.length,
         'Only the marked application entry redirect may remain in the standalone HTML.');
     assert.equal(retainedEntryScripts.length,1,'The standalone HTML should retain its guarded entry redirect script.');
-    assert.match(result.html,/<script\\b[^>]*data-editor-entry-redirect/i,
+    assert.ok(result.html.includes('<script data-editor-entry-redirect>'),
         'The guarded entry redirect must remain in HTML rather than being moved into the project JavaScript tab.');
     assert.ok(result.js[0].includes('htmlTags'),'The first script should remain in original bundle order.');
     assert.ok(result.js.some((code) => code.includes('window.EditorSearchHeader')),

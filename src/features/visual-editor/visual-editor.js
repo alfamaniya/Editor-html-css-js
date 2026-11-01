@@ -1195,7 +1195,11 @@
       });
       presetSelect.addEventListener("change", () => {
         const preset = presetSelect.value;
-        Object.assign(h, HOVER_PRESETS[preset], { preset });
+        Object.assign(h, {
+          enabled: false, bgColor: "", textColor: "", scale: 1.03, opacity: 1,
+          radius: null, shadow: "none", borderColor: "", borderWidth: null,
+          rotate: 0, translateY: 0, filter: "", duration: 180,
+        }, HOVER_PRESETS[preset], { preset });
         this.renderHoverControls(comp);
         this.render();
       });
@@ -1251,7 +1255,7 @@
         ["click-toggle", "با کلیک: تغییر کلاس active"],
         ["hover-background", "با ورود نشانگر: تغییر پس‌زمینه"],
         ["focus-log", "با تمرکز: ثبت پیام در کنسول"],
-        ["input-log", "هنگام ورود داده: ثبت مقدار"],
+        ["input-log", "هنگام ورود داده: ثبت پیام"],
       ].forEach(([value, label]) => {
         const option = document.createElement("option"); option.value = value; option.textContent = label;
         presetSelect.appendChild(option);

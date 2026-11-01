@@ -621,6 +621,7 @@
       this.codeDirtyByLang = { html: false, css: false, js: false };
       this.manualPreviewLang = null;
       this.paletteView = "objects";
+      this.activePropsTab = "style";
       this.codeSelection = { start: 0, end: 0, language: "html" };
 
       this.lang = "html";
@@ -1002,6 +1003,13 @@
 
     /* ----------------- Properties panel UI -------------------- */
     bindPropertiesPanel() {
+      this.propsPanel.querySelectorAll("[data-props-tab]").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          this.activePropsTab = tab.dataset.propsTab;
+          this.updatePropsTabs();
+        });
+      });
+
       document.getElementById("deleteComponentBtn").addEventListener("click", () => {
         if (this.selected) this.remove(this.selected);
       });
@@ -1032,6 +1040,19 @@
       this.renderStyleControls(this.selected);
       this.renderHoverControls(this.selected);
       this.renderActions(this.selected);
+      this.updatePropsTabs();
+    }
+
+    updatePropsTabs() {
+      this.propsPanel.querySelectorAll("[data-props-tab]").forEach((tab) => {
+        const active = tab.dataset.propsTab === this.activePropsTab;
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      this.propsPanel.querySelectorAll("[data-props-pane]").forEach((pane) => {
+        pane.hidden = pane.dataset.propsPane !== this.activePropsTab;
+      });
     }
 
     renderStyleControls(comp) {

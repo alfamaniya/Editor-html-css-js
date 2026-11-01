@@ -201,7 +201,7 @@
         }
         if(candidates.length)return {selector:candidates[0],opening,createdClass:""};
         const tagMatch=opening.match(/^<\s*([A-Za-z][\w:-]*)/);
-        const base="ev-"+visualTagAbbreviation(tagMatch?tagMatch[1]:"element");
+        const base=visualTagAbbreviation(tagMatch?tagMatch[1]:"element");
         const used=usedVisualClasses(htmlFiles&&htmlFiles.length?htmlFiles:[file],cssFiles);
         let className=base,suffix=2;
         while(used.has(className)){

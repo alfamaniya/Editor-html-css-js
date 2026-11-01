@@ -113,6 +113,34 @@ try {
   if ((await visual.locator('#styleControls .prop-row').count()) < 1) {
     throw new Error('کنترل‌های تنظیمات المان در Visual Editor ساخته نشدند.');
   }
+  if (!await visual.locator('#codeEditorPanel').isVisible()) {
+    throw new Error('پنجرهٔ کد باید پس از انتخاب المان قابل مشاهده باقی بماند.');
+  }
+  const codeToggle = visual.locator('#toggleCodePanelBtn');
+  await codeToggle.click();
+  if (await visual.locator('#codeEditorPanel').isVisible() || (await codeToggle.getAttribute('aria-expanded')) !== 'false') {
+    throw new Error('دکمهٔ مخفی‌سازی پنجرهٔ کد درست عمل نکرد.');
+  }
+  await codeToggle.click();
+  if (!await visual.locator('#codeEditorPanel').isVisible() || (await codeToggle.getAttribute('aria-expanded')) !== 'true') {
+    throw new Error('دکمهٔ نمایش مجدد پنجرهٔ کد درست عمل نکرد.');
+  }
+
+  await visual.locator('#propsTabHover').click();
+  await visual.locator('#hoverControls select').selectOption('lift');
+  if (!(await visual.locator('#preview-style').textContent()).includes(':hover')) {
+    throw new Error('انتخاب الگوی آمادهٔ Hover قانون CSS حالت شناور را تولید نکرد.');
+  }
+  await visual.locator('#propsTabJs').click();
+  await visual.locator('#actionList select').selectOption('click-toggle');
+  await visual.locator('#actionList button').click();
+  if ((await visual.locator('#actionList .action-row').count()) !== 1) {
+    throw new Error('رفتار آمادهٔ JavaScript به فهرست تعامل‌ها افزوده نشد.');
+  }
+  await visual.locator('.tab[data-lang="js"]').click();
+  if (!(await visual.locator('#code').inputValue()).includes('classList.toggle')) {
+    throw new Error('کد JavaScript رفتار انتخاب‌شده تولید نشد.');
+  }
 
   const storageProbe = '__editor_v_runtime_probe__';
   await editor.locator('body').evaluate((body, key) => {

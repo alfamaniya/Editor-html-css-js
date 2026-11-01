@@ -11,7 +11,12 @@ on:
       - "src/**"
       - "scripts/**"
       - "tools/build-single-file.js"
+      - "README.md"
+      - "docs/**"
+      - "CNAME"
+      - ".nojekyll"
       - ".github/workflows/build-test-editor.yml"
+      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
     inputs:
       confirm_build:

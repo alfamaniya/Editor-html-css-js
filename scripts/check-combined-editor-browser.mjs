@@ -166,7 +166,7 @@ try {
   const htmlAfterCommit = await editor.locator('#panel-html textarea').inputValue();
   const cssAfterCommit = await editor.locator('#panel-css textarea').inputValue();
   const visualClass = htmlAfterCommit.match(/class="([^"]*editor-visual-target-[a-z0-9-]+[^"]*)"/i)?.[1].match(/editor-visual-target-[a-z0-9-]+/i)?.[0];
-  if (!visualClass || !new RegExp('\\\\.' + visualClass + '\\\\s*\\\\{[^}]*font-size:\\\\s*40px', 'i').test(cssAfterCommit)) {
+  if (!visualClass || !cssAfterCommit.includes('.' + visualClass + ' {') || !/font-size:\\s*40px/i.test(cssAfterCommit)) {
     throw new Error('تغییر بصری باید با کلاس اختصاصی در فایل CSS ثبت شود.');
   }
   if (/font-size:\\s*40px/i.test(htmlAfterCommit) || /style\\s*=/.test(htmlAfterCommit.match(/<h1\\b[^>]*>/i)?.[0] || '')) {

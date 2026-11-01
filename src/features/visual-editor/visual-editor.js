@@ -8,6 +8,14 @@
   const escapeHTML = (s) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+  const HOVER_PRESETS = {
+    none: { enabled: false, scale: 1.03, opacity: 1, shadow: "none", translateY: 0, duration: 180 },
+    lift: { enabled: true, scale: 1.03, opacity: 1, shadow: "md", translateY: -4, duration: 180 },
+    zoom: { enabled: true, scale: 1.08, opacity: 1, shadow: "sm", translateY: 0, duration: 180 },
+    glow: { enabled: true, scale: 1.02, opacity: 1, shadow: "lg", translateY: 0, duration: 240, bgColor: "#eef2ff", textColor: "#3730a3" },
+    dim: { enabled: true, scale: 1, opacity: 0.72, shadow: "none", translateY: 0, duration: 180 },
+  };
+
   const SHADOW_PRESETS = {
     none: "none",
     sm:   "0 1px 3px rgba(0,0,0,0.10)",
@@ -137,7 +145,7 @@
 
       this.actions = [];
       this.hoverProps = {
-        enabled: false, bgColor: "", textColor: "", scale: 1.03, opacity: 1,
+        enabled: false, preset: "none", bgColor: "", textColor: "", scale: 1.03, opacity: 1,
         radius: null, shadow: "none", borderColor: "", borderWidth: null,
         rotate: 0, translateY: 0, filter: "", duration: 180,
       };
@@ -616,6 +624,8 @@
       this.styleControlsEl = opts.styleControls;
       this.actionListEl    = opts.actionList;
       this.hoverControlsEl = opts.hoverControls;
+      this.appEl = document.querySelector(".app");
+      this.codePanelToggle = document.getElementById("toggleCodePanelBtn");
       this.codeDirty = false;
       this.codeBuffers = { html: null, css: null, js: null };
       this.codeDirtyByLang = { html: false, css: false, js: false };
@@ -632,6 +642,7 @@
       this.bindCanvas();
       this.bindEditor();
       this.bindPropertiesPanel();
+      this.bindCodePanelToggle();
 
       this.restoreState();
       this.render();
@@ -1001,6 +1012,17 @@
       }
     }
 
+    /* ----------------- Code panel visibility ------------------ */
+    bindCodePanelToggle() {
+      if (!this.codePanelToggle || !this.appEl) return;
+      this.codePanelToggle.addEventListener("click", () => {
+        const hidden = this.appEl.classList.toggle("code-hidden");
+        this.codePanelToggle.textContent = hidden ? "نمایش کد" : "مخفی‌کردن کد";
+        this.codePanelToggle.setAttribute("aria-expanded", String(!hidden));
+        this.codePanelToggle.setAttribute("aria-label", hidden ? "نمایش پنجرهٔ کد" : "مخفی‌کردن پنجرهٔ کد");
+      });
+    }
+
     /* ----------------- Properties panel UI -------------------- */
     bindPropertiesPanel() {
       this.propsPanel.querySelectorAll("[data-props-tab]").forEach((tab) => {
@@ -1019,8 +1041,8 @@
         const comp = this.selected;
         comp.actions.push({
           event: comp.constructor.supportedEvents[0] || "click",
-          type: "alert",
-          params: { message: "Hello!" },
+          type: "consoleLog",
+          params: { message: "تعامل المان اجرا شد." },
         });
         this.renderActions(comp);
         this.render();
@@ -1157,6 +1179,28 @@
       const container = this.hoverControlsEl;
       container.innerHTML = "";
       const h = comp.hoverProps || (comp.hoverProps = {});
+      const presetRow = document.createElement("div"); presetRow.className = "prop-row hover-preset-row";
+      const presetLabel = document.createElement("label"); presetLabel.textContent = "الگوی آمادهٔ Hover";
+      const presetSelect = document.createElement("select");
+      [
+        ["none", "بدون جلوه"],
+        ["lift", "بالا آمدن و سایه"],
+        ["zoom", "بزرگ‌نمایی"],
+        ["glow", "درخشش و تغییر رنگ"],
+        ["dim", "کاهش شفافیت"],
+      ].forEach(([value, label]) => {
+        const option = document.createElement("option"); option.value = value; option.textContent = label;
+        option.selected = (h.preset || (h.enabled ? "lift" : "none")) === value;
+        presetSelect.appendChild(option);
+      });
+      presetSelect.addEventListener("change", () => {
+        const preset = presetSelect.value;
+        Object.assign(h, HOVER_PRESETS[preset], { preset });
+        this.renderHoverControls(comp);
+        this.render();
+      });
+      presetRow.append(presetLabel, presetSelect);
+      container.appendChild(presetRow);
       const checkboxRow = document.createElement("div"); checkboxRow.className = "prop-row";
       const checkboxLabel = document.createElement("label"); checkboxLabel.textContent = translateUI("Enable hover effects");
       const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = !!h.enabled;
@@ -1197,12 +1241,46 @@
       const container = this.actionListEl;
       container.innerHTML = "";
 
+      const presetRow = document.createElement("div");
+      presetRow.className = "behavior-preset-row";
+      const presetSelect = document.createElement("select");
+      presetSelect.setAttribute("aria-label", "انتخاب رفتار آماده");
+      [
+        ["click-log", "با کلیک: ثبت پیام در کنسول"],
+        ["click-alert", "با کلیک: نمایش پیام"],
+        ["click-toggle", "با کلیک: تغییر کلاس active"],
+        ["hover-background", "با ورود نشانگر: تغییر پس‌زمینه"],
+        ["focus-log", "با تمرکز: ثبت پیام در کنسول"],
+        ["input-log", "هنگام ورود داده: ثبت مقدار"],
+      ].forEach(([value, label]) => {
+        const option = document.createElement("option"); option.value = value; option.textContent = label;
+        presetSelect.appendChild(option);
+      });
+      const addPreset = document.createElement("button");
+      addPreset.type = "button"; addPreset.className = "add-action-btn"; addPreset.textContent = "افزودن رفتار";
+      addPreset.addEventListener("click", () => {
+        const presets = {
+          "click-log": { event: "click", type: "consoleLog", params: { message: "عنصر کلیک شد." } },
+          "click-alert": { event: "click", type: "alert", params: { message: "سلام!" } },
+          "click-toggle": { event: "click", type: "toggleClass", params: { className: "active" } },
+          "hover-background": { event: "mouseenter", type: "setBackground", params: { color: "#4f46e5" } },
+          "focus-log": { event: "focus", type: "consoleLog", params: { message: "عنصر فوکوس شد." } },
+          "input-log": { event: "input", type: "consoleLog", params: { message: "مقدار ورودی تغییر کرد." } },
+        };
+        const preset = presets[presetSelect.value];
+        if (!preset) return;
+        comp.actions.push({ ...preset, params: { ...preset.params } });
+        this.renderActions(comp);
+        this.render();
+      });
+      presetRow.append(presetSelect, addPreset);
+      container.appendChild(presetRow);
+
       if (comp.actions.length === 0) {
         const empty = document.createElement("div");
         empty.className = "actions-empty";
-        empty.textContent = translateUI("No interactions configured yet");
+        empty.textContent = "هنوز تعاملی برای این المان تعریف نشده است؛ از رفتارهای آماده بالا انتخاب کنید.";
         container.appendChild(empty);
-        return;
       }
 
       comp.actions.forEach((action, idx) => {

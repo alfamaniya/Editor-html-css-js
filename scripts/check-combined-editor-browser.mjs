@@ -165,7 +165,7 @@ try {
   if (liveFontSize !== '40px') throw new Error('پس از ثبت، اندازهٔ متن در پیش‌نمایش اصلی باقی نماند.');
   const htmlAfterCommit = await editor.locator('#panel-html textarea').inputValue();
   if (!/font-size:\s*40px\s*!important/i.test(htmlAfterCommit)) {
-    throw new Error('تغییر بصری در کد HTML اصلی ذخیره نشد.');
+    throw new Error('تغییر بصری باید بدون !important در کد HTML اصلی ذخیره شود.');
   }
 
   // A second edit must be reversible without changing the source HTML.
@@ -210,7 +210,7 @@ try {
   if (restoredFontSize !== '40px') throw new Error('انصراف از ویرایش، استایل قبلی المان را بازنگرداند.');
   const htmlAfterCancel = await editor.locator('#panel-html textarea').inputValue();
   if (!/font-size:\s*40px\s*!important/i.test(htmlAfterCancel) || /font-size:\s*55px\s*!important/i.test(htmlAfterCancel)) {
-    throw new Error('انصراف نباید کد ذخیره‌شدهٔ HTML را تغییر دهد.');
+    throw new Error('انصراف نباید کد ذخیره‌شدهٔ HTML را تغییر دهد یا !important اضافه کند.');
   }
 
   if (runtimeErrors.length) throw new Error('خطای زمان اجرا: ' + runtimeErrors.join(' | '));

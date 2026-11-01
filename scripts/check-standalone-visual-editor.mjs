@@ -34,6 +34,11 @@ function main() {
   assert(/استودیوی طراحی بصری/.test(html), 'عنوان Visual Editor در خروجی نیست.');
   assert(/id=["']propsPanel["']/.test(html) && /id=["']canvas["']/.test(html) &&
     /id=["']styleControls["']/.test(html), 'بخش‌های اصلی محیط ویرایش در خروجی ناقص‌اند.');
+  assert(/id=["']codeEditorPanel["']/.test(source) && /id=["']toggleCodePanelBtn["']/.test(source),
+    'پنجرهٔ کد و دکمهٔ نمایش/مخفی‌سازی آن باید در منبع وجود داشته باشند.');
+  assert(/HOVER_PRESETS/.test(read('src/features/visual-editor/visual-editor.js')) &&
+    /behavior-preset-row/.test(read('src/features/visual-editor/visual-editor.js')),
+    'الگوهای آمادهٔ Hover و JavaScript باید در منطق ویرایشگر وجود داشته باشند.');
   assert(!/\b(?:src|href)=["'](?:(?:\.\/|\.\.\/)+)?(?:visual-editor\.css|visual-editor\.js|visual-editor-session\.js|visual-editor-remote\.js|locales\/(?:en|fa)\.js|shared\/i18n\/i18n\.js)["']/i.test(html),
     'ارجاع خارجی به منابع Visual Editor باقی مانده است.');
 

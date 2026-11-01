@@ -8,14 +8,16 @@ const file = resolve('editor v.html');
 const html = await readFile(file);
 const indexHtml = await readFile(resolve('index.html'));
 const server = createServer((request, response) => {
-  if (request.url === '/' || request.url === '/index.html' || request.url.startsWith('/Editor-html-css-js/')) {
-    response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-length': indexHtml.length });
-    response.end(indexHtml);
+  if (request.url === '/editor%20v.html' || request.url === '/Editor-html-css-js/editor%20v.html') {
+    response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-length': html.length });
+    if (request.method === 'HEAD') response.end();
+    else response.end(html);
     return;
   }
-  if (request.url === '/editor%20v.html') {
-    response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-length': html.length });
-    response.end(html);
+  if (request.url === '/' || request.url === '/index.html' || request.url === '/Editor-html-css-js/' || request.url === '/Editor-html-css-js/index.html') {
+    response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-length': indexHtml.length });
+    if (request.method === 'HEAD') response.end();
+    else response.end(indexHtml);
     return;
   }
   response.writeHead(404);
@@ -32,11 +34,14 @@ try {
   const rootPage = await browser.newPage();
   const sourcePageUrl = 'http://127.0.0.1:4173/Editor-html-css-js/';
   await rootPage.goto(sourcePageUrl, { waitUntil: 'domcontentloaded' });
-  if (rootPage.url() !== sourcePageUrl) {
-    throw new Error('نشانی اصلی باید روی index.html باقی بماند و به فایل آزمایشی منتقل نشود.');
-  }
-  if (await rootPage.locator('#btnVisualEditorPick').count() !== 1) {
-    throw new Error('صفحهٔ اصلی باید رابط Editor مبتنی بر index.html را نمایش دهد.');
+  await rootPage.waitForURL(url => url.pathname.endsWith('/editor%20v.html'), { timeout: 10000 });
+  await rootPage.waitForFunction(() => {
+    const frame = document.getElementById('editor-frame');
+    return frame?.contentDocument?.readyState === 'complete' &&
+      !!frame.contentDocument.getElementById('btnVisualEditorPick');
+  }, null, { timeout: 15000 });
+  if (await rootPage.frameLocator('#editor-frame').locator('#btnVisualEditorPick').count() !== 1) {
+    throw new Error('ورود از آدرس اصلی باید کاربر را به Editor یکپارچه و دکمهٔ انتخاب بصری برساند.');
   }
   await rootPage.close();
 

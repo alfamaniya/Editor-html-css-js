@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML / CSS / JS Editor</title>
+    <script>
+        (function () {
+            if (window.parent !== window || !/^https?:$/.test(window.location.protocol)) return;
+            var target = new URL('editor%20v.html', window.location.href);
+            if (target.pathname === window.location.pathname) return;
+            fetch(target.href, { method: 'HEAD', cache: 'no-store', credentials: 'same-origin' })
+                .then(function (response) {
+                    if (response.ok && window.parent === window) window.location.replace(target.href);
+                })
+                .catch(function () {});
+        })();
+    </script>
     <style>
         .visual-editor-pick-button {
             display: inline-flex;

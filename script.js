@@ -3795,9 +3795,16 @@
                 if (resolved.some(function(item) { return !item; })) return false;
                 resolved.forEach(function(item) {
                     item.file.content = item.content;
+                    project.lastActiveByLang[item.file.type] = item.file.id;
+                });
+                const activeUpdate = resolved[resolved.length - 1];
+                project.activeFileId = activeUpdate.file.id;
+                activateTab(activeUpdate.file.type);
+                resolved.forEach(function(item) {
                     const editor = editors[item.file.type];
                     editor.ta.value = item.content;
                     editor.refresh();
+                    editor.ta.dispatchEvent(new Event('input', { bubbles: true }));
                 });
                 renderFileExplorer();
                 setDirty(true);

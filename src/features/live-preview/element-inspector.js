@@ -168,7 +168,7 @@
             if(found)return {selector,opening,createdClass:""};
         }
         if(candidates.length)return {selector:candidates[0],opening,createdClass:""};
-        const seed=[file.id,match.tag.name,match.start,match.tag.raw].join("|");
+        const tagMatch=opening.match(/^<\\s*([A-Za-z][\\w:-]*)/);\n        const seed=[file.id,tagMatch?tagMatch[1].toLowerCase():"element",match.start,opening].join("|");
         let hash=2166136261;
         for(let i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619);}
         const base="editor-visual-target-"+(hash>>>0).toString(36);
@@ -246,10 +246,11 @@
         const updatedCss=updateDedicatedCss(cssFile.content,target.selector,Object.fromEntries(entries));
         const opening=removeEditedInlineProperties(target.opening,entries.map(([property])=>property));
         const updatedHtml=htmlFile.content.slice(0,match.start)+opening+htmlFile.content.slice(match.end);
-        const updates=[{fileId:cssFile.id,expectedContent:cssFile.content,content:updatedCss}];
+        const updates=[];
         if(updatedHtml!==htmlFile.content){
             updates.push({fileId:htmlFile.id,expectedContent:htmlFile.content,content:updatedHtml});
         }
+        updates.push({fileId:cssFile.id,expectedContent:cssFile.content,content:updatedCss});
         if(!a.updateFilesContent(updates))throw new Error("ذخیرهٔ هم‌زمان تغییرات در فایل‌های CSS و HTML انجام نشد؛ فایل‌ها تغییر نکردند.");
         if(typeof a.refreshPreview==="function")a.refreshPreview();
         return true;

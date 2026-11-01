@@ -3781,6 +3781,29 @@
                 editor.ta.focus();
                 return true;
             },
+            updateFilesContent: function (updates) {
+                if (!Array.isArray(updates) || !updates.length) return false;
+                const seen = new Set();
+                const resolved = updates.map(function(update) {
+                    if (!update || typeof update.fileId !== 'string' || typeof update.content !== 'string' || seen.has(update.fileId)) return null;
+                    seen.add(update.fileId);
+                    const file = getFile(update.fileId);
+                    if (!file || !editors[file.type]) return null;
+                    if (Object.prototype.hasOwnProperty.call(update, 'expectedContent') && file.content !== update.expectedContent) return null;
+                    return { file: file, content: update.content };
+                });
+                if (resolved.some(function(item) { return !item; })) return false;
+                resolved.forEach(function(item) {
+                    item.file.content = item.content;
+                    const editor = editors[item.file.type];
+                    editor.ta.value = item.content;
+                    editor.refresh();
+                });
+                renderFileExplorer();
+                setDirty(true);
+                scheduleSaveProject();
+                return true;
+            },
             refreshPreview: function () {
                 updatePreviewNow();
                 return true;

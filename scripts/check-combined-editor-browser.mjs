@@ -165,12 +165,29 @@ try {
   if (liveFontSize !== '40px') throw new Error('پس از ثبت، اندازهٔ متن در پیش‌نمایش اصلی باقی نماند.');
   const htmlAfterCommit = await editor.locator('#panel-html textarea').inputValue();
   const cssAfterCommit = await editor.locator('#panel-css textarea').inputValue();
-  const visualClass = htmlAfterCommit.match(/class="([^"]*editor-visual-target-[a-z0-9-]+[^"]*)"/i)?.[1].match(/editor-visual-target-[a-z0-9-]+/i)?.[0];
-  if (!visualClass || !cssAfterCommit.includes('.' + visualClass + ' {') || !/font-size:\s*40px/i.test(cssAfterCommit)) {
-    throw new Error('تغییر بصری باید با کلاس اختصاصی در فایل CSS ثبت شود.');
+  const h1OpeningAfterCommit = htmlAfterCommit.match(/<h1\\b[^>]*>/i)?.[0] || '';
+  const targetRuleMatches = Array.from(cssAfterCommit.matchAll(/(?:^|\\n)\\s*([.#][^{}\\n]+)\\s*\\{([^{}]*)\\}/g))
+    .filter(match => /font-size:\\s*40px/i.test(match[2]));
+  if (targetRuleMatches.length !== 1 || /font-size:\\s*40px\\s*!important/i.test(targetRuleMatches[0]?.[2] || '')) {
+    throw new Error('تغییر بصری باید دقیقاً در یک قانون CSS و بدون !important ذخیره شود.');
   }
-  if (/font-size:\s*40px/i.test(htmlAfterCommit) || /style\s*=/.test(htmlAfterCommit.match(/<h1\b[^>]*>/i)?.[0] || '')) {
-    throw new Error('ثبت تغییر ظاهری نباید ویژگی style را به تگ HTML اضافه کند.');
+  const targetSelector = targetRuleMatches[0][1].trim();
+  const idMatch = h1OpeningAfterCommit.match(/\\bid=["']([^"']+)["']/i);
+  const classMatch = h1OpeningAfterCommit.match(/\\bclass=["']([^"']+)["']/i);
+  const classTokens = (classMatch?.[1] || '').split(/\\s+/).filter(Boolean);
+  const selectorMatchesTag = targetSelector.startsWith('#')
+    ? idMatch?.[1] === targetSelector.slice(1)
+    : targetSelector.startsWith('.')
+      ? classTokens.includes(targetSelector.slice(1))
+      : false;
+  if (!selectorMatchesTag) {
+    throw new Error('قانون CSS باید از شناسه یا کلاس همان تگ HTML استفاده کند.');
+  }
+  if ((cssAfterCommit.split(targetSelector + ' {').length - 1) !== 1) {
+    throw new Error('برای المان انتخاب‌شده نباید قانون CSS تکراری ایجاد شود.');
+  }
+  if (/\\bstyle\\s*=\\s*["'][^"']*font-size\\s*:/i.test(h1OpeningAfterCommit)) {
+    throw new Error('ویژگی font-size نباید پس از ثبت در style درون‌خطی تگ باقی بماند.');
   }
 
   // A second edit must be reversible without changing the source HTML.

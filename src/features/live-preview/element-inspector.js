@@ -74,75 +74,183 @@
         if(ok){visualSelection=null;visualChanges=Object.create(null);tell(action==="cancel"?"ویرایش بصری لغو شد.":"تغییرات بصری در فایل CSS و ساختار HTML ثبت شد.");}
         window.parent.postMessage({editorVisualEditorFinished:{ok:!!ok,action:action||"commit",message:message||""}},"*");
     }
-    function visualClassName(selection,file){
-        const opening=file.content.slice(selection.start,selection.end);
-        const existing=attrs(opening).class||"";
-        const prior=existing.split(/\s+/).find(name=>/^editor-visual-target-[a-z0-9-]+$/i.test(name));
-        if(prior)return prior;
-        const seed=[file.id,selection.tag,selection.tagOrdinal,selection.id||"",...(selection.classes||[])].join("|");
-        let hash=2166136261;
-        for(let i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619);}
-        return "editor-visual-target-"+(hash>>>0).toString(36);
+    function escapeCssIdentifier(value){
+        return Array.from(String(value)).map((char,index)=>{
+            const code=char.codePointAt(0);
+            if(code===0)return "\uFFFD";
+            if((index===0&&/[0-9]/.test(char))||(index===1&&String(value)[0]==="-"&&/[0-9]/.test(char)))return "\\"+code.toString(16)+" ";
+            if(code>=128||/[a-zA-Z0-9_-]/.test(char))return char;
+            return "\\"+char;
+        }).join("");
+    }
+    function escapeHtmlAttribute(value){
+        return String(value).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+    }
+    function cssTopLevelBlocks(source){
+        const out=[];
+        let i=0,segment=0;
+        while(i<source.length){
+            if(source[i]==="/"&&source[i+1]==="*"){
+                const close=source.indexOf("*/",i+2);
+                i=close<0?source.length:close+2;
+                continue;
+            }
+            if(source[i]==="'"||source[i]==='"'){
+                const quote=source[i++];
+                while(i<source.length){
+                    if(source[i]==="\\"){i+=2;continue;}
+                    if(source[i++]===quote)break;
+                }
+                continue;
+            }
+            if(source[i]===";"){segment=++i;continue;}
+            if(source[i]==="}"){segment=++i;continue;}
+            if(source[i]!=="{"){i++;continue;}
+            const open=i;
+            let depth=1,quote="",comment=false,j=i+1;
+            while(j<source.length&&depth){
+                const char=source[j],next=source[j+1];
+                if(comment){if(char==="*"&&next==="/"){comment=false;j+=2;}else j++;continue;}
+                if(quote){if(char==="\\"){j+=2;continue;}if(char===quote)quote="";j++;continue;}
+                if(char==="/"&&next==="*"){comment=true;j+=2;continue;}
+                if(char==="'"||char==='"'){quote=char;j++;continue;}
+                if(char==="{")depth++;
+                else if(char==="}")depth--;
+                j++;
+            }
+            if(depth)break;
+            let headStart=segment;
+            while(headStart<open){
+                if(/\s/.test(source[headStart])){headStart++;continue;}
+                if(source[headStart]==="/"&&source[headStart+1]==="*"){
+                    const close=source.indexOf("*/",headStart+2);
+                    if(close<0||close>=open){headStart=open;break;}
+                    headStart=close+2;continue;
+                }
+                break;
+            }
+            const selector=source.slice(headStart,open).replace(/\/\*[\s\S]*?\*\//g,"").trim();
+            // قانون‌های درون @media و سایر at-ruleها را عمداً انتخاب نمی‌کنیم.
+            if(selector&&selector.charAt(0)!=="@")out.push({selector,start:headStart,open,close:j-1,end:j});
+            i=j;segment=j;
+        }
+        return out;
     }
     function addClassToOpening(opening,className){
         const match=opening.match(/\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
         const current=match?(match[1]??match[2]??match[3]??"").trim():"";
         if(current.split(/\s+/).includes(className))return opening;
         const value=(current?current+" ":"")+className;
-        const escaped=value.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+        const escaped=escapeHtmlAttribute(value);
         if(match)return opening.replace(match[0],' class="'+escaped+'"');
         return opening.replace(/(\/?)>$/,end=>' class="'+escaped+'"'+end);
     }
-    function updateDedicatedCss(source,selector,styles){
-        const blocks=[];
-        cssBlocks(source,0,source.length,blocks);
-        const block=blocks.find(item=>item.selector.split(",").some(part=>norm(part)===norm(selector)));
+    function selectorCandidates(file,match,cssFiles){
+        const opening=file.content.slice(match.start,match.end);
+        const current=attrs(opening);
+        const records=tags(file.content).filter(tag=>!tag.closing).map(tag=>attrs(tag.raw));
+        const candidates=[];
+        const id=current.id||"";
+        if(id&&records.filter(record=>record.id===id).length===1){
+            candidates.push("#"+escapeCssIdentifier(id));
+        }
+        const existingClasses=(current.class||"").split(/\s+/).filter(Boolean);
+        existingClasses.forEach(className=>{
+            if(records.filter(record=>(record.class||"").split(/\s+/).includes(className)).length===1){
+                candidates.push("."+escapeCssIdentifier(className));
+            }
+        });
+        // اگر قانون دقیق قبلاً وجود دارد، همان انتخاب‌گر و همان فایل را ترجیح بده.
+        for(const selector of candidates){
+            const found=cssFiles.slice().reverse().some(cssFile=>
+                cssTopLevelBlocks(cssFile.content).some(block=>norm(block.selector)===norm(selector))
+            );
+            if(found)return {selector,opening,createdClass:""};
+        }
+        if(candidates.length)return {selector:candidates[0],opening,createdClass:""};
+        const seed=[file.id,match.tag.name,match.start,match.tag.raw].join("|");
+        let hash=2166136261;
+        for(let i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619);}
+        const base="editor-visual-target-"+(hash>>>0).toString(36);
+        let className=base,suffix=1;
+        while(records.some(record=>(record.class||"").split(/\s+/).includes(className))){
+            className=base+"-"+suffix++;
+        }
+        return {
+            selector:"."+escapeCssIdentifier(className),
+            opening:addClassToOpening(opening,className),
+            createdClass:className
+        };
+    }
+    function removeEditedInlineProperties(opening,properties){
+        const styleMatch=opening.match(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+        if(!styleMatch)return opening;
         const holder=document.createElement("span");
-        if(block)holder.setAttribute("style",source.slice(block.open+1,block.close));
+        holder.setAttribute("style",styleMatch[1]??styleMatch[2]??styleMatch[3]??"");
+        properties.forEach(property=>holder.style.removeProperty(property));
+        const remaining=holder.getAttribute("style")||"";
+        return remaining
+            ?opening.replace(styleMatch[0],' style="'+escapeHtmlAttribute(remaining)+'"')
+            :opening.replace(styleMatch[0],"");
+    }
+    function updateDedicatedCss(source,selector,styles){
+        const blocks=cssTopLevelBlocks(source);
+        const matching=blocks.filter(block=>norm(block.selector)===norm(selector));
+        const block=matching.length?matching[matching.length-1]:null;
+        const holder=document.createElement("span");
+        if(block)holder.style.cssText=source.slice(block.open+1,block.close);
         Object.entries(styles||{}).forEach(([property,value])=>{
             if(!VISUAL_PROPERTIES.has(property))return;
-            if(value===null||value===undefined||String(value)==="")holder.style.removeProperty(property);
-            else holder.style.setProperty(property,String(value));
+            if(value===null||value===undefined||String(value).trim()===""){
+                holder.style.removeProperty(property);
+                return;
+            }
+            const probe=document.createElement("span");
+            probe.style.setProperty(property,String(value));
+            const normalized=probe.style.getPropertyValue(property);
+            if(!normalized)throw new Error("مقدار CSS برای ویژگی «"+property+"» معتبر نیست.");
+            // setProperty بدون priority، !important قبلی همان ویژگی را نیز حذف می‌کند.
+            holder.style.setProperty(property,normalized);
         });
-        const declarations=holder.getAttribute("style")||"";
-        if(block){
-            const before=source.slice(0,block.open+1),after=source.slice(block.close);
-            return declarations?before+"\n    "+declarations+"\n"+after:before+after;
+        const declarations=[];
+        for(let i=0;i<holder.style.length;i++){
+            const property=holder.style.item(i);
+            const priority=holder.style.getPropertyPriority(property);
+            declarations.push("    "+property+": "+holder.style.getPropertyValue(property)+(priority?" !important":"")+";");
         }
-        if(!declarations)return source;
-        return source.replace(/\s*$/,"")+(source.trim()?"\n\n":"")+selector+" {\n    "+declarations+"\n}\n";
+        const rule=declarations.length?selector+" {\n"+declarations.join("\n")+"\n}":"";
+        if(block)return source.slice(0,block.start)+(rule||"")+source.slice(block.end);
+        if(!rule)return source;
+        return source.replace(/\s*$/,"")+(source.trim()?"\n\n":"")+"/* استایل ثبت‌شده از ویرایشگر بصری */\n"+rule+"\n";
     }
     function persistVisualStyles(selection,styles){
         const a=api();
-        if(!a||!a.getProject||!a.updateFileContent)throw new Error("اتصال ذخیره‌سازی پروژه آماده نیست.");
-        const project=a.getProject(),match=htmlSource(project.files,selection);
-        if(!match)throw new Error("کد HTML متناظر با این المان پیدا نشد؛ احتمالاً المان در JavaScript ساخته شده است. تغییرات زنده اعمال شده‌اند اما قابل ثبت نیستند.");
+        if(!a||!a.getProject||!a.updateFilesContent)throw new Error("اتصال ذخیره‌سازی دسته‌ای پروژه آماده نیست.");
+        const entries=Object.entries(styles||{}).filter(([property])=>VISUAL_PROPERTIES.has(property));
+        if(!entries.length)return true;
+        const project=a.getProject();
+        const match=htmlSource(project.files,selection);
+        if(!match)throw new Error("کد HTML متناظر با این المان پیدا نشد؛ احتمالاً المان در JavaScript ساخته شده است. تغییرات در کد اصلی قابل ثبت نیستند.");
         const htmlFile=project.files.find(item=>item.id===match.fileId);
-        const cssFile=project.files.find(item=>item.type==="css");
         if(!htmlFile||htmlFile.content!==match.source)throw new Error("کد HTML پس از انتخاب المان تغییر کرده است؛ انتخاب را دوباره انجام دهید.");
-        if(!cssFile)throw new Error("برای ثبت استایل‌ها، ابتدا یک فایل CSS به پروژه اضافه کنید.");
-        if(!Object.keys(styles||{}).some(property=>VISUAL_PROPERTIES.has(property)))throw new Error("هیچ ویژگی CSS معتبری برای ثبت وجود ندارد.");
-        const opening=htmlFile.content.slice(match.start,match.end);
-        const className=visualClassName({...selection,start:match.start,end:match.end},htmlFile);
-        const selector="."+className;
-        let updatedOpening=addClassToOpening(opening,className);
-        const inlineStyle=updatedOpening.match(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
-        if(inlineStyle){
-            const holder=document.createElement("span");
-            holder.setAttribute("style",inlineStyle[1]??inlineStyle[2]??inlineStyle[3]??"");
-            Object.keys(styles||{}).forEach(property=>{if(VISUAL_PROPERTIES.has(property))holder.style.removeProperty(property);});
-            const remaining=holder.getAttribute("style")||"";
-            updatedOpening=remaining?updatedOpening.replace(inlineStyle[0],' style="'+remaining.replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'"'):updatedOpening.replace(inlineStyle[0],"");
+        const cssFiles=project.files.filter(item=>item.type==="css");
+        if(!cssFiles.length)throw new Error("هیچ فایل CSS در پروژه وجود ندارد؛ ابتدا یک فایل CSS ایجاد کنید.");
+        const target=selectorCandidates(htmlFile,match,cssFiles);
+        const matchingCssFiles=cssFiles.slice().reverse().map(file=>({
+            file,
+            blocks:cssTopLevelBlocks(file.content).filter(block=>norm(block.selector)===norm(target.selector))
+        })).filter(item=>item.blocks.length);
+        const cssFile=matchingCssFiles.length
+            ?matchingCssFiles[0].file
+            :cssFiles.find(item=>item.id===project.lastActiveByLang?.css)||cssFiles[0];
+        const updatedCss=updateDedicatedCss(cssFile.content,target.selector,Object.fromEntries(entries));
+        const opening=removeEditedInlineProperties(target.opening,entries.map(([property])=>property));
+        const updatedHtml=htmlFile.content.slice(0,match.start)+opening+htmlFile.content.slice(match.end);
+        const updates=[{fileId:cssFile.id,expectedContent:cssFile.content,content:updatedCss}];
+        if(updatedHtml!==htmlFile.content){
+            updates.push({fileId:htmlFile.id,expectedContent:htmlFile.content,content:updatedHtml});
         }
-        const updatedHtml=htmlFile.content.slice(0,match.start)+updatedOpening+htmlFile.content.slice(match.end);
-        const updatedCss=updateDedicatedCss(cssFile.content,selector,styles);
-        const changedHtml=updatedHtml!==htmlFile.content;
-        const changedCss=updatedCss!==cssFile.content;
-        if(changedHtml&&!a.updateFileContent(htmlFile.id,updatedHtml))throw new Error("ذخیرهٔ کلاس اختصاصی در فایل HTML انجام نشد.");
-        if(changedCss&&!a.updateFileContent(cssFile.id,updatedCss)){
-            if(changedHtml)a.updateFileContent(htmlFile.id,htmlFile.content);
-            throw new Error("ذخیرهٔ قانون CSS ناموفق بود؛ تغییر HTML به وضعیت قبلی بازگردانده شد.");
-        }
+        if(!a.updateFilesContent(updates))throw new Error("ذخیرهٔ هم‌زمان تغییرات در فایل‌های CSS و HTML انجام نشد؛ فایل‌ها تغییر نکردند.");
         if(typeof a.refreshPreview==="function")a.refreshPreview();
         return true;
     }

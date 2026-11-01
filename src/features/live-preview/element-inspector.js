@@ -168,7 +168,7 @@
             if(found)return {selector,opening,createdClass:""};
         }
         if(candidates.length)return {selector:candidates[0],opening,createdClass:""};
-        const tagMatch=opening.match(/^<\\s*([A-Za-z][\\w:-]*)/);\n        const seed=[file.id,tagMatch?tagMatch[1].toLowerCase():"element",match.start,opening].join("|");
+        const tagMatch=opening.match(/^<\s*([A-Za-z][\w:-]*)/);\n        const seed=[file.id,tagMatch?tagMatch[1].toLowerCase():"element",match.start,opening].join("|");
         let hash=2166136261;
         for(let i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619);}
         const base="editor-visual-target-"+(hash>>>0).toString(36);

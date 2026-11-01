@@ -139,6 +139,10 @@ try {
   if (pickerLayout.width < 110 || pickerLayout.contentWidth > pickerLayout.width + 1) {
     throw new Error('آیکون و برچسب دکمهٔ ویرایش بصری باید داخل قاب دکمه جا شوند.');
   }
+  const h1IdentityBeforeCommit = await output.locator('h1').evaluate(node => ({
+    id: node.id,
+    classes: Array.from(node.classList || [])
+  }));
   await visualPicker.click();
   await output.locator('h1').click();
   await page.frameLocator('#visual-frame').locator('#externalTargetBar').waitFor({ timeout: 10000 });
@@ -183,9 +187,11 @@ try {
   if (!selectorMatchesTag) {
     throw new Error('قانون CSS باید از شناسه یا کلاس همان تگ HTML استفاده کند.');
   }
-  if (targetSelector.startsWith('.') && targetSelector.slice(1).startsWith('ev-') &&
-      !/^ev-h1(?:-[0-9]+)?$/.test(targetSelector.slice(1))) {
-    throw new Error('کلاس خودکار باید مخفف تگ انتخاب‌شده باشد؛ برای h1 نامی مانند ev-h1 انتظار می‌رود.');
+  if (!h1IdentityBeforeCommit.id && !h1IdentityBeforeCommit.classes.length) {
+    const generatedClass = classTokens.find(token => targetSelector === "." + token);
+    if (!generatedClass || !/^h1(?:-[0-9]+)?$/.test(generatedClass) || generatedClass.length > 5) {
+      throw new Error('کلاس خودکار باید خودِ مخفف کوتاه تگ باشد؛ برای h1 نامی مانند h1 یا h1-2 انتظار می‌رود.');
+    }
   }
   if ((cssAfterCommit.split(targetSelector + ' {').length - 1) !== 1) {
     throw new Error('برای المان انتخاب‌شده نباید قانون CSS تکراری ایجاد شود.');

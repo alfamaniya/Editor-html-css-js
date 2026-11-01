@@ -191,7 +191,11 @@ test('current standalone editor build copied into HTML tab extracts every bundle
     assert.ok(context.editors.js.ta.value.includes(result.js[0]),'Extracted JavaScript should reach the JS editor.');
     assert.match(context.editors.html.ta.value,/<!doctype\s+html/i);
     assert.match(context.editors.html.ta.value,/id="tab-html"/);
-    assert.equal(api.scanMarkupForPaste(context.editors.html.ta.value).blocks.length,0);
+    const pastedHtmlScan = api.scanMarkupForPaste(context.editors.html.ta.value);
+    assert.equal(pastedHtmlScan.blocks.length,1,'Pasted standalone HTML should retain only the guarded entry redirect.');
+    assert.ok(pastedHtmlScan.blocks.every((block) =>
+        block.name === 'script' && Object.prototype.hasOwnProperty.call(block.attrs, 'data-editor-entry-redirect')
+    ),'No bundled or unrelated script/style blocks should remain after paste processing.');
 });
 test('bundle metadata is allowed without allowing unrelated tag attributes',() => {
     assert.equal(api.extractPasteAssets('<style id="unexpected">a { color:red; }</style>'),null);

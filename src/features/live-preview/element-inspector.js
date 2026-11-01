@@ -145,7 +145,39 @@
         if(match)return opening.replace(match[0],' class="'+escaped+'"');
         return opening.replace(/(\/?)>$/,end=>' class="'+escaped+'"'+end);
     }
-    function selectorCandidates(file,match,cssFiles){
+    function visualTagAbbreviation(tagName){
+        const tag=String(tagName||"element").toLowerCase();
+        const known={
+            div:"dv",button:"btn",section:"sec",article:"art",header:"hdr",footer:"ftr",
+            main:"mn",aside:"as",nav:"nav",span:"sp",img:"img",input:"in",textarea:"ta",
+            select:"sel",option:"opt",label:"lbl",form:"frm",table:"tbl",figure:"fig",
+            figcaption:"fc",blockquote:"bq",iframe:"ifr",canvas:"cnv",video:"vid",
+            audio:"aud",picture:"pic",source:"src",details:"det",summary:"sum",
+            paragraph:"p",strong:"st",small:"sm",template:"tpl",dialog:"dlg"
+        };
+        if(known[tag])return known[tag];
+        const parts=tag.split(/[-:]+/).filter(Boolean);
+        const abbreviation=parts.length>1
+            ?parts.map(part=>part.charAt(0)).join("").slice(0,3)
+            :tag.replace(/[^a-z0-9]/g,"").slice(0,3);
+        return abbreviation||"el";
+    }
+    function usedVisualClasses(htmlFiles,cssFiles){
+        const used=new Set();
+        (htmlFiles||[]).forEach(htmlFile=>{
+            tags(htmlFile.content).forEach(tag=>{
+                if(tag.closing)return;
+                (attrs(tag.raw).class||"").split(/\s+/).filter(Boolean).forEach(name=>used.add(name));
+            });
+        });
+        (cssFiles||[]).forEach(cssFile=>{
+            const pattern=/(?:^|[^\w-])\.([a-zA-Z_][\w-]*)/g;
+            let match;
+            while((match=pattern.exec(cssFile.content)))used.add(match[1]);
+        });
+        return used;
+    }
+    function selectorCandidates(file,match,cssFiles,htmlFiles){
         const opening=file.content.slice(match.start,match.end);
         const current=attrs(opening);
         const records=tags(file.content).filter(tag=>!tag.closing).map(tag=>attrs(tag.raw));
@@ -168,12 +200,11 @@
             if(found)return {selector,opening,createdClass:""};
         }
         if(candidates.length)return {selector:candidates[0],opening,createdClass:""};
-        const tagMatch=opening.match(/^<\s*([A-Za-z][\w:-]*)/),seed=[file.id,tagMatch?tagMatch[1].toLowerCase():"element",match.start,opening].join("|");
-        let hash=2166136261;
-        for(let i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619);}
-        const base="editor-visual-target-"+(hash>>>0).toString(36);
-        let className=base,suffix=1;
-        while(records.some(record=>(record.class||"").split(/\s+/).includes(className))){
+        const tagMatch=opening.match(/^<\s*([A-Za-z][\w:-]*)/);
+        const base="ev-"+visualTagAbbreviation(tagMatch?tagMatch[1]:"element");
+        const used=usedVisualClasses(htmlFiles&&htmlFiles.length?htmlFiles:[file],cssFiles);
+        let className=base,suffix=2;
+        while(used.has(className)){
             className=base+"-"+suffix++;
         }
         return {
@@ -235,7 +266,8 @@
         if(!htmlFile||htmlFile.content!==match.source)throw new Error("کد HTML پس از انتخاب المان تغییر کرده است؛ انتخاب را دوباره انجام دهید.");
         const cssFiles=project.files.filter(item=>item.type==="css");
         if(!cssFiles.length)throw new Error("هیچ فایل CSS در پروژه وجود ندارد؛ ابتدا یک فایل CSS ایجاد کنید.");
-        const target=selectorCandidates(htmlFile,match,cssFiles);
+        const htmlFiles=project.files.filter(item=>item.type==="html");
+        const target=selectorCandidates(htmlFile,match,cssFiles,htmlFiles);
         const matchingCssFiles=cssFiles.slice().reverse().map(file=>({
             file,
             blocks:cssTopLevelBlocks(file.content).filter(block=>norm(block.selector)===norm(target.selector))

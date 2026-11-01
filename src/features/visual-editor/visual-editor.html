@@ -95,16 +95,21 @@
           </div>
           <button class="btn-icon" id="deleteComponentBtn" title="حذف جزء" aria-label="حذف جزء">🗑</button>
         </div>
-        <section class="props-section">
-          <h4>ظاهر</h4>
+        <nav class="props-tabs" role="tablist" aria-label="دسته‌بندی تنظیمات">
+          <button type="button" class="props-tab active" id="propsTabStyle" role="tab" aria-selected="true" aria-controls="stylePane" data-props-tab="style">ظاهر</button>
+          <button type="button" class="props-tab" id="propsTabHover" role="tab" aria-selected="false" aria-controls="hoverPane" data-props-tab="hover">Hover</button>
+          <button type="button" class="props-tab" id="propsTabJs" role="tab" aria-selected="false" aria-controls="jsPane" data-props-tab="js">JavaScript</button>
+        </nav>
+        <section class="props-section props-pane" id="stylePane" role="tabpanel" aria-labelledby="propsTabStyle" data-props-pane="style">
+          <h4>تنظیمات ظاهری</h4>
           <div id="styleControls"></div>
         </section>
-        <section class="props-section">
-          <h4>حالتِ شناور</h4>
+        <section class="props-section props-pane" id="hoverPane" role="tabpanel" aria-labelledby="propsTabHover" data-props-pane="hover" hidden>
+          <h4>تنظیمات حالت شناور</h4>
           <div id="hoverControls"></div>
         </section>
-        <section class="props-section">
-          <h4>تعامل‌ها</h4>
+        <section class="props-section props-pane" id="jsPane" role="tabpanel" aria-labelledby="propsTabJs" data-props-pane="js" hidden>
+          <h4>تنظیمات JavaScript</h4>
           <div id="actionList"></div>
           <button class="add-action-btn" id="addActionBtn">＋ افزودن تعامل</button>
         </section>

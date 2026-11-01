@@ -184,7 +184,7 @@ try {
     throw new Error('قانون CSS باید از شناسه یا کلاس همان تگ HTML استفاده کند.');
   }
   if (targetSelector.startsWith('.') && targetSelector.slice(1).startsWith('ev-') &&
-      !/^ev-h1(?:-\\d+)?$/.test(targetSelector.slice(1))) {
+      !/^ev-h1(?:-[0-9]+)?$/.test(targetSelector.slice(1))) {
     throw new Error('کلاس خودکار باید مخفف تگ انتخاب‌شده باشد؛ برای h1 نامی مانند ev-h1 انتظار می‌رود.');
   }
   if ((cssAfterCommit.split(targetSelector + ' {').length - 1) !== 1) {

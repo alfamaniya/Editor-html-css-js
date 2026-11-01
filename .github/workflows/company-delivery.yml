@@ -16,11 +16,11 @@ jobs:
   send:
     name: اعتبارسنجی و ارسال فایل یکپارچه
     if: inputs.confirm_send == true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     steps:
       - name: دریافت نسخهٔ ثبت‌شده در مخزن
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
@@ -96,7 +96,7 @@ jobs:
           printf 'to=%s\n' "$recipients" >> "$GITHUB_OUTPUT"
 
       - name: ارسال کد کامل در متن ایمیل
-        uses: dawidd6/action-send-mail@v4
+        uses: dawidd6/action-send-mail@v24
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
           server_port: ${{ secrets.SMTP_PORT }}

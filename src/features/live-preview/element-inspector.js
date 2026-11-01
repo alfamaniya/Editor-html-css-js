@@ -77,7 +77,7 @@
     function visualClassName(selection,file){
         const opening=file.content.slice(selection.start,selection.end);
         const existing=attrs(opening).class||"";
-        const prior=existing.split(/\\s+/).find(name=>/^editor-visual-target-[a-z0-9-]+$/i.test(name));
+        const prior=existing.split(/\s+/).find(name=>/^editor-visual-target-[a-z0-9-]+$/i.test(name));
         if(prior)return prior;
         const seed=[file.id,selection.tag,selection.tagOrdinal,selection.id||"",...(selection.classes||[])].join("|");
         let hash=2166136261;
@@ -85,13 +85,13 @@
         return "editor-visual-target-"+(hash>>>0).toString(36);
     }
     function addClassToOpening(opening,className){
-        const match=opening.match(/\\sclass\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))/i);
+        const match=opening.match(/\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
         const current=match?(match[1]??match[2]??match[3]??"").trim():"";
-        if(current.split(/\\s+/).includes(className))return opening;
+        if(current.split(/\s+/).includes(className))return opening;
         const value=(current?current+" ":"")+className;
         const escaped=value.replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
         if(match)return opening.replace(match[0],' class="'+escaped+'"');
-        return opening.replace(/\\/?>$/,end=>' class="'+escaped+'"'+end);
+        return opening.replace(/(\/?)>$/,end=>' class="'+escaped+'"'+end);
     }
     function updateDedicatedCss(source,selector,styles){
         const blocks=[];
@@ -107,10 +107,10 @@
         const declarations=holder.getAttribute("style")||"";
         if(block){
             const before=source.slice(0,block.open+1),after=source.slice(block.close);
-            return declarations?before+"\\n    "+declarations+"\\n"+after:before+after;
+            return declarations?before+"\n    "+declarations+"\n"+after:before+after;
         }
         if(!declarations)return source;
-        return source.replace(/\\s*$/,"")+(source.trim()?"\\n\\n":"")+selector+" {\\n    "+declarations+"\\n}\\n";
+        return source.replace(/\s*$/,"")+(source.trim()?"\n\n":"")+selector+" {\n    "+declarations+"\n}\n";
     }
     function persistVisualStyles(selection,styles){
         const a=api();
@@ -126,7 +126,7 @@
         const className=visualClassName({...selection,start:match.start,end:match.end},htmlFile);
         const selector="."+className;
         let updatedOpening=addClassToOpening(opening,className);
-        const inlineStyle=updatedOpening.match(/\\sstyle\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))/i);
+        const inlineStyle=updatedOpening.match(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
         if(inlineStyle){
             const holder=document.createElement("span");
             holder.setAttribute("style",inlineStyle[1]??inlineStyle[2]??inlineStyle[3]??"");
@@ -136,7 +136,6 @@
         }
         const updatedHtml=htmlFile.content.slice(0,match.start)+updatedOpening+htmlFile.content.slice(match.end);
         const updatedCss=updateDedicatedCss(cssFile.content,selector,styles);
-        if(updatedCss===cssFile.content&&!updatedOpening.includes(className))throw new Error("هیچ تغییری برای ثبت وجود ندارد.");
         const changedHtml=updatedHtml!==htmlFile.content;
         const changedCss=updatedCss!==cssFile.content;
         if(changedHtml&&!a.updateFileContent(htmlFile.id,updatedHtml))throw new Error("ذخیرهٔ کلاس اختصاصی در فایل HTML انجام نشد.");

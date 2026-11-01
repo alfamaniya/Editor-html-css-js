@@ -20,7 +20,7 @@
 <div class="app">
 
   <!-- ============ LEFT : CODE EDITOR ============ -->
-  <section class="editor-panel">
+  <section class="editor-panel" id="codeEditorPanel" aria-label="پنجرهٔ ویرایش کد">
     <div class="tabs">
       <button class="tab active" data-lang="html">index.html</button>
       <button class="tab" data-lang="css">style.css</button>
@@ -53,7 +53,10 @@
           <span>ساخت و ویرایش رابط کاربری</span>
         </div>
       </div>
-      <span class="workspace-mode"><span class="mode-dot" aria-hidden="true"></span>پیش‌نمایش زنده</span>
+      <div class="workspace-header-actions">
+        <span class="workspace-mode"><span class="mode-dot" aria-hidden="true"></span>پیش‌نمایش زنده</span>
+        <button type="button" id="toggleCodePanelBtn" class="code-panel-toggle" aria-controls="codeEditorPanel" aria-expanded="true">مخفی‌کردن کد</button>
+      </div>
     </header>
     <section class="palette-library" aria-label="کتابخانهٔ اجزا">
       <div class="palette-toolbar">
@@ -110,8 +113,9 @@
         </section>
         <section class="props-section props-pane" id="jsPane" role="tabpanel" aria-labelledby="propsTabJs" data-props-pane="js" hidden>
           <h4>تنظیمات JavaScript</h4>
+          <p class="props-help">یک رفتار آماده انتخاب کنید یا تعامل دلخواه بسازید. کد JavaScript در پنجرهٔ کد قابل مشاهده و ویرایش است.</p>
           <div id="actionList"></div>
-          <button class="add-action-btn" id="addActionBtn">＋ افزودن تعامل</button>
+          <button class="add-action-btn" id="addActionBtn">＋ افزودن تعامل پیش‌فرض</button>
         </section>
       </aside>
     </div>

@@ -164,8 +164,13 @@ try {
   }
   if (liveFontSize !== '40px') throw new Error('پس از ثبت، اندازهٔ متن در پیش‌نمایش اصلی باقی نماند.');
   const htmlAfterCommit = await editor.locator('#panel-html textarea').inputValue();
-  if (!/font-size:\\s*40px/i.test(htmlAfterCommit) || /font-size:\\s*40px\\s*!important/i.test(htmlAfterCommit)) {
-    throw new Error('تغییر بصری باید بدون !important در کد HTML اصلی ذخیره شود.');
+  const cssAfterCommit = await editor.locator('#panel-css textarea').inputValue();
+  const visualClass = htmlAfterCommit.match(/class="([^"]*editor-visual-target-[a-z0-9-]+[^"]*)"/i)?.[1].match(/editor-visual-target-[a-z0-9-]+/i)?.[0];
+  if (!visualClass || !new RegExp('\\\\.' + visualClass + '\\\\s*\\\\{[^}]*font-size:\\\\s*40px', 'i').test(cssAfterCommit)) {
+    throw new Error('تغییر بصری باید با کلاس اختصاصی در فایل CSS ثبت شود.');
+  }
+  if (/font-size:\\s*40px/i.test(htmlAfterCommit) || /style\\s*=/.test(htmlAfterCommit.match(/<h1\\b[^>]*>/i)?.[0] || '')) {
+    throw new Error('ثبت تغییر ظاهری نباید ویژگی style را به تگ HTML اضافه کند.');
   }
 
   // A second edit must be reversible without changing the source HTML.
@@ -209,8 +214,9 @@ try {
   }
   if (restoredFontSize !== '40px') throw new Error('انصراف از ویرایش، استایل قبلی المان را بازنگرداند.');
   const htmlAfterCancel = await editor.locator('#panel-html textarea').inputValue();
-  if (!/font-size:\\s*40px/i.test(htmlAfterCancel) || /font-size:\\s*(?:40|55)px\\s*!important/i.test(htmlAfterCancel)) {
-    throw new Error('انصراف نباید کد ذخیره‌شده را تغییر دهد یا !important اضافه کند.');
+  const cssAfterCancel = await editor.locator('#panel-css textarea').inputValue();
+  if (htmlAfterCancel !== htmlAfterCommit || cssAfterCancel !== cssAfterCommit) {
+    throw new Error('انصراف نباید فایل‌های HTML و CSS ثبت‌شده را تغییر دهد.');
   }
 
   if (runtimeErrors.length) throw new Error('خطای زمان اجرا: ' + runtimeErrors.join(' | '));

@@ -151,7 +151,14 @@ test('current standalone editor build copied into HTML tab extracts every bundle
     assert.match(result.html,/id="tab-html"/);
     const remaining = api.scanMarkupForPaste(result.html);
     assert.equal(remaining.invalid,false,'The remaining HTML should remain parseable.');
-    assert.equal(remaining.blocks.length,0,'No bundled style/script blocks should remain in HTML.');
+    const retainedEntryScripts = remaining.blocks.filter((block) =>
+        block.name === 'script' && Object.prototype.hasOwnProperty.call(block.attrs, 'data-editor-entry-redirect')
+    );
+    assert.equal(remaining.blocks.length,retainedEntryScripts.length,
+        'Only the marked application entry redirect may remain in the standalone HTML.');
+    assert.equal(retainedEntryScripts.length,1,'The standalone HTML should retain its guarded entry redirect script.');
+    assert.match(result.html,/<script\\b[^>]*data-editor-entry-redirect/i,
+        'The guarded entry redirect must remain in HTML rather than being moved into the project JavaScript tab.');
     assert.ok(result.js[0].includes('htmlTags'),'The first script should remain in original bundle order.');
     assert.ok(result.js.some((code) => code.includes('window.EditorSearchHeader')),
         'The final bundled module should not be lost during extraction.');

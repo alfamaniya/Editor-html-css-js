@@ -4,7 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML / CSS / JS Editor</title>
-<link rel="stylesheet" href="style.css">
+    <script data-editor-entry-redirect>
+        (function () {
+            if (window.parent !== window || !/^https?:$/.test(window.location.protocol)) return;
+            var target = new URL('editor%20v.html', window.location.href);
+            if (target.pathname === window.location.pathname) return;
+            fetch(target.href, { method: 'HEAD', cache: 'no-store', credentials: 'same-origin' })
+                .then(function (response) {
+                    if (response.ok && window.parent === window) window.location.replace(target.href);
+                })
+                .catch(function () {});
+        })();
+    </script>
+    <style>
+        .visual-editor-pick-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 116px;
+            padding-inline: 12px;
+            white-space: nowrap;
+            font-weight: 650;
+        }
+        .visual-editor-pick-icon {
+            display: block;
+            flex: 0 0 18px;
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .visual-editor-pick-button[aria-pressed="true"] {
+            border-color: #a78bfa;
+            background: linear-gradient(135deg, #6d28d9, #4f46e5);
+            color: #fff;
+            box-shadow: 0 0 0 2px rgb(167 139 250 / 22%);
+        }
+        .visual-editor-pick-button:focus-visible {
+            outline: 2px solid #c4b5fd;
+            outline-offset: 3px;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="src/features/quick-insert/quick-insert.css">
     <link rel="stylesheet" href="src/features/workspace/toolbar/toolbar-sidebar.css">
     <link rel="stylesheet" href="src/features/workspace/file-manager/file-manager.css">
@@ -23,10 +68,15 @@
             <div class="workspace-history-controls" role="group" aria-label="تاریخچه ویرایش">
                 <button type="button" class="header-history-button" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="بازگشت">↶</button>
                 <button type="button" class="header-history-button" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="انجام دوباره">↷</button>
-<span class="dirty header-dirty-badge" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
+                <button type="button" class="header-history-button visual-editor-pick-button" id="btnVisualEditorPick" title="انتخاب المان از پیش‌نمایش و بازکردن Visual Editor" aria-label="انتخاب المان برای ویرایش بصری" aria-pressed="false"><svg class="visual-editor-pick-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/></svg><span>ویرایش بصری</span></button>
+                <span class="dirty header-dirty-badge" id="dirtyBadge" hidden>● تغییرات ذخیره‌نشده</span>
             </div>
         </div>
-<div class="workspace-header-side workspace-header-side-end">
+        <nav class="app-menu-bar" aria-label="ابزارهای ویرایشگر">
+            <a class="app-menu-trigger" href="src/features/visual-editor/visual-editor.html" target="_blank" rel="noopener noreferrer"
+               aria-label="باز کردن محیط طراحی بصری در زبانهٔ جدید" title="باز کردن محیط طراحی بصری">Visual Editor Page</a>
+        </nav>
+        <div class="workspace-header-side workspace-header-side-end">
             <div class="workspace-search" id="workspaceSearch">
                 <button type="button" class="workspace-search-toggle" id="searchExpandButton"
                         aria-controls="searchPanel" aria-expanded="false" aria-label="باز کردن جست‌وجو" title="جست‌وجو در کد">
@@ -55,7 +105,11 @@
                     aria-controls="toolbarSidebar" aria-expanded="false" aria-label="باز کردن سایدبار ابزارها" title="باز کردن سایدبار ابزارها">
                 <span class="menu-glyph" aria-hidden="true"></span>
             </button>
-</div>
+            <nav class="workspace-mode-switch" id="workspaceModeSwitch" aria-label="انتخاب محیط ویرایش" hidden>
+                <button type="button" class="workspace-mode-button" data-workspace-mode="editor" aria-pressed="true">ویرایشگر اصلی</button>
+                <button type="button" class="workspace-mode-button" data-workspace-mode="visual" aria-pressed="false">ویرایشگر بصری</button>
+            </nav>
+        </div>
     </header>
 
     <header class="page-symbol-header" aria-label="Popular code quick inserts">
@@ -733,7 +787,8 @@
     <script src="src/features/suggestions/data/js-suggestions.js"></script>
     <script src="src/features/suggestions/manager/suggestion-manager.js"></script>
     <script src="src/features/suggestions/next-word/next-word-suggestions.js"></script>
-<script src="src/features/quick-insert/quick-insert.js"></script>
+        <script src="src/features/live-preview/element-inspector.js"></script>
+    <script src="src/features/quick-insert/quick-insert.js"></script>
     <script src="src/features/workspace/toolbar/toolbar-sidebar.js"></script>
     <script src="src/features/workspace/file-manager/file-manager.js"></script>
     <script src="script.js"></script>
@@ -746,5 +801,25 @@
     <script src="locales/en.js"></script>
     <script src="locales/fa.js"></script>
     <script src="src/shared/i18n/i18n.js"></script>
+    <script>
+        (function () {
+            const modeSwitch = document.getElementById('workspaceModeSwitch');
+            if (!modeSwitch) return;
+            modeSwitch.addEventListener('click', function (event) {
+                const button = event.target.closest('[data-workspace-mode]');
+                if (!button || window.parent === window) return;
+                window.parent.postMessage({ editorVSwitch: button.dataset.workspaceMode }, '*');
+            });
+            window.addEventListener('message', function (event) {
+                if (event.source !== window.parent || !event.data) return;
+                const target = event.data.editorVSetMode;
+                if (target !== 'editor' && target !== 'visual') return;
+                modeSwitch.hidden = false;
+                modeSwitch.querySelectorAll('[data-workspace-mode]').forEach(function (button) {
+                    button.setAttribute('aria-pressed', String(button.dataset.workspaceMode === target));
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

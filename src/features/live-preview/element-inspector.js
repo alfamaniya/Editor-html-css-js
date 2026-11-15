@@ -1,0 +1,321 @@
+/* ابزار مستقل انتخاب المان از پیش‌نمایش و یافتن سورس */
+(function () {
+    'use strict';
+    const HOOK = [
+        '<script>',
+        '(function(){ "use strict"; var active=false, style=null, tip=null;',
+        'function ui(){ if(!style){style=document.createElement("style");style.textContent="body.ei-active *:hover{outline:2px solid #f59e0b!important;outline-offset:1px!important;cursor:crosshair!important}#ei-tip{position:fixed;z-index:2147483647;max-width:90vw;padding:6px 9px;border-radius:6px;background:#111827;color:#fff;font:12px/1.5 monospace;pointer-events:none;overflow-wrap:anywhere}";document.head.appendChild(style);} if(!tip){tip=document.createElement("div");tip.id="ei-tip";tip.hidden=true;document.body.appendChild(tip);} }',
+        'function mode(value){active=!!value;if(active){ui();document.body.classList.add("ei-active");tip.hidden=false;}else{document.body.classList.remove("ei-active");if(tip)tip.hidden=true;}}',
+        'function target(e){var n=e.target;while(n&&n.nodeType!==1)n=n.parentElement;if(!n||n===document.documentElement||/^(SCRIPT|STYLE|META|LINK|TITLE|HEAD)$/i.test(n.tagName)||n.id==="ei-tip")return null;return n;}',
+        'function info(n){var p=[],c=n,depth=0;while(c&&c.nodeType===1&&depth++<12){var i=0,s=c.previousElementSibling;while(s){if(s.tagName===c.tagName)i++;s=s.previousElementSibling;}p.unshift({tag:c.tagName.toLowerCase(),id:c.id||"",classes:Array.from(c.classList||[]),index:i});if(c===document.body)break;c=c.parentElement;}var t=String(n.textContent||"").replace(/\\s+/g," ").trim();return{tag:n.tagName.toLowerCase(),id:n.id||"",classes:Array.from(n.classList||[]),tagOrdinal:Array.prototype.indexOf.call(document.getElementsByTagName(n.tagName),n),path:p,text:t.slice(0,150)};}',
+        'function css(n){var out=[],seen=Object.create(null);function visit(rs){if(!rs)return;for(var i=0;i<rs.length&&out.length<100;i++){var r=rs[i];try{if(r.selectorText&&r.style&&n.matches(r.selectorText)){if(!seen[r.selectorText]){seen[r.selectorText]=1;out.push(r.selectorText);}}else if(r.cssRules)visit(r.cssRules);}catch(x){try{if(r.cssRules)visit(r.cssRules);}catch(y){}}}}for(var i=0;i<document.styleSheets.length;i++){try{visit(document.styleSheets[i].cssRules);}catch(x){}}return out;}',
+        'window.addEventListener("message",function(e){if(e.source===parent&&e.data&&Object.prototype.hasOwnProperty.call(e.data,"editorElementInspectorMode"))mode(e.data.editorElementInspectorMode);});',
+        'document.addEventListener("pointermove",function(e){if(!active)return;ui();var n=target(e);if(!n){tip.hidden=true;return;}var d=info(n),s="<"+d.tag+">"+(d.id?"  #"+d.id:"")+(d.classes.length?"  ."+d.classes.join("."):"");tip.textContent=s;tip.hidden=false;tip.style.left=Math.max(4,Math.min(e.clientX+12,innerWidth-220))+"px";tip.style.top=Math.max(4,Math.min(e.clientY+14,innerHeight-60))+"px";},true);',
+        'document.addEventListener("click",function(e){if(!active)return;var n=target(e);if(!n)return;e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();var d=info(n);d.cssSelectors=css(n);mode(false);try{parent.postMessage({editorElementInspectorSelection:d},"*");}catch(x){}},true);',
+        '})();',
+        '</script>'
+    ].join('\n');
+    window.EditorElementInspectorPreviewHook = HOOK;
+    const VISUAL_HOOK = [
+        '<script>',
+        '(function(){ "use strict"; var active=false,style=null,tip=null,selected=null,originalStyle=null,sessionId=null;',
+        'var allowed=["color","background-color","font-size","font-weight","font-family","text-align","line-height","letter-spacing","width","height","min-width","max-width","min-height","max-height","margin","padding","border","border-radius","display","opacity"];',
+        'function ui(){if(!style){style=document.createElement("style");style.textContent="html.editor-visual-pick-active *:hover{outline:2px solid #7c3aed!important;outline-offset:2px!important;cursor:crosshair!important}#editor-visual-pick-tip{position:fixed;z-index:2147483647;max-width:90vw;padding:6px 9px;border-radius:6px;background:#312e81;color:#fff;font:12px/1.5 monospace;pointer-events:none;overflow-wrap:anywhere}";document.head.appendChild(style);}if(!tip){tip=document.createElement("div");tip.id="editor-visual-pick-tip";tip.hidden=true;document.body.appendChild(tip);}}',
+        'function mode(value){active=!!value;if(active)ui();document.documentElement.classList.toggle("editor-visual-pick-active",active);if(tip)tip.hidden=!active;}',
+        'function target(e){var n=e.target;while(n&&n.nodeType!==1)n=n.parentElement;if(!n||n===document.documentElement||n===document.body||/^(SCRIPT|STYLE|META|LINK|TITLE|HEAD)$/i.test(n.tagName)||n.id==="editor-visual-pick-tip")return null;return n;}',
+        'function details(n){var styles={},computed=getComputedStyle(n);allowed.forEach(function(property){styles[property]=computed.getPropertyValue(property);});var rect=n.getBoundingClientRect();return{sessionId:"ve-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9),tag:n.tagName.toLowerCase(),id:n.id||"",classes:Array.from(n.classList||[]),tagOrdinal:Array.prototype.indexOf.call(document.getElementsByTagName(n.tagName),n),text:String(n.textContent||"").replace(/\\s+/g," ").trim().slice(0,180),outerHTML:n.outerHTML,computedStyle:styles,bounds:{x:rect.x,y:rect.y,width:rect.width,height:rect.height}};}',
+        'window.addEventListener("message",function(e){if(e.source!==parent||!e.data)return;var d=e.data;if(Object.prototype.hasOwnProperty.call(d,"editorVisualEditorMode"))mode(d.editorVisualEditorMode);var update=d.editorVisualEditorApplyStyle;if(update){var accepted=!!(selected&&update.sessionId===sessionId&&allowed.indexOf(update.property)>=0);if(accepted){if(update.value)selected.style.setProperty(update.property,String(update.value));else selected.style.removeProperty(update.property);parent.postMessage({editorVisualEditorStyleApplied:{sessionId:sessionId,property:update.property,value:update.value}},"*");}else{parent.postMessage({editorVisualEditorStyleRejected:{receivedSessionId:update.sessionId,activeSessionId:sessionId,property:update.property,hasSelected:!!selected}},"*");}}var cancel=d.editorVisualEditorCancel;if(cancel&&selected&&cancel.sessionId===sessionId){if(originalStyle===null)selected.removeAttribute("style");else selected.setAttribute("style",originalStyle);selected=null;originalStyle=null;sessionId=null;}});',
+        'document.addEventListener("pointermove",function(e){if(!active)return;ui();var n=target(e);if(!n){tip.hidden=true;return;}tip.textContent="<"+n.tagName.toLowerCase()+">"+(n.id?"  #"+n.id:"")+(n.classList.length?"  ."+Array.from(n.classList).join("."):"");tip.hidden=false;tip.style.left=Math.max(4,Math.min(e.clientX+12,innerWidth-260))+"px";tip.style.top=Math.max(4,Math.min(e.clientY+14,innerHeight-60))+"px";},true);',
+        'document.addEventListener("click",function(e){if(!active)return;var n=target(e);if(!n)return;e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(n.outerHTML.length>100000){mode(false);parent.postMessage({editorVisualEditorSelectionError:"این المان برای ویرایش بصری بیش از حد بزرگ است."},"*");return;}selected=n;originalStyle=n.getAttribute("style");var info=details(n);sessionId=info.sessionId;mode(false);parent.postMessage({editorVisualEditorSelection:info},"*");},true);',
+        '})();',
+        '<\/script>'
+    ].join("\n");
+    window.EditorVisualEditorPreviewHook = VISUAL_HOOK;
+    const frame = document.getElementById('output');
+    const historyControls = document.querySelector('.workspace-history-controls');
+    let active = false, dialog = null, pickButton = null, cancelButton = null;
+    const decorations = Object.create(null);
+    let navigatorPanel = null;
+    let visualPickerActive = false, visualPickerButton = null, visualSelection = null, visualChanges = Object.create(null);
+    const labels = {html:'HTML',css:'CSS',js:'JavaScript'};
+    const api = function(){return window.EditorElementInspectorAPI||null;};
+    function tell(message){const a=api();if(a&&a.showMessage)a.showMessage(message,'info');}
+    function mode(value){active=!!value;if(pickButton){pickButton.textContent='🎯';pickButton.title=active?'در حال انتخاب؛ برای خروج از حالت انتخاب، «لغو انتخاب» را بزنید.':'انتخاب یک المان از پیش‌نمایش و یافتن کد متناظر';pickButton.setAttribute('aria-label',active?'انتخاب المان (فعال)':'انتخاب المان');pickButton.setAttribute('aria-pressed',String(active));pickButton.classList.toggle('element-inspector-button-active',active);}if(cancelButton)cancelButton.hidden=!active;if(frame&&frame.contentWindow){try{frame.contentWindow.postMessage({editorElementInspectorMode:active},'*');}catch(e){}}}
+    function button(id,text,title){const b=document.createElement('button');b.type='button';b.id=id;b.textContent=text;b.title=title;return b;}
+    function line(source,pos){return source.slice(0,pos).split('\n').length;}
+    function escaped(text){return String(text).replace(/[-\/\\^$*+?.()|[\]{}]/g,'\\$&');}
+    function tagEnd(text,start){let q='';for(let i=start+1;i<text.length;i++){const c=text[i];if(q){if(c===q)q='';}else if(c==='"'||c==="'")q=c;else if(c==='>')return i;}return-1;}
+    function tags(source){const text=String(source||''),out=[];let i=0;while(i<text.length){const s=text.indexOf('<',i);if(s<0)break;if(text.slice(s,s+4)==='<!--'){const e=text.indexOf('-->',s+4);i=e<0?text.length:e+3;continue;}const e=tagEnd(text,s);if(e<0)break;const raw=text.slice(s,e+1),m=raw.match(/^<\s*(\/?)\s*([A-Za-z][\w:-]*)/);if(!m){i=e+1;continue;}const t={name:m[2].toLowerCase(),closing:!!m[1],start:s,end:e+1,raw:raw,selfClosing:/\/\s*>$/.test(raw)};out.push(t);i=e+1;if(!t.closing&&!t.selfClosing&&/^(script|style|textarea|title|xmp|iframe|noembed|noframes|plaintext)$/.test(t.name)){const rx=new RegExp('</\\s*'+t.name+'\\s*>','ig');rx.lastIndex=i;const close=rx.exec(text);if(close)i=close.index;else break;}}return out;}
+    function attrs(raw){const out=Object.create(null),m=raw.match(/^<\s*\/?\s*[^\s/>]+/);let i=m?m[0].length:1;while(i<raw.length-1){while(i<raw.length-1&&/[\s/]/.test(raw[i]))i++;const s=i;while(i<raw.length-1&&!/[\s=/>]/.test(raw[i]))i++;if(i===s){i++;continue;}const name=raw.slice(s,i).toLowerCase();while(i<raw.length-1&&/\s/.test(raw[i]))i++;let value='';if(raw[i]==='='){i++;while(i<raw.length-1&&/\s/.test(raw[i]))i++;if(raw[i]==='"'||raw[i]==="'"){const q=raw[i++],v=i;while(i<raw.length-1&&raw[i]!==q)i++;value=raw.slice(v,i);i++;}else{const v=i;while(i<raw.length-1&&!/[\s>]/.test(raw[i]))i++;value=raw.slice(v,i);}}if(!(name in out))out[name]=value;}return out;}
+    const voids=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+    function htmlSource(files,el){const records=[],ids=[];(files||[]).filter(f=>f.type==='html').forEach(f=>tags(f.content).forEach(t=>{if(t.closing)return;const a=attrs(t.raw),r={file:f,tag:t,attrs:a};records.push(r);if(el.id&&a.id===el.id&&t.name===el.tag)ids.push(r);}));const same=records.filter(r=>r.tag.name===el.tag),ord=same[el.tagOrdinal],score=r=>(el.classes||[]).filter(c=>(r.attrs.class||'').split(/\s+/).includes(c)).length;let pick=ids.length===1?ids[0]:null;if(!pick&&ord&&(!(el.classes||[]).length||score(ord)))pick=ord;if(!pick&&ids.length)pick=ids[0];if(!pick&&same.length){same.sort((a,b)=>score(b)-score(a));if(!(el.classes||[]).length||score(same[0]))pick=same[0];}if(!pick)return null;const ts=tags(pick.file.content),at=ts.findIndex(t=>!t.closing&&t.start===pick.tag.start);let close=null;if(!pick.tag.selfClosing&&!voids.has(pick.tag.name)&&at>=0){let depth=1;for(let i=at+1;i<ts.length;i++){if(ts[i].name!==pick.tag.name)continue;if(ts[i].closing)depth--;else if(!ts[i].selfClosing)depth++;if(depth===0){close=ts[i];break;}}}const marks=[{start:pick.tag.start,end:pick.tag.end,className:'element-inspector-range'}];if(close)marks.push({start:close.start,end:close.end,className:'element-inspector-pair'});return{lang:'html',fileId:pick.file.id,start:pick.tag.start,end:pick.tag.end,source:pick.file.content,decorations:marks,line:line(pick.file.content,pick.tag.start),description:close?'تگ باز و بسته شناسایی شد':'تگ باز شناسایی شد'};}
+    function cssBlocks(source,start,end,out){let segment=start,i=start;while(i<end){const c=source[i];if(c==='/'&&source[i+1]==='*'){const e=source.indexOf('*/',i+2);i=e<0||e>=end?end:e+2;continue;}if(c==='"'||c==="'"){const q=c;i++;while(i<end){if(source[i]==='\\'){i+=2;continue;}if(source[i++]===q)break;}continue;}if(c===';'||c==='}')segment=i+1;if(c!=='{'){i++;continue;}let depth=1,q='',j=i+1;while(j<end&&depth){const x=source[j];if(q){if(x==='\\'){j+=2;continue;}if(x===q)q='';}else if(x==='"'||x==="'")q=x;else if(x==='/'&&source[j+1]==='*'){const e=source.indexOf('*/',j+2);j=e<0||e>=end?end:e+2;continue;}else if(x==='{')depth++;else if(x==='}')depth--;j++;}if(depth)break;const head=source.slice(segment,i).trim(),ws=source.slice(segment,i).search(/\S/),begin=ws<0?segment:segment+ws;if(head.charAt(0)==='@')cssBlocks(source,i+1,j-1,out);else if(head)out.push({selector:head,start:begin,end:j,open:i,close:j-1});i=j;segment=j;}}
+    function norm(s){return String(s||'').replace(/\s+/g,' ').replace(/\s*([>+~,:])\s*/g,'$1').trim();}
+    function cssSource(files,el){const wanted=(el.cssSelectors||[]).map(norm),found=[];if(!wanted.length)return null;(files||[]).filter(f=>f.type==='css').forEach(f=>{const out=[];cssBlocks(f.content,0,f.content.length,out);out.forEach(b=>{if(wanted.some(w=>b.selector.split(',').some(s=>norm(s)===w)))found.push({file:f,block:b});});});if(!found.length)return null;const f=found[0].file,items=found.filter(x=>x.file.id===f.id),first=items[0].block,marks=[];items.forEach((x,i)=>{marks.push({start:x.block.start,end:x.block.end,className:i?'element-inspector-related-range':'element-inspector-range'},{start:x.block.open,end:x.block.open+1,className:'element-inspector-pair'},{start:x.block.close,end:x.block.close+1,className:'element-inspector-pair'});});const matches=found.map(x=>({fileId:x.file.id,source:x.file.content,start:x.block.start,end:x.block.end,decorations:[{start:x.block.start,end:x.block.end,className:'element-inspector-range'},{start:x.block.open,end:x.block.open+1,className:'element-inspector-pair'},{start:x.block.close,end:x.block.close+1,className:'element-inspector-pair'}]}));matches.forEach(m=>{m.fileDecorations=matches.filter(x=>x.fileId===m.fileId).flatMap(x=>[{start:x.start,end:x.end,className:x.start===first.start&&x.fileId===f.id?'element-inspector-range':'element-inspector-related-range'},...(x.decorations||[]).filter(y=>y.className==='element-inspector-pair')]);});return{lang:'css',fileId:f.id,start:first.start,end:first.end,source:f.content,decorations:marks,line:line(f.content,first.start),count:found.length,matches,description:'قانون CSS قابل‌تطبیق پیدا شد'};}
+    function closingDelimiter(source,start,opening,closing){let depth=0,q='',single=false,block=false;for(let i=start;i<source.length;i++){const c=source[i],n=source[i+1];if(single){if(c==='\n')single=false;continue;}if(block){if(c==='*'&&n==='/'){block=false;i++;}continue;}if(q){if(c==='\\'){i++;continue;}if(c===q)q='';continue;}if(c==='/'&&n==='/'){single=true;i++;continue;}if(c==='/'&&n==='*'){block=true;i++;continue;}if(c==='"'||c==="'"||c.charCodeAt(0)===96){q=c;continue;}if(c===opening)depth++;else if(c===closing){depth--;if(depth===0)return i;}}return-1;}
+    function jsSource(files,el){const found=[],classes=(el.classes||[]).slice(0,4),id=String(el.id||'');(files||[]).filter(f=>f.type==='js').forEach(f=>{const ps=[];if(id){const s=escaped(id);ps.push(new RegExp("\\bgetElementById\\s*\\(\\s*([\"'\\x60])"+s+"\\1\\s*\\)",'g'),new RegExp("\\bquerySelector(?:All)?\\s*\\(\\s*([\"'\\x60])\\s*#"+s+"\\s*\\1\\s*\\)",'g'));}classes.forEach(c=>{const s=escaped(c);ps.push(new RegExp("\\bgetElementsByClassName\\s*\\(\\s*([\"'\\x60])"+s+"\\1\\s*\\)",'g'),new RegExp("\\bquerySelector(?:All)?\\s*\\(\\s*([\"'\\x60])\\s*\\."+s+"\\s*\\1\\s*\\)",'g'),new RegExp("\\bclassList\\s*\\.\\s*(?:add|remove|contains|toggle)\\s*\\(\\s*([\"'\\x60])"+s+"\\1",'g'));});ps.forEach(p=>{let m;while((m=p.exec(f.content))&&found.length<80){const start=m.index,end=start+m[0].length,open=f.content.indexOf('(',start),close=open>=0?closingDelimiter(f.content,open,'(',')'):-1,marks=[{start,end,className:'element-inspector-range'}];if(close>=open&&open>=0)marks.push({start:open,end:open+1,className:'element-inspector-pair'},{start:close,end:close+1,className:'element-inspector-pair'});found.push({lang:'js',fileId:f.id,start,end,source:f.content,decorations:marks,line:line(f.content,start),description:'ارجاع صریح JavaScript'});}});});if(found.length){const first=found[0],same=found.filter(x=>x.fileId===first.fileId);first.decorations=[];same.forEach((x,i)=>{first.decorations.push({start:x.start,end:x.end,className:i?'element-inspector-related-range':'element-inspector-range'});first.decorations.push(...x.decorations.filter(r=>r.className==='element-inspector-pair'));});first.count=found.length;first.matches=found.map(x=>({fileId:x.fileId,source:x.source,start:x.start,end:x.end,decorations:[{start:x.start,end:x.end,className:'element-inspector-range'},...(x.decorations||[]).filter(y=>y.className==='element-inspector-pair')]}));first.matches.forEach(m=>{m.fileDecorations=first.matches.filter(x=>x.fileId===m.fileId).flatMap(x=>[{start:x.start,end:x.end,className:'element-inspector-related-range'},...(x.decorations||[]).filter(y=>y.className==='element-inspector-pair')]);});return first;}const literals=[id,...classes].filter(s=>s.length>1);for(const f of (files||[]).filter(f=>f.type==='js')){let pos=-1,value='';literals.forEach(s=>{const i=f.content.indexOf(s);if(i>=0&&(pos<0||i<pos)){pos=i;value=s;}});if(pos>=0)return{lang:'js',fileId:f.id,start:pos,end:pos+value.length,source:f.content,decorations:[{start:pos,end:pos+value.length,className:'element-inspector-range'}],line:line(f.content,pos),confidence:'possible',count:1,description:'فقط اشارهٔ متنی پیدا شد؛ ارتباط قطعی نیست'};}return null;}
+    function wrapRange(root,start,end,cls){if(!root||end<=start||start<0)return;const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),parts=[];let off=0,n;while((n=walk.nextNode())){const len=n.nodeValue.length,a=Math.max(start,off),b=Math.min(end,off+len);if(b>a)parts.push({node:n,start:a-off,end:b-off});off+=len;}for(let i=parts.length-1;i>=0;i--){const p=parts[i];let selected=p.node;if(p.end<selected.nodeValue.length)selected.splitText(p.end);if(p.start>0)selected=selected.splitText(p.start);const span=document.createElement('span');span.className=cls;selected.parentNode.insertBefore(span,selected);span.appendChild(selected);}}
+    window.EditorElementInspector={renderDecorations:function(lang,source,code){const d=decorations[lang];if(!d||d.source!==source)return;d.ranges.slice().sort((a,b)=>(b.end-b.start)-(a.end-a.start)||a.start-b.start).forEach(r=>wrapRange(code,r.start,r.end,r.className));},clearDecorations:function(lang){if(lang)delete decorations[lang];else Object.keys(decorations).forEach(k=>delete decorations[k]);}};
+    function describe(r){if(!r)return'تطبیق خودکار پیدا نشد؛ زبانه برای بررسی دستی باز می‌شود.';const s=r.line?'، خط '+r.line:'';if(r.lang==='css'&&r.count>1)return r.count+' قانون CSS قابل‌تطبیق'+s;if(r.lang==='js'&&r.confidence==='possible')return'اشارهٔ احتمالی'+s;if(r.lang==='js'&&r.count>1)return r.count+' ارجاع JavaScript'+s;return r.description+s;}
+    function removeDialog(){if(dialog&&dialog.parentNode)dialog.parentNode.removeChild(dialog);dialog=null;}
+    function clearNavigator(){if(navigatorPanel&&navigatorPanel.parentNode)navigatorPanel.parentNode.removeChild(navigatorPanel);navigatorPanel=null;}
+    function showNavigator(lang,r,a){clearNavigator();const matches=(r.matches&&r.matches.length?r.matches:(r.decorations||[]).filter(x=>x.className==='element-inspector-range'||x.className==='element-inspector-related-range').map(x=>({fileId:r.fileId,source:r.source,start:x.start,end:x.end,decorations:[x]}))).filter((x,i,all)=>all.findIndex(y=>y.fileId===x.fileId&&y.start===x.start&&y.end===x.end)===i).sort((x,y)=>String(x.fileId).localeCompare(String(y.fileId))||x.start-y.start);if(matches.length<2)return;let index=Math.max(0,matches.findIndex(x=>x.fileId===r.fileId&&x.start===r.start));if(index<0)index=0;const panel=document.createElement('div');panel.className='element-inspector-navigator';panel.setAttribute('role','group');panel.setAttribute('aria-label','پیمایش بین کدهای پیدا شده');panel.style.cssText='position:fixed;z-index:2147483000;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--panel-bg,#1f2937);color:var(--text-color,#fff);border:1px solid var(--border-color,#64748b);border-radius:10px;box-shadow:0 5px 24px #0003;font:13px/1.4 system-ui,sans-serif;direction:rtl;';const prev=button('elementInspectorPrev','↑ قبلی','رفتن به کد قبلی');const next=button('elementInspectorNext','بعدی ↓','رفتن به کد بعدی');const count=document.createElement('span');count.setAttribute('aria-live','polite');const close=button('elementInspectorNavClose','×','بستن پیمایش کدها');[prev,next,close].forEach(b=>{b.style.cssText='border:1px solid #64748b;border-radius:6px;padding:5px 9px;background:transparent;color:inherit;cursor:pointer;font:inherit;';});function go(delta){index=(index+delta+matches.length)%matches.length;const x=matches[index];count.textContent=(index+1)+' از '+matches.length;decorations[lang]={source:x.source,ranges:x.fileDecorations||x.decorations||[{start:x.start,end:x.end,className:'element-inspector-range'}]};const ok=a.focusRange({lang,fileId:x.fileId,start:x.start,end:x.end,source:x.source,decorations:decorations[lang].ranges});if(!ok){clearNavigator();tell('فایل یا محتوای کد تغییر کرده است؛ پیمایش کدها متوقف شد.');}}prev.addEventListener('click',()=>go(-1));next.addEventListener('click',()=>go(1));close.addEventListener('click',clearNavigator);count.textContent=(index+1)+' از '+matches.length;panel.append(prev,count,next,close);document.body.appendChild(panel);navigatorPanel=panel;}
+    function choose(lang,r){const a=api();if(!a)return;clearNavigator();if(!r){a.switchTab(lang);tell('تطبیق قابل‌اعتمادی پیدا نشد؛ زبانه باز شد تا کد را دستی بررسی کنید.');return;}decorations[lang]={source:r.source,ranges:r.decorations||[]};if(!a.focusRange({lang,fileId:r.fileId,start:r.start,end:r.end,source:r.source,decorations:r.decorations})){delete decorations[lang];a.openFile(r.fileId);tell('محتوای فایل تغییر کرده است؛ فایل برای بررسی دستی باز شد.');return;}showNavigator(lang,r,a);if(r.confidence==='possible')tell('این فقط یک اشارهٔ متنی است؛ ارتباط رفتاری با المان قطعی نیست.');else if(r.count>1)tell('همه موارد پیدا‌شده در فایل جاری هایلایت شدند؛ با فلش‌های پیمایش بین آن‌ها جابه‌جا شوید.');}
+    function openDialog(el){clearNavigator();const a=api();if(!a||!a.getProject()){tell('اتصال ویرایشگر آماده نیست؛ صفحه را دوباره بارگذاری کنید.');return;}removeDialog();const files=a.getProject().files,rs={html:htmlSource(files,el),css:cssSource(files,el),js:jsSource(files,el)},back=document.createElement('div'),panel=document.createElement('section');back.className='element-inspector-backdrop';panel.className='element-inspector-dialog';panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-labelledby','elementInspectorTitle');panel.tabIndex=-1;const title=document.createElement('h2');title.id='elementInspectorTitle';title.textContent='کد مرتبط با المان انتخاب‌شده';const sum=document.createElement('p');sum.className='element-inspector-summary';sum.textContent='<'+el.tag+'>'+(el.id?'  #'+el.id:'')+((el.classes||[]).length?'  .'+el.classes.join('.'):'')+(el.text?' — '+el.text:'');const hint=document.createElement('p');hint.className='element-inspector-hint';hint.textContent='HTML و CSS بر اساس ساختار و selector بررسی می‌شوند؛ ارتباط JavaScript ممکن است تقریبی باشد.';const list=document.createElement('div');list.className='element-inspector-options';['html','css','js'].forEach(lang=>{const b=document.createElement('button'),strong=document.createElement('strong'),detail=document.createElement('span');b.type='button';b.className='element-inspector-option';strong.textContent=labels[lang];detail.textContent=describe(rs[lang]);b.append(strong,detail);b.addEventListener('click',()=>{removeDialog();choose(lang,rs[lang]);});list.appendChild(b);});const close=button('elementInspectorClose','بستن','بستن پنجره');close.className='element-inspector-close';close.addEventListener('click',removeDialog);panel.append(title,sum,hint,list,close);back.appendChild(panel);back.addEventListener('click',e=>{if(e.target===back)removeDialog();});back.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();removeDialog();}if(e.key==='Tab'){const bs=Array.from(panel.querySelectorAll('button:not([disabled])'));if(!bs.length)return;if(e.shiftKey&&document.activeElement===bs[0]){e.preventDefault();bs[bs.length-1].focus();}else if(!e.shiftKey&&document.activeElement===bs[bs.length-1]){e.preventDefault();bs[0].focus();}}});document.body.appendChild(back);dialog=back;panel.querySelector('button').focus();}
+    const VISUAL_PROPERTIES = new Set(["color","background-color","font-size","font-weight","font-family","text-align","line-height","letter-spacing","width","height","min-width","max-width","min-height","max-height","margin","padding","border","border-radius","display","opacity"]);
+    function setVisualPickerMode(value){
+        visualPickerActive=!!value;
+        if(visualPickerActive)mode(false);
+        if(visualPickerButton){visualPickerButton.setAttribute("aria-pressed",String(visualPickerActive));visualPickerButton.classList.toggle("element-inspector-button-active",visualPickerActive);visualPickerButton.title=visualPickerActive?"حالت انتخاب فعال است؛ برای لغو دوباره کلیک کنید.":"انتخاب المان پیش‌نمایش برای ویرایش در Visual Editor";}
+        if(frame&&frame.contentWindow)frame.contentWindow.postMessage({editorVisualEditorMode:visualPickerActive},"*");
+        if(visualPickerActive)tell("در پیش‌نمایش روی المانی که می‌خواهید ویرایش کنید کلیک کنید؛ با کلیک دوباره روی دکمه می‌توانید لغو کنید.");
+    }
+    function finishVisualEdit(ok,action,message){
+        if(ok){visualSelection=null;visualChanges=Object.create(null);tell(action==="cancel"?"ویرایش بصری لغو شد.":"تغییرات بصری در فایل CSS و ساختار HTML ثبت شد.");}
+        window.parent.postMessage({editorVisualEditorFinished:{ok:!!ok,action:action||"commit",message:message||""}},"*");
+    }
+    function escapeCssIdentifier(value){
+        return Array.from(String(value)).map((char,index)=>{
+            const code=char.codePointAt(0);
+            if(code===0)return "\uFFFD";
+            if((index===0&&/[0-9]/.test(char))||(index===1&&String(value)[0]==="-"&&/[0-9]/.test(char)))return "\\"+code.toString(16)+" ";
+            if(code>=128||/[a-zA-Z0-9_-]/.test(char))return char;
+            return "\\"+char;
+        }).join("");
+    }
+    function escapeHtmlAttribute(value){
+        return String(value).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+    }
+    function cssTopLevelBlocks(source){
+        const out=[];
+        let i=0,segment=0;
+        while(i<source.length){
+            if(source[i]==="/"&&source[i+1]==="*"){
+                const close=source.indexOf("*/",i+2);
+                i=close<0?source.length:close+2;
+                continue;
+            }
+            if(source[i]==="'"||source[i]==='"'){
+                const quote=source[i++];
+                while(i<source.length){
+                    if(source[i]==="\\"){i+=2;continue;}
+                    if(source[i++]===quote)break;
+                }
+                continue;
+            }
+            if(source[i]===";"){segment=++i;continue;}
+            if(source[i]==="}"){segment=++i;continue;}
+            if(source[i]!=="{"){i++;continue;}
+            const open=i;
+            let depth=1,quote="",comment=false,j=i+1;
+            while(j<source.length&&depth){
+                const char=source[j],next=source[j+1];
+                if(comment){if(char==="*"&&next==="/"){comment=false;j+=2;}else j++;continue;}
+                if(quote){if(char==="\\"){j+=2;continue;}if(char===quote)quote="";j++;continue;}
+                if(char==="/"&&next==="*"){comment=true;j+=2;continue;}
+                if(char==="'"||char==='"'){quote=char;j++;continue;}
+                if(char==="{")depth++;
+                else if(char==="}")depth--;
+                j++;
+            }
+            if(depth)break;
+            let headStart=segment;
+            while(headStart<open){
+                if(/\s/.test(source[headStart])){headStart++;continue;}
+                if(source[headStart]==="/"&&source[headStart+1]==="*"){
+                    const close=source.indexOf("*/",headStart+2);
+                    if(close<0||close>=open){headStart=open;break;}
+                    headStart=close+2;continue;
+                }
+                break;
+            }
+            const selector=source.slice(headStart,open).replace(/\/\*[\s\S]*?\*\//g,"").trim();
+            // قانون‌های درون @media و سایر at-ruleها را عمداً انتخاب نمی‌کنیم.
+            if(selector&&selector.charAt(0)!=="@")out.push({selector,start:headStart,open,close:j-1,end:j});
+            i=j;segment=j;
+        }
+        return out;
+    }
+    function addClassToOpening(opening,className){
+        const match=opening.match(/\sclass\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+        const current=match?(match[1]??match[2]??match[3]??"").trim():"";
+        if(current.split(/\s+/).includes(className))return opening;
+        const value=(current?current+" ":"")+className;
+        const escaped=escapeHtmlAttribute(value);
+        if(match)return opening.replace(match[0],' class="'+escaped+'"');
+        return opening.replace(/(\/?)>$/,end=>' class="'+escaped+'"'+end);
+    }
+    function visualTagAbbreviation(tagName){
+        const tag=String(tagName||"element").toLowerCase();
+        const known={
+            div:"dv",button:"btn",section:"sec",article:"art",header:"hdr",footer:"ftr",
+            main:"mn",aside:"as",nav:"nav",span:"sp",img:"img",input:"in",textarea:"ta",
+            select:"sel",option:"opt",label:"lbl",form:"frm",table:"tbl",figure:"fig",
+            figcaption:"fc",blockquote:"bq",iframe:"ifr",canvas:"cnv",video:"vid",
+            audio:"aud",picture:"pic",source:"src",details:"det",summary:"sum",
+            paragraph:"p",strong:"st",small:"sm",template:"tpl",dialog:"dlg"
+        };
+        if(known[tag])return known[tag];
+        const parts=tag.split(/[-:]+/).filter(Boolean);
+        const abbreviation=parts.length>1
+            ?parts.map(part=>part.charAt(0)).join("").slice(0,3)
+            :tag.replace(/[^a-z0-9]/g,"").slice(0,3);
+        return abbreviation||"el";
+    }
+    function usedVisualClasses(htmlFiles,cssFiles){
+        const used=new Set();
+        (htmlFiles||[]).forEach(htmlFile=>{
+            tags(htmlFile.content).forEach(tag=>{
+                if(tag.closing)return;
+                (attrs(tag.raw).class||"").split(/\s+/).filter(Boolean).forEach(name=>used.add(name));
+            });
+        });
+        (cssFiles||[]).forEach(cssFile=>{
+            const pattern=/(?:^|[^\w-])\.([a-zA-Z_][\w-]*)/g;
+            let match;
+            while((match=pattern.exec(cssFile.content)))used.add(match[1]);
+        });
+        return used;
+    }
+    function selectorCandidates(file,match,cssFiles,htmlFiles){
+        const opening=file.content.slice(match.start,match.end);
+        const current=attrs(opening);
+        const records=tags(file.content).filter(tag=>!tag.closing).map(tag=>attrs(tag.raw));
+        const candidates=[];
+        const id=current.id||"";
+        if(id&&records.filter(record=>record.id===id).length===1){
+            candidates.push("#"+escapeCssIdentifier(id));
+        }
+        const existingClasses=(current.class||"").split(/\s+/).filter(Boolean);
+        existingClasses.forEach(className=>{
+            if(records.filter(record=>(record.class||"").split(/\s+/).includes(className)).length===1){
+                candidates.push("."+escapeCssIdentifier(className));
+            }
+        });
+        // اگر قانون دقیق قبلاً وجود دارد، همان انتخاب‌گر و همان فایل را ترجیح بده.
+        for(const selector of candidates){
+            const found=cssFiles.slice().reverse().some(cssFile=>
+                cssTopLevelBlocks(cssFile.content).some(block=>norm(block.selector)===norm(selector))
+            );
+            if(found)return {selector,opening,createdClass:""};
+        }
+        if(candidates.length)return {selector:candidates[0],opening,createdClass:""};
+        const tagMatch=opening.match(/^<\s*([A-Za-z][\w:-]*)/);
+        const base=visualTagAbbreviation(tagMatch?tagMatch[1]:"element");
+        const used=usedVisualClasses(htmlFiles&&htmlFiles.length?htmlFiles:[file],cssFiles);
+        let className=base,suffix=2;
+        while(used.has(className)){
+            className=base+"-"+suffix++;
+        }
+        return {
+            selector:"."+escapeCssIdentifier(className),
+            opening:addClassToOpening(opening,className),
+            createdClass:className
+        };
+    }
+    function removeEditedInlineProperties(opening,properties){
+        const styleMatch=opening.match(/\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+        if(!styleMatch)return opening;
+        const holder=document.createElement("span");
+        holder.setAttribute("style",styleMatch[1]??styleMatch[2]??styleMatch[3]??"");
+        properties.forEach(property=>holder.style.removeProperty(property));
+        const remaining=holder.getAttribute("style")||"";
+        return remaining
+            ?opening.replace(styleMatch[0],' style="'+escapeHtmlAttribute(remaining)+'"')
+            :opening.replace(styleMatch[0],"");
+    }
+    function updateDedicatedCss(source,selector,styles){
+        const blocks=cssTopLevelBlocks(source);
+        const matching=blocks.filter(block=>norm(block.selector)===norm(selector));
+        const block=matching.length?matching[matching.length-1]:null;
+        const holder=document.createElement("span");
+        if(block)holder.style.cssText=source.slice(block.open+1,block.close);
+        Object.entries(styles||{}).forEach(([property,value])=>{
+            if(!VISUAL_PROPERTIES.has(property))return;
+            if(value===null||value===undefined||String(value).trim()===""){
+                holder.style.removeProperty(property);
+                return;
+            }
+            const probe=document.createElement("span");
+            probe.style.setProperty(property,String(value));
+            const normalized=probe.style.getPropertyValue(property);
+            if(!normalized)throw new Error("مقدار CSS برای ویژگی «"+property+"» معتبر نیست.");
+            // setProperty بدون priority، !important قبلی همان ویژگی را نیز حذف می‌کند.
+            holder.style.setProperty(property,normalized);
+        });
+        const declarations=[];
+        for(let i=0;i<holder.style.length;i++){
+            const property=holder.style.item(i);
+            const priority=holder.style.getPropertyPriority(property);
+            declarations.push("    "+property+": "+holder.style.getPropertyValue(property)+(priority?" !important":"")+";");
+        }
+        const rule=declarations.length?selector+" {\n"+declarations.join("\n")+"\n}":"";
+        if(block)return source.slice(0,block.start)+(rule||"")+source.slice(block.end);
+        if(!rule)return source;
+        return source.replace(/\s*$/,"")+(source.trim()?"\n\n":"")+"/* استایل ثبت‌شده از ویرایشگر بصری */\n"+rule+"\n";
+    }
+    function persistVisualStyles(selection,styles){
+        const a=api();
+        if(!a||!a.getProject||!a.updateFilesContent)throw new Error("اتصال ذخیره‌سازی دسته‌ای پروژه آماده نیست.");
+        const entries=Object.entries(styles||{}).filter(([property])=>VISUAL_PROPERTIES.has(property));
+        if(!entries.length)return true;
+        const project=a.getProject();
+        const match=htmlSource(project.files,selection);
+        if(!match)throw new Error("کد HTML متناظر با این المان پیدا نشد؛ احتمالاً المان در JavaScript ساخته شده است. تغییرات در کد اصلی قابل ثبت نیستند.");
+        const htmlFile=project.files.find(item=>item.id===match.fileId);
+        if(!htmlFile||htmlFile.content!==match.source)throw new Error("کد HTML پس از انتخاب المان تغییر کرده است؛ انتخاب را دوباره انجام دهید.");
+        const cssFiles=project.files.filter(item=>item.type==="css");
+        if(!cssFiles.length)throw new Error("هیچ فایل CSS در پروژه وجود ندارد؛ ابتدا یک فایل CSS ایجاد کنید.");
+        const htmlFiles=project.files.filter(item=>item.type==="html");
+        const target=selectorCandidates(htmlFile,match,cssFiles,htmlFiles);
+        const matchingCssFiles=cssFiles.slice().reverse().map(file=>({
+            file,
+            blocks:cssTopLevelBlocks(file.content).filter(block=>norm(block.selector)===norm(target.selector))
+        })).filter(item=>item.blocks.length);
+        const cssFile=matchingCssFiles.length
+            ?matchingCssFiles[0].file
+            :cssFiles.find(item=>item.id===project.lastActiveByLang?.css)||cssFiles[0];
+        const updatedCss=updateDedicatedCss(cssFile.content,target.selector,Object.fromEntries(entries));
+        const opening=removeEditedInlineProperties(target.opening,entries.map(([property])=>property));
+        const updatedHtml=htmlFile.content.slice(0,match.start)+opening+htmlFile.content.slice(match.end);
+        const updates=[];
+        if(updatedHtml!==htmlFile.content){
+            updates.push({fileId:htmlFile.id,expectedContent:htmlFile.content,content:updatedHtml});
+        }
+        updates.push({fileId:cssFile.id,expectedContent:cssFile.content,content:updatedCss});
+        if(!a.updateFilesContent(updates))throw new Error("ذخیرهٔ هم‌زمان تغییرات در فایل‌های CSS و HTML انجام نشد؛ فایل‌ها تغییر نکردند.");
+        if(typeof a.refreshPreview==="function")a.refreshPreview();
+        return true;
+    }
+    function handleVisualHostMessage(event){
+        if(event.source!==window.parent||!event.data)return;
+        const data=event.data;
+        if(data.editorVisualEditorApplyStyle){
+            const update=data.editorVisualEditorApplyStyle;
+            if(!visualSelection||update.sessionId!==visualSelection.sessionId||!VISUAL_PROPERTIES.has(update.property)){window.parent.postMessage({editorVisualEditorStyleHostRejected:{receivedSessionId:update.sessionId,activeSessionId:visualSelection?.sessionId||null,property:update.property,reason:!visualSelection?"نشست انتخاب در Editor اصلی ثبت نشده است.":update.sessionId!==visualSelection.sessionId?"شناسهٔ نشست تغییر با المان انتخاب‌شده یکسان نیست.":"ویژگی CSS مجاز نیست."}},"*");return;}
+            if(typeof update.value!=="string"||update.value.length>300)return;
+            visualChanges[update.property]=update.value;
+            if(frame&&frame.contentWindow)frame.contentWindow.postMessage(data,"*");
+            return;
+        }
+        if(data.editorVisualEditorCancel){
+            const cancel=data.editorVisualEditorCancel;
+            if(!visualSelection||cancel.sessionId!==visualSelection.sessionId)return;
+            if(frame&&frame.contentWindow)frame.contentWindow.postMessage(data,"*");
+            finishVisualEdit(true,"cancel");
+            return;
+        }
+        if(data.editorVisualEditorCommit){
+            const commit=data.editorVisualEditorCommit;
+            if(!visualSelection||commit.sessionId!==visualSelection.sessionId)return;
+            try{
+                persistVisualStyles(visualSelection,visualChanges);
+                finishVisualEdit(true,"commit");
+            }catch(error){
+                window.parent.postMessage({editorVisualEditorFinished:{ok:false,action:"commit",message:error&&error.message?error.message:"ثبت تغییرات ناموفق بود."}},"*");
+            }
+        }
+    }
+    function initialize(){if(!historyControls||!frame)return;pickButton=document.getElementById('btnElementInspector');cancelButton=document.getElementById('btnElementInspectorCancel');if(!pickButton){pickButton=button('btnElementInspector','🎯','انتخاب یک المان از پیش‌نمایش و یافتن کد متناظر');pickButton.className='header-history-button';pickButton.setAttribute('aria-label','انتخاب المان');pickButton.setAttribute('aria-pressed','false');pickButton.addEventListener('click',()=>{mode(!active);tell(active?'در پیش‌نمایش روی المان کلیک کنید؛ برای انصراف «لغو انتخاب» را بزنید.':'حالت انتخاب لغو شد.');});cancelButton=button('btnElementInspectorCancel','×','لغو انتخاب المان');cancelButton.className='header-history-button';cancelButton.setAttribute('aria-label','لغو انتخاب المان');cancelButton.hidden=true;cancelButton.addEventListener('click',()=>{mode(false);tell('انتخاب المان لغو شد.');});const redoButton=document.getElementById('btnRedo');if(redoButton&&redoButton.parentNode===historyControls){historyControls.insertBefore(pickButton,redoButton.nextSibling);historyControls.insertBefore(cancelButton,pickButton.nextSibling);}else historyControls.append(pickButton,cancelButton);}visualPickerButton=document.getElementById('btnVisualEditorPick')||button('btnVisualEditorPick','✎ بصری','انتخاب المان پیش‌نمایش برای ویرایش در Visual Editor');visualPickerButton.classList.add('header-history-button','visual-editor-pick-button');visualPickerButton.setAttribute('aria-label','انتخاب المان برای ویرایش بصری');visualPickerButton.setAttribute('aria-pressed','false');visualPickerButton.addEventListener('click',()=>setVisualPickerMode(!visualPickerActive));if(!visualPickerButton.parentNode)historyControls.appendChild(visualPickerButton);frame.addEventListener('load',()=>{if(frame.contentWindow){frame.contentWindow.postMessage({editorElementInspectorMode:active},'*');frame.contentWindow.postMessage({editorVisualEditorMode:visualPickerActive},"*");}});window.addEventListener('message',e=>{if(e.source!==frame.contentWindow||!e.data)return;if(e.data.editorElementInspectorSelection){mode(false);openDialog(e.data.editorElementInspectorSelection);}if(e.data.editorVisualEditorSelection){setVisualPickerMode(false);visualSelection=e.data.editorVisualEditorSelection;visualChanges=Object.create(null);window.parent.postMessage({editorVisualEditorSelection:visualSelection},"*");}if(e.data.editorVisualEditorStyleApplied||e.data.editorVisualEditorStyleRejected){window.parent.postMessage(e.data,"*");}if(e.data.editorVisualEditorSelectionError){setVisualPickerMode(false);tell(String(e.data.editorVisualEditorSelectionError));}});window.addEventListener('message',handleVisualHostMessage);mode(false);setVisualPickerMode(false);}
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});else initialize();
+})();

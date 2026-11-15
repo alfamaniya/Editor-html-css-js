@@ -151,7 +151,14 @@ test('current standalone editor build copied into HTML tab extracts every bundle
     assert.match(result.html,/id="tab-html"/);
     const remaining = api.scanMarkupForPaste(result.html);
     assert.equal(remaining.invalid,false,'The remaining HTML should remain parseable.');
-    assert.equal(remaining.blocks.length,0,'The standalone editor should not retain unrelated inline scripts or styles.');
+    const retainedEntryScripts = remaining.blocks.filter((block) =>
+        block.name === 'script' && Object.prototype.hasOwnProperty.call(block.attrs, 'data-editor-entry-redirect')
+    );
+    assert.equal(remaining.blocks.length,retainedEntryScripts.length,
+        'Only the marked application entry redirect may remain in the standalone HTML.');
+    assert.equal(retainedEntryScripts.length,1,'The standalone HTML should retain its guarded entry redirect script.');
+    assert.ok(result.html.includes('<script data-editor-entry-redirect>'),
+        'The guarded entry redirect must remain in HTML rather than being moved into the project JavaScript tab.');
     assert.ok(result.js[0].includes('htmlTags'),'The first script should remain in original bundle order.');
     assert.ok(result.js.some((code) => code.includes('window.EditorSearchHeader')),
         'The final bundled module should not be lost during extraction.');
@@ -185,7 +192,10 @@ test('current standalone editor build copied into HTML tab extracts every bundle
     assert.match(context.editors.html.ta.value,/<!doctype\s+html/i);
     assert.match(context.editors.html.ta.value,/id="tab-html"/);
     const pastedHtmlScan = api.scanMarkupForPaste(context.editors.html.ta.value);
-    assert.equal(pastedHtmlScan.blocks.length,0,'Pasted standalone HTML should not retain any bundled script or style blocks.');
+    assert.equal(pastedHtmlScan.blocks.length,1,'Pasted standalone HTML should retain only the guarded entry redirect.');
+    assert.ok(pastedHtmlScan.blocks.every((block) =>
+        block.name === 'script' && Object.prototype.hasOwnProperty.call(block.attrs, 'data-editor-entry-redirect')
+    ),'No bundled or unrelated script/style blocks should remain after paste processing.');
 });
 test('bundle metadata is allowed without allowing unrelated tag attributes',() => {
     assert.equal(api.extractPasteAssets('<style id="unexpected">a { color:red; }</style>'),null);

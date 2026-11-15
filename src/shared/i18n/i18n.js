@@ -151,7 +151,9 @@
     window.dispatchEvent(new CustomEvent("editor-language-change", {
       detail: { language: language, direction: language === "fa" ? "rtl" : "ltr" }
     }));
-
+    if (settings.broadcast !== false && window.parent !== window) {
+      window.parent.postMessage({ editorVLanguage: language }, "*");
+    }
     return true;
   }
 
@@ -160,9 +162,16 @@
       setLanguage(language === "fa" ? "en" : "fa");
     });
   }
-window.addEventListener("storage", (event) => {
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== window.parent || !event.data) return;
+    const requestedLanguage = event.data.editorVSetLanguage || event.data.editorVLanguage;
+    if (requestedLanguage !== language) setLanguage(requestedLanguage, { broadcast: false });
+  });
+
+  window.addEventListener("storage", (event) => {
     if (event.key === LANGUAGE_KEY && VALID_LANGUAGES.has(event.newValue) && event.newValue !== language) {
-      setLanguage(event.newValue, { persist: false });
+      setLanguage(event.newValue, { persist: false, broadcast: false });
     }
   });
 

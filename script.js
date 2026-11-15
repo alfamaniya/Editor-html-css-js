@@ -419,67 +419,6 @@
             activateTab('help');
         });
 
-        const appMenuBar = document.querySelector('.app-menu-bar');
-        function closeAppMenus() {
-            appMenuBar.querySelectorAll('.app-menu-dropdown').forEach(function(menu) {
-                menu.hidden = true;
-            });
-            appMenuBar.querySelectorAll('.app-menu-trigger').forEach(function(trigger) {
-                trigger.setAttribute('aria-expanded', 'false');
-            });
-        }
-        appMenuBar.addEventListener('click', function(event) {
-            const trigger = event.target.closest('.app-menu-trigger');
-            if (trigger) {
-                const menu = document.getElementById(trigger.getAttribute('aria-controls'));
-                const shouldOpen = trigger.getAttribute('aria-expanded') !== 'true';
-                closeAppMenus();
-                menu.hidden = !shouldOpen;
-                trigger.setAttribute('aria-expanded', String(shouldOpen));
-                return;
-            }
-
-            const item = event.target.closest('[data-menu-action]');
-            if (!item) return;
-            closeAppMenus();
-            const action = item.dataset.menuAction;
-            const clickById = function(id) { document.getElementById(id).click(); };
-            if (action === 'new-file') clickById('feAddBtn');
-            else if (action === 'open-files') clickById('fileManagerOpenButton');
-            else if (action === 'save-project') {
-                clearTimeout(autoSaveTimer);
-                clearTimeout(dirtyResetTimer);
-                if (saveProject()) {
-                    setDirty(false);
-                    showToast('✅ Project saved locally', 'success');
-                }
-            } else if (action === 'download') clickById('btnDownload');
-            else if (action === 'backup') {
-                clickById('btnSettings');
-                const backupSection = document.querySelector('[data-settings-nav="settingsBackupRestoreCard"]');
-                if (backupSection) backupSection.click();
-            } else if (action === 'undo') clickById('btnUndo');
-            else if (action === 'redo') clickById('btnRedo');
-            else if (action === 'find') clickById('searchExpandButton');
-            else if (action === 'clear-file') clickById('btnClear');
-            else if (action === 'clear-all') clickById('btnClearAll');
-            else if (action === 'font-increase') clickById('btnFontInc');
-            else if (action === 'font-decrease') clickById('btnFontDec');
-            else if (action === 'view-html') clickById('tab-html');
-            else if (action === 'view-css') clickById('tab-css');
-            else if (action === 'view-js') clickById('tab-js');
-            else if (action === 'refresh-preview') window.dispatchEvent(new Event('editor-refresh-preview'));
-            else if (action === 'editor-tools') clickById('toolbarSidebarOpen');
-            else if (action === 'settings') clickById('btnSettings');
-            else if (action === 'help') clickById('btnHelp');
-            else if (action === 'libraries') clickById('feLibraryBtn');
-        });
-        document.addEventListener('click', function(event) {
-            if (!appMenuBar.contains(event.target)) closeAppMenus();
-        });
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') closeAppMenus();
-        });
 
         feAddBtn.addEventListener('click', function() {
             if (!fileExplorer.classList.contains('file-manager-drawer-open')) {

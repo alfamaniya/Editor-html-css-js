@@ -2,67 +2,27 @@ name: Check index file
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "index.html"
-      - "editor v.html"
-      - "scripts/check-combined-editor.mjs"
       - "style.css"
       - "script.js"
-      - "src/features/settings/settings.css"
-      - "src/features/settings/settings.js"
-      - "src/features/suggestions/manager/suggestion-manager.js"
-      - "src/features/suggestions/manager/suggestion-manager.css"
-      - "src/features/backup-restore/backup-restore.css"
-      - "src/features/backup-restore/backup-restore.js"
-      - "scripts/check-backup-restore.mjs"
-      - "src/features/word-tree/word-tree.js"
-      - "src/features/integrations/github/github-update.js"
-      - "src/features/suggestions/data/html-suggestions.js"
-      - "src/features/suggestions/data/css-suggestions.js"
-      - "src/features/suggestions/data/js-suggestions.js"
-      - "src/features/suggestions/next-word/next-word-suggestions.js"
+      - "locales/**"
+      - "src/**"
+      - "scripts/**"
       - "README.md"
       - ".github/workflows/check-index.yml"
-      - "scripts/check-editor-code-processing.mjs"
-      - "scripts/build-test-editor.mjs"
-      - "src/**"
-      - "scripts/build-standalone-visual-editor.mjs"
-      - "scripts/build-combined-editor.mjs"
-      - "src/features/visual-editor/**"
-      - "locales/**"
-      - "src/shared/i18n/**"
-      - "scripts/check-settings-dialog-keyboard.mjs"
   pull_request:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "index.html"
       - "style.css"
       - "script.js"
-      - "src/features/settings/settings.css"
-      - "src/features/settings/settings.js"
-      - "src/features/suggestions/manager/suggestion-manager.js"
-      - "src/features/suggestions/manager/suggestion-manager.css"
-      - "src/features/backup-restore/backup-restore.css"
-      - "src/features/backup-restore/backup-restore.js"
-      - "scripts/check-backup-restore.mjs"
-      - "src/features/word-tree/word-tree.js"
-      - "src/features/integrations/github/github-update.js"
-      - "src/features/suggestions/data/html-suggestions.js"
-      - "src/features/suggestions/data/css-suggestions.js"
-      - "src/features/suggestions/data/js-suggestions.js"
-      - "src/features/suggestions/next-word/next-word-suggestions.js"
+      - "locales/**"
+      - "src/**"
+      - "scripts/**"
       - "README.md"
       - ".github/workflows/check-index.yml"
-      - "scripts/check-editor-code-processing.mjs"
-      - "scripts/build-test-editor.mjs"
-      - "scripts/build-standalone-visual-editor.mjs"
-      - "scripts/build-combined-editor.mjs"
-      - "src/**"
-      - "locales/**"
-      - "scripts/check-settings-dialog-keyboard.mjs"
   workflow_dispatch:
 
 permissions:
@@ -70,7 +30,7 @@ permissions:
 
 jobs:
   check-index:
-    name: Validate index.html
+    name: Validate editor sources
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -81,90 +41,23 @@ jobs:
         with:
           node-version: 20
 
-      - name: Verify index file exists and is not empty
+      - name: Verify required source files
         run: |
-          test -f index.html
           test -s index.html
+          test -s style.css
+          test -s script.js
 
-      - name: Check required document structure
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
+      - name: Check index integrity
+        run: node scripts/check-index-integrity.mjs
 
-          const html = readFileSync('index.html', 'utf8');
-          const required = [
-            ['HTML doctype', /<!doctype\s+html\s*>/i],
-            ['opening html element', /<html\b/i],
-            ['head element', /<head\b/i],
-            ['body element', /<body\b/i],
-            ['closing body element', /<\/body\s*>/i],
-            ['closing html element', /<\/html\s*>/i],
-          ];
-
-          const missing = required
-            .filter(([, pattern]) => !pattern.test(html))
-            .map(([label]) => label);
-
-          if (missing.length) {
-            console.error('index.html is missing required structure:');
-            for (const item of missing) console.error(`- ${item}`);
-            process.exit(1);
-          }
-
-          console.log('index.html contains the required document structure.');
-          NODE
-
-      - name: Verify local CSS and JavaScript references
-        run: |
-          node --input-type=module <<'NODE'
-          import { existsSync, readFileSync } from 'node:fs';
-          import { resolve } from 'node:path';
-
-          const html = readFileSync('index.html', 'utf8');
-          const references = [];
-          const patterns = [
-            /<script\b[^>]*\bsrc\s*=\s*["']([^"'#?]+)(?:[?#][^"']*)?["'][^>]*>/gi,
-            /<link\b[^>]*\bhref\s*=\s*["']([^"'#?]+)(?:[?#][^"']*)?["'][^>]*>/gi,
-          ];
-
-          for (const pattern of patterns) {
-            for (const match of html.matchAll(pattern)) {
-              const reference = match[1].trim();
-              if (!reference || /^(?:[a-z]+:|\/\/|#)/i.test(reference) || reference.startsWith('/')) continue;
-              references.push(reference);
-            }
-          }
-
-          const missing = [...new Set(references)].filter((reference) => {
-            const cleanPath = decodeURIComponent(reference).replaceAll('\\', '/');
-            return !existsSync(resolve(process.cwd(), cleanPath));
-          });
-
-          if (missing.length) {
-            console.error('index.html references missing local assets:');
-            for (const file of missing) console.error(`- ${file}`);
-            process.exit(1);
-          }
-
-          console.log(`Checked ${new Set(references).size} local asset reference(s); all exist.`);
-          NODE
-
-      - name: Build current standalone Editor for paste-processing tests
+      - name: Build standalone editor for source validation
         run: node scripts/build-test-editor.mjs
+
+      - name: Validate standalone editor and embedded assets
+        run: node scripts/check-standalone-editor.mjs
 
       - name: Test HTML paste processing
         run: node scripts/check-editor-code-processing.mjs
-
-      - name: Build the standalone Visual Editor
-        run: node scripts/build-standalone-visual-editor.mjs
-
-      - name: Build the current combined Editor V bundle
-        run: node scripts/build-combined-editor.mjs
-
-      - name: Validate the complete standalone Editor V bundle
-        run: |
-          node --check scripts/check-combined-editor.mjs
-          node scripts/check-combined-editor.mjs
 
       - name: Test nested settings dialog keyboard handling
         run: node scripts/check-settings-dialog-keyboard.mjs
@@ -172,9 +65,9 @@ jobs:
       - name: Test backup validation and recovery logic
         run: node scripts/check-backup-restore.mjs
 
-      - name: Check JavaScript syntax used by the index page
+      - name: Check JavaScript syntax
         run: |
-          for file in script.js src/features/settings/settings.js src/features/suggestions/manager/suggestion-manager.js src/features/word-tree/word-tree.js src/features/integrations/github/github-update.js src/features/suggestions/data/html-suggestions.js src/features/suggestions/data/css-suggestions.js src/features/suggestions/data/js-suggestions.js src/features/suggestions/next-word/next-word-suggestions.js src/features/backup-restore/backup-restore.js; do
+          for file in script.js src/features/settings/settings.js src/features/suggestions/manager/suggestion-manager.js src/features/word-tree/word-tree.js src/features/suggestions/data/html-suggestions.js src/features/suggestions/data/css-suggestions.js src/features/suggestions/data/js-suggestions.js src/features/suggestions/next-word/next-word-suggestions.js src/features/backup-restore/backup-restore.js src/shared/i18n/i18n.js; do
             if [ -f "$file" ]; then
               node --check "$file"
             fi

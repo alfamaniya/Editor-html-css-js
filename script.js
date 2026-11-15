@@ -419,67 +419,6 @@
             activateTab('help');
         });
 
-        const appMenuBar = document.querySelector('.app-menu-bar');
-        function closeAppMenus() {
-            appMenuBar.querySelectorAll('.app-menu-dropdown').forEach(function(menu) {
-                menu.hidden = true;
-            });
-            appMenuBar.querySelectorAll('.app-menu-trigger').forEach(function(trigger) {
-                trigger.setAttribute('aria-expanded', 'false');
-            });
-        }
-        appMenuBar.addEventListener('click', function(event) {
-            const trigger = event.target.closest('.app-menu-trigger');
-            if (trigger) {
-                const menu = document.getElementById(trigger.getAttribute('aria-controls'));
-                const shouldOpen = trigger.getAttribute('aria-expanded') !== 'true';
-                closeAppMenus();
-                menu.hidden = !shouldOpen;
-                trigger.setAttribute('aria-expanded', String(shouldOpen));
-                return;
-            }
-
-            const item = event.target.closest('[data-menu-action]');
-            if (!item) return;
-            closeAppMenus();
-            const action = item.dataset.menuAction;
-            const clickById = function(id) { document.getElementById(id).click(); };
-            if (action === 'new-file') clickById('feAddBtn');
-            else if (action === 'open-files') clickById('fileManagerOpenButton');
-            else if (action === 'save-project') {
-                clearTimeout(autoSaveTimer);
-                clearTimeout(dirtyResetTimer);
-                if (saveProject()) {
-                    setDirty(false);
-                    showToast('✅ Project saved locally', 'success');
-                }
-            } else if (action === 'download') clickById('btnDownload');
-            else if (action === 'backup') {
-                clickById('btnSettings');
-                const backupSection = document.querySelector('[data-settings-nav="settingsBackupRestoreCard"]');
-                if (backupSection) backupSection.click();
-            } else if (action === 'undo') clickById('btnUndo');
-            else if (action === 'redo') clickById('btnRedo');
-            else if (action === 'find') clickById('searchExpandButton');
-            else if (action === 'clear-file') clickById('btnClear');
-            else if (action === 'clear-all') clickById('btnClearAll');
-            else if (action === 'font-increase') clickById('btnFontInc');
-            else if (action === 'font-decrease') clickById('btnFontDec');
-            else if (action === 'view-html') clickById('tab-html');
-            else if (action === 'view-css') clickById('tab-css');
-            else if (action === 'view-js') clickById('tab-js');
-            else if (action === 'refresh-preview') window.dispatchEvent(new Event('editor-refresh-preview'));
-            else if (action === 'editor-tools') clickById('toolbarSidebarOpen');
-            else if (action === 'settings') clickById('btnSettings');
-            else if (action === 'help') clickById('btnHelp');
-            else if (action === 'libraries') clickById('feLibraryBtn');
-        });
-        document.addEventListener('click', function(event) {
-            if (!appMenuBar.contains(event.target)) closeAppMenus();
-        });
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') closeAppMenus();
-        });
 
         feAddBtn.addEventListener('click', function() {
             if (!fileExplorer.classList.contains('file-manager-drawer-open')) {
@@ -1659,10 +1598,6 @@
                 'window.addEventListener("keydown",function(e){ if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="s"){ e.preventDefault(); parent.postMessage({editorSave:true},"*"); } });',
                 '<\/script>'
             ].join('\n');
-            const inspectorHook = forExport || typeof window.EditorElementInspectorPreviewHook !== 'string'
-                ? '' : window.EditorElementInspectorPreviewHook;
-            const visualEditorHook = forExport || typeof window.EditorVisualEditorPreviewHook !== 'string'
-                ? '' : window.EditorVisualEditorPreviewHook;
             const safeTitle = String(project.documentTitle || 'My Page')
                 .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             let output;
@@ -1676,8 +1611,7 @@
                 const extraHead = stripBundledAssetReferences(project.headExtras || '',cssFiles,jsFiles,false);
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
-                if (inspectorHook) headParts.push(inspectorHook);
-                if (visualEditorHook) headParts.push(visualEditorHook);
+
                 if (externalAssetBaseName) {
                     if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
                 } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
@@ -1696,8 +1630,7 @@
                 const extraHead = stripBundledAssetReferences(project.headExtras || '',cssFiles,jsFiles,false);
                 if (extraHead.trim()) headParts.push(extraHead);
                 if (errorHook) headParts.push(errorHook);
-                if (inspectorHook) headParts.push(inspectorHook);
-                if (visualEditorHook) headParts.push(visualEditorHook);
+
                 if (externalAssetBaseName) {
                     if (css.trim()) headParts.push('<link rel="stylesheet" href="' + escHtml(externalAssetBaseName) + '.css">');
                 } else if (css.trim()) headParts.push('<style>\n' + css + '\n</style>');
@@ -3166,9 +3099,7 @@
             function refresh() {
                 code.innerHTML = highlight(ta.value) + '\n';
                 applySearchHighlights(code, searchInput.value);
-                if (window.EditorElementInspector && typeof window.EditorElementInspector.renderDecorations === 'function') {
-                    window.EditorElementInspector.renderDecorations(lang, ta.value, code);
-                }
+
                 const count = ta.value.split('\n').length;
                 const parts = new Array(count);
                 for (let i = 0; i < count; i++) parts[i] = i + 1;
@@ -3739,82 +3670,6 @@
         };
         window.EditorBackupAPI.getActiveTab = function () {
             return activeTab;
-        };
-
-        window.EditorElementInspectorAPI = {
-            getProject: function () {
-                return JSON.parse(JSON.stringify(project));
-            },
-            openFile: function (fileId) {
-                return openFile(fileId);
-            },
-            switchTab: function (lang) {
-                if (LANGS.includes(lang)) switchTab(lang);
-            },
-            showMessage: function (message, type) {
-                showToast(String(message || ''), type === 'error' ? 'error' : 'info');
-            },
-            focusRange: function (options) {
-                if (!options || !LANGS.includes(options.lang)) return false;
-                const file = getFile(options.fileId);
-                if (!file || file.type !== options.lang || file.content !== options.source) return false;
-                if (project.activeFileId !== file.id || activeTab !== options.lang) openFile(file.id);
-                const editor = editors[options.lang];
-                if (!editor || editor.ta.value !== file.content) return false;
-                editor.refresh();
-                const start = Math.max(0, Math.min(file.content.length, Number(options.start) || 0));
-                const end = Math.max(start, Math.min(file.content.length, Number(options.end) || start));
-                editor.ta.focus();
-                editor.ta.setSelectionRange(start, end);
-                editor.scrollToPosition(start, 2);
-                return true;
-            },
-            updateFileContent: function (fileId, content) {
-                const file = getFile(fileId);
-                if (!file || typeof content !== 'string' || !editors[file.type]) return false;
-                project.activeFileId = file.id;
-                project.lastActiveByLang[file.type] = file.id;
-                activateTab(file.type);
-                const editor = editors[file.type];
-                editor.ta.value = content;
-                editor.ta.dispatchEvent(new Event('input', { bubbles: true }));
-                editor.ta.focus();
-                return true;
-            },
-            updateFilesContent: function (updates) {
-                if (!Array.isArray(updates) || !updates.length) return false;
-                const seen = new Set();
-                const resolved = updates.map(function(update) {
-                    if (!update || typeof update.fileId !== 'string' || typeof update.content !== 'string' || seen.has(update.fileId)) return null;
-                    seen.add(update.fileId);
-                    const file = getFile(update.fileId);
-                    if (!file || !editors[file.type]) return null;
-                    if (Object.prototype.hasOwnProperty.call(update, 'expectedContent') && file.content !== update.expectedContent) return null;
-                    return { file: file, content: update.content };
-                });
-                if (resolved.some(function(item) { return !item; })) return false;
-                resolved.forEach(function(item) {
-                    item.file.content = item.content;
-                    project.lastActiveByLang[item.file.type] = item.file.id;
-                });
-                const activeUpdate = resolved[resolved.length - 1];
-                project.activeFileId = activeUpdate.file.id;
-                activateTab(activeUpdate.file.type);
-                resolved.forEach(function(item) {
-                    const editor = editors[item.file.type];
-                    editor.ta.value = item.content;
-                    editor.refresh();
-                    editor.ta.dispatchEvent(new Event('input', { bubbles: true }));
-                });
-                renderFileExplorer();
-                setDirty(true);
-                scheduleSaveProject();
-                return true;
-            },
-            refreshPreview: function () {
-                updatePreviewNow();
-                return true;
-            }
         };
 
         setDirty(false);

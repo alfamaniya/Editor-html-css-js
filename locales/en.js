@@ -4,7 +4,6 @@
   window.EditorVLocales.en = {
     "انتخاب محیط ویرایش": "Choose editor mode",
     "ویرایشگر اصلی": "Code Editor",
-    "محیط یکپارچهٔ ویرایش کد و طراحی بصری": "Integrated code and visual design workspace",
     "جست‌وجو و ابزارهای اصلی": "Search and main tools",
     "باز کردن فایل‌منیجر": "Open file manager",
     "بستن فایل‌منیجر": "Close file manager",

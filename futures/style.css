@@ -26,7 +26,7 @@ body {
   overflow: hidden;
   background: var(--background);
   color: var(--text);
-  font-family: Tahoma, Arial, sans-serif;
+  font-family: Inter, Segoe UI, Arial, sans-serif;
   font-size: 13px;
 }
 
@@ -95,8 +95,8 @@ body {
   background: var(--panel);
 }
 
-.left-menu { border-left: 1px solid var(--border); }
-.right-menu { border-right: 1px solid var(--border); }
+.left-menu { border-right: 1px solid var(--border); }
+.right-menu { border-left: 1px solid var(--border); }
 
 .panel-heading,
 .section-heading,
@@ -150,8 +150,8 @@ body {
   background: var(--background);
 }
 
-.editor-panel { border-left: 1px solid var(--border); }
-.preview-panel { border-left: 1px solid var(--border); }
+.editor-panel { border-right: 1px solid var(--border); }
+.preview-panel { border-right: 1px solid var(--border); }
 
 .section-heading {
   direction: ltr;
@@ -175,7 +175,7 @@ body {
   font-size: 10px;
   font-weight: 400;
   letter-spacing: 0;
-  direction: rtl;
+  direction: ltr;
 }
 
 .editor-surface,

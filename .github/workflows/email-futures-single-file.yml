@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: futures-email-{{ github.ref }}
+  group: futures-email-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -37,17 +37,17 @@ jobs:
 
       - name: بررسی تنظیمات ایمیل
         env:
-          SMTP_SERVER: ${'{'}{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${'{'}{ secrets.SMTP_PORT }}
-          SMTP_USERNAME: ${'{'}{ secrets.SMTP_USERNAME }}
-          SMTP_PASSWORD: ${'{'}{ secrets.SMTP_PASSWORD }}
-          SMTP_FROM: ${'{'}{ secrets.SMTP_FROM }}
-          FUTURES_EMAIL_TO: ${'{'}{ secrets.FUTURES_EMAIL_TO }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          FUTURES_EMAIL_TO: ${{ secrets.FUTURES_EMAIL_TO }}
         shell: bash
         run: |
           for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD SMTP_FROM FUTURES_EMAIL_TO; do
-            if [[ -z "${'{'}!name}" ]]; then
-              echo "::error::GitHub Actions Secret ${'{'}name} تنظیم نشده است."
+            if [[ -z "${!name}" ]]; then
+              echo "::error::GitHub Actions Secret ${name} تنظیم نشده است."
               exit 1
             fi
           done
@@ -55,13 +55,13 @@ jobs:
       - name: ارسال فایل HTML به ایمیل
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: ${'{'}{ secrets.SMTP_SERVER }}
-          server_port: ${'{'}{ secrets.SMTP_PORT }}
-          username: ${'{'}{ secrets.SMTP_USERNAME }}
-          password: ${'{'}{ secrets.SMTP_PASSWORD }}
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
           subject: "پیش‌نمایش یکپارچه Futures"
-          to: ${'{'}{ secrets.FUTURES_EMAIL_TO }}
-          from: ${'{'}{ secrets.SMTP_FROM }}
+          to: ${{ secrets.FUTURES_EMAIL_TO }}
+          from: ${{ secrets.SMTP_FROM }}
           body: |
             نسخه یکپارچه و قابل‌مشاهده در مرورگر از پوشه futures به این ایمیل پیوست شده است.
           attachments: dist/futures-preview.html

@@ -31,11 +31,13 @@ permissions:
   contents: read
 
 jobs:
-  send:
-    name: Build and send selected version
+  prepare:
+    name: Build and prepare email parts
     if: inputs.confirm_send == true
     runs-on: ubuntu-26.04
     timeout-minutes: 15
+    outputs:
+      matrix: ${{ steps.parts.outputs.matrix }}
     env:
       SELECTED_CODE: ${{ inputs.code_to_send }}
       RECIPIENT: ${{ inputs.recipient }}
@@ -78,34 +80,86 @@ jobs:
 
       - name: Build standalone Futures HTML
         if: startsWith(env.SELECTED_CODE, 'Futures')
+        shell: bash
         run: |
           set -euo pipefail
           node scripts/build-futures-offline.mjs
           test -s futures/offline-dashboard-futures.html
 
-      - name: Prepare email content
+      - name: Prepare email content parts
+        id: parts
         shell: bash
         run: |
           set -euo pipefail
-          case "$SELECTED_CODE" in
-            "Main Editor") file="index-test-etitor.html"; label="Main Editor" ;;
-            "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor" ;;
-            "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor" ;;
-            "Futures — futures/offline-dashboard-futures.html") file="futures/offline-dashboard-futures.html"; label="futures/offline-dashboard-futures.html" ;;
-            *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
-          esac
-          test -s "$file"
-          mkdir -p dist/company-delivery
-          {
-            printf 'Project: Editor-html-css-js\n'
-            printf 'Selected version: %s\n' "$label"
-            printf 'Repository: %s\n' "$GITHUB_REPOSITORY"
-            printf 'Branch: main\n'
-            printf 'Commit: %s\n' "$(git rev-parse HEAD)"
-            printf 'Source file: %s\n' "$file"
-            printf '\nThis is an informational email. No files are attached.\n'
-          } > dist/company-delivery/selected-code-email.txt
-          test -s dist/company-delivery/selected-code-email.txt
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import crypto from 'node:crypto';
+
+          const selected = process.env.SELECTED_CODE;
+          const isFutures = selected.startsWith('Futures');
+          const fileBySelection = {
+            'Main Editor': 'index-test-etitor.html',
+            'Visual Editor': 'standalone-visual-editor.html',
+            'Combined Editor': 'editor v.html',
+            'Futures — futures/offline-dashboard-futures.html': 'futures/offline-dashboard-futures.html'
+          };
+          const file = fileBySelection[selected];
+          if (!file || !fs.existsSync(file)) throw new Error('Selected source file is missing.');
+          const source = fs.readFileSync(file);
+          if (!source.length) throw new Error('Selected source file is empty.');
+
+          const outDir = 'dist/company-delivery';
+          fs.rmSync(outDir, { recursive: true, force: true });
+          fs.mkdirSync(outDir, { recursive: true });
+
+          const commit = process.env.GITHUB_SHA ?? 'unknown';
+          const transferId = crypto.createHash('sha256')
+            .update(commit + ':' + file + ':' + source.length)
+            .digest('hex').slice(0, 16);
+
+          const maxChunkBytes = 900 * 1024;
+          const chunks = [];
+          if (isFutures) {
+            let offset = 0;
+            while (offset < source.length) {
+              let end = Math.min(offset + maxChunkBytes, source.length);
+              while (end < source.length && (source[end] & 0xc0) === 0x80) end--;
+              if (end === offset) throw new Error('Could not find a safe UTF-8 split boundary.');
+              chunks.push(source.subarray(offset, end));
+              offset = end;
+            }
+          } else {
+            chunks.push(source);
+          }
+
+          const total = chunks.length;
+          chunks.forEach((chunk, index) => {
+            const part = index + 1;
+            const begin = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} begin -->`;
+            const finish = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} end -->`;
+            const body = isFutures
+              ? Buffer.concat([
+                  Buffer.from(begin + '\\n', 'utf8'),
+                  chunk,
+                  Buffer.from('\\n' + finish, 'utf8')
+                ])
+              : Buffer.from(
+                  `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 begin -->\\n` +
+                  `<!-- Selected source: ${file}; commit: ${commit} -->\\n` +
+                  `<!-- This message contains the selected source as plain text. -->\\n` +
+                  chunk.toString('utf8') +
+                  `\\n<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 end -->`,
+                  'utf8'
+                );
+            fs.writeFileSync(path.join(outDir, `part-${part}.txt`), body);
+          });
+
+          const matrix = JSON.stringify({ include: chunks.map((_, index) => ({ part: index + 1 })) });
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${matrix}\\n`);
+          console.log(`Prepared ${total} email part(s) from ${file}; each Futures source chunk is at most ${maxChunkBytes} bytes.`);
+          NODE
+          test -s dist/company-delivery/part-1.txt
 
       - name: Validate SMTP configuration
         env:
@@ -136,13 +190,39 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! "$RECIPIENT" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]; then
+          if [[ ! "$RECIPIENT" =~ ^[^[:space:]@]+@[^[:space:]@]+\\.[^[:space:]@]+$ ]]; then
             echo "::error::آدرس ایمیل گیرنده معتبر نیست."
             exit 1
           fi
 
-      - name: Send selected code by email
-        if: inputs.confirm_send == true
+      - name: Upload prepared email parts
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-email-parts
+          path: dist/company-delivery/part-*.txt
+          if-no-files-found: error
+          retention-days: 1
+
+  send:
+    name: Send email part
+    needs: prepare
+    if: needs.prepare.result == 'success'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    env:
+      RECIPIENT: ${{ inputs.recipient }}
+    steps:
+      - name: Download prepared email parts
+        uses: actions/download-artifact@v4
+        with:
+          name: offline-email-parts
+          path: dist/company-delivery
+
+      - name: Send source part by email
         uses: dawidd6/action-send-mail@v24
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
@@ -150,7 +230,7 @@ jobs:
           secure: ${{ secrets.SMTP_SECURE == 'true' }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "نسخهٔ انتخاب‌شده از Editor-html-css-js"
+          subject: "Editor offline source transfer"
           to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
-          body: "file://dist/company-delivery/selected-code-email.txt"
+          body: "file://dist/company-delivery/part-${{ matrix.part }}.txt"

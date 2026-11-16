@@ -55,17 +55,41 @@ Editor-html-css-js/
 │       └── tree-world-suggestion.md
 ├── editor v.html
 ├── futures/
-│   ├── header/ (index.html, style.css, script.js)
-│   ├── file-manager/ (index.html, style.css, script.js)
+│   ├── header/
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   └── script.js
+│   ├── file-manager/
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   └── script.js
 │   ├── editor/
 │   │   ├── index.html
 │   │   ├── style.css
 │   │   ├── script.js
-│   │   └── [۷ پوشهٔ رزروشدهٔ قابلیت‌های ویرایشگر]
-│   ├── editor-terminal/ (index.html, style.css, script.js)
-│   ├── right-menu/ (index.html, style.css, script.js)
-│   ├── live-preview/ (index.html, style.css, script.js)
-│   └── preview-terminal/ (index.html, style.css, script.js)
+│   │   ├── autocomplete/.gitkeep
+│   │   ├── color-picker/.gitkeep
+│   │   ├── core/.gitkeep
+│   │   ├── editing-commands/.gitkeep
+│   │   ├── paste-processing/.gitkeep
+│   │   ├── search/.gitkeep
+│   │   └── syntax-highlighting/.gitkeep
+│   ├── editor-terminal/
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   └── script.js
+│   ├── right-menu/
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   └── script.js
+│   ├── live-preview/
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   └── script.js
+│   └── preview-terminal/
+│       ├── index.html
+│       ├── style.css
+│       └── script.js
 ├── index.html
 ├── locales/
 │   ├── en.js

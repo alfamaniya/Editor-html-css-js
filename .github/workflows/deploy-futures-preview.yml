@@ -1,0 +1,50 @@
+name: انتشار پیش‌نمایش Futures
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "futures/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# با انتشار اصلی هم‌گروه است تا دو انتشار هم‌زمان روی یک سایت انجام نشود.
+concurrency:
+  group: github-pages-main
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: دریافت سورس
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: پیکربندی GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: ساخت محتوای سایت با Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: بارگذاری خروجی آمادهٔ انتشار
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./_site
+
+      - name: انتشار پیش‌نمایش
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -29,6 +29,10 @@ futures/editor/
 ├── index.html
 ├── style.css
 ├── script.js
+├── header/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
 └── search/
     ├── index.html
     ├── style.css
@@ -50,6 +54,10 @@ futures/editor/
 - `futures/`: محل هفت بخش جدید رابط کاربری و قابلیت‌های فرزند آن‌ها.
 - `src/features/`: محل ماژول‌ها و قابلیت‌های موجود پروژه؛ ساختار قدیمی آن دست‌نخورده باقی می‌ماند.
 - فایل قدیمی `src/features/live-preview/element-inspector.js` عمداً در محل قبلی باقی مانده و با اسکلت جدید `futures/live-preview/` ادغام نشده است.
+
+## هدر اختصاصی ویرایشگر
+
+هدر داخلی بخش Editor در `futures/editor/header/` نگهداری می‌شود و سه فایل مستقل `index.html`، `style.css` و `script.js` دارد. این زیر‌بخش برای سازمان‌دهی نوار ابزار و تب‌های فایل است. در پوستهٔ نمایشی Futures، ظاهر این هدر شامل Undo، Redo، Clear و تب‌های پیش‌فرض HTML، CSS و JavaScript است. در این مرحله دکمه‌ها و تب‌ها صرفاً نمایشی هستند و رفتار ویرایش، بستن تب یا تأیید پاک‌سازی هنوز پیاده‌سازی نشده است.
 
 ## وضعیت
 

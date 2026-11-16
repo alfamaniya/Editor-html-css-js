@@ -152,6 +152,12 @@ jobs:
                   `\\n<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 end -->`,
                   'utf8'
                 );
+            if (isFutures) {
+              const prefix = Buffer.from(begin + '\\n', 'utf8');
+              const suffix = Buffer.from('\\n' + finish, 'utf8');
+              const extracted = body.subarray(prefix.length, body.length - suffix.length);
+              if (!extracted.equals(chunk)) throw new Error(`Part ${part} failed exact-content validation.`);
+            }
             fs.writeFileSync(path.join(outDir, `part-${part}.txt`), body);
           });
 

@@ -74,6 +74,8 @@ Editor-html-css-js/
 ├── .github/
 │   └── workflows/
 │       ├── build-combined-editor.yml
+│       ├── build-futures-offline.yml
+│       └── deploy-futures-preview.yml
 │       ├── check-index.yml
 │       ├── company-delivery.yml
 │       └── deploy-pages.yml
@@ -88,6 +90,7 @@ Editor-html-css-js/
 ├── package-lock.json
 ├── editor v.html
 ├── futures/
+│   ├── offline-dashboard-futures.html (generated standalone offline build)
 │   ├── header/
 │   │   ├── index.html
 │   │   ├── style.css
@@ -135,6 +138,7 @@ Editor-html-css-js/
 │   └── fa.js
 ├── script.js
 ├── scripts/
+│   ├── build-futures-offline.mjs
 │   ├── build-codemirror.mjs
 │   ├── codemirror-entry.js
 │   ├── build-combined-editor.mjs
@@ -453,6 +457,23 @@ futures/editor/
 
 **قاعدهٔ نگهداری:** قابلیت جدید را در فایل ماژولار/منبع مربوطه پیاده‌سازی کنید؛ سپس ورودی‌های build و check را در صورت نیاز به‌روز کنید و خروجی توزیع را از روی منابع بسازید. از ویرایش دستی و مستقل فایل یکپارچه خودداری کنید.
 
+## ساخت نسخهٔ مستقل آفلاین Futures
+
+فایل `futures/offline-dashboard-futures.html` خروجی مستقل پروژهٔ جدید Futures است و با فایل قدیمی `editor v.html` هیچ ارتباط تولیدی ندارد. سورس مرجع همچنان ساختار چندفایلی پوشهٔ `futures/` است.
+
+ساخت دستی خروجی:
+
+```bash
+npm run build:offline-futures
+```
+
+اسکریپت `scripts/build-futures-offline.mjs` تمام فایل‌های زیر `futures/` را به‌صورت بازگشتی می‌خواند (به‌جز خود خروجی و پوشه‌های موقت/وابستگی)، آن‌ها را بر اساس نوع در دسته‌هایی مانند HTML components، Stylesheets، JavaScript، Libraries، Assets و Data and documentation طبقه‌بندی می‌کند و محتوای همهٔ فایل‌ها را در کاتالوگ داخلی HTML نگه می‌دارد. فایل‌های CSS و JavaScript محلی ارجاع‌شده از `futures/index.html` در محل مناسب درون‌خطی می‌شوند و منابع تصویری/فونت محلی ارجاع‌شده نیز به Data URL تبدیل می‌شوند.
+
+Workflow مستقل `.github/workflows/build-futures-offline.yml` پس از تغییر سورس Futures یا اجرای دستی، خروجی را بازسازی و در صورت تغییر، فقط فایل آفلاین Futures را commit می‌کند. Workflow انتشار `.github/workflows/deploy-futures-preview.yml` نیز پیش از انتشار Pages همین سازنده را اجرا می‌کند. بنابراین فایل آفلاین و نسخهٔ پیش‌نمایش از یک سورس ساخته می‌شوند.
+
+**محدودیت مهم:** این سازنده، تمام فایل‌ها را در کاتالوگ دسته‌بندی‌شده نگه می‌دارد، اما برای اجرای برنامه فقط منابع محلی قابل ارجاع از سند ورودی را به‌صورت خودکار درون‌خطی می‌کند. وابستگی‌های JavaScript مبتنی بر `type="module"`، بارگذاری پویا با `import()` یا `fetch()`، Workerها و URLهای خارجی نیازمند رسیدگی جداگانه‌اند و در گزارش build به‌عنوان هشدار اعلام می‌شوند؛ وجود آن‌ها به‌تنهایی به معنی آفلاین بودن کامل نیست. قبل از تحویل هر نسخه، فایل خروجی باید مستقیماً در مرورگر گوشی و در حالت بدون اینترنت آزمایش شود.
+
+---
 ## آزمون و کنترل کیفیت
 
 اسکریپت‌های کنترل کیفیت با Node.js اجرا می‌شوند. برای آزمون مرورگری ترکیب‌شده، وابستگی Playwright نیز لازم است.

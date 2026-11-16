@@ -26,5 +26,8 @@
     "@codemirror/state": "^6.5.2",
     "@codemirror/view": "^6.36.5",
     "esbuild": "^0.25.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }

@@ -1,14 +1,14 @@
 :root {
   color-scheme: dark;
-  --background: #101216;
-  --header: #171a20;
-  --panel: #1b1f27;
-  --panel-raised: #20252e;
-  --terminal: #14171d;
-  --border: #303641;
-  --muted: #818b9b;
-  --text: #dce2ec;
-  --accent: #65a9f5;
+  --background: #080B0D;
+  --header: #0D1214;
+  --panel: #111719;
+  --panel-raised: #192326;
+  --terminal: #0B1012;
+  --border: #263438;
+  --muted: #91A5A5;
+  --text: #E6F0F0;
+  --accent: #27C9BE;
   --header-height: 54px;
   --terminal-height: 180px;
   --left-menu-width: 220px;
@@ -55,7 +55,7 @@ body {
   align-items: center;
   gap: 10px;
   direction: ltr;
-  color: #e8edf5;
+  color: #E6F0F0;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.2px;
@@ -66,14 +66,14 @@ body {
   width: 29px;
   height: 29px;
   place-items: center;
-  border: 1px solid #426d9c;
+  border: 1px solid #267F79;
   border-radius: 7px;
-  color: #8bc2ff;
+  color: #55E5D9;
   font-size: 12px;
 }
 
 .header-center {
-  color: #cbd3df;
+  color: #C7D8D7;
   font-size: 13px;
 }
 
@@ -110,7 +110,7 @@ body {
   gap: 9px;
   padding: 0 15px;
   border-bottom: 1px solid var(--border);
-  color: #c8d0dc;
+  color: #C7D8D7;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .5px;
@@ -129,7 +129,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #788292;
+  color: #91A5A5;
   font-size: 11px;
 }
 
@@ -138,9 +138,9 @@ body {
   width: 38px;
   height: 38px;
   place-items: center;
-  border: 1px solid #343c49;
+  border: 1px solid #263438;
   border-radius: 9px;
-  color: #71839b;
+  color: #55BDB5;
   font-size: 20px;
 }
 
@@ -159,7 +159,7 @@ body {
   direction: ltr;
   justify-content: flex-start;
   background: var(--panel);
-  color: #d5dce7;
+  color: #E6F0F0;
 }
 
 .heading-dot {
@@ -168,8 +168,8 @@ body {
   border-radius: 50%;
 }
 
-.editor-dot { background: #e6b45c; }
-.preview-dot { background: #62c69a; }
+.editor-dot { background: #27C9BE; }
+.preview-dot { background: #55E5D9; }
 
 .heading-caption {
   margin-left: auto;
@@ -184,7 +184,7 @@ body {
 .preview-surface {
   position: relative;
   min-height: 0;
-  background: #11151b;
+  background: #0B1012;
 }
 
 .editor-surface {
@@ -192,7 +192,7 @@ body {
   background-size: 100% 26px;
 }
 
-.preview-surface { background: #f4f6f9; color: #596579; }
+.preview-surface { background: #101719; color: #B7C7C7; }
 
 .empty-state {
   position: absolute;
@@ -202,19 +202,19 @@ body {
   align-items: center;
   justify-content: center;
   gap: 13px;
-  color: #657183;
+  color: #91A5A5;
   font-size: 12px;
 }
 
 .empty-symbol {
-  color: #3f526a;
+  color: #287F79;
   font-family: Consolas, monospace;
   font-size: 34px;
   font-weight: 700;
 }
 
 .preview-frame {
-  color: #a5afbd;
+  color: #55BDB5;
   font-size: 34px;
 }
 
@@ -230,7 +230,7 @@ body {
   height: 39px;
   min-height: 39px;
   direction: ltr;
-  background: #191d24;
+  background: #111719;
   font-size: 10px;
 }
 

@@ -63,7 +63,7 @@ futures/editor/
 
 - [x] ایجاد اسکلت سه‌فایلی هفت بخش
 - [x] ثبت قرارداد در مستندات معماری
-- [x] طراحی پوستهٔ اصلی و اتصال Monaco به سطح ویرایشگر Futures
+- [ ] اتصال موتور ویرایش کد به سطح ویرایشگر Futures
 - [x] ایجاد Core مستقل با مدل‌های مجزای HTML، CSS و JavaScript
 - [x] تعریف API عمومی و رویداد مستقل برای اتصال آیندهٔ Live Preview
 - [ ] اتصال Live Preview به رویدادهای تغییر کد
@@ -71,56 +71,6 @@ futures/editor/
 - [ ] پیاده‌سازی تدریجی autocomplete، search، editing commands و color picker
 
 
-## معماری موتور Monaco
+## وضعیت موتور ویرایشگر
 
-نسخهٔ ثابت Monaco Editor در Futures از CDN بارگذاری می‌شود. نقطهٔ ورود در `futures/editor/script.js` است و منطق اصلی در `futures/editor/core/script.js` قرار دارد.
-
-- برای HTML، CSS و JavaScript یک Monaco Model مستقل ساخته می‌شود؛ جابه‌جایی تب‌ها Model را عوض می‌کند و محتوای فایل دیگر از بین نمی‌رود.
-- Core رابط عمومی `window.workspaceEditor` را ارائه می‌کند: `openFile`، `getValue`، `setValue`، `getAllFiles`، `getActiveFile`، `focus` و `layout`.
-- هر تغییر از طریق رویداد `workspace:code-change` با شناسه و محتوای فایل فعال منتشر می‌شود. Live Preview باید به این قرارداد عمومی متصل شود و نباید به API داخلی Monaco وابسته باشد.
-- مدل‌ها فعلاً در حافظه هستند؛ ذخیره‌سازی محلی و بازیابی پروژه هنوز پیاده‌سازی نشده‌اند.
-- بارگذاری کتابخانه و Workerها به دسترسی CDN نیاز دارد.
-
-درخت قسمت Editor:
-
-```text
-futures/editor/
-├── index.html
-├── style.css
-├── script.js
-├── core/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-├── header/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-├── autocomplete/.gitkeep
-├── color-picker/.gitkeep
-├── editing-commands/.gitkeep
-├── paste-processing/.gitkeep
-├── search/.gitkeep
-└── syntax-highlighting/.gitkeep
-```
-
-## قانون ثابت طراحی رابط کاربری Futures
-
-این قانون، قرارداد بصری دائمی پروژه برای تمام توسعه‌های بعدی رابط کاربری است:
-
-- تم اصلی رابط کاربری باید همیشه **مشکی و فیروزه‌ای (Black & Turquoise)** باشد.
-- رنگ‌های پایه:
-  - پس‌زمینه اصلی: `#080B0D`
-  - هدر: `#0D1214`
-  - پنل‌ها: `#111719`
-  - پنل‌های برجسته: `#192326`
-  - ترمینال: `#0B1012`
-  - خطوط جداکننده: `#263438`
-  - رنگ اصلی فیروزه‌ای: `#27C9BE`
-  - فیروزه‌ای روشن برای تاکید و حالت فعال: `#55E5D9`
-  - متن اصلی: `#E6F0F0`
-  - متن فرعی: `#91A5A5`
-- رنگ‌های جدید برای قابلیت‌های بعدی باید با همین پالت هماهنگ باشند؛ از تغییر تم به رنگ غالب دیگر خودداری شود.
-- این قانون شامل Header، File Manager، Editor، هر دو Terminal، Right Menu، Live Preview، دکمه‌ها، آیکون‌ها، حالت‌های hover/focus/active و اجزای آینده است.
-- تغییر این قانون فقط با درخواست صریح کاربر مجاز است.
-- تمام متن‌های قابل مشاهدهٔ رابط کاربری همچنان باید انگلیسی باشند و صفحه LTR باقی بماند.
+موتور Monaco از Futures حذف شده است. تا زمان اضافه‌شدن موتور جایگزین، سطح ویرایشگر فقط پوستهٔ رابط کاربری را نگه می‌دارد و قابلیت ویرایش کد فعال نیست.

@@ -32,10 +32,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: company-delivery-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   send:
     name: Build and send selected version
@@ -160,17 +156,17 @@ jobs:
           esac
           test -s "$file"
           mkdir -p dist/company-delivery
+          cp "$file" dist/company-delivery/selected-code.html
           {
-            printf 'پروژه: Editor-html-css-js\n'
-            printf 'کد انتخاب‌شده: %s\n' "$label"
-            printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
-            printf 'شاخه: main\n'
-            printf 'شناسهٔ کامیت: %s\n' "$(git rev-parse HEAD)"
-            printf '%s\n' '============================================================'
-            printf '%s\n\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
-            cat "$file"
+            printf 'Project: Editor-html-css-js\n'
+            printf 'Selected version: %s\n' "$label"
+            printf 'Repository: %s\n' "$GITHUB_REPOSITORY"
+            printf 'Branch: main\n'
+            printf 'Commit: %s\n' "$(git rev-parse HEAD)"
+            printf '\nThe complete HTML file is attached to this email as selected-code.html.\n'
           } > dist/company-delivery/selected-code-email.txt
           test -s dist/company-delivery/selected-code-email.txt
+          test -s dist/company-delivery/selected-code.html
 
       - name: Validate SMTP configuration
         env:
@@ -240,3 +236,4 @@ jobs:
           to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
           body: "file://dist/company-delivery/selected-code-email.txt"
+          attachments: dist/company-delivery/selected-code.html

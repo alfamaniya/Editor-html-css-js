@@ -1,12 +1,9 @@
-name: انتشار پیش‌نمایش Futures
+name: انتشار کامل سایت
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "futures/**"
-      - ".github/workflows/deploy-futures-preview.yml"
   workflow_dispatch:
 
 permissions:
@@ -37,7 +34,7 @@ jobs:
       - name: پیکربندی GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: ساخت محتوای سایت با Jekyll
+      - name: ساخت محتوای کامل سایت با Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./
@@ -48,6 +45,6 @@ jobs:
         with:
           path: ./_site
 
-      - name: انتشار پیش‌نمایش
+      - name: انتشار سایت
         id: deployment
         uses: actions/deploy-pages@v4

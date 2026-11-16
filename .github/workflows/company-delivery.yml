@@ -28,14 +28,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: بررسی فایل نهایی بدون بازتولید
+      - name: بازسازی نسخهٔ مستقل ویرایشگر اصلی
+        run: node scripts/build-test-editor.mjs
+      - name: اعتبارسنجی نسخهٔ مستقل ویرایشگر اصلی
+        run: node scripts/check-standalone-editor.mjs
+      - name: بازسازی Visual Editor مستقل
+        run: node scripts/build-standalone-visual-editor.mjs
+      - name: اعتبارسنجی Visual Editor مستقل
+        run: node scripts/check-standalone-visual-editor.mjs
+      - name: ساخت و اعتبارسنجی فایل یکپارچهٔ نهایی
         shell: bash
         run: |
           set -euo pipefail
-          test -s "editor v.html"
+          node scripts/build-combined-editor.mjs
           node --check scripts/check-combined-editor.mjs
           node scripts/check-combined-editor.mjs
-          echo "نسخهٔ ثبت‌شده اعتبارسنجی شد؛ این Workflow فایل را بازتولید نمی‌کند."
+          test -s "editor v.html"
+          echo "نسخهٔ یکپارچه از سورس چندفایلی شاخهٔ main بازسازی و اعتبارسنجی شد."
       - name: آماده‌سازی متن کامل ایمیل
         shell: bash
         run: |

@@ -19,7 +19,7 @@ on:
         type: boolean
         default: false
       recipient:
-        description: "Choose the email address that will receive the attachment."
+        description: "Choose the email address that will receive the message."
         required: true
         type: choice
         options:
@@ -88,28 +88,24 @@ jobs:
         run: |
           set -euo pipefail
           case "$SELECTED_CODE" in
-            "Main Editor") file="index-test-etitor.html"; label="Main Editor"; attachment="main-editor.html" ;;
-            "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor"; attachment="visual-editor.html" ;;
-            "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor"; attachment="combined-editor.html" ;;
-            "Futures — futures/offline-dashboard-futures.html") file="futures/offline-dashboard-futures.html"; label="futures/offline-dashboard-futures.html"; attachment="offline-dashboard-futures.html" ;;
+            "Main Editor") file="index-test-etitor.html"; label="Main Editor" ;;
+            "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor" ;;
+            "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor" ;;
+            "Futures — futures/offline-dashboard-futures.html") file="futures/offline-dashboard-futures.html"; label="futures/offline-dashboard-futures.html" ;;
             *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
           esac
           test -s "$file"
           mkdir -p dist/company-delivery
-          cp "$file" "dist/company-delivery/$attachment"
-          echo "ATTACHMENT_NAME=$attachment" >> "$GITHUB_ENV"
           {
             printf 'Project: Editor-html-css-js\n'
             printf 'Selected version: %s\n' "$label"
             printf 'Repository: %s\n' "$GITHUB_REPOSITORY"
             printf 'Branch: main\n'
             printf 'Commit: %s\n' "$(git rev-parse HEAD)"
-            printf 'Source file: futures/offline-dashboard-futures.html\n'
-            printf 'Email attachment filename: %s\n' "$attachment"
-            printf '\nThe complete HTML file is attached to this email.\n'
+            printf 'Source file: %s\n' "$file"
+            printf '\nThis is an informational email. No files are attached.\n'
           } > dist/company-delivery/selected-code-email.txt
           test -s dist/company-delivery/selected-code-email.txt
-          test -s "dist/company-delivery/$attachment"
 
       - name: Validate SMTP configuration
         env:
@@ -158,4 +154,3 @@ jobs:
           to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
           body: "file://dist/company-delivery/selected-code-email.txt"
-          attachments: dist/company-delivery/${{ env.ATTACHMENT_NAME }}

@@ -131,6 +131,9 @@ jobs:
 
           let result = html.replace(cssLink, '<style>\n' + css + '\n</style>');
           result = result.replace(jsTag, templates.join('\n') + '\n<script>\n' + js + '\n</script>');
+          // Component assets are already embedded above; remove their external references.
+          result = result.replace(/<link\s+rel="stylesheet"\s+href="\.\/(?!style\.css)[^"]+\.css"\s*>/gi, '');
+          result = result.replace(/<script\s+src="\.\/(?!script\.js)[^"]+\.js"><\/script>/gi, '');
           await mkdir(dirname(output), { recursive: true });
           await writeFile(output, result, 'utf8');
           console.log('فایل Futures یکپارچه ساخته شد: ' + output);

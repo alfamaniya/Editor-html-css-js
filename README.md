@@ -64,6 +64,10 @@ Editor-html-css-js/
 │   │   ├── style.css
 │   │   └── script.js
 │   ├── editor/
+│   │   ├── header/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   └── script.js
 │   │   ├── index.html
 │   │   ├── style.css
 │   │   ├── script.js
@@ -329,9 +333,9 @@ Editor-html-css-js/
 
 ## ساختار هفت بخش اصلی رابط کاربری
 
-برای چیدمان جدید، هفت بخش مستقل در پوشهٔ ریشهٔ `futures/` قرار دارند: `header`، `file-manager`، `editor`، `editor-terminal`، `right-menu`، `live-preview` و `preview-terminal`. هر بخش سه فایل `index.html`، `style.css` و `script.js` دارد. همین قرارداد برای قابلیت‌های فرزند نیز رعایت می‌شود؛ برای مثال قابلیت جست‌وجوی ویرایشگر در پوشهٔ `futures/editor/search/` فایل‌های مستقل خودش را خواهد داشت.
+برای چیدمان جدید، هفت بخش مستقل در پوشهٔ ریشهٔ `futures/` قرار دارند: `header`، `file-manager`، `editor`، `editor-terminal`، `right-menu`، `live-preview` و `preview-terminal`. هر بخش سه فایل `index.html`، `style.css` و `script.js` دارد. همین قرارداد برای قابلیت‌های فرزند نیز رعایت می‌شود؛ برای نمونه هدر اختصاصی ویرایشگر در `futures/editor/header/` و قابلیت جست‌وجوی آینده در `futures/editor/search/` هرکدام سه فایل مستقل دارند.
 
-در این مرحله فقط اسکلت فایل‌ها در `futures/` ایجاد شده است و هنوز به رابط فعلی متصل نیستند. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
+در این مرحله پوستهٔ نمایشی Futures شامل هدر اختصاصی ویرایشگر و تب‌های اولیه در صفحهٔ پیش‌نمایش قرار گرفته است؛ دکمه‌ها و تب‌ها فعلاً صرفاً ظاهری هستند و منطق ویرایش به آن‌ها متصل نشده است. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
 
 ## جریان اجرای برنامه
 

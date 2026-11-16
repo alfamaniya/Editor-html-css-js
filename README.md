@@ -33,6 +33,34 @@ https://github.com/alfamaniya/Editor-html-css-js/actions/workflows/company-deliv
 - CSS برای پوسته، چیدمان، واکنش‌گرایی و استایل قابلیت‌ها
 - JavaScript خام (Vanilla JS) برای منطق برنامه و ماژول‌ها
 - Node.js برای ابزارهای ساخت و آزمون
+- npm برای اجرای دستورهای توسعه و بسته‌بندی پروژه
+
+## راه‌اندازی و استفاده از npm
+
+برای مدیریت دستورهای ساخت و بررسی پروژه، مخزن اکنون دارای `package.json` و `package-lock.json` است. در حال حاضر وابستگی زمان اجرای خارجی به npm اضافه نشده؛ خود برنامه همچنان با HTML، CSS و JavaScript اجرا می‌شود و npm فقط ابزار توسعه است.
+
+پس از نصب Node.js (که npm را نیز همراه دارد)، در پوشهٔ اصلی مخزن این دستور را اجرا کنید:
+
+```bash
+npm install
+```
+
+دستورهای پرکاربرد:
+
+| دستور | کاربرد |
+|---|---|
+| `npm test` | بررسی یکپارچگی فایل ورودی اصلی |
+| `npm run check:index` | اجرای بررسی ساختار و کد `index.html` |
+| `npm run build:main` | ساخت نسخهٔ مستقل ویرایشگر اصلی |
+| `npm run check:main` | اعتبارسنجی نسخهٔ مستقل ویرایشگر اصلی |
+| `npm run build:visual` | ساخت نسخهٔ مستقل Visual Editor |
+| `npm run check:visual` | اعتبارسنجی نسخهٔ مستقل Visual Editor |
+| `npm run build:combined` | ساخت فایل یکپارچه از خروجی‌های مستقل |
+| `npm run check:combined` | اعتبارسنجی فایل یکپارچهٔ ساخته‌شده |
+| `npm run build:all` | اجرای زنجیرهٔ کامل ساخت و اعتبارسنجی خروجی‌ها |
+
+`node_modules/` و فایل‌های موقت npm در Git نادیده گرفته می‌شوند. فایل `package-lock.json` نسخه و درخت وابستگی‌ها را تثبیت می‌کند. اضافه‌شدن npm به معنی آنلاین‌شدن برنامه نیست؛ منابع داخلی برنامه همچنان باید محلی باشند و اجرای ویرایشگر برای استفادهٔ عادی به npm نیاز ندارد.
+
 - GitHub Actions برای کنترل کیفیت، انتشار صفحات و فرایند تحویل شرکتی
 - Playwright در آزمون مرورگری خروجی یکپارچه
 
@@ -54,6 +82,9 @@ Editor-html-css-js/
 │   │   └── main-files-audit.md
 │   └── suggestions/
 │       └── tree-world-suggestion.md
+├── .gitignore
+├── package.json
+├── package-lock.json
 ├── editor v.html
 ├── futures/
 │   ├── header/

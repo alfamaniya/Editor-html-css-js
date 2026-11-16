@@ -75,7 +75,8 @@
 .editor-tab {
   display: flex;
   min-width: 0;
-  max-width: 180px;
+  flex: 1 1 0;
+  max-width: none;
   align-items: center;
   gap: 8px;
   padding: 0 10px;
@@ -141,7 +142,7 @@
 }
 .editor-tab:not(.is-active) .tab-close { opacity: .65; }
 .editor-tab:not(.is-active):hover .tab-close { opacity: 1; }
-.editor-tabs-spacer { flex: 1; min-width: 0; }
+.editor-tabs-spacer { display: none; }
 
 @media (max-width: 520px) {
   .editor-header { gap: 5px; padding: 0 8px; }

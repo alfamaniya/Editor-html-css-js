@@ -1,11 +1,6 @@
-name: Automatic and Manual Futures Email Delivery
+name: Manual HTML Email Delivery
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "futures/**"
   workflow_dispatch:
     inputs:
       code_to_send:
@@ -35,12 +30,12 @@ permissions:
 jobs:
   send:
     name: Build and send selected version
-    if: github.event_name == 'push' || inputs.confirm_send == true
+    if: inputs.confirm_send == true
     runs-on: ubuntu-26.04
     timeout-minutes: 15
     env:
-      SELECTED_CODE: ${{ github.event_name == 'push' && 'Futures' || inputs.code_to_send }}
-      RECIPIENT: ${{ github.event_name == 'push' && 'a.mamghanian@isaco.ir' || inputs.recipient }}
+      SELECTED_CODE: ${{ inputs.code_to_send }}
+      RECIPIENT: ${{ inputs.recipient }}
     steps:
       - name: Checkout repository source
         uses: actions/checkout@v7
@@ -170,7 +165,7 @@ jobs:
             printf '\nThe complete HTML file is attached to this email as offline-futures.html.\n'
           } > dist/company-delivery/selected-code-email.txt
           test -s dist/company-delivery/selected-code-email.txt
-          test -s dist/company-delivery/selected-code.html
+          test -s dist/company-delivery/offline-futures.html
 
       - name: Validate SMTP configuration
         env:
@@ -206,29 +201,8 @@ jobs:
             exit 1
           fi
 
-      - name: Wait for editing activity to settle
-        if: github.event_name == 'push'
-        run: |
-          echo "Waiting 30 seconds so consecutive commits can be grouped into one email."
-          sleep 30
-
-      - name: Check whether this is the latest push
-        id: latest_push
-        if: github.event_name == 'push'
-        shell: bash
-        run: |
-          set -euo pipefail
-          latest_sha="$(git ls-remote https://github.com/${GITHUB_REPOSITORY}.git refs/heads/main | awk '{print $1}')"
-          if [[ "$latest_sha" == "$GITHUB_SHA" ]]; then
-            echo "is_latest=true" >> "$GITHUB_OUTPUT"
-            echo "This is the latest push. Email delivery will continue."
-          else
-            echo "is_latest=false" >> "$GITHUB_OUTPUT"
-            echo "A newer commit exists. This run will not send an outdated email."
-          fi
-
       - name: Send selected code by email
-        if: github.event_name != 'push' || steps.latest_push.outputs.is_latest == 'true'
+        if: inputs.confirm_send == true
         uses: dawidd6/action-send-mail@v24
         with:
           server_address: ${{ secrets.SMTP_SERVER }}

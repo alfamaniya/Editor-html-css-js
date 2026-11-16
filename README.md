@@ -43,7 +43,7 @@
 Editor-html-css-js/
 ├── .github/
 │   └── workflows/
-│       ├── check-index-integrity.yml
+│       ├── build-combined-editor.yml
 │       ├── check-index.yml
 │       ├── company-delivery.yml
 │       └── deploy-pages.yml
@@ -379,19 +379,19 @@ node scripts/check-combined-editor-browser.mjs
 
 ## استقرار و تحویل شرکتی
 
-### GitHub Pages
+### کنترل کیفیت و ترتیب ساخت
 
-فایل `.github/workflows/deploy-pages.yml` با push به شاخهٔ `main` یا اجرای دستی فعال می‌شود. Workflow محتوای مخزن را دریافت می‌کند، سایت را با Jekyll در مسیر `_site` می‌سازد، artifact صفحات را بارگذاری و سپس در GitHub Pages منتشر می‌کند.
+فایل `.github/workflows/check-index.yml` مرحلهٔ اول CI است. این Workflow ابتدا `scripts/check-index-integrity.mjs` را اجرا می‌کند، سپس ساختار ورودی، ارجاع دارایی‌ها و آزمون‌های سورس را بررسی می‌کند. در صورت شکست این مرحله، مراحل بعدی آغاز نمی‌شوند.
 
-### بررسی سلامت ورودی
+فایل `.github/workflows/build-combined-editor.yml` فقط پس از موفقیت `Check index file` روی شاخهٔ `main` اجرا می‌شود. این Workflow همان commit اعتبارسنجی‌شده را دریافت می‌کند، نسخهٔ مستقل Editor و Visual Editor را می‌سازد، سپس `editor v.html` را تولید و اعتبارسنجی می‌کند. خروجی نهایی به‌صورت artifact با نام `editor-v-html` برای ۱۴ روز در GitHub Actions نگهداری می‌شود؛ این فرایند فایل حجیم را خودکار به سورس مخزن commit نمی‌کند.
 
-فایل `.github/workflows/check-index-integrity.yml` بررسی ساختار `index.html` را هنگام تغییر فایل‌های مرتبط یا اجرای دستی انجام می‌دهد.
+### انتشار GitHub Pages
 
-فایل `.github/workflows/check-index.yml` مجموعه‌ای از بررسی‌ها و اعتبارسنجی‌های مرتبط با سورس و خروجی‌های مستقل را برای تغییرات مربوطه اجرا می‌کند.
+فایل `.github/workflows/deploy-pages.yml` فقط پس از موفقیت `Build Combined Editor` اجرا می‌شود. انتشار، همان commit اعتبارسنجی‌شده را دریافت می‌کند و دیگر با هر Push به‌صورت مستقل اجرا نمی‌شود؛ بنابراین شکست بررسی سورس یا ساخت فایل تکی، انتشار را متوقف می‌کند.
 
 ### تحویل ایمیلی به شرکت
 
-فایل `.github/workflows/company-delivery.yml` فرایند دستی تحویل را مدیریت می‌کند. اجرای آن نیازمند تأیید صریح ورودی workflow و پیکربندی Secretهای SMTP و نشانی ایمیل شرکت در تنظیمات GitHub است. این فرایند فایل یکپارچهٔ ثبت‌شده را اعتبارسنجی و متن ایمیل را آماده می‌کند؛ بنابراین نقش آن تحویل artifact است، نه اجرای برنامهٔ چندفایلی در توسعهٔ روزمره.
+فایل `.github/workflows/company-delivery.yml` فرایند دستی تحویل را مدیریت می‌کند. اجرای آن نیازمند تأیید صریح ورودی workflow و پیکربندی Secretهای SMTP و نشانی ایمیل شرکت در تنظیمات GitHub است. پیش از ارسال، نسخهٔ مستقل Editor، Visual Editor و فایل `editor v.html` را از سورس چندفایلی شاخهٔ `main` دوباره می‌سازد و اعتبارسنجی می‌کند؛ بنابراین ایمیل به فایل قدیمی ثبت‌شده در مخزن وابسته نیست. تحویل ایمیلی مستقل و دستی باقی می‌ماند.
 
 ## ذخیره‌سازی و محدودیت‌های فعلی
 

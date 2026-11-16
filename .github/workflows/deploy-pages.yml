@@ -1,33 +1,38 @@
 name: انتشار کنترل‌شدهٔ GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - Build Combined Editor
+    types:
+      - completed
     branches:
       - main
-  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# انتشار فعال لغو نمی‌شود؛ فقط یک انتشار در هر زمان اجرا خواهد شد.
+# فقط پس از موفقیت اعتبارسنجی سورس و ساخت فایل یکپارچه منتشر می‌شود.
 concurrency:
   group: github-pages-main
   cancel-in-progress: false
 
 jobs:
   deploy:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: دریافت آخرین نسخهٔ شاخهٔ اصلی
-        uses: actions/checkout@v6
+      - name: دریافت دقیق همان نسخهٔ اعتبارسنجی‌شده
+        uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
 
       - name: پیکربندی GitHub Pages
         uses: actions/configure-pages@v5

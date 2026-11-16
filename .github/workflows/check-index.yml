@@ -24,8 +24,9 @@ on:
       - "src/features/suggestions/data/js-suggestions.js"
       - "src/features/suggestions/next-word/next-word-suggestions.js"
       - "README.md"
-      - ".github/workflows/check-index.yml"
+      - ".github/workflows/**"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/check-index-integrity.mjs"
       - "scripts/build-test-editor.mjs"
       - "src/**"
       - "scripts/build-standalone-visual-editor.mjs"
@@ -55,8 +56,9 @@ on:
       - "src/features/suggestions/data/js-suggestions.js"
       - "src/features/suggestions/next-word/next-word-suggestions.js"
       - "README.md"
-      - ".github/workflows/check-index.yml"
+      - ".github/workflows/**"
       - "scripts/check-editor-code-processing.mjs"
+      - "scripts/check-index-integrity.mjs"
       - "scripts/build-test-editor.mjs"
       - "scripts/build-standalone-visual-editor.mjs"
       - "scripts/build-combined-editor.mjs"
@@ -80,6 +82,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Check index integrity checker syntax
+        run: node --check scripts/check-index-integrity.mjs
+
+      - name: Check index HTML tags, delimiters, and inline JavaScript
+        run: node scripts/check-index-integrity.mjs
 
       - name: Verify index file exists and is not empty
         run: |
@@ -154,17 +162,6 @@ jobs:
 
       - name: Test HTML paste processing
         run: node scripts/check-editor-code-processing.mjs
-
-      - name: Build the standalone Visual Editor
-        run: node scripts/build-standalone-visual-editor.mjs
-
-      - name: Build the current combined Editor V bundle
-        run: node scripts/build-combined-editor.mjs
-
-      - name: Validate the complete standalone Editor V bundle
-        run: |
-          node --check scripts/check-combined-editor.mjs
-          node scripts/check-combined-editor.mjs
 
       - name: Test nested settings dialog keyboard handling
         run: node scripts/check-settings-dialog-keyboard.mjs

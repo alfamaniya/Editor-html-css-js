@@ -94,52 +94,52 @@ Editor-html-css-js/
 │   ├── app/
 │   │   └── .gitkeep
 │   ├── features/
-│   ├── backup-restore/
-│   │   ├── backup-restore.css
-│   │   └── backup-restore.js
-│   ├── export/.gitkeep
-│   ├── help/.gitkeep
-│   ├── libraries/.gitkeep
-│   ├── live-preview/
-│   │   └── element-inspector.js
-│   ├── quick-insert/
-│   │   ├── quick-insert.css
-│   │   └── quick-insert.js
-│   ├── settings/
-│   │   ├── settings.css
-│   │   └── settings.js
-│   ├── suggestions/
-│   │   ├── data/
-│   │   │   ├── css-suggestions.js
-│   │   │   ├── html-suggestions.js
-│   │   │   └── js-suggestions.js
-│   │   ├── manager/
-│   │   │   ├── suggestion-manager.css
-│   │   │   └── suggestion-manager.js
-│   │   └── next-word/
-│   │       └── next-word-suggestions.js
-│   ├── visual-editor/
-│   │   ├── README.md
-│   │   ├── visual-editor-remote.js
-│   │   ├── visual-editor-session.js
-│   │   ├── visual-editor.css
-│   │   ├── visual-editor.html
-│   │   └── visual-editor.js
-│   ├── word-tree/
-│   │   └── word-tree.js
-│   └── workspace/
-│       ├── file-manager/
-│       │   ├── .gitkeep
-│       │   ├── file-manager-drawer.js
-│       │   ├── file-manager.css
-│       │   └── file-manager.js
-│       ├── project-storage/.gitkeep
-│       ├── search/
-│       │   ├── search-header.css
-│       │   └── search-header.js
-│       └── toolbar/
-│           ├── toolbar-sidebar.css
-│           └── toolbar-sidebar.js
+│   │   ├── backup-restore/
+│   │   │   ├── backup-restore.css
+│   │   │   └── backup-restore.js
+│   │   ├── export/.gitkeep
+│   │   ├── help/.gitkeep
+│   │   ├── libraries/.gitkeep
+│   │   ├── live-preview/
+│   │   │   └── element-inspector.js
+│   │   ├── quick-insert/
+│   │   │   ├── quick-insert.css
+│   │   │   └── quick-insert.js
+│   │   ├── settings/
+│   │   │   ├── settings.css
+│   │   │   └── settings.js
+│   │   ├── suggestions/
+│   │   │   ├── data/
+│   │   │   │   ├── css-suggestions.js
+│   │   │   │   ├── html-suggestions.js
+│   │   │   │   └── js-suggestions.js
+│   │   │   ├── manager/
+│   │   │   │   ├── suggestion-manager.css
+│   │   │   │   └── suggestion-manager.js
+│   │   │   └── next-word/
+│   │   │       └── next-word-suggestions.js
+│   │   ├── visual-editor/
+│   │   │   ├── README.md
+│   │   │   ├── visual-editor-remote.js
+│   │   │   ├── visual-editor-session.js
+│   │   │   ├── visual-editor.css
+│   │   │   ├── visual-editor.html
+│   │   │   └── visual-editor.js
+│   │   ├── word-tree/
+│   │   │   └── word-tree.js
+│   │   └── workspace/
+│   │       ├── file-manager/
+│   │       │   ├── .gitkeep
+│   │       │   ├── file-manager-drawer.js
+│   │       │   ├── file-manager.css
+│   │       │   └── file-manager.js
+│   │       ├── project-storage/.gitkeep
+│   │       ├── search/
+│   │       │   ├── search-header.css
+│   │       │   └── search-header.js
+│   │       └── toolbar/
+│   │           ├── toolbar-sidebar.css
+│   │           └── toolbar-sidebar.js
 │   ├── shared/
 │   │   ├── dom/.gitkeep
 │   │   ├── i18n/
@@ -283,13 +283,13 @@ Editor-html-css-js/
 - `scripts/build/.gitkeep`: محل آتی سازمان‌دهی ابزارهای ساخت.
 - `scripts/checks/.gitkeep`: محل آتی دسته‌بندی آزمون‌ها.
 - `src/app/.gitkeep`: محل آتی کدهای سطح برنامه و راه‌اندازی.
-- `src/features/editor/autocomplete/.gitkeep`: محل آتی ماژول مستقل تکمیل خودکار.
-- `src/features/editor/color-picker/.gitkeep`: محل آتی انتقال مستقل انتخابگر رنگ.
-- `src/features/editor/core/.gitkeep`: محل آتی تفکیک هستهٔ ویرایشگر.
-- `src/features/editor/editing-commands/.gitkeep`: محل آتی فرمان‌های ویرایش.
-- `src/features/editor/paste-processing/.gitkeep`: محل آتی پردازش Paste.
-- `src/features/editor/search/.gitkeep`: محل آتی موتور جست‌وجوی کد.
-- `src/features/editor/syntax-highlighting/.gitkeep`: محل آتی هایلایت نحوی.
+- `futures/editor/autocomplete/.gitkeep`: محل آتی ماژول مستقل تکمیل خودکار.
+- `futures/editor/color-picker/.gitkeep`: محل آتی انتقال مستقل انتخابگر رنگ.
+- `futures/editor/core/.gitkeep`: محل آتی تفکیک هستهٔ ویرایشگر.
+- `futures/editor/editing-commands/.gitkeep`: محل آتی فرمان‌های ویرایش.
+- `futures/editor/paste-processing/.gitkeep`: محل آتی پردازش Paste.
+- `futures/editor/search/.gitkeep`: محل آتی موتور جست‌وجوی کد.
+- `futures/editor/syntax-highlighting/.gitkeep`: محل آتی هایلایت نحوی.
 - `src/features/export/.gitkeep`: محل آتی قابلیت‌های خروجی گرفتن.
 - `src/features/help/.gitkeep`: محل آتی راهنما و آموزش درون‌برنامه‌ای.
 - `src/features/libraries/.gitkeep`: محل آتی ماژول مستقل مدیریت کتابخانه‌ها.

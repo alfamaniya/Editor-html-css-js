@@ -70,13 +70,15 @@ async function assetData(raw, baseDir) {
     return null;
   }
 }
-async function inlineCss(css,cssDir) {
+async function inlineCss(css,cssDir,seen) {
+  seen = seen || new Set();
   const imports = [...css.matchAll(/@import\s+(?:url\()?["']?([^"')\s;]+)["']?\)?\s*;/gi)];
   for (const match of imports.reverse()) {
     const full = localPath(match[1],cssDir);
     const bytes = full && sources.get(full);
-    if (bytes) {
-      const nested = await inlineCss(bytes.toString("utf8"),path.dirname(full));
+    if (bytes && !seen.has(full)) {
+      seen.add(full);
+      const nested = await inlineCss(bytes.toString("utf8"),path.dirname(full),seen);
       css = css.slice(0,match.index) + "\n" + nested + "\n" + css.slice(match.index+match[0].length);
     } else {
       if (!/^(?:[a-z]+:|\/\/)/i.test(match[1])) warnings.push("CSS import not bundled: " + match[1]);
@@ -111,7 +113,7 @@ async function main() {
     if (!full) continue;
     const bytes = sources.get(full);
     if (!bytes) { warnings.push("Stylesheet not found: " + match[3]); continue; }
-    const css = await inlineCss(bytes.toString("utf8"),path.dirname(full));
+    const css = await inlineCss(bytes.toString("utf8"),path.dirname(full),new Set([full]));
     const tag = '<style data-bundled-from="' + esc(toPosix(path.relative(SOURCE,full))) + '">\n' + css.replace(/<\/style/gi,"<\\/style") + "\n</style>";
     html = html.slice(0,match.index) + tag + html.slice(match.index+match[0].length);
   }

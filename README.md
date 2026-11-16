@@ -54,6 +54,18 @@ Editor-html-css-js/
 │   └── suggestions/
 │       └── tree-world-suggestion.md
 ├── editor v.html
+├── futures/
+│   ├── header/ (index.html, style.css, script.js)
+│   ├── file-manager/ (index.html, style.css, script.js)
+│   ├── editor/
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   ├── script.js
+│   │   └── [۷ پوشهٔ رزروشدهٔ قابلیت‌های ویرایشگر]
+│   ├── editor-terminal/ (index.html, style.css, script.js)
+│   ├── right-menu/ (index.html, style.css, script.js)
+│   ├── live-preview/ (index.html, style.css, script.js)
+│   └── preview-terminal/ (index.html, style.css, script.js)
 ├── index.html
 ├── locales/
 │   ├── en.js
@@ -82,96 +94,52 @@ Editor-html-css-js/
 │   ├── app/
 │   │   └── .gitkeep
 │   ├── features/
-│   │   ├── header/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   └── script.js
-│   │   ├── file-manager/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   └── script.js
-│   │   ├── editor/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   ├── script.js
-│   │   │   ├── autocomplete/.gitkeep
-│   │   │   ├── color-picker/.gitkeep
-│   │   │   ├── core/.gitkeep
-│   │   │   ├── editing-commands/.gitkeep
-│   │   │   ├── paste-processing/.gitkeep
-│   │   │   ├── search/.gitkeep
-│   │   │   └── syntax-highlighting/.gitkeep
-│   │   ├── editor-terminal/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   └── script.js
-│   │   ├── right-menu/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   └── script.js
-│   │   ├── live-preview/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   ├── script.js
-│   │   │   └── element-inspector.js
-│   │   ├── preview-terminal/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   └── script.js
-│   │   ├── backup-restore/
-│   │   │   ├── backup-restore.css
-│   │   │   └── backup-restore.js
-│   │   ├── editor/
-│   │   │   ├── autocomplete/.gitkeep
-│   │   │   ├── color-picker/.gitkeep
-│   │   │   ├── core/.gitkeep
-│   │   │   ├── editing-commands/.gitkeep
-│   │   │   ├── paste-processing/.gitkeep
-│   │   │   ├── search/.gitkeep
-│   │   │   └── syntax-highlighting/.gitkeep
-│   │   ├── export/.gitkeep
-│   │   ├── help/.gitkeep
-│   │   ├── libraries/.gitkeep
-│   │   ├── live-preview/
-│   │   │   └── element-inspector.js
-│   │   ├── quick-insert/
-│   │   │   ├── quick-insert.css
-│   │   │   └── quick-insert.js
-│   │   ├── settings/
-│   │   │   ├── settings.css
-│   │   │   └── settings.js
-│   │   ├── suggestions/
-│   │   │   ├── data/
-│   │   │   │   ├── css-suggestions.js
-│   │   │   │   ├── html-suggestions.js
-│   │   │   │   └── js-suggestions.js
-│   │   │   ├── manager/
-│   │   │   │   ├── suggestion-manager.css
-│   │   │   │   └── suggestion-manager.js
-│   │   │   └── next-word/
-│   │   │       └── next-word-suggestions.js
-│   │   ├── visual-editor/
-│   │   │   ├── README.md
-│   │   │   ├── visual-editor-remote.js
-│   │   │   ├── visual-editor-session.js
-│   │   │   ├── visual-editor.css
-│   │   │   ├── visual-editor.html
-│   │   │   └── visual-editor.js
-│   │   ├── word-tree/
-│   │   │   └── word-tree.js
-│   │   └── workspace/
-│   │       ├── file-manager/
-│   │       │   ├── .gitkeep
-│   │       │   ├── file-manager-drawer.js
-│   │       │   ├── file-manager.css
-│   │       │   └── file-manager.js
-│   │       ├── project-storage/.gitkeep
-│   │       ├── search/
-│   │       │   ├── search-header.css
-│   │       │   └── search-header.js
-│   │       └── toolbar/
-│   │           ├── toolbar-sidebar.css
-│   │           └── toolbar-sidebar.js
+│   ├── backup-restore/
+│   │   ├── backup-restore.css
+│   │   └── backup-restore.js
+│   ├── export/.gitkeep
+│   ├── help/.gitkeep
+│   ├── libraries/.gitkeep
+│   ├── live-preview/
+│   │   └── element-inspector.js
+│   ├── quick-insert/
+│   │   ├── quick-insert.css
+│   │   └── quick-insert.js
+│   ├── settings/
+│   │   ├── settings.css
+│   │   └── settings.js
+│   ├── suggestions/
+│   │   ├── data/
+│   │   │   ├── css-suggestions.js
+│   │   │   ├── html-suggestions.js
+│   │   │   └── js-suggestions.js
+│   │   ├── manager/
+│   │   │   ├── suggestion-manager.css
+│   │   │   └── suggestion-manager.js
+│   │   └── next-word/
+│   │       └── next-word-suggestions.js
+│   ├── visual-editor/
+│   │   ├── README.md
+│   │   ├── visual-editor-remote.js
+│   │   ├── visual-editor-session.js
+│   │   ├── visual-editor.css
+│   │   ├── visual-editor.html
+│   │   └── visual-editor.js
+│   ├── word-tree/
+│   │   └── word-tree.js
+│   └── workspace/
+│       ├── file-manager/
+│       │   ├── .gitkeep
+│       │   ├── file-manager-drawer.js
+│       │   ├── file-manager.css
+│       │   └── file-manager.js
+│       ├── project-storage/.gitkeep
+│       ├── search/
+│       │   ├── search-header.css
+│       │   └── search-header.js
+│       └── toolbar/
+│           ├── toolbar-sidebar.css
+│           └── toolbar-sidebar.js
 │   ├── shared/
 │   │   ├── dom/.gitkeep
 │   │   ├── i18n/
@@ -337,9 +305,9 @@ Editor-html-css-js/
 
 ## ساختار هفت بخش اصلی رابط کاربری
 
-برای چیدمان جدید، هفت بخش مستقل در `src/features/` در نظر گرفته شده‌اند: `header`، `file-manager`، `editor`، `editor-terminal`، `right-menu`، `live-preview` و `preview-terminal`. هر بخش سه فایل `index.html`، `style.css` و `script.js` دارد. همین قرارداد برای قابلیت‌های فرزند نیز رعایت می‌شود؛ برای مثال قابلیت جست‌وجوی ویرایشگر در پوشهٔ `src/features/editor/search/` فایل‌های مستقل خودش را خواهد داشت.
+برای چیدمان جدید، هفت بخش مستقل در پوشهٔ ریشهٔ `futures/` قرار دارند: `header`، `file-manager`، `editor`، `editor-terminal`، `right-menu`، `live-preview` و `preview-terminal`. هر بخش سه فایل `index.html`، `style.css` و `script.js` دارد. همین قرارداد برای قابلیت‌های فرزند نیز رعایت می‌شود؛ برای مثال قابلیت جست‌وجوی ویرایشگر در پوشهٔ `futures/editor/search/` فایل‌های مستقل خودش را خواهد داشت.
 
-در این مرحله فقط اسکلت فایل‌ها ایجاد شده است و هنوز به رابط فعلی متصل نیستند. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
+در این مرحله فقط اسکلت فایل‌ها در `futures/` ایجاد شده است و هنوز به رابط فعلی متصل نیستند. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
 
 ## جریان اجرای برنامه
 

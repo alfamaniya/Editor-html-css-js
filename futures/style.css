@@ -273,3 +273,8 @@ body {
 .workspace.left-menu-collapsed { grid-template-columns: var(--collapsed-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--right-menu-width); }
 .workspace.right-menu-collapsed { grid-template-columns: var(--left-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--collapsed-menu-width); }
 .workspace.left-menu-collapsed.right-menu-collapsed { grid-template-columns: var(--collapsed-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--collapsed-menu-width); }
+
+
+/* Editor section layout overrides */
+.editor-panel { grid-template-rows: 43px 36px minmax(0, 1fr) var(--terminal-height); }
+@media (max-width: 520px) { .editor-panel { grid-template-rows: 40px 34px minmax(0, 1fr) 125px; } }

@@ -54,7 +54,7 @@ async function main() {
 
   const inlineCss = '<style>\n' + css + '\n</style>';
   const inlineJs = '<script>\n' + js + '\n</script>';
-  let result = html.replace(cssLink, inlineCss).replace(jsTag, inlineJs);
+  let result = html.replace(cssLink, inlineCss);
 
   const templates = await Promise.all(moduleHtmlFiles.map(async file => {
     const name = escapeAttribute(relative(root, file).split(sep).join('/'));
@@ -62,7 +62,7 @@ async function main() {
     return '\n<template data-futures-module="' + name + '">\n' + fragment + '\n</template>';
   }));
 
-  result = result.replace(/<\/body>/i, templates.join('') + '\n</body>');
+  result = result.replace(jsTag, templates.join('') + '\n' + inlineJs);
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, result, 'utf8');
   console.log('فایل یکپارچه ساخته شد: ' + output);

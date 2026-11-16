@@ -1,3 +1,4 @@
+/* File Manager panel */
 .left-menu .menu-toggle {
   display: grid;
   width: 28px;
@@ -18,14 +19,112 @@
 .left-menu .menu-toggle:focus-visible {
   border-color: var(--border);
   background: var(--panel-raised);
-  color: #e3eaf4;
+  color: var(--text);
   outline: none;
 }
 .left-menu .panel-heading { justify-content: space-between; }
 .left-menu.is-collapsed .menu-title,
-.left-menu.is-collapsed .menu-placeholder { display: none; }
+.left-menu.is-collapsed .file-manager { display: none; }
 .left-menu.is-collapsed .panel-heading { justify-content: center; padding: 0 5px; }
 .left-menu.is-collapsed .menu-toggle { width: 30px; flex-basis: 30px; }
+
+.file-manager {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text);
+  direction: ltr;
+}
+.file-manager-toolbar {
+  display: flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(38, 52, 56, .65);
+}
+.file-manager-project {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .8px;
+}
+.file-manager-root-name {
+  overflow: hidden;
+  color: #B8C9C8;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-tree {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 7px;
+  overflow: auto;
+}
+.file-tree-item {
+  display: flex;
+  width: 100%;
+  min-height: 33px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: #B7C7C7;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+}
+.file-tree-item:hover {
+  background: #192326;
+  color: var(--text);
+}
+.file-tree-item.is-active {
+  border-color: rgba(39, 201, 190, .2);
+  background: rgba(39, 201, 190, .1);
+  color: #E6F0F0;
+}
+.file-tree-item:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+.file-tree-icon {
+  display: inline-grid;
+  width: 17px;
+  flex: 0 0 17px;
+  place-items: center;
+  font-family: Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+.html-icon { color: #E59A68; }
+.css-icon { color: #70AFFF; }
+.js-icon { color: #E8CF70; font-size: 9px; }
+.file-manager-footer {
+  display: flex;
+  min-height: 30px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  border-top: 1px solid rgba(38, 52, 56, .65);
+  color: var(--muted);
+  font-size: 10px;
+}
+.file-manager-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
 .workspace { transition: grid-template-columns .22s ease; }
 @media (prefers-reduced-motion: reduce) {
   .workspace { transition: none; }

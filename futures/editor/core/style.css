@@ -1,4 +1,0 @@
-/* Core-level Monaco details; palette tokens are owned by futures/style.css. */
-.monaco-editor, .monaco-editor .overflow-guard { border-radius: 0; }
-.monaco-editor .scroll-decoration { box-shadow: none; }
-.monaco-editor .monaco-scrollable-element > .scrollbar > .slider { border-radius: 4px; }

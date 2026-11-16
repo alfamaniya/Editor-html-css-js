@@ -7,7 +7,7 @@
     <script data-editor-entry-redirect>
         (function () {
             if (window.parent !== window || !/^https?:$/.test(window.location.protocol)) return;
-            var target = new URL('editor%20v.html', window.location.href);
+            var target = new URL('futures/index.html', window.location.href);
             if (target.pathname === window.location.pathname) return;
             fetch(target.href, { method: 'HEAD', cache: 'no-store', credentials: 'same-origin' })
                 .then(function (response) {

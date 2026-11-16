@@ -1,20 +1,39 @@
-name: ارسال کد کامل editor v.html به ایمیل شرکت
+name: ارسال کد انتخاب‌شده به ایمیل
+
 on:
   workflow_dispatch:
     inputs:
+      code_to_send:
+        description: "کدام نسخه از کد ارسال شود؟"
+        required: true
+        type: choice
+        options:
+          - editor
+          - visual
+          - combined
+          - futures
+        default: futures
       confirm_send:
-        description: "ارسال محتوای کامل فایل editor v.html در متن ایمیل را تأیید می‌کنم"
+        description: "ارسال کد انتخاب‌شده در متن ایمیل را تأیید می‌کنم"
         required: true
         type: boolean
         default: false
+      recipient:
+        description: "آدرس ایمیل دریافت‌کننده"
+        required: true
+        type: string
+        default: "a.mamghanian@isaco.ir"
+
 permissions:
   contents: read
+
 concurrency:
   group: company-delivery-${{ github.ref }}
   cancel-in-progress: false
+
 jobs:
   send:
-    name: اعتبارسنجی و ارسال فایل یکپارچه
+    name: ساخت و ارسال نسخهٔ انتخاب‌شده
     if: inputs.confirm_send == true
     runs-on: ubuntu-26.04
     timeout-minutes: 15
@@ -24,87 +43,163 @@ jobs:
         with:
           ref: main
           persist-credentials: false
+
       - name: آماده‌سازی Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: بازسازی نسخهٔ مستقل ویرایشگر اصلی
+
+      - name: بازسازی ویرایشگر اصلی
+        if: inputs.code_to_send == 'editor' || inputs.code_to_send == 'combined'
         run: node scripts/build-test-editor.mjs
-      - name: اعتبارسنجی نسخهٔ مستقل ویرایشگر اصلی
+
+      - name: اعتبارسنجی ویرایشگر اصلی
+        if: inputs.code_to_send == 'editor' || inputs.code_to_send == 'combined'
         run: node scripts/check-standalone-editor.mjs
-      - name: بازسازی Visual Editor مستقل
+
+      - name: بازسازی Visual Editor
+        if: inputs.code_to_send == 'visual' || inputs.code_to_send == 'combined'
         run: node scripts/build-standalone-visual-editor.mjs
-      - name: اعتبارسنجی Visual Editor مستقل
+
+      - name: اعتبارسنجی Visual Editor
+        if: inputs.code_to_send == 'visual' || inputs.code_to_send == 'combined'
         run: node scripts/check-standalone-visual-editor.mjs
-      - name: ساخت و اعتبارسنجی فایل یکپارچهٔ نهایی
+
+      - name: ساخت نسخهٔ ترکیبی
+        if: inputs.code_to_send == 'combined'
         shell: bash
         run: |
           set -euo pipefail
           node scripts/build-combined-editor.mjs
-          node --check scripts/check-combined-editor.mjs
           node scripts/check-combined-editor.mjs
           test -s "editor v.html"
-          echo "نسخهٔ یکپارچه از سورس چندفایلی شاخهٔ main بازسازی و اعتبارسنجی شد."
-      - name: آماده‌سازی متن کامل ایمیل
+
+      - name: ساخت فایل یکپارچهٔ Futures
+        if: inputs.code_to_send == 'futures'
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+          import { dirname, relative, resolve, sep } from 'node:path';
+
+          const root = resolve('futures');
+          const output = resolve('dist/futures-preview.html');
+
+          async function walk(dir) {
+            const entries = await readdir(dir, { withFileTypes: true });
+            const files = [];
+            for (const entry of entries) {
+              const full = resolve(dir, entry.name);
+              if (entry.isDirectory()) files.push(...await walk(full));
+              else if (entry.isFile()) files.push(full);
+            }
+            return files;
+          }
+
+          const files = (await walk(root)).sort();
+          const htmlPath = resolve(root, 'index.html');
+          const cssPath = resolve(root, 'style.css');
+          const jsPath = resolve(root, 'script.js');
+          for (const required of [htmlPath, cssPath, jsPath]) {
+            if (!files.includes(required)) throw new Error('فایل ضروری پیدا نشد: ' + relative(process.cwd(), required));
+          }
+
+          const html = await readFile(htmlPath, 'utf8');
+          const cssFiles = [cssPath, ...files.filter(f => f.endsWith('.css') && f !== cssPath)];
+          const jsFiles = [jsPath, ...files.filter(f => f.endsWith('.js') && f !== jsPath)];
+          const htmlParts = files.filter(f => f.endsWith('.html') && f !== htmlPath);
+
+          const css = (await Promise.all(cssFiles.map(async f =>
+            '/* ' + relative(process.cwd(), f).split(sep).join('/') + ' */\n' + await readFile(f, 'utf8')
+          ))).join('\n\n');
+          const js = (await Promise.all(jsFiles.map(async f =>
+            '// ' + relative(process.cwd(), f).split(sep).join('/') + '\n' +
+            (await readFile(f, 'utf8')).replace(/<\/script/gi, '<\\/script')
+          ))).join('\n\n');
+
+          const cssLink = /<link\s+rel="stylesheet"\s+href="\.\/style\.css"\s*>/i;
+          const jsTag = /<script\s+src="\.\/script\.js"><\/script>/i;
+          if (!cssLink.test(html) || !jsTag.test(html)) {
+            throw new Error('ارجاع style.css یا script.js در futures/index.html پیدا نشد.');
+          }
+
+          const templates = await Promise.all(htmlParts.map(async f => {
+            const name = relative(root, f).split(sep).join('/');
+            return '<template data-futures-module="' + name.replaceAll('"', '&quot;') + '">\n' +
+              await readFile(f, 'utf8') + '\n</template>';
+          }));
+
+          let result = html.replace(cssLink, '<style>\n' + css + '\n</style>');
+          result = result.replace(jsTag, templates.join('\n') + '\n<script>\n' + js + '\n</script>');
+          await mkdir(dirname(output), { recursive: true });
+          await writeFile(output, result, 'utf8');
+          console.log('فایل Futures یکپارچه ساخته شد: ' + output);
+          NODE
+
+      - name: آماده‌سازی متن ایمیل
+        env:
+          SELECTED_CODE: ${{ inputs.code_to_send }}
         shell: bash
         run: |
           set -euo pipefail
+          case "$SELECTED_CODE" in
+            editor) file="index-test-etitor.html"; label="ویرایشگر اصلی" ;;
+            visual) file="standalone-visual-editor.html"; label="Visual Editor" ;;
+            combined) file="editor v.html"; label="نسخهٔ ترکیبی Editor و Visual Editor" ;;
+            futures) file="dist/futures-preview.html"; label="پیش‌نمایش Futures" ;;
+            *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
+          esac
+          test -s "$file"
           mkdir -p dist/company-delivery
           {
             printf 'پروژه: Editor-html-css-js\n'
-            printf 'فایل تحویلی: editor v.html\n'
-            printf 'محتوا: نسخهٔ یکپارچهٔ Editor و Visual Editor\n'
+            printf 'کد انتخاب‌شده: %s\n' "$label"
             printf 'مخزن: %s\n' "$GITHUB_REPOSITORY"
-            printf 'شاخهٔ فایل تحویلی: main\n'
-            printf 'شناسهٔ کامیت فایل تحویلی: %s\n' "$(git rev-parse HEAD)"
+            printf 'شاخه: main\n'
+            printf 'شناسهٔ کامیت: %s\n' "$(git rev-parse HEAD)"
             printf '%s\n' '============================================================'
             printf '%s\n\n' 'محتوای کامل فایل HTML در ادامه آمده است:'
-            cat "editor v.html"
-          } > dist/company-delivery/editor-v-email-body.txt
-          test -s dist/company-delivery/editor-v-email-body.txt
-          echo "حجم متن ایمیل: $(wc -c < dist/company-delivery/editor-v-email-body.txt) بایت"
+            cat "$file"
+          } > dist/company-delivery/selected-code-email.txt
+          test -s dist/company-delivery/selected-code-email.txt
+
       - name: بررسی تنظیمات SMTP
         env:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          COMPANY_EMAIL: ${{ secrets.COMPANY_EMAIL }}
           SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
         shell: bash
         run: |
           set -euo pipefail
-          for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD COMPANY_EMAIL; do
-            if [[ -z "${!name:-}" ]]; then echo "::error::Secret ${name} تنظیم نشده است."; exit 1; fi
+          for name in SMTP_SERVER SMTP_PORT SMTP_USERNAME SMTP_PASSWORD; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::Secret ${name} تنظیم نشده است."
+              exit 1
+            fi
           done
-          if [[ ! "$SMTP_PORT" =~ ^[0-9]+$ ]]; then echo "::error::SMTP_PORT باید عدد معتبر باشد."; exit 1; fi
-          if [[ -n "$SMTP_SECURE" && "$SMTP_SECURE" != "true" && "$SMTP_SECURE" != "false" ]]; then echo "::error::SMTP_SECURE فقط می‌تواند true یا false باشد."; exit 1; fi
-      - name: پردازش و اعتبارسنجی گیرندگان ایمیل
-        id: recipients
+          if [[ ! "$SMTP_PORT" =~ ^[0-9]+$ ]]; then
+            echo "::error::SMTP_PORT باید عدد معتبر باشد."
+            exit 1
+          fi
+          if [[ -n "$SMTP_SECURE" && "$SMTP_SECURE" != "true" && "$SMTP_SECURE" != "false" ]]; then
+            echo "::error::SMTP_SECURE فقط می‌تواند true یا false باشد."
+            exit 1
+          fi
+
+      - name: بررسی آدرس ایمیل گیرنده
         env:
-          COMPANY_EMAIL: ${{ secrets.COMPANY_EMAIL }}
+          RECIPIENT: ${{ inputs.recipient }}
         shell: bash
         run: |
           set -euo pipefail
-          IFS=',;' read -r -a raw_recipients <<< "$COMPANY_EMAIL"
-          recipients=""
-          for recipient in "${raw_recipients[@]}"; do
-            recipient="$(printf '%s' "$recipient" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
-            [[ -n "$recipient" ]] || continue
-            if [[ "$recipient" != *@*.* || "$recipient" =~ [[:space:]] ]]; then
-              echo "::error::یکی از آدرس‌های COMPANY_EMAIL معتبر نیست."
-              exit 1
-            fi
-            if [[ -n "$recipients" ]]; then recipients+=", "; fi
-            recipients+="$recipient"
-          done
-          if [[ -z "$recipients" ]]; then
-            echo "::error::حداقل یک گیرنده معتبر باید در COMPANY_EMAIL ثبت شود."
+          if [[ ! "$RECIPIENT" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]; then
+            echo "::error::آدرس ایمیل گیرنده معتبر نیست."
             exit 1
           fi
-          printf 'to=%s\n' "$recipients" >> "$GITHUB_OUTPUT"
 
-      - name: ارسال کد کامل در متن ایمیل
+      - name: ارسال کد انتخاب‌شده در متن ایمیل
         uses: dawidd6/action-send-mail@v24
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
@@ -112,7 +207,7 @@ jobs:
           secure: ${{ secrets.SMTP_SECURE == 'true' }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "نسخهٔ کامل و یکپارچهٔ Editor V"
-          to: ${{ steps.recipients.outputs.to }}
+          subject: "نسخهٔ انتخاب‌شده از Editor-html-css-js"
+          to: ${{ inputs.recipient }}
           from: ${{ secrets.SMTP_USERNAME }}
-          body: "file://dist/company-delivery/editor-v-email-body.txt"
+          body: "file://dist/company-delivery/selected-code-email.txt"

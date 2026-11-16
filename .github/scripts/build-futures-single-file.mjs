@@ -31,7 +31,7 @@ async function main() {
   const rootJs = resolve(root, 'script.js');
 
   for (const required of [rootHtml, rootCss, rootJs]) {
-    if (!files.includes(required)) throw new Error(`فایل ضروری پیدا نشد: ${sourceLabel(required)}`);
+    if (!files.includes(required)) throw new Error('فایل ضروری پیدا نشد: ' + sourceLabel(required));
   }
 
   const html = await readFile(rootHtml, 'utf8');
@@ -40,33 +40,33 @@ async function main() {
   const moduleHtmlFiles = files.filter(file => file.endsWith('.html') && file !== rootHtml);
 
   const css = (await Promise.all(cssFiles.map(async file =>
-    `/* ===== ${sourceLabel(file)} ===== */\\n${await readFile(file, 'utf8')}`
-  ))).join('\\n\\n');
+    '/* ===== ' + sourceLabel(file) + ' ===== */\n' + await readFile(file, 'utf8')
+  ))).join('\n\n');
 
   const js = (await Promise.all(jsFiles.map(async file =>
-    `// ===== ${sourceLabel(file)} =====\\n${(await readFile(file, 'utf8')).replace(/<\\/script/gi, '<\\\\/script')}`
-  ))).join('\\n\\n');
+    '// ===== ' + sourceLabel(file) + ' =====\n' + (await readFile(file, 'utf8')).replace(/<\/script/gi, '<\\/script')
+  ))).join('\n\n');
 
-  const cssLink = /<link\\s+rel="stylesheet"\\s+href="\\.\\/style\\.css"\\s*>/i;
-  const jsTag = /<script\\s+src="\\.\\/script\\.js"><\\/script>/i;
+  const cssLink = /<link\s+rel="stylesheet"\s+href="\.\/style\.css"\s*>/i;
+  const jsTag = /<script\s+src="\.\/script\.js"><\/script>/i;
   if (!cssLink.test(html)) throw new Error('لینک style.css در futures/index.html پیدا نشد.');
   if (!jsTag.test(html)) throw new Error('لینک script.js در futures/index.html پیدا نشد.');
 
-  const inlineCss = `<style>\\n${css}\\n</style>`;
-  const inlineJs = `<script>\\n${js}\\n</script>`;
+  const inlineCss = '<style>\n' + css + '\n</style>';
+  const inlineJs = '<script>\n' + js + '\n</script>';
   let result = html.replace(cssLink, inlineCss).replace(jsTag, inlineJs);
 
   const templates = await Promise.all(moduleHtmlFiles.map(async file => {
     const name = escapeAttribute(relative(root, file).split(sep).join('/'));
     const fragment = await readFile(file, 'utf8');
-    return `\\n<template data-futures-module="${name}">\\n${fragment}\\n</template>`;
+    return '\n<template data-futures-module="' + name + '">\n' + fragment + '\n</template>';
   }));
 
-  result = result.replace(/<\\/body>/i, `${templates.join('')}\\n</body>`);
+  result = result.replace(/<\/body>/i, templates.join('') + '\n</body>');
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, result, 'utf8');
-  console.log(`فایل یکپارچه ساخته شد: ${output}`);
-  console.log(`HTML fragments: ${moduleHtmlFiles.length} | CSS files: ${cssFiles.length} | JS files: ${jsFiles.length}`);
+  console.log('فایل یکپارچه ساخته شد: ' + output);
+  console.log('HTML fragments: ' + moduleHtmlFiles.length + ' | CSS files: ' + cssFiles.length + ' | JS files: ' + jsFiles.length);
 }
 
 main().catch(error => {

@@ -1,8 +1,8 @@
 (function () {
   const FILES = {
-    html: { name: "index.html", language: "html", value: "<!doctype html>\\n<html lang=\\\"en\\\">\\n<head>\\n  <meta charset=\\\"UTF-8\\\">\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n  <title>My Project</title>\\n</head>\\n<body>\\n  <h1>Hello, world!</h1>\\n</body>\\n</html>\\n" },
-    css: { name: "style.css", language: "css", value: "body {\\n  margin: 0;\\n  font-family: Arial, sans-serif;\\n}\\n" },
-    javascript: { name: "script.js", language: "javascript", value: "console.log(\\\"Hello, world!\\\");\\n" }
+    html: { name: "index.html", language: "html", value: "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My Project</title>\n</head>\n<body>\n  <h1>Hello, world!</h1>\n</body>\n</html>\n" },
+    css: { name: "style.css", language: "css", value: "body {\n  margin: 0;\n  font-family: Arial, sans-serif;\n}\n" },
+    javascript: { name: "script.js", language: "javascript", value: "console.log(\"Hello, world!\");\n" }
   };
 
   window.createEditorCore = function (monaco, host) {

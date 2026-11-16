@@ -135,7 +135,9 @@ Editor-html-css-js/
 │   └── fa.js
 ├── script.js
 ├── scripts/
-│   ├── build-codemirror.mjs\n│   ├── codemirror-entry.js\n│   ├── build-combined-editor.mjs
+│   ├── build-codemirror.mjs
+│   ├── codemirror-entry.js
+│   ├── build-combined-editor.mjs
 │   ├── build-standalone-visual-editor.mjs
 │   ├── build-test-editor.mjs
 │   ├── build/

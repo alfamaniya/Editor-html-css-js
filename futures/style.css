@@ -84,7 +84,7 @@ body {
 
 .workspace {
   display: grid;
-  grid-template-columns: var(--left-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--right-menu-width);
+  grid-template-columns: var(--left-menu-width) minmax(240px, var(--editor-width, 1fr)) minmax(240px, var(--preview-width, 1fr)) var(--right-menu-width);
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -262,7 +262,7 @@ body {
 
 @media (max-width: 520px) {
   :root { --left-menu-width: 160px; --right-menu-width: 160px; --collapsed-menu-width: 42px; }
-  .workspace { grid-template-columns: var(--left-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--right-menu-width); }
+  .workspace { grid-template-columns: var(--left-menu-width) minmax(240px, var(--editor-width, 1fr)) minmax(240px, var(--preview-width, 1fr)) var(--right-menu-width); }
   .header-center { display: none; }
   .work-panel { grid-template-rows: 39px minmax(0, 1fr) 125px; }
   .section-heading { height: 39px; min-height: 39px; padding: 0 8px; gap: 6px; font-size: 9px; }
@@ -270,11 +270,52 @@ body {
 }
 
 /* Independent side-menu collapse states */
-.workspace.left-menu-collapsed { grid-template-columns: var(--collapsed-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--right-menu-width); }
-.workspace.right-menu-collapsed { grid-template-columns: var(--left-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--collapsed-menu-width); }
-.workspace.left-menu-collapsed.right-menu-collapsed { grid-template-columns: var(--collapsed-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--collapsed-menu-width); }
+.workspace.left-menu-collapsed { grid-template-columns: var(--collapsed-menu-width) minmax(240px, var(--editor-width, 1fr)) minmax(240px, var(--preview-width, 1fr)) var(--right-menu-width); }
+.workspace.right-menu-collapsed { grid-template-columns: var(--left-menu-width) minmax(240px, var(--editor-width, 1fr)) minmax(240px, var(--preview-width, 1fr)) var(--collapsed-menu-width); }
+.workspace.left-menu-collapsed.right-menu-collapsed { grid-template-columns: var(--collapsed-menu-width) minmax(240px, var(--editor-width, 1fr)) minmax(240px, var(--preview-width, 1fr)) var(--collapsed-menu-width); }
 
 
 /* Editor section layout overrides */
 .editor-panel { grid-template-rows: 43px 36px minmax(0, 1fr) var(--terminal-height); }
 @media (max-width: 520px) { .editor-panel { grid-template-rows: 40px 34px minmax(0, 1fr) 125px; } }
+
+
+/* Resize handles for workspace panels and terminal areas */
+.side-menu, .editor-panel, .terminal-panel { position: relative; }
+.left-menu:not(.is-collapsed)::after,
+.editor-panel::after {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  content: "";
+  cursor: col-resize;
+}
+.right-menu:not(.is-collapsed)::before {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: -4px;
+  width: 8px;
+  height: 100%;
+  content: "";
+  cursor: col-resize;
+}
+.terminal-panel::before {
+  position: absolute;
+  z-index: 5;
+  top: -4px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  content: "";
+  cursor: row-resize;
+}
+.workspace.is-resizing,
+.workspace.is-resizing * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+.workspace.is-resizing { transition: none; }

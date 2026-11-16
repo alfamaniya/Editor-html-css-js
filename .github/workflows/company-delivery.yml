@@ -1,25 +1,30 @@
-name: ارسال کد انتخاب‌شده به ایمیل
+name: Automatic and Manual Futures Email Delivery
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "futures/**"
   workflow_dispatch:
     inputs:
       code_to_send:
-        description: "کدام نسخه از کد ارسال شود؟"
+        description: "Which version should be sent?"
         required: true
         type: choice
         options:
-          - "ویرایشگر اصلی"
+          - "Main Editor"
           - "Visual Editor"
-          - "نسخه ترکیبی"
+          - "Combined Editor"
           - "Futures"
         default: "Futures"
       confirm_send:
-        description: "ارسال کد انتخاب‌شده در متن ایمیل را تأیید می‌کنم"
+        description: "I confirm sending the selected code by email."
         required: true
         type: boolean
         default: false
       recipient:
-        description: "آدرس ایمیل دریافت‌کننده"
+        description: "Recipient email address"
         required: true
         type: string
         default: "a.mamghanian@isaco.ir"
@@ -33,39 +38,42 @@ concurrency:
 
 jobs:
   send:
-    name: ساخت و ارسال نسخهٔ انتخاب‌شده
-    if: inputs.confirm_send == true
+    name: Build and send selected version
+    if: github.event_name == 'push' || inputs.confirm_send == true
     runs-on: ubuntu-26.04
     timeout-minutes: 15
+    env:
+      SELECTED_CODE: ${{ github.event_name == 'push' && 'Futures' || inputs.code_to_send }}
+      RECIPIENT: ${{ github.event_name == 'push' && 'a.mamghanian@isaco.ir' || inputs.recipient }}
     steps:
-      - name: دریافت نسخهٔ ثبت‌شده در مخزن
+      - name: Checkout repository source
         uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
 
-      - name: آماده‌سازی Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - name: بازسازی ویرایشگر اصلی
-        if: inputs.code_to_send == 'ویرایشگر اصلی' || inputs.code_to_send == 'نسخه ترکیبی'
+      - name: Build Main Editor
+        if: env.SELECTED_CODE == 'Main Editor' || env.SELECTED_CODE == 'Combined Editor'
         run: node scripts/build-test-editor.mjs
 
-      - name: اعتبارسنجی ویرایشگر اصلی
+      - name: Validate Main Editor
         if: inputs.code_to_send == 'ویرایشگر اصلی' || inputs.code_to_send == 'نسخه ترکیبی'
         run: node scripts/check-standalone-editor.mjs
 
-      - name: بازسازی Visual Editor
-        if: inputs.code_to_send == 'Visual Editor' || inputs.code_to_send == 'نسخه ترکیبی'
+      - name: Build Visual Editor
+        if: env.SELECTED_CODE == 'Visual Editor' || inputs.code_to_send == 'نسخه ترکیبی'
         run: node scripts/build-standalone-visual-editor.mjs
 
-      - name: اعتبارسنجی Visual Editor
+      - name: Validate Visual Editor
         if: inputs.code_to_send == 'Visual Editor' || inputs.code_to_send == 'نسخه ترکیبی'
         run: node scripts/check-standalone-visual-editor.mjs
 
-      - name: ساخت نسخهٔ ترکیبی
+      - name: Build Combined Editor
         if: inputs.code_to_send == 'نسخه ترکیبی'
         shell: bash
         run: |
@@ -74,8 +82,8 @@ jobs:
           node scripts/check-combined-editor.mjs
           test -s "editor v.html"
 
-      - name: ساخت فایل یکپارچهٔ Futures
-        if: inputs.code_to_send == 'Futures'
+      - name: Build standalone Futures HTML
+        if: env.SELECTED_CODE == 'Futures'
         shell: bash
         run: |
           node --input-type=module <<'NODE'
@@ -139,17 +147,17 @@ jobs:
           console.log('فایل Futures یکپارچه ساخته شد: ' + output);
           NODE
 
-      - name: آماده‌سازی متن ایمیل
+      - name: Prepare email content
         env:
-          SELECTED_CODE: ${{ inputs.code_to_send }}
+          SELECTED_CODE: ${{ env.SELECTED_CODE }}
         shell: bash
         run: |
           set -euo pipefail
           case "$SELECTED_CODE" in
-            "ویرایشگر اصلی") file="index-test-etitor.html"; label="ویرایشگر اصلی" ;;
+            "Main Editor") file="index-test-etitor.html"; label="ویرایشگر اصلی" ;;
             "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor" ;;
-            "نسخه ترکیبی") file="editor v.html"; label="نسخهٔ ترکیبی Editor و Visual Editor" ;;
-            "Futures") file="dist/futures-preview.html"; label="پیش‌نمایش Futures" ;;
+            "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor" ;;
+            "Futures") file="dist/futures-preview.html"; label="Futures Preview" ;;
             *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
           esac
           test -s "$file"
@@ -166,7 +174,7 @@ jobs:
           } > dist/company-delivery/selected-code-email.txt
           test -s dist/company-delivery/selected-code-email.txt
 
-      - name: بررسی تنظیمات SMTP
+      - name: Validate SMTP configuration
         env:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -191,9 +199,9 @@ jobs:
             exit 1
           fi
 
-      - name: بررسی آدرس ایمیل گیرنده
+      - name: Validate recipient email
         env:
-          RECIPIENT: ${{ inputs.recipient }}
+          RECIPIENT: ${{ env.RECIPIENT }}
         shell: bash
         run: |
           set -euo pipefail
@@ -202,7 +210,7 @@ jobs:
             exit 1
           fi
 
-      - name: ارسال کد انتخاب‌شده در متن ایمیل
+      - name: Send selected code by email
         uses: dawidd6/action-send-mail@v24
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
@@ -211,6 +219,6 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "نسخهٔ انتخاب‌شده از Editor-html-css-js"
-          to: ${{ inputs.recipient }}
+          to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
           body: "file://dist/company-delivery/selected-code-email.txt"

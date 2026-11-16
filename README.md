@@ -82,6 +82,42 @@ Editor-html-css-js/
 │   ├── app/
 │   │   └── .gitkeep
 │   ├── features/
+│   │   ├── header/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   └── script.js
+│   │   ├── file-manager/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   └── script.js
+│   │   ├── editor/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   ├── script.js
+│   │   │   ├── autocomplete/.gitkeep
+│   │   │   ├── color-picker/.gitkeep
+│   │   │   ├── core/.gitkeep
+│   │   │   ├── editing-commands/.gitkeep
+│   │   │   ├── paste-processing/.gitkeep
+│   │   │   ├── search/.gitkeep
+│   │   │   └── syntax-highlighting/.gitkeep
+│   │   ├── editor-terminal/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   └── script.js
+│   │   ├── right-menu/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   └── script.js
+│   │   ├── live-preview/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   ├── script.js
+│   │   │   └── element-inspector.js
+│   │   ├── preview-terminal/
+│   │   │   ├── index.html
+│   │   │   ├── style.css
+│   │   │   └── script.js
 │   │   ├── backup-restore/
 │   │   │   ├── backup-restore.css
 │   │   │   └── backup-restore.js
@@ -298,6 +334,12 @@ Editor-html-css-js/
 - `src/styles/.gitkeep`: محل آتی سازمان‌دهی استایل‌های سراسری.
 
 وجود این پوشه‌ها به معنی پیاده‌سازی کامل قابلیت مربوطه نیست؛ فقط جایگاه معماری پیشنهادی/رزروشده را حفظ می‌کند.
+
+## ساختار هفت بخش اصلی رابط کاربری
+
+برای چیدمان جدید، هفت بخش مستقل در `src/features/` در نظر گرفته شده‌اند: `header`، `file-manager`، `editor`، `editor-terminal`، `right-menu`، `live-preview` و `preview-terminal`. هر بخش سه فایل `index.html`، `style.css` و `script.js` دارد. همین قرارداد برای قابلیت‌های فرزند نیز رعایت می‌شود؛ برای مثال قابلیت جست‌وجوی ویرایشگر در پوشهٔ `src/features/editor/search/` فایل‌های مستقل خودش را خواهد داشت.
+
+در این مرحله فقط اسکلت فایل‌ها ایجاد شده است و هنوز به رابط فعلی متصل نیستند. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
 
 ## جریان اجرای برنامه
 

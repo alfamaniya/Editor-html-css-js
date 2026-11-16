@@ -11,6 +11,7 @@
     "build:main": "node scripts/build-test-editor.mjs",
     "build:visual": "node scripts/build-standalone-visual-editor.mjs",
     "build:combined": "node scripts/build-combined-editor.mjs",
+    "build:offline-futures": "node scripts/build-futures-offline.mjs",
     "build:all": "npm run build:codemirror && npm run build:main && npm run check:main && npm run build:visual && npm run check:visual && npm run build:combined && npm run check:combined",
     "test": "npm run check:index",
     "build:codemirror": "node scripts/build-codemirror.mjs"

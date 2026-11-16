@@ -1,36 +1,8 @@
-/* Editor workspace surface */
-.editor-panel {
-  grid-template-rows: 43px 36px minmax(0, 1fr) var(--terminal-height);
-}
-.editor-surface {
-  position: relative;
-  min-height: 0;
-  overflow: auto;
-  background-color: #0B1012;
-  background-image: linear-gradient(to bottom, rgba(255,255,255,.012) 1px, transparent 1px);
-  background-size: 100% 26px;
-}
-.editor-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  color: var(--muted);
-  font-size: 12px;
-}
-.editor-placeholder-mark {
-  color: #287F79;
-  font-family: Consolas, monospace;
-  font-size: 34px;
-  font-weight: 700;
-}
-.editor-placeholder-hint {
-  color: #667C7C;
-  font-size: 10px;
-}
-@media (max-width: 520px) {
-  .editor-panel { grid-template-rows: 40px 34px minmax(0, 1fr) 125px; }
-}
+/* Editor workspace surface and Monaco host */
+.editor-panel { grid-template-rows: 43px 36px minmax(0, 1fr) var(--terminal-height); }
+.editor-surface { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #0B1012; }
+.monaco-editor-host { position: absolute; inset: 0; width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.editor-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; background: #0B1012; color: var(--muted); font-size: 12px; }
+.editor-loading[hidden] { display: none; }
+.editor-loading.is-error { padding: 20px; color: #E6A09A; text-align: center; }
+@media (max-width: 520px) { .editor-panel { grid-template-rows: 40px 34px minmax(0, 1fr) var(--terminal-height); } }

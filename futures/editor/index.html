@@ -1,44 +1,4 @@
-<div class="editor-header">
-  <div class="editor-header-title">
-    <span class="heading-dot editor-dot" aria-hidden="true"></span>
-    <span>EDITOR</span>
-    <span class="editor-file-count">3 FILES</span>
-  </div>
-  <div class="editor-header-actions" aria-label="Editor actions">
-    <button class="editor-action-button" type="button" aria-label="Undo" title="Undo">
-      <span aria-hidden="true">↶</span><span>Undo</span>
-    </button>
-    <button class="editor-action-button" type="button" aria-label="Redo" title="Redo">
-      <span aria-hidden="true">↷</span><span>Redo</span>
-    </button>
-    <span class="editor-action-divider" aria-hidden="true"></span>
-    <button class="editor-action-button clear-action" type="button" aria-label="Clear active file" title="Clear active file">
-      <span aria-hidden="true">⌫</span><span>Clear</span>
-    </button>
-  </div>
-</div>
-<div class="editor-tabs" role="tablist" aria-label="Open files">
-  <div class="editor-tab is-active" role="tab" aria-selected="true" tabindex="0">
-    <span class="file-type-icon html-icon" aria-hidden="true">5</span>
-    <span class="tab-name">index.html</span>
-    <button class="tab-close" type="button" aria-label="Close index.html" title="Close tab">×</button>
-  </div>
-  <div class="editor-tab" role="tab" aria-selected="false" tabindex="-1">
-    <span class="file-type-icon css-icon" aria-hidden="true">#</span>
-    <span class="tab-name">style.css</span>
-    <button class="tab-close" type="button" aria-label="Close style.css" title="Close tab">×</button>
-  </div>
-  <div class="editor-tab" role="tab" aria-selected="false" tabindex="-1">
-    <span class="file-type-icon js-icon" aria-hidden="true">JS</span>
-    <span class="tab-name">script.js</span>
-    <button class="tab-close" type="button" aria-label="Close script.js" title="Close tab">×</button>
-  </div>
-  <div class="editor-tabs-spacer"></div>
-</div>
-<div class="editor-surface">
-  <div class="editor-placeholder">
-    <span class="editor-placeholder-mark" aria-hidden="true">&lt;/&gt;</span>
-    <span>Code Editor</span>
-    <span class="editor-placeholder-hint">Select a file to start editing</span>
-  </div>
-</div>
+<!-- Editor panel markup is mounted by futures/index.html. -->
+<div class="editor-header"><div class="editor-header-title"><span class="heading-dot editor-dot" aria-hidden="true"></span><span>EDITOR</span><span class="editor-file-count">3 FILES</span></div><div class="editor-header-actions" aria-label="Editor actions"><button class="editor-action-button" type="button" data-editor-action="undo" aria-label="Undo" title="Undo"><span aria-hidden="true">↶</span><span>Undo</span></button><button class="editor-action-button" type="button" data-editor-action="redo" aria-label="Redo" title="Redo"><span aria-hidden="true">↷</span><span>Redo</span></button><span class="editor-action-divider" aria-hidden="true"></span><button class="editor-action-button clear-action" type="button" data-editor-action="clear" aria-label="Clear active file" title="Clear active file"><span aria-hidden="true">⌫</span><span>Clear</span></button></div></div>
+<div class="editor-tabs" role="tablist" aria-label="Open files"><button class="editor-tab is-active" type="button" role="tab" data-file="html" aria-selected="true"><span class="file-type-icon html-icon" aria-hidden="true">&lt;&gt;</span><span class="tab-name">index.html</span></button><button class="editor-tab" type="button" role="tab" data-file="css" aria-selected="false"><span class="file-type-icon css-icon" aria-hidden="true">#</span><span class="tab-name">style.css</span></button><button class="editor-tab" type="button" role="tab" data-file="javascript" aria-selected="false"><span class="file-type-icon js-icon" aria-hidden="true">JS</span><span class="tab-name">script.js</span></button><div class="editor-tabs-spacer"></div></div>
+<div class="editor-surface"><div id="monaco-editor" class="monaco-editor-host" aria-label="Code editing area"></div><div class="editor-loading" data-editor-loading role="status">Loading Monaco Editor…</div></div>

@@ -140,21 +140,21 @@ jobs:
             const finish = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} end -->`;
             const body = isFutures
               ? Buffer.concat([
-                  Buffer.from(begin + '\\n', 'utf8'),
+                  Buffer.from(begin + '\n', 'utf8'),
                   chunk,
-                  Buffer.from('\\n' + finish, 'utf8')
+                  Buffer.from('\n' + finish, 'utf8')
                 ])
               : Buffer.from(
-                  `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 begin -->\\n` +
-                  `<!-- Selected source: ${file}; commit: ${commit} -->\\n` +
-                  `<!-- This message contains the selected source as plain text. -->\\n` +
+                  `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 begin -->\n` +
+                  `<!-- Selected source: ${file}; commit: ${commit} -->\n` +
+                  `<!-- This message contains the selected source as plain text. -->\n` +
                   chunk.toString('utf8') +
-                  `\\n<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 end -->`,
+                  `\n<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 end -->`,
                   'utf8'
                 );
             if (isFutures) {
-              const prefix = Buffer.from(begin + '\\n', 'utf8');
-              const suffix = Buffer.from('\\n' + finish, 'utf8');
+              const prefix = Buffer.from(begin + '\n', 'utf8');
+              const suffix = Buffer.from('\n' + finish, 'utf8');
               const extracted = body.subarray(prefix.length, body.length - suffix.length);
               if (!extracted.equals(chunk)) throw new Error(`Part ${part} failed exact-content validation.`);
             }
@@ -162,7 +162,7 @@ jobs:
           });
 
           const matrix = JSON.stringify({ include: chunks.map((_, index) => ({ part: index + 1 })) });
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${matrix}\\n`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${matrix}\n`);
           console.log(`Prepared ${total} email part(s) from ${file}; each Futures source chunk is at most ${maxChunkBytes} bytes.`);
           NODE
           test -s dist/company-delivery/part-1.txt
@@ -196,7 +196,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! "$RECIPIENT" =~ ^[^[:space:]@]+@[^[:space:]@]+\\.[^[:space:]@]+$ ]]; then
+          if [[ ! "$RECIPIENT" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]; then
             echo "::error::آدرس ایمیل گیرنده معتبر نیست."
             exit 1
           fi

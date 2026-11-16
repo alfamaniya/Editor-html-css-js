@@ -8,11 +8,11 @@ on:
         required: true
         type: choice
         options:
-          - editor
-          - visual
-          - combined
-          - futures
-        default: futures
+          - "ویرایشگر اصلی"
+          - "Visual Editor"
+          - "نسخه ترکیبی"
+          - "Futures"
+        default: "Futures"
       confirm_send:
         description: "ارسال کد انتخاب‌شده در متن ایمیل را تأیید می‌کنم"
         required: true
@@ -50,23 +50,23 @@ jobs:
           node-version: 24
 
       - name: بازسازی ویرایشگر اصلی
-        if: inputs.code_to_send == 'editor' || inputs.code_to_send == 'combined'
+        if: inputs.code_to_send == 'ویرایشگر اصلی' || inputs.code_to_send == 'نسخه ترکیبی'
         run: node scripts/build-test-editor.mjs
 
       - name: اعتبارسنجی ویرایشگر اصلی
-        if: inputs.code_to_send == 'editor' || inputs.code_to_send == 'combined'
+        if: inputs.code_to_send == 'ویرایشگر اصلی' || inputs.code_to_send == 'نسخه ترکیبی'
         run: node scripts/check-standalone-editor.mjs
 
       - name: بازسازی Visual Editor
-        if: inputs.code_to_send == 'visual' || inputs.code_to_send == 'combined'
+        if: inputs.code_to_send == 'Visual Editor' || inputs.code_to_send == 'نسخه ترکیبی'
         run: node scripts/build-standalone-visual-editor.mjs
 
       - name: اعتبارسنجی Visual Editor
-        if: inputs.code_to_send == 'visual' || inputs.code_to_send == 'combined'
+        if: inputs.code_to_send == 'Visual Editor' || inputs.code_to_send == 'نسخه ترکیبی'
         run: node scripts/check-standalone-visual-editor.mjs
 
       - name: ساخت نسخهٔ ترکیبی
-        if: inputs.code_to_send == 'combined'
+        if: inputs.code_to_send == 'نسخه ترکیبی'
         shell: bash
         run: |
           set -euo pipefail
@@ -75,7 +75,7 @@ jobs:
           test -s "editor v.html"
 
       - name: ساخت فایل یکپارچهٔ Futures
-        if: inputs.code_to_send == 'futures'
+        if: inputs.code_to_send == 'Futures'
         shell: bash
         run: |
           node --input-type=module <<'NODE'
@@ -143,10 +143,10 @@ jobs:
         run: |
           set -euo pipefail
           case "$SELECTED_CODE" in
-            editor) file="index-test-etitor.html"; label="ویرایشگر اصلی" ;;
-            visual) file="standalone-visual-editor.html"; label="Visual Editor" ;;
-            combined) file="editor v.html"; label="نسخهٔ ترکیبی Editor و Visual Editor" ;;
-            futures) file="dist/futures-preview.html"; label="پیش‌نمایش Futures" ;;
+            "ویرایشگر اصلی") file="index-test-etitor.html"; label="ویرایشگر اصلی" ;;
+            "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor" ;;
+            "نسخه ترکیبی") file="editor v.html"; label="نسخهٔ ترکیبی Editor و Visual Editor" ;;
+            "Futures") file="dist/futures-preview.html"; label="پیش‌نمایش Futures" ;;
             *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
           esac
           test -s "$file"

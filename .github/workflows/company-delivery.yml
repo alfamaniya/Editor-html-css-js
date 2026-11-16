@@ -147,25 +147,26 @@ jobs:
         run: |
           set -euo pipefail
           case "$SELECTED_CODE" in
-            "Main Editor") file="index-test-etitor.html"; label="Main Editor" ;;
-            "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor" ;;
-            "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor" ;;
-            "Futures") file="futures/offline-futures.html"; label="Offline Futures" ;;
+            "Main Editor") file="index-test-etitor.html"; label="Main Editor"; attachment="main-editor.html" ;;
+            "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor"; attachment="visual-editor.html" ;;
+            "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor"; attachment="combined-editor.html" ;;
+            "Futures") file="futures/offline-futures.html"; label="Futures"; attachment="offline-futures.html" ;;
             *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
           esac
           test -s "$file"
           mkdir -p dist/company-delivery
-          cp "$file" dist/company-delivery/offline-futures.html
+          cp "$file" "dist/company-delivery/$attachment"
+          echo "ATTACHMENT_NAME=$attachment" >> "$GITHUB_ENV"
           {
             printf 'Project: Editor-html-css-js\n'
             printf 'Selected version: %s\n' "$label"
             printf 'Repository: %s\n' "$GITHUB_REPOSITORY"
             printf 'Branch: main\n'
             printf 'Commit: %s\n' "$(git rev-parse HEAD)"
-            printf '\nThe complete HTML file is attached to this email as offline-futures.html.\n'
+            printf '\nThe complete HTML file is attached to this email as %s.\n' "$attachment"
           } > dist/company-delivery/selected-code-email.txt
           test -s dist/company-delivery/selected-code-email.txt
-          test -s dist/company-delivery/offline-futures.html
+          test -s "dist/company-delivery/$attachment"
 
       - name: Validate SMTP configuration
         env:
@@ -214,4 +215,4 @@ jobs:
           to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
           body: "file://dist/company-delivery/selected-code-email.txt"
-          attachments: dist/company-delivery/offline-futures.html
+          attachments: dist/company-delivery/${{ env.ATTACHMENT_NAME }}

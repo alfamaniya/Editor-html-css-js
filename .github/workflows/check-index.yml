@@ -72,7 +72,7 @@ permissions:
 
 jobs:
   check-index:
-    if: false # Legacy validation workflow intentionally disabled; retained for reference.
+    if: ${{ false }} # Legacy validation workflow intentionally disabled; retained for reference.
     name: Validate index.html
     runs-on: ubuntu-latest
     steps:

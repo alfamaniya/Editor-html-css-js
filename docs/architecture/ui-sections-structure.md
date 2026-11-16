@@ -63,9 +63,46 @@ futures/editor/
 
 - [x] ایجاد اسکلت سه‌فایلی هفت بخش
 - [x] ثبت قرارداد در مستندات معماری
-- [ ] طراحی پوستهٔ اصلی و روش اتصال قطعه‌های HTML
-- [ ] انتقال تدریجی قابلیت‌های موجود با حفظ رفتار فعلی
-- [ ] به‌روزرسانی سازنده‌ها و آزمون‌ها پس از تعیین روش بارگذاری
+- [x] طراحی پوستهٔ اصلی و اتصال Monaco به سطح ویرایشگر Futures
+- [x] ایجاد Core مستقل با مدل‌های مجزای HTML، CSS و JavaScript
+- [x] تعریف API عمومی و رویداد مستقل برای اتصال آیندهٔ Live Preview
+- [ ] اتصال Live Preview به رویدادهای تغییر کد
+- [ ] افزودن ذخیره‌سازی محلی پروژه و بازیابی مدل‌ها
+- [ ] پیاده‌سازی تدریجی autocomplete، search، editing commands و color picker
+
+
+## معماری موتور Monaco
+
+نسخهٔ ثابت Monaco Editor در Futures از CDN بارگذاری می‌شود. نقطهٔ ورود در `futures/editor/script.js` است و منطق اصلی در `futures/editor/core/script.js` قرار دارد.
+
+- برای HTML، CSS و JavaScript یک Monaco Model مستقل ساخته می‌شود؛ جابه‌جایی تب‌ها Model را عوض می‌کند و محتوای فایل دیگر از بین نمی‌رود.
+- Core رابط عمومی `window.workspaceEditor` را ارائه می‌کند: `openFile`، `getValue`، `setValue`، `getAllFiles`، `getActiveFile`، `focus` و `layout`.
+- هر تغییر از طریق رویداد `workspace:code-change` با شناسه و محتوای فایل فعال منتشر می‌شود. Live Preview باید به این قرارداد عمومی متصل شود و نباید به API داخلی Monaco وابسته باشد.
+- مدل‌ها فعلاً در حافظه هستند؛ ذخیره‌سازی محلی و بازیابی پروژه هنوز پیاده‌سازی نشده‌اند.
+- بارگذاری کتابخانه و Workerها به دسترسی CDN نیاز دارد.
+
+درخت قسمت Editor:
+
+```text
+futures/editor/
+├── index.html
+├── style.css
+├── script.js
+├── core/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── header/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── autocomplete/.gitkeep
+├── color-picker/.gitkeep
+├── editing-commands/.gitkeep
+├── paste-processing/.gitkeep
+├── search/.gitkeep
+└── syntax-highlighting/.gitkeep
+```
 
 ## قانون ثابت طراحی رابط کاربری Futures
 

@@ -136,7 +136,7 @@ jobs:
           await mkdir(dirname(output), { recursive: true });
           await writeFile(output, result, 'utf8');
           const built = await readFile(output, 'utf8');
-          if (!/^\\s*<!doctype\\s+html/i.test(built) || !built.includes('<style>') || !built.includes('<script>')) {
+          if (!/^\s*<!doctype\s+html/i.test(built) || !built.includes('<style>') || !built.includes('<script>')) {
             throw new Error('فایل offline-futures.html ساخته شد اما اعتبارسنجی آن ناموفق بود.');
           }
           console.log('فایل مستقل Futures ساخته و اعتبارسنجی شد: ' + output);

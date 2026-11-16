@@ -1,1 +1,36 @@
-/* محیط اصلی ویرایش کد؛ استایل‌های اختصاصی این بخش. اسکلت اولیه. */
+/* Editor workspace surface */
+.editor-panel {
+  grid-template-rows: 43px 36px minmax(0, 1fr) var(--terminal-height);
+}
+.editor-surface {
+  position: relative;
+  min-height: 0;
+  overflow: auto;
+  background-color: #0B1012;
+  background-image: linear-gradient(to bottom, rgba(255,255,255,.012) 1px, transparent 1px);
+  background-size: 100% 26px;
+}
+.editor-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.editor-placeholder-mark {
+  color: #287F79;
+  font-family: Consolas, monospace;
+  font-size: 34px;
+  font-weight: 700;
+}
+.editor-placeholder-hint {
+  color: #667C7C;
+  font-size: 10px;
+}
+@media (max-width: 520px) {
+  .editor-panel { grid-template-rows: 40px 34px minmax(0, 1fr) 125px; }
+}

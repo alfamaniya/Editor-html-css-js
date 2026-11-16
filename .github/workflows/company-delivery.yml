@@ -148,13 +148,11 @@ jobs:
           NODE
 
       - name: Prepare email content
-        env:
-          SELECTED_CODE: ${{ env.SELECTED_CODE }}
         shell: bash
         run: |
           set -euo pipefail
           case "$SELECTED_CODE" in
-            "Main Editor") file="index-test-etitor.html"; label="ویرایشگر اصلی" ;;
+            "Main Editor") file="index-test-etitor.html"; label="Main Editor" ;;
             "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor" ;;
             "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor" ;;
             "Futures") file="dist/futures-preview.html"; label="Futures Preview" ;;
@@ -200,8 +198,6 @@ jobs:
           fi
 
       - name: Validate recipient email
-        env:
-          RECIPIENT: ${{ env.RECIPIENT }}
         shell: bash
         run: |
           set -euo pipefail

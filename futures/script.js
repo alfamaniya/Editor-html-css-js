@@ -1,6 +1,9 @@
 /*
- * فایل جاوااسکریپت پوستهٔ ظاهری آینده
+ * Global workspace script entry point.
  *
- * در این مرحله عمداً هیچ قابلیتی پیاده‌سازی نشده است.
- * منوها، ترمینال‌ها و پنل‌ها فقط برای نمایش چیدمان در HTML/CSS قرار گرفته‌اند.
+ * Menu interactions are intentionally isolated in their own modules:
+ * - file-manager/script.js
+ * - right-menu/script.js
+ *
+ * This file is reserved for behavior shared by the overall workspace.
  */

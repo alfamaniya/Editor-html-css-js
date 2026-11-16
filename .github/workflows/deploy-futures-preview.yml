@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "futures/**"
+      - ".github/workflows/deploy-futures-preview.yml"
   workflow_dispatch:
 
 permissions:

@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: false # Legacy Pages deployment intentionally disabled; Futures deployment is handled separately.
+    if: ${{ false }} # Legacy Pages deployment intentionally disabled; Futures deployment is handled separately.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:

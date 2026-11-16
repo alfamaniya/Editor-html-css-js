@@ -314,7 +314,6 @@ Editor-html-css-js/
 - `src/app/.gitkeep`: محل آتی کدهای سطح برنامه و راه‌اندازی.
 - `futures/editor/autocomplete/.gitkeep`: محل آتی ماژول مستقل تکمیل خودکار.
 - `futures/editor/color-picker/.gitkeep`: محل آتی انتقال مستقل انتخابگر رنگ.
-- `futures/editor/core/.gitkeep`: محل آتی تفکیک هستهٔ ویرایشگر.
 - `futures/editor/editing-commands/.gitkeep`: محل آتی فرمان‌های ویرایش.
 - `futures/editor/paste-processing/.gitkeep`: محل آتی پردازش Paste.
 - `futures/editor/search/.gitkeep`: محل آتی موتور جست‌وجوی کد.
@@ -336,7 +335,7 @@ Editor-html-css-js/
 
 برای چیدمان جدید، هفت بخش مستقل در پوشهٔ ریشهٔ `futures/` قرار دارند: `header`، `file-manager`، `editor`، `editor-terminal`، `right-menu`، `live-preview` و `preview-terminal`. هر بخش سه فایل `index.html`، `style.css` و `script.js` دارد. همین قرارداد برای قابلیت‌های فرزند نیز رعایت می‌شود؛ برای نمونه هدر اختصاصی ویرایشگر در `futures/editor/header/` و قابلیت جست‌وجوی آینده در `futures/editor/search/` هرکدام سه فایل مستقل دارند.
 
-در Futures موتور Monaco Editor به‌عنوان هستهٔ ویرایش کد راه‌اندازی شده است. سه مدل مستقل HTML، CSS و JavaScript نگهداری می‌شوند و تب‌ها بین مدل‌ها جابه‌جا می‌شوند؛ دکمه‌های Undo، Redo و Clear نیز به موتور متصل هستند. جزئیات معماری در بخش Monaco همین راهنما و مستند ساختار هفت بخش ثبت شده است. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
+موتور Monaco از Futures حذف شده است؛ در وضعیت فعلی موتور ویرایش کد نصب نیست و بخش Editor تا زمان افزودن موتور جایگزین، فقط پوستهٔ رابط کاربری را نمایش می‌دهد. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
 
 ## جریان اجرای برنامه
 
@@ -376,29 +375,16 @@ visual-editor.html
 ترتیب واقعی بارگذاری اسکریپت‌ها در `index.html` اهمیت دارد؛ ماژول‌هایی که بانک داده یا API مشترک می‌سازند باید پیش از ماژول مصرف‌کننده بارگذاری شوند. هنگام افزودن یک فایل جدید، هم ارجاع آن در HTML و هم فهرست ورودی‌های سازنده‌های مستقل و آزمون‌های مرتبط را بررسی کنید.
 
 
-### موتور ویرایشگر Futures (Monaco)
+### وضعیت موتور ویرایشگر Futures
 
-ویرایشگر آیندهٔ Futures از Monaco Editor نسخهٔ ثابت `0.52.2` استفاده می‌کند. بارگذاری کتابخانه از CDN انجام می‌شود؛ بنابراین اجرای این پیش‌نمایش به دسترسی شبکه و بارگذاری فایل‌های Monaco وابسته است.
+موتور Monaco و فایل‌های اختصاصی آن از Futures حذف شده‌اند. در حال حاضر هیچ موتور ویرایش کدی در این بخش بارگذاری نمی‌شود؛ بنابراین تب‌ها و دکمه‌های ویرایش تا زمان اضافه‌شدن موتور جایگزین فعال نیستند.
 
-- `futures/editor/script.js` نقطهٔ ورود و راه‌اندازی Monaco و اتصال کنترل‌های نوار ابزار و تب‌ها است.
-- `futures/editor/core/script.js` هستهٔ مستقل ویرایشگر را می‌سازد و برای هر فایل یک Monaco Model مجزا نگه می‌دارد.
-- `window.workspaceEditor` رابط عمومی برای خواندن/نوشتن محتوای فایل‌ها، انتخاب فایل فعال و دسترسی به نمونهٔ Editor است.
-- رویداد `workspace:code-change` تغییرات را بدون وابسته کردن Preview به Monaco منتشر می‌کند.
-- ارتباط Live Preview باید از طریق API/رویدادهای عمومی انجام شود؛ هیچ ماژولی خارج از Core نباید مستقیماً با Monaco Modelها کار کند.
-- مدل‌های اولیه فعلاً در حافظهٔ مرورگر هستند؛ ذخیره‌سازی محلی پروژه و اتصال Preview در مراحل بعدی پیاده‌سازی می‌شوند.
-- Monaco Workerها نیز از CDN بارگذاری می‌شوند. در صورت مسدود بودن CDN یا نبود اینترنت، پیام خطای قابل مشاهده نمایش داده می‌شود.
-
-درخت فعلی قسمت Editor:
+ساختار فعلی قسمت Editor:
 
 ```text
 futures/editor/
 ├── index.html
 ├── style.css
-├── script.js
-├── core/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
 ├── header/
 │   ├── index.html
 │   ├── style.css

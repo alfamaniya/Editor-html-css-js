@@ -87,7 +87,7 @@ jobs:
           import { dirname, relative, resolve, sep } from 'node:path';
 
           const root = resolve('futures');
-          const output = resolve('dist/futures-preview.html');
+          const output = resolve(root, 'offline-futures.html');
 
           async function walk(dir) {
             const entries = await readdir(dir, { withFileTypes: true });
@@ -111,7 +111,7 @@ jobs:
           const html = await readFile(htmlPath, 'utf8');
           const cssFiles = [cssPath, ...files.filter(f => f.endsWith('.css') && f !== cssPath)];
           const jsFiles = [jsPath, ...files.filter(f => f.endsWith('.js') && f !== jsPath)];
-          const htmlParts = files.filter(f => f.endsWith('.html') && f !== htmlPath);
+          const htmlParts = files.filter(f => f.endsWith('.html') && f !== htmlPath && f !== output);
 
           const css = (await Promise.all(cssFiles.map(async f =>
             '/* ' + relative(process.cwd(), f).split(sep).join('/') + ' */\n' + await readFile(f, 'utf8')
@@ -140,7 +140,11 @@ jobs:
           result = result.replace(/<script\s+src="\.\/(?!script\.js)[^"]+\.js"><\/script>/gi, '');
           await mkdir(dirname(output), { recursive: true });
           await writeFile(output, result, 'utf8');
-          console.log('فایل Futures یکپارچه ساخته شد: ' + output);
+          const built = await readFile(output, 'utf8');
+          if (!/^\\s*<!doctype\\s+html/i.test(built) || !built.includes('<style>') || !built.includes('<script>')) {
+            throw new Error('فایل offline-futures.html ساخته شد اما اعتبارسنجی آن ناموفق بود.');
+          }
+          console.log('فایل مستقل Futures ساخته و اعتبارسنجی شد: ' + output);
           NODE
 
       - name: Prepare email content
@@ -151,19 +155,19 @@ jobs:
             "Main Editor") file="index-test-etitor.html"; label="Main Editor" ;;
             "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor" ;;
             "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor" ;;
-            "Futures") file="dist/futures-preview.html"; label="Futures Preview" ;;
+            "Futures") file="futures/offline-futures.html"; label="Offline Futures" ;;
             *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
           esac
           test -s "$file"
           mkdir -p dist/company-delivery
-          cp "$file" dist/company-delivery/selected-code.html
+          cp "$file" dist/company-delivery/offline-futures.html
           {
             printf 'Project: Editor-html-css-js\n'
             printf 'Selected version: %s\n' "$label"
             printf 'Repository: %s\n' "$GITHUB_REPOSITORY"
             printf 'Branch: main\n'
             printf 'Commit: %s\n' "$(git rev-parse HEAD)"
-            printf '\nThe complete HTML file is attached to this email as selected-code.html.\n'
+            printf '\nThe complete HTML file is attached to this email as offline-futures.html.\n'
           } > dist/company-delivery/selected-code-email.txt
           test -s dist/company-delivery/selected-code-email.txt
           test -s dist/company-delivery/selected-code.html
@@ -236,4 +240,4 @@ jobs:
           to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
           body: "file://dist/company-delivery/selected-code-email.txt"
-          attachments: dist/company-delivery/selected-code.html
+          attachments: dist/company-delivery/offline-futures.html

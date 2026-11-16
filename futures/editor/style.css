@@ -6,3 +6,10 @@
 .editor-loading[hidden] { display: none; }
 .editor-loading.is-error { padding: 20px; color: #E6A09A; text-align: center; }
 @media (max-width: 520px) { .editor-panel { grid-template-rows: 40px 34px minmax(0, 1fr) var(--terminal-height); } }
+
+/* CodeMirror fills the complete editor surface. */
+.editor-host > .cm-editor { width: 100%; height: 100%; font-size: 13px; }
+.editor-host .cm-scroller { overflow: auto; font-family: Consolas, "Courier New", monospace; }
+.editor-host .cm-content { min-height: 100%; padding: 10px 0; }
+.editor-host .cm-line { padding: 0 12px; }
+.editor-host .cm-gutters { min-height: 100%; }

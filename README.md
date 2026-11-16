@@ -75,9 +75,9 @@ Editor-html-css-js/
 │   └── workflows/
 │       ├── build-combined-editor.yml
 │       ├── build-futures-offline.yml
-│       └── deploy-futures-preview.yml
 │       ├── check-index.yml
 │       ├── company-delivery.yml
+│       ├── deploy-futures-preview.yml
 │       └── deploy-pages.yml
 ├── docs/
 │   ├── architecture/
@@ -538,5 +538,3 @@ node scripts/check-combined-editor-browser.mjs
 9. در تغییر ساختار پوشه‌ها یا فایل‌ها، درخت و توضیحات همین README را هم‌زمان به‌روز کنید.
 
 ---
-
-**اصل معماری پروژه:** سورس چندفایلی، مرجع واحد توسعه و نگهداری است؛ ابزارهای build آن را به خروجی‌های قابل حمل تبدیل می‌کنند و فایل `editor v.html` صرفاً یکی از این خروجی‌های توزیع برای محدودیت انتقال و تست در محیط شرکت است.

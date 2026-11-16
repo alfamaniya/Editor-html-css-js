@@ -37,7 +37,7 @@ https://github.com/alfamaniya/Editor-html-css-js/actions/workflows/company-deliv
 
 ## راه‌اندازی و استفاده از npm
 
-برای مدیریت دستورهای ساخت و بررسی پروژه، مخزن اکنون دارای `package.json` و `package-lock.json` است. CodeMirror 6 به‌عنوان وابستگی توسعه نصب می‌شود و با esbuild در مسیر `futures/editor/core/codemirror.js` بسته‌بندی می‌شود. فایل تولیدشده برای اجرای برنامه محلی است؛ کاربر نهایی برای اجرای برنامه به npm نیاز ندارد.
+برای مدیریت دستورهای ساخت و بررسی پروژه، مخزن اکنون دارای `package.json` است؛ اجرای `npm install` فایل قفل معتبر `package-lock.json` را با نسخه‌های حل‌شده تولید می‌کند. CodeMirror 6 به‌عنوان وابستگی توسعه نصب می‌شود و با esbuild در مسیر `futures/editor/core/codemirror.js` بسته‌بندی می‌شود. فایل تولیدشده برای اجرای برنامه محلی است؛ کاربر نهایی برای اجرای برنامه به npm نیاز ندارد. فایل `package-lock.json` پس از نخستین اجرای موفق `npm install` ساخته می‌شود و باید همراه تغییرات وابستگی commit شود.
 
 پس از نصب Node.js (که npm را نیز همراه دارد)، در پوشهٔ اصلی مخزن این دستور را اجرا کنید:
 
@@ -85,7 +85,6 @@ Editor-html-css-js/
 │       └── tree-world-suggestion.md
 ├── .gitignore
 ├── package.json
-├── package-lock.json
 ├── editor v.html
 ├── futures/
 │   ├── header/

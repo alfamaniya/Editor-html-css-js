@@ -14,7 +14,6 @@ permissions:
   pages: write
   id-token: write
 
-# با انتشار اصلی هم‌گروه است تا دو انتشار هم‌زمان روی یک سایت انجام نشود.
 concurrency:
   group: github-pages-main
   cancel-in-progress: false
@@ -31,6 +30,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      - name: ساخت فایل آفلاین Futures
+        run: node scripts/build-futures-offline.mjs
 
       - name: پیکربندی GitHub Pages
         uses: actions/configure-pages@v5

@@ -75,72 +75,10 @@ jobs:
 
       - name: Build standalone Futures HTML
         if: env.SELECTED_CODE == 'Futures'
-        shell: bash
         run: |
-          node --input-type=module <<'NODE'
-          import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-          import { dirname, relative, resolve, sep } from 'node:path';
-
-          const root = resolve('futures');
-          const output = resolve(root, 'offline-futures.html');
-
-          async function walk(dir) {
-            const entries = await readdir(dir, { withFileTypes: true });
-            const files = [];
-            for (const entry of entries) {
-              const full = resolve(dir, entry.name);
-              if (entry.isDirectory()) files.push(...await walk(full));
-              else if (entry.isFile()) files.push(full);
-            }
-            return files;
-          }
-
-          const files = (await walk(root)).sort();
-          const htmlPath = resolve(root, 'index.html');
-          const cssPath = resolve(root, 'style.css');
-          const jsPath = resolve(root, 'script.js');
-          for (const required of [htmlPath, cssPath, jsPath]) {
-            if (!files.includes(required)) throw new Error('فایل ضروری پیدا نشد: ' + relative(process.cwd(), required));
-          }
-
-          const html = await readFile(htmlPath, 'utf8');
-          const cssFiles = [cssPath, ...files.filter(f => f.endsWith('.css') && f !== cssPath)];
-          const jsFiles = [jsPath, ...files.filter(f => f.endsWith('.js') && f !== jsPath)];
-          const htmlParts = files.filter(f => f.endsWith('.html') && f !== htmlPath && f !== output);
-
-          const css = (await Promise.all(cssFiles.map(async f =>
-            '/* ' + relative(process.cwd(), f).split(sep).join('/') + ' */\n' + await readFile(f, 'utf8')
-          ))).join('\n\n');
-          const js = (await Promise.all(jsFiles.map(async f =>
-            '// ' + relative(process.cwd(), f).split(sep).join('/') + '\n' +
-            (await readFile(f, 'utf8')).replace(/<\/script/gi, '<\\/script')
-          ))).join('\n\n');
-
-          const cssLink = /<link\s+rel="stylesheet"\s+href="\.\/style\.css"\s*>/i;
-          const jsTag = /<script\s+src="\.\/script\.js"><\/script>/i;
-          if (!cssLink.test(html) || !jsTag.test(html)) {
-            throw new Error('ارجاع style.css یا script.js در futures/index.html پیدا نشد.');
-          }
-
-          const templates = await Promise.all(htmlParts.map(async f => {
-            const name = relative(root, f).split(sep).join('/');
-            return '<template data-futures-module="' + name.replaceAll('"', '&quot;') + '">\n' +
-              await readFile(f, 'utf8') + '\n</template>';
-          }));
-
-          let result = html.replace(cssLink, '<style>\n' + css + '\n</style>');
-          result = result.replace(jsTag, templates.join('\n') + '\n<script>\n' + js + '\n</script>');
-          // Component assets are already embedded above; remove their external references.
-          result = result.replace(/<link\s+rel="stylesheet"\s+href="\.\/(?!style\.css)[^"]+\.css"\s*>/gi, '');
-          result = result.replace(/<script\s+src="\.\/(?!script\.js)[^"]+\.js"><\/script>/gi, '');
-          await mkdir(dirname(output), { recursive: true });
-          await writeFile(output, result, 'utf8');
-          const built = await readFile(output, 'utf8');
-          if (!/^\s*<!doctype\s+html/i.test(built) || !built.includes('<style>') || !built.includes('<script>')) {
-            throw new Error('فایل offline-futures.html ساخته شد اما اعتبارسنجی آن ناموفق بود.');
-          }
-          console.log('فایل مستقل Futures ساخته و اعتبارسنجی شد: ' + output);
-          NODE
+          set -euo pipefail
+          node scripts/build-futures-offline.mjs
+          test -s futures/offline-dashboard-futures.html
 
       - name: Prepare email content
         shell: bash
@@ -150,7 +88,7 @@ jobs:
             "Main Editor") file="index-test-etitor.html"; label="Main Editor"; attachment="main-editor.html" ;;
             "Visual Editor") file="standalone-visual-editor.html"; label="Visual Editor"; attachment="visual-editor.html" ;;
             "Combined Editor") file="editor v.html"; label="Combined Editor and Visual Editor"; attachment="combined-editor.html" ;;
-            "Futures") file="futures/offline-futures.html"; label="Futures"; attachment="offline-futures.html" ;;
+            "Futures") file="futures/offline-dashboard-futures.html"; label="Futures (generated standalone offline HTML)"; attachment="offline-dashboard-futures.html" ;;
             *) echo "::error::انتخاب کد نامعتبر است."; exit 1 ;;
           esac
           test -s "$file"

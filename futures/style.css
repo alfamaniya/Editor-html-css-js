@@ -237,7 +237,7 @@ body {
   color: var(--muted);
   font-size: 10px;
   font-weight: 400;
-  direction: rtl;
+  direction: ltr;
   letter-spacing: 0;
 }
 

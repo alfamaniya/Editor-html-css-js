@@ -49,7 +49,8 @@ Editor-html-css-js/
 │       └── deploy-pages.yml
 ├── docs/
 │   ├── architecture/
-│   │   └── .gitkeep
+│   │   ├── .gitkeep
+│   │   └── main-files-audit.md
 │   └── suggestions/
 │       └── tree-world-suggestion.md
 ├── editor v.html
@@ -265,6 +266,7 @@ Editor-html-css-js/
 
 | مسیر | مسئولیت و کارکرد |
 |---|---|
+| `docs/architecture/main-files-audit.md` | گزارش بررسی ساختار سه فایل اصلی `index.html`، `style.css` و `script.js`؛ شامل محدوده‌های محتوایی، مشخصات snapshot، عملیات پیشنهادی برای هر بخش و نقشه انتقال تدریجی به معماری ماژولار. |
 | `docs/suggestions/tree-world-suggestion.md` | مستند متنی/درختی برای قواعد پیشنهاد ادامهٔ کد HTML، CSS و JavaScript. این فایل برای مطالعه و مستندسازی است و در زمان اجرای برنامه بارگذاری یا وارد نمی‌شود. |
 | `src/features/visual-editor/README.md` | راهنمای جزئی‌تر قابلیت طراحی بصری که در بخش Visual Editor توضیح داده شد. |
 | `README.md` | همین سند؛ معرفی پروژه، نمایش درخت واقعی مخزن، توضیح فایل‌ها، تفکیک سورس از خروجی بسته‌بندی و راهنمای توسعه. |
@@ -273,7 +275,7 @@ Editor-html-css-js/
 
 فایل `.gitkeep` صرفاً برای نگه‌داشتن یک پوشهٔ خالی در Git استفاده شده است؛ منطق اجرایی ندارد. مسیرهای زیر در ساختار فعلی رزرو شده‌اند:
 
-- `docs/architecture/.gitkeep`: محل آتی مستندات معماری.
+- `docs/architecture/.gitkeep`: نشانگر نگهدارنده پوشه معماری؛ گزارش بررسی فایل‌های اصلی در همین پوشه و در فایل `main-files-audit.md` نگهداری می‌شود.
 - `scripts/build/.gitkeep`: محل آتی سازمان‌دهی ابزارهای ساخت.
 - `scripts/checks/.gitkeep`: محل آتی دسته‌بندی آزمون‌ها.
 - `src/app/.gitkeep`: محل آتی کدهای سطح برنامه و راه‌اندازی.

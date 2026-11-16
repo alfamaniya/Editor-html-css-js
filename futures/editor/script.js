@@ -1,1 +1,1 @@
-/* محیط اصلی ویرایش کد؛ منطق اختصاصی این بخش. اسکلت اولیه. */
+/* Visual-only stage: editor interactions will be implemented later. */

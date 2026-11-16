@@ -6,6 +6,8 @@
   <meta name="description" content="Early visual draft of the code editor workspace">
   <title>Code Workspace — UI Draft</title>
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./file-manager/style.css">
+  <link rel="stylesheet" href="./right-menu/style.css">
 </head>
 <body>
   <div class="app-shell">
@@ -21,8 +23,10 @@
     <main class="workspace">
       <aside class="side-menu left-menu" aria-label="File Manager">
         <div class="panel-heading">
-          <span>FILES</span>
-          <span class="panel-symbol" aria-hidden="true">‹</span>
+          <span class="menu-title">FILES</span>
+          <button class="menu-toggle" type="button" data-menu-toggle="left" aria-label="Collapse File Manager" aria-expanded="true" title="Collapse File Manager">
+            <span class="toggle-icon" aria-hidden="true">‹</span>
+          </button>
         </div>
         <div class="menu-placeholder">
           <span class="placeholder-icon" aria-hidden="true">▤</span>
@@ -74,8 +78,10 @@
 
       <aside class="side-menu right-menu" aria-label="Right Sidebar">
         <div class="panel-heading">
-          <span class="panel-symbol" aria-hidden="true">›</span>
-          <span>SIDEBAR</span>
+          <button class="menu-toggle" type="button" data-menu-toggle="right" aria-label="Collapse Right Sidebar" aria-expanded="true" title="Collapse Right Sidebar">
+            <span class="toggle-icon" aria-hidden="true">›</span>
+          </button>
+          <span class="menu-title">SIDEBAR</span>
         </div>
         <div class="menu-placeholder">
           <span class="placeholder-icon" aria-hidden="true">▧</span>
@@ -85,5 +91,7 @@
     </main>
   </div>
   <script src="./script.js"></script>
+  <script src="./file-manager/script.js"></script>
+  <script src="./right-menu/script.js"></script>
 </body>
 </html>

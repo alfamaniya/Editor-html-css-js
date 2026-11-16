@@ -1,0 +1,17 @@
+{
+  "name": "editor-html-css-js",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HTML, CSS and JavaScript editor with build and quality-check scripts.",
+  "scripts": {
+    "check:index": "node scripts/check-index-integrity.mjs",
+    "check:main": "node scripts/check-standalone-editor.mjs",
+    "check:visual": "node scripts/check-standalone-visual-editor.mjs",
+    "check:combined": "node scripts/check-combined-editor.mjs",
+    "build:main": "node scripts/build-test-editor.mjs",
+    "build:visual": "node scripts/build-standalone-visual-editor.mjs",
+    "build:combined": "node scripts/build-combined-editor.mjs",
+    "build:all": "npm run build:main && npm run check:main && npm run build:visual && npm run check:visual && npm run build:combined && npm run check:combined",
+    "test": "npm run check:index"
+  }
+}

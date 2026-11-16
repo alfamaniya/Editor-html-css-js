@@ -2,13 +2,12 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Desktop-first code editor workspace powered by Monaco Editor">
+<meta name="description" content="Desktop-first code editor workspace">
 <title>Code Workspace</title>
-<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./file-manager/style.css"><link rel="stylesheet" href="./right-menu/style.css"><link rel="stylesheet" href="./editor/style.css"><link rel="stylesheet" href="./editor/core/style.css"><link rel="stylesheet" href="./editor/header/style.css">
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./file-manager/style.css"><link rel="stylesheet" href="./right-menu/style.css"><link rel="stylesheet" href="./editor/style.css"><link rel="stylesheet" href="./editor/header/style.css">
 </head>
 <body><div class="app-shell">
-<header class="top-header"><div class="brand"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><span>CODE WORKSPACE</span></div><div class="header-center">Development Environment</div><div class="header-side">Monaco Editor</div></header>
+<header class="top-header"><div class="brand"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><span>CODE WORKSPACE</span></div><div class="header-center">Development Environment</div><div class="header-side">Code Editor</div></header>
 <main class="workspace">
 <aside class="side-menu left-menu" aria-label="File Manager"><div class="panel-heading"><span class="menu-title">FILES</span><button class="menu-toggle" type="button" data-menu-toggle="left" aria-label="Expand File Manager" aria-expanded="false" title="Expand File Manager"><span class="toggle-icon" aria-hidden="true">›</span></button></div>
 <div class="file-manager" aria-label="Project files">
@@ -23,11 +22,11 @@
 <section class="work-panel editor-panel" aria-label="Code Editor">
 <div class="editor-header"><div class="editor-header-title"><span class="heading-dot editor-dot" aria-hidden="true"></span><span>EDITOR</span><span class="editor-file-count">3 FILES</span></div><div class="editor-header-actions" aria-label="Editor actions"><button class="editor-action-button" type="button" data-editor-action="undo" aria-label="Undo" title="Undo"><span aria-hidden="true">↶</span><span>Undo</span></button><button class="editor-action-button" type="button" data-editor-action="redo" aria-label="Redo" title="Redo"><span aria-hidden="true">↷</span><span>Redo</span></button><span class="editor-action-divider" aria-hidden="true"></span><button class="editor-action-button clear-action" type="button" data-editor-action="clear" aria-label="Clear active file" title="Clear active file"><span aria-hidden="true">⌫</span><span>Clear</span></button></div></div>
 <div class="editor-tabs" role="tablist" aria-label="Open files"><button class="editor-tab is-active" type="button" role="tab" data-file="html" aria-selected="true"><span class="file-type-icon html-icon" aria-hidden="true">&lt;&gt;</span><span class="tab-name">index.html</span></button><button class="editor-tab" type="button" role="tab" data-file="css" aria-selected="false"><span class="file-type-icon css-icon" aria-hidden="true">#</span><span class="tab-name">style.css</span></button><button class="editor-tab" type="button" role="tab" data-file="javascript" aria-selected="false"><span class="file-type-icon js-icon" aria-hidden="true">JS</span><span class="tab-name">script.js</span></button><div class="editor-tabs-spacer"></div></div>
-<div class="editor-surface"><div id="monaco-editor" class="monaco-editor-host" aria-label="Code editing area"></div><div class="editor-loading" data-editor-loading role="status">Loading Monaco Editor…</div></div>
+<div class="editor-surface"><div id="editor-host" class="editor-host" aria-label="Code editing area"></div><div class="editor-loading" data-editor-loading role="status">Editor engine is currently unavailable.</div></div>
 <section class="terminal-panel" aria-label="Editor Terminal"><div class="terminal-heading"><span>TERMINAL</span><span class="terminal-caption">Editor Terminal</span></div><div class="terminal-surface"></div></section>
 </section>
 <section class="work-panel preview-panel" aria-label="Live Preview"><div class="section-heading"><span class="heading-dot preview-dot"></span><span>LIVE PREVIEW</span><span class="heading-caption">Live Output</span></div><div class="preview-surface"><div class="empty-state"><span class="preview-frame" aria-hidden="true">▱</span><span>Preview Workspace</span></div></div><section class="terminal-panel" aria-label="Preview Terminal"><div class="terminal-heading"><span>TERMINAL</span><span class="terminal-caption">Preview Terminal</span></div><div class="terminal-surface"></div></section></section>
 <aside class="side-menu right-menu" aria-label="Right Sidebar"><div class="panel-heading"><button class="menu-toggle" type="button" data-menu-toggle="right" aria-label="Expand Right Sidebar" aria-expanded="false" title="Expand Right Sidebar"><span class="toggle-icon" aria-hidden="true">‹</span></button><span class="menu-title">SIDEBAR</span></div><div class="menu-placeholder"><span class="placeholder-icon" aria-hidden="true">▧</span><span>Right Sidebar Area</span></div></aside>
 </main></div>
-<script src="./script.js"></script><script src="./file-manager/script.js"></script><script src="./right-menu/script.js"></script><script src="./editor/core/script.js"></script><script src="./editor/script.js"></script>
+<script src="./script.js"></script><script src="./file-manager/script.js"></script><script src="./right-menu/script.js"></script>
 </body></html>

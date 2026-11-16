@@ -1,1 +1,32 @@
-/* فایل‌منیجر سمت چپ؛ استایل‌های اختصاصی این بخش. اسکلت اولیه. */
+.left-menu .menu-toggle {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: #9eabbc;
+  cursor: pointer;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+}
+.left-menu .menu-toggle:hover,
+.left-menu .menu-toggle:focus-visible {
+  border-color: var(--border);
+  background: var(--panel-raised);
+  color: #e3eaf4;
+  outline: none;
+}
+.left-menu .panel-heading { justify-content: space-between; }
+.left-menu.is-collapsed .menu-title,
+.left-menu.is-collapsed .menu-placeholder { display: none; }
+.left-menu.is-collapsed .panel-heading { justify-content: center; padding: 0 5px; }
+.left-menu.is-collapsed .menu-toggle { width: 30px; flex-basis: 30px; }
+.workspace { transition: grid-template-columns .22s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .workspace { transition: none; }
+}

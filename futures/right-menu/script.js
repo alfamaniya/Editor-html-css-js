@@ -18,5 +18,5 @@
     setCollapsed(!menu.classList.contains("is-collapsed"));
   });
 
-  setCollapsed(window.matchMedia("(max-width: 520px)").matches);
+  setCollapsed(true);
 })();

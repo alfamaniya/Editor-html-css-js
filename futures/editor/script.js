@@ -30,7 +30,16 @@
   Object.entries(files).forEach(([id, file]) => {
     states[id] = engine.EditorState.create({
       doc: "",
-      extensions: [...engine.extensions.base, file.language]
+      extensions: [
+        ...engine.extensions.base,
+        file.language,
+        engine.EditorView.updateListener.of((update) => {
+          if (!update.docChanged) return;
+          window.dispatchEvent(new CustomEvent("workspace:editor-change", {
+            detail: { fileId: id, content: update.state.doc.toString() }
+          }));
+        })
+      ]
     });
   });
 
@@ -113,6 +122,9 @@
         states[fileId] = states[fileId].update({
           changes: { from: 0, to: states[fileId].doc.length, insert: String(content ?? "") }
         });
+        window.dispatchEvent(new CustomEvent("workspace:editor-change", {
+          detail: { fileId, content: states[fileId].doc.toString() }
+        }));
       }
       return true;
     },

@@ -261,7 +261,7 @@ body {
 }
 
 @media (max-width: 520px) {
-  :root { --left-menu-width: var(--collapsed-menu-width); --right-menu-width: var(--collapsed-menu-width); }
+  :root { --left-menu-width: 160px; --right-menu-width: 160px; --collapsed-menu-width: 42px; }
   .workspace { grid-template-columns: var(--left-menu-width) minmax(0, 1fr) minmax(0, 1fr) var(--right-menu-width); }
   .header-center { display: none; }
   .work-panel { grid-template-rows: 39px minmax(0, 1fr) 125px; }

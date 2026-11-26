@@ -22,7 +22,6 @@ const scriptFiles = [
     'src/features/suggestions/data/js-suggestions.js',
     'src/features/suggestions/manager/suggestion-manager.js',
     'src/features/suggestions/next-word/next-word-suggestions.js',
-    'src/features/live-preview/element-inspector.js',
     'src/features/quick-insert/quick-insert.js',
     'src/features/workspace/toolbar/toolbar-sidebar.js',
     'src/features/workspace/file-manager/file-manager.js',

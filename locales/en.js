@@ -2,18 +2,13 @@
   "use strict";
   window.EditorVLocales = window.EditorVLocales || {};
   window.EditorVLocales.en = {
-    "انتخاب محیط ویرایش": "Choose editor mode",
     "ویرایشگر اصلی": "Code Editor",
-    "ویرایشگر بصری": "Visual Editor",
-    "محیط یکپارچهٔ ویرایش کد و طراحی بصری": "Integrated code and visual design workspace",
     "جست‌وجو و ابزارهای اصلی": "Search and main tools",
     "باز کردن فایل‌منیجر": "Open file manager",
     "بستن فایل‌منیجر": "Close file manager",
     "تاریخچه ویرایش": "Edit history",
     "بازگشت": "Undo",
     "انجام دوباره": "Redo",
-    "انتخاب المان برای ویرایش بصری": "Select an element for visual editing",
-    "انتخاب المان از پیش‌نمایش و بازکردن Visual Editor": "Select an element in the preview and open the Visual Editor",
     "تغییر زبان به انگلیسی": "Switch language to English",
     "تغییر زبان به فارسی": "Switch language to Persian",
     "فایل": "File",
@@ -359,7 +354,6 @@
     "همهٔ سکشن‌ها فعال‌اند؛ تنظیمات هر بخش مستقیماً روی محیط ویرایشگر اثر می‌گذارند.": "All sections are active. Each setting directly affects the editor.",
     "ظاهر ویرایشگر": "Editor appearance",
     "انتخاب محیط": "Choose workspace",
-    "انتخاب محیط ویرایش": "Choose editor mode",
     "پشتیبان‌گیری": "Backup",
     "بازیابی": "Restore",
     "ذخیره و بازگشت": "Save and return",
@@ -586,18 +580,13 @@
     "تغییر زبان به فارسی": "Switch language to Persian",
     "جزئی با این عبارت پیدا نشد.": "No elements match your search.",
     "جست‌وجوی اجزا": "Search elements",
-    "انتخاب المان": "Select element",
-    "لغو انتخاب المان": "Cancel element selection",
-    "انتخاب المان برای ویرایش بصری": "Select an element for visual editing",
     "کتابخانهٔ اجزا": "Element library",
     "دسته‌بندی اجزا": "Element category",
     "نحوهٔ نمایش اجزا": "Element display",
     "تغییر اندازهٔ ویرایشگر کد و فضای طراحی": "Resize the code editor and design workspace",
     "تنظیمات جزء": "Element settings",
     "جست‌وجوی اجزا": "Search elements",
-    "انتخاب محیط ویرایش": "Choose editor mode",
     "ویرایشگر اصلی": "Code Editor",
-    "ویرایشگر بصری": "Visual Editor",
     "تغییر زبان به فارسی": "Switch language to Persian"
   };
 }());

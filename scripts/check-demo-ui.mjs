@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 const html = readFileSync('index 2.html', 'utf8');
 assert.doesNotMatch(html, /<a\b[^>]*href=["']#["']/i,
     'Navigation placeholders must not use href="#".');
-assert.match(html, /class="nav-link-placeholder" aria-disabled="true"/,
+assert.match(html, /class="[^"]*nav-link-placeholder[^"]*"[^>]*aria-disabled="true"/,
     'Sidebar placeholder items must be visibly marked unavailable.');
 assert.match(html, /class="footer-link-placeholder" aria-disabled="true"/,
     'Footer placeholder items must be visibly marked unavailable.');

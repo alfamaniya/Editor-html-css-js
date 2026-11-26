@@ -153,8 +153,6 @@ npm test
 | `npm run check:index` | بررسی یکپارچگی `index.html` |
 | `npm run build:main` | تولید خروجی مستقل با اسکریپت `build-test-editor.mjs` |
 | `npm run check:main` | اعتبارسنجی خروجی مستقل |
-| `npm run build:main` | تولید خروجی مستقل از سورس چندفایلی |
-| `npm run check:index` | بررسی یکپارچگی `index.html` |
 
 ## ساخت خروجی مستقل
 

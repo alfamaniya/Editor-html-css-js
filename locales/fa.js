@@ -23,7 +23,6 @@
     "Refresh preview": "تازه‌سازی پیش‌نمایش",
     "Editor tools": "ابزارهای ویرایشگر",
     "Settings": "تنظیمات",
-    "Visual Editor": "ویرایشگر بصری",
     "Help": "راهنما",
     "Help guide": "راهنمای کاربری",
     "Keyboard shortcuts": "میانبرهای صفحه‌کلید",

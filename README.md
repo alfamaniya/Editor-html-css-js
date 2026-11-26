@@ -10,22 +10,24 @@
 
 ```text
 Editor-html-css-js/
-├── .github/
-│   └── workflows/
+├── .github
+│   └── workflows
 │       ├── check-index.yml
 │       ├── company-delivery.yml
 │       └── deploy-pages.yml
 ├── .gitignore
-├── docs/
-│   ├── architecture/
+├── docs
+│   ├── architecture
 │   │   ├── .gitkeep
 │   │   ├── main-files-audit.md
 │   │   └── ui-sections-structure.md
-│   └── suggestions/
+│   └── suggestions
 │       └── tree-world-suggestion.md
 ├── index 2.html
+├── index-2.css
+├── index-2.js
 ├── index.html
-├── locales/
+├── locales
 │   ├── en.js
 │   └── fa.js
 ├── package-lock.json
@@ -33,8 +35,8 @@ Editor-html-css-js/
 ├── README.md
 ├── REPOSITORY_AUDIT.txt
 ├── script.js
-├── scripts/
-│   ├── build/
+├── scripts
+│   ├── build
 │   │   └── .gitkeep
 │   ├── build-test-editor.mjs
 │   ├── check-backup-restore.mjs
@@ -48,70 +50,70 @@ Editor-html-css-js/
 │   ├── check-settings-button-placement.mjs
 │   ├── check-settings-dialog-keyboard.mjs
 │   ├── check-standalone-editor.mjs
-│   ├── checks/
+│   ├── checks
 │   │   └── .gitkeep
 │   └── run-checks.mjs
-├── src/
-│   ├── app/
+├── src
+│   ├── app
 │   │   └── .gitkeep
-│   ├── features/
-│   │   ├── backup-restore/
+│   ├── features
+│   │   ├── backup-restore
 │   │   │   ├── backup-restore.css
 │   │   │   └── backup-restore.js
-│   │   ├── export/
+│   │   ├── export
 │   │   │   └── .gitkeep
-│   │   ├── help/
+│   │   ├── help
 │   │   │   └── .gitkeep
-│   │   ├── libraries/
+│   │   ├── libraries
 │   │   │   └── .gitkeep
-│   │   ├── quick-insert/
+│   │   ├── quick-insert
 │   │   │   ├── quick-insert.css
 │   │   │   └── quick-insert.js
-│   │   ├── settings/
+│   │   ├── settings
 │   │   │   ├── settings.css
 │   │   │   └── settings.js
-│   │   ├── suggestions/
-│   │   │   ├── data/
+│   │   ├── suggestions
+│   │   │   ├── data
 │   │   │   │   ├── css-suggestions.js
 │   │   │   │   ├── html-suggestions.js
 │   │   │   │   └── js-suggestions.js
-│   │   │   ├── manager/
+│   │   │   ├── manager
 │   │   │   │   ├── suggestion-manager.css
 │   │   │   │   └── suggestion-manager.js
-│   │   │   └── next-word/
+│   │   │   └── next-word
 │   │   │       └── next-word-suggestions.js
-│   │   ├── word-tree/
+│   │   ├── word-tree
 │   │   │   └── word-tree.js
-│   │   └── workspace/
-│   │       ├── file-manager/
+│   │   └── workspace
+│   │       ├── file-manager
 │   │       │   ├── .gitkeep
 │   │       │   ├── file-manager-drawer.js
 │   │       │   ├── file-manager.css
 │   │       │   └── file-manager.js
-│   │       ├── project-storage/
+│   │       ├── project-storage
 │   │       │   └── .gitkeep
-│   │       ├── search/
+│   │       ├── search
 │   │       │   ├── search-header.css
 │   │       │   └── search-header.js
-│   │       └── toolbar/
+│   │       └── toolbar
 │   │           ├── toolbar-sidebar.css
 │   │           └── toolbar-sidebar.js
-│   ├── shared/
-│   │   ├── dom/
+│   ├── shared
+│   │   ├── dom
 │   │   │   └── .gitkeep
-│   │   ├── i18n/
+│   │   ├── i18n
 │   │   │   └── i18n.js
-│   │   ├── storage/
+│   │   ├── storage
 │   │   │   └── .gitkeep
-│   │   ├── ui/
+│   │   ├── ui
 │   │   │   └── .gitkeep
-│   │   └── validation/
+│   │   └── validation
 │   │       ├── .gitkeep
 │   │       └── file-name.js
-│   └── styles/
+│   └── styles
 │       └── .gitkeep
 ├── style.css
-└── tools/
+└── tools
     └── build-single-file.js
 ```
 
@@ -121,7 +123,7 @@ Editor-html-css-js/
 |---|---|
 | `index.html` | ساختار رابط ویرایشگر، پنل‌های HTML/CSS/JS و پیش‌نمایش |
 | `style.css` | استایل عمومی، چیدمان و واکنش‌گرایی |
-| `script.js` | منطق اصلی ویرایشگر، مدیریت کد و پیش‌نمایش زنده |
+| `index 2.html` | پوستهٔ HTML نمونهٔ مستقل Alfa-Code |\n| `index-2.css` | استایل‌های نمونهٔ مستقل Alfa-Code |\n| `index-2.js` | رفتارها، تعاملات، ذخیره‌سازی محلی و پیش‌نمایش نمونهٔ مستقل |\n| `script.js` | منطق اصلی ویرایشگر، مدیریت کد و پیش‌نمایش زنده |
 | `locales/fa.js` و `locales/en.js` | متن‌های رابط فارسی و انگلیسی |
 | `src/features/` | پیاده‌سازی قابلیت‌های مستقل ویرایشگر |
 | `src/shared/` | ماژول‌های مشترک بین قابلیت‌ها |

@@ -1,43 +1,37 @@
-name: انتشار کنترل‌شدهٔ GitHub Pages
+name: انتشار سایت در GitHub Pages
 
 on:
-  workflow_run:
-    workflows:
-      - Build Combined Editor
-    types:
-      - completed
+  push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# فقط پس از موفقیت اعتبارسنجی سورس و ساخت فایل یکپارچه منتشر می‌شود.
 concurrency:
   group: github-pages-main
   cancel-in-progress: false
 
 jobs:
   deploy:
-    if: ${{ false }} # Legacy Pages deployment intentionally disabled; Futures deployment is handled separately.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: دریافت دقیق همان نسخهٔ اعتبارسنجی‌شده
+      - name: دریافت سورس
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
           persist-credentials: false
 
       - name: پیکربندی GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: ساخت محتوای سایت با Jekyll
+      - name: ساخت محتوای کامل سایت با Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./
@@ -48,6 +42,6 @@ jobs:
         with:
           path: ./_site
 
-      - name: انتشار نسخه در GitHub Pages
+      - name: انتشار سایت
         id: deployment
         uses: actions/deploy-pages@v4

@@ -121,7 +121,7 @@ Editor-html-css-js/
 |---|---|---|
 | `.github/workflows/check-index.yml` | [x] خواندن کامل ایستا و بازبینی اصلاحات | فعال شد؛ روی push و pull_request، npm ci و مجموعهٔ کامل تست‌ها اجرا می‌شود |
 | `.github/workflows/company-delivery.yml` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ارسال فایل به attachments منتقل شد؛ قطعه‌بندی UTF-8 با سقف ۸ MiB و شناسهٔ انتقال پیاده شد |
-| `.github/workflows/deploy-pages.yml` | [x] خواندن و اصلاح مجدد؛ نام artifact بر اساس run_attempt یکتا شد | خطای artifact تکراری در اجرای مجدد رفع ساختاری شد؛ تأیید نهایی به اجرای CI پس از commit وابسته است |
+| `.github/workflows/deploy-pages.yml` | [x] خواندن و اصلاح مجدد؛ نام artifact بر اساس run_attempt یکتا شد | نام artifact بر اساس run_attempt یکتا شد؛ اجرای Pages پس از اصلاح موفق و فقط یک artifact github-pages-1 ثبت شد |
 | `.gitignore` | [x] خواندن کامل ایستا و بازبینی اصلاحات | dist/ و index-test-etitor.html و فایل موقت build نادیده گرفته می‌شوند |
 | `docs/architecture/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
 | `docs/architecture/main-files-audit.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آمار خطوط/نویسه و Blob SHAها با snapshot فعلی هماهنگ شد |
@@ -301,7 +301,7 @@ Editor-html-css-js/
 3. [ ] ساخت و deploy را به دو job جدا تقسیم کن تا retry مرحلهٔ deploy باعث اجرای دوبارهٔ upload نشود.
 4. [ ] هر بار workflow_dispatch یا commit جدید اجرا کن و از rerun همان run خودداری کن.
 بهترین گزینه: 1؛ artifact تلاش‌های متفاوت نام‌های مجزا دارند و deploy دقیقاً artifact تلاش جاری را انتخاب می‌کند.
-وضعیت اجرا: در commit 4997097819b1d22fa7e0d02d405845c930aadc3e اعمال شد؛ نتیجهٔ CI پس از commit باید تأیید شود.
+وضعیت اجرا: در commit 4997097819b1d22fa7e0d02d405845c930aadc3e اعمال و در run شمارهٔ 45816444458 با موفقیت منتشر شد؛ فقط یک artifact با نام github-pages-1 ساخته شد.
 
 ==================== 4) جمع‌بندی وضعیت هر فایل ====================
 
@@ -334,20 +334,20 @@ Editor-html-css-js/
 - [x] ایراد 13: آمار و SHAهای سند معماری سه فایل اصلی به‌روزرسانی شد.
 - [x] ایراد 14: ترجمه‌های Visual Editor بدون مصرف و برچسب قدیمی Editor V حذف شدند.
 - [x] ایراد 15: کلیدهای تکراری هر دو locale حذف و آزمون جلوگیری از تکرار اضافه شد.
-- [x] ایراد 16: نام artifact انتشار Pages با شمارهٔ تلاش یکتا شد و deploy همان نام را هدف می‌گیرد؛ منتظر نتیجهٔ اجرای جدید CI.
+- [x] ایراد 16: نام artifact انتشار Pages با شمارهٔ تلاش یکتا شد؛ run شمارهٔ 45816444458 با موفقیت پایان یافت و دقیقاً یک artifact با نام github-pages-1 داشت.
 
 تست‌های جدید:
 - `scripts/check-locales.mjs`
 - `scripts/check-demo-ui.mjs`
 - `scripts/check-layout-responsive.mjs`
 
-راستی‌آزمایی CI: اجرای کامل Pull Request شمارهٔ 48 در run شمارهٔ 45815135299 و اجرای پس از ادغام در main در run شمارهٔ 45815393046 هر دو با موفقیت پایان یافتند. اجرای quality checks برای commit 44b9bb381179b5cc4ca2fbcf80f50fc16dd2ccde نیز در run شمارهٔ 45815525179 موفق بود؛ انتشار Pages همان commit در run شمارهٔ 45815525108 به علت وجود دو artifact هم‌نام شکست خورد و اصلاح آن در commit 4997097819b1d22fa7e0d02d405845c930aadc3e ثبت شد. Build مستقل، بررسی یکپارچگی index، اعتبارسنجی خروجی، 17 سناریوی پردازش paste، backup/restore، color picker، overlay alignment، settings، localeها، کنترل‌های نمونهٔ دوم و قواعد responsive همگی موفق شدند. ارسال واقعی ایمیل همچنان به Secrets معتبر SMTP و اجرای دستی workflow نیاز دارد.
+راستی‌آزمایی CI: اجرای کامل Pull Request شمارهٔ 48 در run شمارهٔ 45815135299 و اجرای پس از ادغام در main در run شمارهٔ 45815393046 هر دو با موفقیت پایان یافتند. اجرای quality checks برای commit 44b9bb381179b5cc4ca2fbcf80f50fc16dd2ccde نیز در run شمارهٔ 45815525179 موفق بود؛ انتشار Pages در run شمارهٔ 45815525108 به علت وجود دو artifact هم‌نام شکست خورد؛ اصلاح commit 4997097819b1d22fa7e0d02d405845c930aadc3e در run شمارهٔ 45816444458 با موفقیت تأیید شد و تنها artifact github-pages-1 انتخاب شد. Build مستقل، بررسی یکپارچگی index، اعتبارسنجی خروجی، 17 سناریوی پردازش paste، backup/restore، color picker، overlay alignment، settings، localeها، کنترل‌های نمونهٔ دوم و قواعد responsive همگی موفق شدند. ارسال واقعی ایمیل همچنان به Secrets معتبر SMTP و اجرای دستی workflow نیاز دارد.
 
 ==================== 7) پوشش بررسی و محدودیت‌ها ====================
 - فایل‌های دارای [x]: 66 از 67.
 - فایل‌های نیازمند بررسی کامل بعدی: 1 (فقط خود گزارش).
 - بررسی سورس static است؛ build و تمام checkهای خودکار در CI موفق‌اند. تست تعاملی واقعی در مرورگر و ارسال SMTP در این مرحله ادعا نمی‌شوند.
 - تیک بهترین راه‌حل در بخش ایرادها پیشنهاد انتخاب‌شده را نشان می‌دهد؛ وضعیت اجرای واقعی در بخش 6 آمده است.
-- اصلاح یکتاسازی artifact برای Pages انجام شده، اما تا اجرای موفق workflow پس از commit 4997097819b1d22fa7e0d02d405845c930aadc3e نباید انتشار نهایی موفق فرض شود.
+- اصلاح یکتاسازی artifact برای Pages در run شمارهٔ 45816444458 با موفقیت راستی‌آزمایی شده است.
 
 پایان گزارش

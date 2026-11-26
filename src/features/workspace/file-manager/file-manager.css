@@ -1,7 +1,6 @@
 /* استایل اختصاصی فایل‌منیجر؛ هماهنگ با سایدبار ابزارها و تنظیمات */
 /* UI refinement: file manager, compact top navigation, and responsive layout */
 .file-explorer { font-size: 13px; }
-.fe-title { font-size: 14px; }
 .fe-item {
     gap: 7px;
     padding: 7px 8px;
@@ -101,11 +100,6 @@
     background: linear-gradient(135deg, #f8fbff, #e6edf6);
     border-bottom-color: #bdcddd;
 }
-:root[data-theme="light"] .file-explorer {
-    background: #f4f8fc;
-    border-color: #c4d2e0;
-    box-shadow: 4px 0 18px rgb(30 54 80 / 10%);
-}
 @media (max-width: 760px) {
     .file-explorer { border-radius: 0 14px 14px 0; box-shadow: 8px 0 24px rgb(0 0 0 / 20%); }
     .fe-header { min-height: 48px; padding: 8px; }
@@ -164,55 +158,15 @@
 }
 
 
-/* پنل کشویی فایل‌منیجر در موبایل؛ محتوای اصلی هنگام بازبودن تار و غیرفعال می‌شود */
+/* در حالت موبایل، عنوان و کنترل کتابخانه در پنل کشویی قابل مشاهده می‌مانند. */
 @media (max-width: 760px) {
-    .file-explorer.file-manager-drawer-open {
-    display: flex !important;
-        position: fixed;
-        z-index: 8201;
-        top: 10px;
-        right: auto;
-        bottom: 10px;
-        left: 8px;
-        width: min(82vw, 320px);
-        max-width: calc(100vw - 24px);
-        height: auto;
-        max-height: none;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        border-radius: 16px;
-        overflow: hidden;
-        transform: translateX(0);
-        visibility: visible;
-        box-shadow: 12px 0 36px rgb(0 0 0 / 32%);
-    }
-    .file-explorer.file-manager-drawer-open .fe-header {
-        flex: 0 0 auto;
-    }
     .file-explorer.file-manager-drawer-open .fe-title,
     .file-explorer.file-manager-drawer-open .fe-library-btn {
         display: inline-flex;
     }
-    .file-explorer.file-manager-drawer-open .fe-controls,
-    .file-explorer.file-manager-drawer-open .fe-list {
-        min-height: 0;
-    }
-    .file-explorer.file-manager-drawer-open .fe-list {
-        flex: 1 1 auto;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-    }
-    /* محوشدن و جلوگیری از کلیک روی صفحه توسط backdrop انجام می‌شود؛
-       این کار مانع محوشدن خود پنل کشویی نیز می‌شود. */
     body.file-manager-drawer-active { overflow: hidden; }
 }
 
-
-/* حذف کامل نوار قدیمیِ درون‌صفحه‌ای؛ فایل‌منیجر فقط در حالت کشویی دیده می‌شود. */
-.file-explorer:not(.file-manager-drawer-open) {
-    display: none !important;
-}
 
 /* تنها حالت مجاز فایل‌منیجر: پنل کشویی روی محتوا */
 .file-explorer.file-manager-drawer-open {

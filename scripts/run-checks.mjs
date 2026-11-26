@@ -10,6 +10,7 @@ const commands = [
     ['Check editor overlay alignment', ['scripts/check-editor-overlay-alignment.mjs']],
     ['Check settings button placement', ['scripts/check-settings-button-placement.mjs']],
     ['Check settings dialog keyboard behavior', ['scripts/check-settings-dialog-keyboard.mjs']],
+    ['Check locale dictionaries', ['scripts/check-locales.mjs']],
 ];
 
 let failed = false;

@@ -102,7 +102,7 @@ jobs:
             const finish = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} end -->`;
             const header = Buffer.from(
               begin + '\n' +
-              `<!-- Selected source: ${file}; commit: ${commit} -->\\n` +
+              `<!-- Selected source: ${file}; commit: ${commit} -->\n` +
               `<!-- Part ${part} of ${total}; reassemble attachments in part order. -->\n`,
               'utf8'
             );

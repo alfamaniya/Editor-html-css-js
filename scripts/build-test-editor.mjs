@@ -25,6 +25,7 @@ const scriptFiles = [
     'src/features/quick-insert/quick-insert.js',
     'src/features/workspace/toolbar/toolbar-sidebar.js',
     'src/features/workspace/file-manager/file-manager.js',
+    'src/shared/validation/file-name.js',
     'script.js',
     'src/features/settings/settings.js',
     'src/features/backup-restore/backup-restore.js',

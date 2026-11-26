@@ -1,0 +1,189 @@
+گزارش ممیزی کامل مخزن — Editor-html-css-js
+شاخه: main
+مبنای درخت: commit 380577f87a1815e609ae5c90b7904c6a32a560ef
+تعداد فایل‌های موجود در snapshot: 63
+هدف: خواندن محتوای هر فایل به ترتیب درخت، ثبت ایرادهای قابل اثبات و ارائه چهار راه‌حل برای هر ایراد؛ راه‌حل پیشنهادی با [x] مشخص می‌شود.
+
+راهنمای وضعیت:
+[x] بررسی محتوای فایل کامل شده است.
+[ ] بررسی محتوای فایل هنوز کامل نشده است.
+فایل‌های خالی .gitkeep از نظر محتوایی خالی تأیید می‌شوند، اما نقش ساختاری آن‌ها جداگانه ذکر می‌شود.
+صرف خواندن فایل به معنی تست اجرایی یا تأیید عملکرد مرورگری نیست؛ تست‌هایی که اجرا نشده‌اند صریحاً جدا خواهند ماند.
+این گزارش خودش جزو فایل‌های مورد ممیزی محتوایی نیست تا وارد چرخه خودارجاعی نشود.
+
+==================== 1) درخت مخزن ====================
+Editor-html-css-js/
+├── .github/
+│   └── workflows/
+│       ├── [ ] check-index.yml
+│       ├── [ ] company-delivery.yml
+│       └── [ ] deploy-pages.yml
+├── [ ] .gitignore
+├── docs/
+│   ├── architecture/
+│   │   ├── [ ] .gitkeep
+│   │   ├── [ ] main-files-audit.md
+│   │   └── [ ] ui-sections-structure.md
+│   └── suggestions/
+│       └── [ ] tree-world-suggestion.md
+├── [ ] index 2.html
+├── [ ] index.html
+├── locales/
+│   ├── [ ] en.js
+│   └── [ ] fa.js
+├── [ ] package-lock.json
+├── [ ] package.json
+├── [ ] README.md
+├── [ ] script.js
+├── scripts/
+│   ├── build/
+│   │   └── [ ] .gitkeep
+│   ├── [ ] build-codemirror.mjs
+│   ├── [ ] build-test-editor.mjs
+│   ├── [ ] check-backup-restore.mjs
+│   ├── [ ] check-color-picker.mjs
+│   ├── [ ] check-editor-code-processing.mjs
+│   ├── [ ] check-editor-overlay-alignment.mjs
+│   ├── [ ] check-index-integrity.mjs
+│   ├── [ ] check-settings-button-placement.mjs
+│   ├── [ ] check-settings-dialog-keyboard.mjs
+│   ├── [ ] check-standalone-editor.mjs
+│   ├── checks/
+│   │   └── [ ] .gitkeep
+│   └── [ ] codemirror-entry.js
+├── src/
+│   ├── app/
+│   │   └── [ ] .gitkeep
+│   ├── features/
+│   │   ├── backup-restore/
+│   │   │   ├── [ ] backup-restore.css
+│   │   │   └── [ ] backup-restore.js
+│   │   ├── export/
+│   │   │   └── [ ] .gitkeep
+│   │   ├── help/
+│   │   │   └── [ ] .gitkeep
+│   │   ├── libraries/
+│   │   │   └── [ ] .gitkeep
+│   │   ├── quick-insert/
+│   │   │   ├── [ ] quick-insert.css
+│   │   │   └── [ ] quick-insert.js
+│   │   ├── settings/
+│   │   │   ├── [ ] settings.css
+│   │   │   └── [ ] settings.js
+│   │   ├── suggestions/
+│   │   │   ├── data/
+│   │   │   │   ├── [ ] css-suggestions.js
+│   │   │   │   ├── [ ] html-suggestions.js
+│   │   │   │   └── [ ] js-suggestions.js
+│   │   │   ├── manager/
+│   │   │   │   ├── [ ] suggestion-manager.css
+│   │   │   │   └── [ ] suggestion-manager.js
+│   │   │   └── next-word/
+│   │   │       └── [ ] next-word-suggestions.js
+│   │   ├── word-tree/
+│   │   │   └── [ ] word-tree.js
+│   │   └── workspace/
+│   │       ├── file-manager/
+│   │       │   ├── [ ] .gitkeep
+│   │       │   ├── [ ] file-manager-drawer.js
+│   │       │   ├── [ ] file-manager.css
+│   │       │   └── [ ] file-manager.js
+│   │       ├── project-storage/
+│   │       │   └── [ ] .gitkeep
+│   │       ├── search/
+│   │       │   ├── [ ] search-header.css
+│   │       │   └── [ ] search-header.js
+│   │       └── toolbar/
+│   │           ├── [ ] toolbar-sidebar.css
+│   │           └── [ ] toolbar-sidebar.js
+│   ├── shared/
+│   │   ├── dom/
+│   │   │   └── [ ] .gitkeep
+│   │   ├── i18n/
+│   │   │   └── [ ] i18n.js
+│   │   ├── storage/
+│   │   │   └── [ ] .gitkeep
+│   │   ├── ui/
+│   │   │   └── [ ] .gitkeep
+│   │   └── validation/
+│   │       └── [ ] .gitkeep
+│   └── styles/
+│       └── [ ] .gitkeep
+├── [ ] style.css
+└── tools/
+    └── [ ] build-single-file.js
+
+==================== 2) جدول بررسی فایل‌ها ====================
+| فایل | وضعیت خواندن | ایرادهای ثبت‌شده | چهار راه‌حل و انتخاب بهتر |
+|---|---|---|---|
+| `.github/workflows/check-index.yml` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `.github/workflows/company-delivery.yml` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `.github/workflows/deploy-pages.yml` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `.gitignore` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `README.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `docs/architecture/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `docs/architecture/main-files-audit.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `docs/architecture/ui-sections-structure.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `docs/suggestions/tree-world-suggestion.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `index 2.html` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `index.html` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `locales/en.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `locales/fa.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `package-lock.json` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `package.json` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `script.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/build-codemirror.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/build-test-editor.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/build/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-backup-restore.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-color-picker.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-editor-code-processing.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-editor-overlay-alignment.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-index-integrity.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-settings-button-placement.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-settings-dialog-keyboard.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/check-standalone-editor.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/checks/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `scripts/codemirror-entry.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/app/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/backup-restore/backup-restore.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/backup-restore/backup-restore.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/export/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/help/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/libraries/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/quick-insert/quick-insert.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/quick-insert/quick-insert.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/settings/settings.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/settings/settings.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/suggestions/data/css-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/suggestions/data/html-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/suggestions/data/js-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/suggestions/manager/suggestion-manager.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/suggestions/manager/suggestion-manager.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/suggestions/next-word/next-word-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/word-tree/word-tree.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/file-manager/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/file-manager/file-manager-drawer.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/file-manager/file-manager.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/file-manager/file-manager.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/project-storage/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/search/search-header.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/search/search-header.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/toolbar/toolbar-sidebar.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/features/workspace/toolbar/toolbar-sidebar.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/shared/dom/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/shared/i18n/i18n.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/shared/storage/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/shared/ui/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/shared/validation/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `src/styles/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `style.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+| `tools/build-single-file.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+
+==================== 3) یافته‌های مشترک و تست‌ها ====================
+این بخش پس از بررسی فایل‌های مرتبط تکمیل می‌شود.
+
+==================== 4) محدودیت‌ها و موارد تأییدنشده ====================
+هر موردی که صرفاً با بررسی ایستا قابل تعیین نباشد، به‌عنوان نیازمند تست اجرایی ثبت می‌شود.
+
+پایان گزارش

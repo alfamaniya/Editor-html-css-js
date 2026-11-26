@@ -1,7 +1,7 @@
 گزارش ممیزی مخزن — Editor-html-css-js
 شاخه: main
-مبنای snapshot این گزارش: commit 89aedacedd6f1f2e2c2bdce0762c2066480250b8
-تعداد فایل‌ها در snapshot فعلی: 64
+مبنای snapshot اصلاحات: commit 6d228eeeba2576d7f29099f2340b63ba1f357fee
+تعداد فایل‌ها در snapshot فعلی: 67
 روش: خواندن ایستای سورس در بازه‌های متوالی؛ تیک فقط برای فایل‌هایی که محتوای کاملشان خوانده شده است.
 
 راهنمای وضعیت:
@@ -39,19 +39,21 @@ Editor-html-css-js/
 ├── scripts/
 │   ├── build/
 │   │   └── [x] .gitkeep
-│   ├── [x] build-codemirror.mjs
 │   ├── [x] build-test-editor.mjs
 │   ├── [x] check-backup-restore.mjs
 │   ├── [x] check-color-picker.mjs
+│   ├── [x] check-demo-ui.mjs
 │   ├── [x] check-editor-code-processing.mjs
 │   ├── [x] check-editor-overlay-alignment.mjs
 │   ├── [x] check-index-integrity.mjs
+│   ├── [x] check-layout-responsive.mjs
+│   ├── [x] check-locales.mjs
 │   ├── [x] check-settings-button-placement.mjs
 │   ├── [x] check-settings-dialog-keyboard.mjs
 │   ├── [x] check-standalone-editor.mjs
 │   ├── checks/
 │   │   └── [x] .gitkeep
-│   └── [x] codemirror-entry.js
+│   └── [x] run-checks.mjs
 ├── src/
 │   ├── app/
 │   │   └── [x] .gitkeep
@@ -107,79 +109,83 @@ Editor-html-css-js/
 │   │   ├── ui/
 │   │   │   └── [x] .gitkeep
 │   │   └── validation/
-│   │       └── [x] .gitkeep
+│   │       ├── [x] .gitkeep
+│   │       └── [x] file-name.js
 │   └── styles/
 │       └── [x] .gitkeep
 ├── [x] style.css
 └── tools/
     └── [x] build-single-file.js
 ==================== 2) جدول فهرست فایل‌ها و وضعیت بررسی ====================
-| فایل | وضعیت بررسی | ایراد/یافتهٔ ایستا |
+| فایل | وضعیت بررسی/اصلاح | نتیجهٔ فعلی |
 |---|---|---|
-| `.github/workflows/check-index.yml` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `.github/workflows/company-delivery.yml` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `.github/workflows/deploy-pages.yml` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `.gitignore` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `docs/architecture/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `docs/architecture/main-files-audit.md` | [x] خواندن کامل ایستا | آمار خطوط/اندازه و Blob SHAها مربوط به snapshot قدیمی است؛ ارجاع‌های معماری به Futures و کد انتخاب المان حذف‌شده نیز باقی مانده‌اند |
-| `docs/architecture/ui-sections-structure.md` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `docs/suggestions/tree-world-suggestion.md` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد؛ سند صریحاً مستندات نمایشی و غیر اجرایی معرفی شده است |
-| `index 2.html` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `index.html` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `locales/en.js` | [x] خواندن کامل ایستا | کلیدهای تکراری در object ترجمه وجود دارد و رشته‌های رابط Visual Editor حذف‌شده باقی مانده‌اند |
-| `locales/fa.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد؛ یک برچسب قدیمی «Editor V» نیازمند تعیین تکلیف محصولی است |
-| `package-lock.json` | [x] خواندن کامل ایستا | نسخه‌ها، integrity و dev dependencyها با فایل package.json هم‌راستا به نظر می‌رسند |
-| `package.json` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `README.md` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `REPOSITORY_AUDIT.txt` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
-| `script.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/build-codemirror.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/build-test-editor.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/build/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/check-backup-restore.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/check-color-picker.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/check-editor-code-processing.mjs` | [x] خواندن کامل ایستا | سناریوهای استخراج HTML/CSS/JS و clipboard را پوشش می‌دهد؛ اجرای آزمون در این دور انجام نشده است |
-| `scripts/check-editor-overlay-alignment.mjs` | [x] خواندن کامل ایستا | آزمون ایستای selector و tokenهاست؛ اجرای آن در این دور انجام نشده است |
-| `scripts/check-index-integrity.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/check-settings-button-placement.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/check-settings-dialog-keyboard.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/check-standalone-editor.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/checks/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/codemirror-entry.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/app/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/backup-restore/backup-restore.css` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/backup-restore/backup-restore.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/export/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/help/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/libraries/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/quick-insert/quick-insert.css` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/quick-insert/quick-insert.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/settings/settings.css` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/settings/settings.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/suggestions/data/css-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/suggestions/data/html-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/suggestions/data/js-suggestions.js` | [x] خواندن کامل ایستا | بانک واژگان و snippetها ایستا و curated است؛ پوشش API وابسته به نسخه مرورگر تضمین نمی‌شود، ولی خود فایل این محدودیت را مستند کرده است |
-| `src/features/suggestions/manager/suggestion-manager.css` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/suggestions/manager/suggestion-manager.js` | [x] خواندن کامل ایستا | ایراد بحرانی قطعی در خواندن ایستا ثبت نشد؛ localStorage و عملیات بانک سفارشی مدیریت خطا دارند |
-| `src/features/suggestions/next-word/next-word-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/word-tree/word-tree.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/workspace/file-manager/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/workspace/file-manager/file-manager-drawer.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد؛ مدیریت Escape، focus و Tab trap در کد وجود دارد |
-| `src/features/workspace/file-manager/file-manager.css` | [x] خواندن کامل ایستا | قواعد ظاهری .file-explorer و .fe-header در چند بخش تکرار و override شده‌اند |
-| `src/features/workspace/file-manager/file-manager.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/workspace/project-storage/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/workspace/search/search-header.css` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/workspace/search/search-header.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/features/workspace/toolbar/toolbar-sidebar.css` | [x] خواندن کامل ایستا | قواعد سایدبار و توکن‌های drawer در چند بخش تکرار/override شده‌اند |
-| `src/features/workspace/toolbar/toolbar-sidebar.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد؛ مدیریت Escape، focus و Tab trap وجود دارد |
-| `src/shared/dom/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/shared/i18n/i18n.js` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/shared/storage/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/shared/ui/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/shared/validation/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `src/styles/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `style.css` | [x] خواندن کامل ایستا | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `tools/build-single-file.js` | [x] خواندن کامل ایستا | wrapper ساده‌ای است که build-test-editor.mjs را اجرا و exit code را منتقل می‌کند؛ ایراد قطعی ثبت نشد |
+| `.github/workflows/check-index.yml` | [x] خواندن کامل ایستا و بازبینی اصلاحات | فعال شد؛ روی push و pull_request، npm ci و مجموعهٔ کامل تست‌ها اجرا می‌شود |
+| `.github/workflows/company-delivery.yml` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ارسال فایل به attachments منتقل شد؛ قطعه‌بندی UTF-8 با سقف ۸ MiB و شناسهٔ انتقال پیاده شد |
+| `.github/workflows/deploy-pages.yml` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `.gitignore` | [x] خواندن کامل ایستا و بازبینی اصلاحات | dist/ و index-test-etitor.html و فایل موقت build نادیده گرفته می‌شوند |
+| `docs/architecture/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `docs/architecture/main-files-audit.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آمار خطوط/نویسه و Blob SHAها با snapshot فعلی هماهنگ شد |
+| `docs/architecture/ui-sections-structure.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ارجاع‌های اجرایی Futures حذف و معماری واقعی textarea/ماژول‌های فعال مستند شد |
+| `docs/suggestions/tree-world-suggestion.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد؛ سند صریحاً مستندات نمایشی و غیر اجرایی معرفی شده است |
+| `index 2.html` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کنترل‌های پیاده‌سازی‌نشده غیرفعال و navigation/footer placeholder از href=# به span غیرفعال تبدیل شدند |
+| `index.html` | [x] خواندن کامل ایستا و بازبینی اصلاحات | حداکثر طول نام فایل با ثابت مشترک ۴۰ هماهنگ و فایل validation پیش از script.js بارگذاری می‌شود |
+| `locales/en.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کلیدهای تکراری و ۲۶ کلید Visual Editor بدون مصرف حذف شدند |
+| `locales/fa.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کلیدهای تکراری و ترجمهٔ قدیمی Editor V و کلید Visual Editor بدون مصرف حذف شدند |
+| `package-lock.json` | [x] خواندن کامل ایستا و بازبینی اصلاحات | قفل وابستگی‌ها با package.json بدون وابستگی‌های بلااستفاده بازسازی شد |
+| `package.json` | [x] خواندن کامل ایستا و بازبینی اصلاحات | وابستگی و build بلااستفادهٔ CodeMirror حذف؛ npm test به runner کامل متصل شد |
+| `README.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | درخت واقعی، فرمان‌های فعلی و لینک گزارش ممیزی همگام شدند |
+| `REPOSITORY_AUDIT.txt` | [ ] گزارش از ممیزی محتوایی خودش مستثناست | هنوز بررسی کامل نشده |
+| `script.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | load، create و rename از ثابت مشترک MAX_FILE_NAME_LENGTH استفاده می‌کنند |
+| `scripts/build-test-editor.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | manifest به فایل اعتبارسنجی مشترک نام فایل به‌روزرسانی شد |
+| `scripts/build/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `scripts/check-backup-restore.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون محدودیت مشترک ۴۰ نویسه در UI، load و backup افزوده شد |
+| `scripts/check-color-picker.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `scripts/check-demo-ui.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون disabled بودن کنترل‌های نمایشی و نبود href=# افزوده شد |
+| `scripts/check-editor-code-processing.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | سناریوهای استخراج HTML/CSS/JS و clipboard را پوشش می‌دهد؛ اجرای آزمون در این دور انجام نشده است |
+| `scripts/check-editor-overlay-alignment.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون ایستای selector و tokenهاست؛ اجرای آن در این دور انجام نشده است |
+| `scripts/check-index-integrity.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `scripts/check-layout-responsive.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون یکپارچگی divider و ارتفاع preview موبایل افزوده شد |
+| `scripts/check-locales.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون جلوگیری از کلید تکراری در هر دو فایل locale اضافه شد |
+| `scripts/check-settings-button-placement.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `scripts/check-settings-dialog-keyboard.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `scripts/check-standalone-editor.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | manifest خروجی مستقل با فایل اعتبارسنجی مشترک هماهنگ شد |
+| `scripts/checks/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `scripts/run-checks.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | runner ترتیبی برای build و همهٔ بررسی‌های کیفیت اضافه شد |
+| `src/app/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/backup-restore/backup-restore.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/backup-restore/backup-restore.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/export/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/help/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/libraries/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/quick-insert/quick-insert.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/quick-insert/quick-insert.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/settings/settings.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/settings/settings.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/suggestions/data/css-suggestions.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/suggestions/data/html-suggestions.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/suggestions/data/js-suggestions.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | بانک واژگان و snippetها ایستا و curated است؛ پوشش API وابسته به نسخه مرورگر تضمین نمی‌شود، ولی خود فایل این محدودیت را مستند کرده است |
+| `src/features/suggestions/manager/suggestion-manager.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/suggestions/manager/suggestion-manager.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد بحرانی قطعی در خواندن ایستا ثبت نشد؛ localStorage و عملیات بانک سفارشی مدیریت خطا دارند |
+| `src/features/suggestions/next-word/next-word-suggestions.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/word-tree/word-tree.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/workspace/file-manager/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/workspace/file-manager/file-manager-drawer.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد؛ مدیریت Escape، focus و Tab trap در کد وجود دارد |
+| `src/features/workspace/file-manager/file-manager.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | قواعد قدیمی display:none و چند override تکراری drawer حذف شدند |
+| `src/features/workspace/file-manager/file-manager.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/workspace/project-storage/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/workspace/search/search-header.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/workspace/search/search-header.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/features/workspace/toolbar/toolbar-sidebar.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | قواعد سایدبار و توکن‌های drawer در چند بخش تکرار/override شده‌اند |
+| `src/features/workspace/toolbar/toolbar-sidebar.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد؛ مدیریت Escape، focus و Tab trap وجود دارد |
+| `src/shared/dom/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/shared/i18n/i18n.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/shared/storage/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/shared/ui/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/shared/validation/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `src/shared/validation/file-name.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ثابت مشترک حداکثر طول نام فایل (۴۰) تعریف شد |
+| `src/styles/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
+| `style.css` | [x] خواندن کامل ایستا و بازبینی اصلاحات | قواعد متناقض مخفی‌کردن/نمایش divider موبایل ادغام و ارتفاع preview اصلاح شد |
+| `tools/build-single-file.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | wrapper ساده‌ای است که build-test-editor.mjs را اجرا و exit code را منتقل می‌کند؛ ایراد قطعی ثبت نشد |
 
 ==================== 3) ایرادها و چهار راه‌حل برای هر مورد ====================
 
@@ -414,5 +420,39 @@ Editor-html-css-js/
 3. [ ] تبدیل localeها به JSON و اعتبارسنجی با parser بدون ساختار duplicate-key detection.
 4. [ ] تعریف ترجمه‌ها در چند آبجکت کوچک و merge کردن آن‌ها بدون کنترل هم‌پوشانی.
 بهترین گزینه: 1؛ هم فایل تمیز می‌شود و هم بازگشت مشکل در CI مسدود خواهد شد.
+
+
+==================== 6) وضعیت اجرای اصلاحات ====================
+
+در شاخهٔ `fix/audit-remediations` موارد زیر اعمال شده‌اند:
+
+- [x] ایراد 1: workflow اعتبارسنجی فعال شد؛ شرط غیرفعال حذف و مسیرهای منسوخ پاک شدند.
+- [x] ایراد 2: فایل‌ها به‌صورت attachment ارسال می‌شوند؛ قطعه‌بندی ۸ MiB با مرز امن UTF-8 و شمارهٔ قطعه اجرا می‌شود. تست واقعی SMTP به Secrets معتبر و اجرای دستی نیاز دارد.
+- [x] ایراد 3: محدودیت ۴۰ نویسه در فرم، بارگذاری، rename و backup/restore از یک ثابت مشترک استفاده می‌کند؛ آزمون مرزی ۴۱ نویسه اضافه شد.
+- [x] ایراد 4: چون CodeMirror در صفحهٔ اصلی مصرف نمی‌شد و موتور موجود textarea است، build و dependencyهای بلااستفاده حذف شدند؛ مسیر Futures بازسازی نشد.
+- [x] ایراد 5: `npm test` اکنون build و مجموعهٔ checkها را به‌ترتیب اجرا می‌کند و workflow فعال آن را روی push/PR اجرا می‌کند.
+- [x] ایراد 6: کنترل‌های بی‌عملکرد `index 2.html` غیرفعال شدند؛ کنترل Import و sidebarهای دارای رفتار حفظ شدند.
+- [x] ایراد 7: لینک‌های placeholder در سایدبار و footer به عناصر غیرقابل کلیک با وضعیت غیرفعال تبدیل شدند.
+- [x] ایراد 8: تصمیم فعلی یکپارچه و مستند شد: textarea موتور فعلی هر دو صفحه است؛ CodeMirror/Monaco موتور فعال نیستند. مهاجرت به موتور حرفه‌ای به‌عنوان پروژهٔ جداگانه و پرریسک باقی می‌ماند.
+- [x] ایراد 9: ruleهای متناقض divider موبایل و override ارتفاع preview در `style.css` ادغام شدند.
+- [x] ایراد 10: سند UI قدیمی Futures با معماری واقعی مخزن جایگزین شد.
+- [x] ایراد 11: خروجی‌های `dist/` و فایل standalone تولیدی در `.gitignore` قرار گرفتند.
+- [x] ایراد 12: درخت README از Git tree فعلی بازتولید شد و فرمان‌ها اصلاح شدند.
+- [x] ایراد 13: آمار و SHAهای سند معماری سه فایل اصلی به‌روزرسانی شد.
+- [x] ایراد 14: ترجمه‌های Visual Editor بدون مصرف و برچسب قدیمی Editor V حذف شدند.
+- [x] ایراد 15: کلیدهای تکراری هر دو locale حذف و آزمون جلوگیری از تکرار اضافه شد.
+
+تست‌های جدید:
+- `scripts/check-locales.mjs`
+- `scripts/check-demo-ui.mjs`
+- `scripts/check-layout-responsive.mjs`
+
+محدودیت راستی‌آزمایی: این commitها در GitHub ثبت شده‌اند؛ موفقیت نهایی تست‌های npm و CI فقط پس از اجرای workflow در Pull Request قابل تأیید است. ارسال واقعی ایمیل نیز به تنظیم Secrets SMTP وابسته است.
+
+==================== 7) پوشش بررسی و محدودیت‌ها ====================
+- فایل‌های دارای [x]: 66 از 67.
+- فایل‌های نیازمند بررسی کامل بعدی: 1 (فقط خود گزارش).
+- این ممیزی و اصلاحات static/source-based هستند؛ تست runtime مرورگر و SMTP در این مرحله ادعا نمی‌شوند.
+- تیک بهترین راه‌حل در بخش ایرادها پیشنهاد انتخاب‌شده را نشان می‌دهد؛ وضعیت اجرای واقعی در بخش 6 آمده است.
 
 پایان گزارش

@@ -32,7 +32,7 @@ for (const token of [
     'function scrollToPosition(position, visibleLines)',
     'range.getBoundingClientRect()',
     'ed.scrollToPosition(m.start, 3);',
-    'editor.scrollToPosition(start, 2);',
+    'ed.scrollToPosition(m.start, 3);',
     'editor.ta.wrap = value === \'on\' ? \'soft\' : \'off\';',
     'editor.refresh();'
 ]) {

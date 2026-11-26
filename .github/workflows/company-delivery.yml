@@ -84,20 +84,30 @@ jobs:
             .update(commit + ':' + file + ':' + source.length)
             .digest('hex').slice(0, 16);
 
-          const chunks = [source];
+          const MAX_PART_BYTES = 8 * 1024 * 1024;
+          const chunks = [];
+          for (let offset = 0; offset < source.length;) {
+            let end = Math.min(offset + MAX_PART_BYTES, source.length);
+            // Keep UTF-8 code points intact when a chunk boundary lands inside one.
+            while (end < source.length && (source[end] & 0xc0) === 0x80) end -= 1;
+            if (end <= offset) throw new Error('Could not split the source at a UTF-8 boundary.');
+            chunks.push(source.subarray(offset, end));
+            offset = end;
+          }
+
           const total = chunks.length;
           chunks.forEach((chunk, index) => {
             const part = index + 1;
             const begin = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} begin -->`;
             const finish = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} end -->`;
-            const body = Buffer.from(
-              `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 begin -->\n` +
+            const header = Buffer.from(
+              begin + '\n' +
               `<!-- Selected source: ${file}; commit: ${commit} -->\n` +
-              `<!-- This message contains the selected source as plain text. -->\n` +
-              chunk.toString('utf8') +
-              `\n<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 end -->`,
+              `<!-- Part ${part} of ${total}; reassemble attachments in part order. -->\n`,
               'utf8'
             );
+            const footer = Buffer.from('\n' + finish, 'utf8');
+            const body = Buffer.concat([header, chunk, footer]);
             fs.writeFileSync(path.join(outDir, `part-${part}.txt`), body);
           });
 
@@ -179,4 +189,7 @@ jobs:
           subject: "Editor offline source transfer"
           to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
-          body: "file://dist/company-delivery/part-${{ matrix.part }}.txt"
+          body: |
+            Attached is the requested standalone editor source file.
+            Transfer ID: ${{ github.sha }}
+          attachments: dist/company-delivery/part-${{ matrix.part }}.txt

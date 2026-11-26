@@ -4,6 +4,15 @@ import vm from 'node:vm';
 
 const source = readFileSync(new URL('../src/features/backup-restore/backup-restore.js', import.meta.url), 'utf8');
 const editorSource = readFileSync(new URL('../script.js', import.meta.url), 'utf8');
+const indexSource = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const filenameRule = readFileSync(new URL('../src/shared/validation/file-name.js', import.meta.url), 'utf8');
+assert.match(filenameRule, /EDITOR_FILE_NAME_MAX_LENGTH = 40/);
+assert.match(editorSource, /MAX_FILE_NAME_LENGTH = Number\(window\.EDITOR_FILE_NAME_MAX_LENGTH\) \|\| 40/);
+assert.match(editorSource, /slice\(0, MAX_FILE_NAME_LENGTH\)/);
+assert.match(editorSource, /name\.length > MAX_FILE_NAME_LENGTH/);
+assert.match(indexSource, /id="feNewName"[^>]*maxlength="40"/);
+assert.doesNotMatch(indexSource, /feNewName[^>]*maxlength="120"/);
+
 const exposedWindow = {};
 const sandbox = {
     window: exposedWindow,
@@ -74,6 +83,10 @@ assert.equal(validated.sections.project.value.files[0].content, '<h1>سلام �
 assert.equal(validated.sections.suggestedWords.value.data.cssProperties[0].label, 'box-shadow');
 assert.equal(validated.sections.quickInsert.items.html[0].label, 'کارت');
 assert.equal(validated.sections.quickInsert.items.html[0].prefix, '<article>سلام</article>');
+const longNameProject = JSON.parse(JSON.stringify(valid));
+longNameProject.sections.project.value.files[0].name = 'a'.repeat(41) + '.html';
+assert.throws(() => tools.validateBackupPayload(longNameProject), /نام فایل/);
+
 
 assert.throws(() => tools.validateBackupPayload({ ...valid, schemaVersion: 99 }), /نسخهٔ قالب/);
 assert.throws(() => tools.validateBackupPayload({ ...valid, format: 'not-a-backup' }), /قالب پشتیبان/);

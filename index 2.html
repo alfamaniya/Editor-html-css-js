@@ -256,7 +256,8 @@
     align-items: center;
     gap: 18px;
   }
-  .footer-links a{
+  .footer-links a,
+  .footer-links .footer-link-placeholder{
     color: var(--c-muted);
     text-decoration: none;
     font-size: 13px;
@@ -264,6 +265,7 @@
     transition: color .16s;
   }
   .footer-links a:hover{ color: var(--c-turquoise); }
+  .footer-link-placeholder{ cursor: not-allowed; opacity: .65; }
 
   .header-actions{
     flex: 1 1 auto;
@@ -356,7 +358,8 @@
   }
   .sidebar-nav li + li{ margin-top: 4px; }
 
-  .sidebar-nav a{
+  .sidebar-nav a,
+  .sidebar-nav .nav-link-placeholder{
     display: flex;
     align-items: center;
     gap: 12px;
@@ -374,6 +377,7 @@
     color: var(--c-turquoise);
     box-shadow: var(--sh-b);
   }
+  .sidebar-nav .nav-link-placeholder{ cursor: not-allowed; opacity: .55; }
   .sidebar-nav a.active{
     background: var(--c-tint-14);
     color: var(--c-turquoise);
@@ -806,13 +810,13 @@
     <span class="brand">Alfa-Code</span>
 
     <div class="header-actions" role="toolbar" aria-label="Header actions">
-      <button class="btn btn--header" type="button" aria-label="Undo" title="Undo">
+      <button class="btn btn--header" type="button" aria-label="Undo" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-undo-2"/></svg><span class="btn-label">Undo</span>
       </button>
-      <button class="btn btn--header" type="button" aria-label="Redo" title="Redo">
+      <button class="btn btn--header" type="button" aria-label="Redo" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-redo-2"/></svg><span class="btn-label">Redo</span>
       </button>
-      <button class="btn btn--header" type="button" aria-label="Download" title="Download">
+      <button class="btn btn--header" type="button" aria-label="Download" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span class="btn-label">Download</span>
       </button>
 
@@ -821,19 +825,19 @@
         <svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg><span class="btn-label">Import</span>
       </label>
 
-      <button class="btn btn--header" type="button" aria-label="Clear all tabs" title="Clear all tabs">
+      <button class="btn btn--header" type="button" aria-label="Clear all tabs" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-trash-2"/></svg><span class="btn-label">Clear</span>
       </button>
-      <button class="btn btn--header btn--header-sep" type="button" aria-label="Factory reset" title="Factory reset">
+      <button class="btn btn--header btn--header-sep" type="button" aria-label="Factory reset" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-refresh-cw"/></svg><span class="btn-label">Reset</span>
       </button>
-      <button class="btn btn--header btn--header-wide" type="button" aria-label="Search" title="Search">
+      <button class="btn btn--header btn--header-wide" type="button" aria-label="Search" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-search-code"/></svg><span class="btn-label">Search</span>
       </button>
-      <button class="btn btn--header" type="button" aria-label="Settings" title="Settings">
+      <button class="btn btn--header" type="button" aria-label="Settings" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span class="btn-label">Settings</span>
       </button>
-      <button class="btn btn--header btn--header-end" type="button" aria-label="Help" title="Help">
+      <button class="btn btn--header btn--header-end" type="button" aria-label="Help" title="Not available in this standalone demo" disabled aria-disabled="true">
         <svg class="icon" aria-hidden="true"><use href="#i-circle-question-mark"/></svg><span class="btn-label">Help</span>
       </button>
     </div>
@@ -849,16 +853,16 @@
       <span class="sidebar-title">Navigation</span>
     </div>
     <ul class="sidebar-nav">
-      <li><a href="#" class="active" title="Dashboard"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-layout-dashboard"/></svg><span class="nav-label">Dashboard</span></a></li>
-      <li><a href="#" title="Projects"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-folder"/></svg><span class="nav-label">Projects</span></a></li>
-      <li><a href="#" title="Analytics"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-chart-line"/></svg><span class="nav-label">Analytics</span></a></li>
-      <li><a href="#" title="Reports"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-file-text"/></svg><span class="nav-label">Reports</span></a></li>
-      <li><a href="#" title="Settings"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-settings"/></svg><span class="nav-label">Settings</span></a></li>
-      <li><a href="#" title="Team"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-users"/></svg><span class="nav-label">Team</span></a></li>
-      <li><a href="#" title="Files"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-files"/></svg><span class="nav-label">Files</span></a></li>
-      <li><a href="#" title="Calendar"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-calendar"/></svg><span class="nav-label">Calendar</span></a></li>
-      <li><a href="#" title="Automations"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-workflow"/></svg><span class="nav-label">Automations</span></a></li>
-      <li><a href="#" title="Integrations"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-blocks"/></svg><span class="nav-label">Integrations</span></a></li>
+      <li><span class="active nav-link-placeholder" title="Dashboard" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-layout-dashboard"/></svg><span class="nav-label">Dashboard</span></span></li>
+      <li><span class="nav-link-placeholder" title="Projects" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-folder"/></svg><span class="nav-label">Projects</span></span></li>
+      <li><span class="nav-link-placeholder" title="Analytics" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-chart-line"/></svg><span class="nav-label">Analytics</span></span></li>
+      <li><span class="nav-link-placeholder" title="Reports" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-file-text"/></svg><span class="nav-label">Reports</span></span></li>
+      <li><span class="nav-link-placeholder" title="Settings" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-settings"/></svg><span class="nav-label">Settings</span></span></li>
+      <li><span class="nav-link-placeholder" title="Team" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-users"/></svg><span class="nav-label">Team</span></span></li>
+      <li><span class="nav-link-placeholder" title="Files" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-files"/></svg><span class="nav-label">Files</span></span></li>
+      <li><span class="nav-link-placeholder" title="Calendar" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-calendar"/></svg><span class="nav-label">Calendar</span></span></li>
+      <li><span class="nav-link-placeholder" title="Automations" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-workflow"/></svg><span class="nav-label">Automations</span></span></li>
+      <li><span class="nav-link-placeholder" title="Integrations" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-blocks"/></svg><span class="nav-label">Integrations</span></span></li>
     </ul>
   </aside>
 
@@ -872,16 +876,16 @@
       </button>
     </div>
     <ul class="sidebar-nav">
-      <li><a href="#" title="Home"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-house"/></svg><span class="nav-label">Home</span></a></li>
-      <li><a href="#" title="Messages"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-message-circle"/></svg><span class="nav-label">Messages</span></a></li>
-      <li><a href="#" title="Notifications"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-bell"/></svg><span class="nav-label">Notifications</span></a></li>
-      <li><a href="#" title="Bookmarks"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="nav-label">Bookmarks</span></a></li>
-      <li><a href="#" title="Help"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-circle-question-mark"/></svg><span class="nav-label">Help</span></a></li>
-      <li><a href="#" title="Activity"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activity</span></a></li>
-      <li><a href="#" title="Favorites"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-star"/></svg><span class="nav-label">Favorites</span></a></li>
-      <li><a href="#" title="Archive"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-archive"/></svg><span class="nav-label">Archive</span></a></li>
-      <li><a href="#" title="Trash"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-trash-2"/></svg><span class="nav-label">Trash</span></a></li>
-      <li><a href="#" title="Log out"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-log-out"/></svg><span class="nav-label">Log out</span></a></li>
+      <li><span class="nav-link-placeholder" title="Home" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-house"/></svg><span class="nav-label">Home</span></span></li>
+      <li><span class="nav-link-placeholder" title="Messages" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-message-circle"/></svg><span class="nav-label">Messages</span></span></li>
+      <li><span class="nav-link-placeholder" title="Notifications" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-bell"/></svg><span class="nav-label">Notifications</span></span></li>
+      <li><span class="nav-link-placeholder" title="Bookmarks" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-bookmark"/></svg><span class="nav-label">Bookmarks</span></span></li>
+      <li><span class="nav-link-placeholder" title="Help" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-circle-question-mark"/></svg><span class="nav-label">Help</span></span></li>
+      <li><span class="nav-link-placeholder" title="Activity" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activity</span></span></li>
+      <li><span class="nav-link-placeholder" title="Favorites" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-star"/></svg><span class="nav-label">Favorites</span></span></li>
+      <li><span class="nav-link-placeholder" title="Archive" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-archive"/></svg><span class="nav-label">Archive</span></span></li>
+      <li><span class="nav-link-placeholder" title="Trash" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-trash-2"/></svg><span class="nav-label">Trash</span></span></li>
+      <li><span class="nav-link-placeholder" title="Log out" aria-disabled="true"><svg class="icon nav-icon" aria-hidden="true"><use href="#i-log-out"/></svg><span class="nav-label">Log out</span></span></li>
     </ul>
   </aside>
 
@@ -919,19 +923,19 @@
       <section class="pane right">
         <div class="preview-header">
           <div class="preview-actions" role="toolbar" aria-label="Preview actions">
-            <button class="btn btn--preview" type="button" aria-label="Refresh" title="Refresh">
+            <button class="btn btn--preview" type="button" aria-label="Refresh" title="Not available in this standalone demo" disabled aria-disabled="true">
               <svg class="icon" aria-hidden="true"><use href="#i-refresh-cw"/></svg><span class="preview-btn-label">Refresh</span>
             </button>
-            <button class="btn btn--preview" type="button" aria-label="Run" title="Run">
+            <button class="btn btn--preview" type="button" aria-label="Run" title="Not available in this standalone demo" disabled aria-disabled="true">
               <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg><span class="preview-btn-label">Run</span>
             </button>
-            <button class="btn btn--preview" type="button" aria-label="Copy" title="Copy">
+            <button class="btn btn--preview" type="button" aria-label="Copy" title="Not available in this standalone demo" disabled aria-disabled="true">
               <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span class="preview-btn-label">Copy</span>
             </button>
-            <button class="btn btn--preview" type="button" aria-label="Share" title="Share">
+            <button class="btn btn--preview" type="button" aria-label="Share" title="Not available in this standalone demo" disabled aria-disabled="true">
               <svg class="icon" aria-hidden="true"><use href="#i-share-2"/></svg><span class="preview-btn-label">Share</span>
             </button>
-            <button class="btn btn--preview" type="button" aria-label="Fullscreen" title="Fullscreen">
+            <button class="btn btn--preview" type="button" aria-label="Fullscreen" title="Not available in this standalone demo" disabled aria-disabled="true">
               <svg class="icon" aria-hidden="true"><use href="#i-maximize-2"/></svg><span class="preview-btn-label">Fullscreen</span>
             </button>
           </div>
@@ -951,10 +955,10 @@
   <footer class="footer">
     <span class="footer-brand">Alfa-Code</span>
     <nav class="footer-links" aria-label="Footer links">
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Support</a>
-      <a href="#">Contact</a>
+      <span class="footer-link-placeholder" aria-disabled="true">Privacy</span>
+      <span class="footer-link-placeholder" aria-disabled="true">Terms</span>
+      <span class="footer-link-placeholder" aria-disabled="true">Support</span>
+      <span class="footer-link-placeholder" aria-disabled="true">Contact</span>
     </nav>
   </footer>
 

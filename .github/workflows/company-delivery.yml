@@ -101,12 +101,12 @@ jobs:
             const begin = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} begin -->`;
             const finish = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} end -->`;
             const header = Buffer.from(
-              begin + '\\n' +
+              begin + '\n' +
               `<!-- Selected source: ${file}; commit: ${commit} -->\\n` +
-              `<!-- Part ${part} of ${total}; reassemble attachments in part order. -->\\n`,
+              `<!-- Part ${part} of ${total}; reassemble attachments in part order. -->\n`,
               'utf8'
             );
-            const footer = Buffer.from('\\n' + finish, 'utf8');
+            const footer = Buffer.from('\n' + finish, 'utf8');
             const body = Buffer.concat([header, chunk, footer]);
             fs.writeFileSync(path.join(outDir, `part-${part}.txt`), body);
           });

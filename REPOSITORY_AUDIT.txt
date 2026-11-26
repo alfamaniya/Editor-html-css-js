@@ -1,189 +1,367 @@
-گزارش ممیزی کامل مخزن — Editor-html-css-js
+گزارش ممیزی مخزن — Editor-html-css-js
 شاخه: main
-مبنای درخت: commit 380577f87a1815e609ae5c90b7904c6a32a560ef
-تعداد فایل‌های موجود در snapshot: 63
-هدف: خواندن محتوای هر فایل به ترتیب درخت، ثبت ایرادهای قابل اثبات و ارائه چهار راه‌حل برای هر ایراد؛ راه‌حل پیشنهادی با [x] مشخص می‌شود.
+مبنای snapshot این گزارش: commit 89aedacedd6f1f2e2c2bdce0762c2066480250b8
+تعداد فایل‌ها در snapshot فعلی: 64
+روش: خواندن ایستای سورس در بازه‌های متوالی؛ تیک فقط برای فایل‌هایی که محتوای کاملشان خوانده شده است.
 
 راهنمای وضعیت:
-[x] بررسی محتوای فایل کامل شده است.
-[ ] بررسی محتوای فایل هنوز کامل نشده است.
-فایل‌های خالی .gitkeep از نظر محتوایی خالی تأیید می‌شوند، اما نقش ساختاری آن‌ها جداگانه ذکر می‌شود.
-صرف خواندن فایل به معنی تست اجرایی یا تأیید عملکرد مرورگری نیست؛ تست‌هایی که اجرا نشده‌اند صریحاً جدا خواهند ماند.
-این گزارش خودش جزو فایل‌های مورد ممیزی محتوایی نیست تا وارد چرخه خودارجاعی نشود.
+[x] محتوای کامل فایل در این دور خوانده شده (بررسی ایستا، نه تست runtime).
+[ ] بررسی کامل فایل هنوز انجام نشده یا دریافت آن ناقص/بریده بوده است.
+فایل‌های .gitkeep با محتوای صفر بایت فقط از نظر خالی بودن بررسی شده‌اند.
+راه‌حل [x] در بخش ایرادها بهترین گزینهٔ پیشنهادی است؛ به معنی اجرای تغییر نیست.
+فایل گزارش عمداً از ممیزی محتوایی خودش مستثناست.
 
-==================== 1) درخت مخزن ====================
+==================== 1) درخت کامل مخزن ====================
 Editor-html-css-js/
 ├── .github/
 │   └── workflows/
-│       ├── [ ] check-index.yml
-│       ├── [ ] company-delivery.yml
-│       └── [ ] deploy-pages.yml
-├── [ ] .gitignore
+│       ├── [x] check-index.yml
+│       ├── [x] company-delivery.yml
+│       └── [x] deploy-pages.yml
+├── [x] .gitignore
 ├── docs/
 │   ├── architecture/
-│   │   ├── [ ] .gitkeep
-│   │   ├── [ ] main-files-audit.md
-│   │   └── [ ] ui-sections-structure.md
+│   │   ├── [x] .gitkeep
+│   │   ├── [x] main-files-audit.md
+│   │   └── [x] ui-sections-structure.md
 │   └── suggestions/
-│       └── [ ] tree-world-suggestion.md
-├── [ ] index 2.html
-├── [ ] index.html
+│       └── [x] tree-world-suggestion.md
+├── [x] index 2.html
+├── [x] index.html
 ├── locales/
-│   ├── [ ] en.js
-│   └── [ ] fa.js
-├── [ ] package-lock.json
-├── [ ] package.json
-├── [ ] README.md
-├── [ ] script.js
+│   ├── [x] en.js
+│   └── [x] fa.js
+├── [x] package-lock.json
+├── [x] package.json
+├── [x] README.md
+├── [ ] REPOSITORY_AUDIT.txt
+├── [x] script.js
 ├── scripts/
 │   ├── build/
-│   │   └── [ ] .gitkeep
-│   ├── [ ] build-codemirror.mjs
-│   ├── [ ] build-test-editor.mjs
-│   ├── [ ] check-backup-restore.mjs
-│   ├── [ ] check-color-picker.mjs
-│   ├── [ ] check-editor-code-processing.mjs
-│   ├── [ ] check-editor-overlay-alignment.mjs
-│   ├── [ ] check-index-integrity.mjs
-│   ├── [ ] check-settings-button-placement.mjs
-│   ├── [ ] check-settings-dialog-keyboard.mjs
-│   ├── [ ] check-standalone-editor.mjs
+│   │   └── [x] .gitkeep
+│   ├── [x] build-codemirror.mjs
+│   ├── [x] build-test-editor.mjs
+│   ├── [x] check-backup-restore.mjs
+│   ├── [x] check-color-picker.mjs
+│   ├── [x] check-editor-code-processing.mjs
+│   ├── [x] check-editor-overlay-alignment.mjs
+│   ├── [x] check-index-integrity.mjs
+│   ├── [x] check-settings-button-placement.mjs
+│   ├── [x] check-settings-dialog-keyboard.mjs
+│   ├── [x] check-standalone-editor.mjs
 │   ├── checks/
-│   │   └── [ ] .gitkeep
-│   └── [ ] codemirror-entry.js
+│   │   └── [x] .gitkeep
+│   └── [x] codemirror-entry.js
 ├── src/
 │   ├── app/
-│   │   └── [ ] .gitkeep
+│   │   └── [x] .gitkeep
 │   ├── features/
 │   │   ├── backup-restore/
-│   │   │   ├── [ ] backup-restore.css
-│   │   │   └── [ ] backup-restore.js
+│   │   │   ├── [x] backup-restore.css
+│   │   │   └── [x] backup-restore.js
 │   │   ├── export/
-│   │   │   └── [ ] .gitkeep
+│   │   │   └── [x] .gitkeep
 │   │   ├── help/
-│   │   │   └── [ ] .gitkeep
+│   │   │   └── [x] .gitkeep
 │   │   ├── libraries/
-│   │   │   └── [ ] .gitkeep
+│   │   │   └── [x] .gitkeep
 │   │   ├── quick-insert/
-│   │   │   ├── [ ] quick-insert.css
-│   │   │   └── [ ] quick-insert.js
+│   │   │   ├── [x] quick-insert.css
+│   │   │   └── [x] quick-insert.js
 │   │   ├── settings/
-│   │   │   ├── [ ] settings.css
-│   │   │   └── [ ] settings.js
+│   │   │   ├── [x] settings.css
+│   │   │   └── [x] settings.js
 │   │   ├── suggestions/
 │   │   │   ├── data/
-│   │   │   │   ├── [ ] css-suggestions.js
-│   │   │   │   ├── [ ] html-suggestions.js
-│   │   │   │   └── [ ] js-suggestions.js
+│   │   │   │   ├── [x] css-suggestions.js
+│   │   │   │   ├── [x] html-suggestions.js
+│   │   │   │   └── [x] js-suggestions.js
 │   │   │   ├── manager/
-│   │   │   │   ├── [ ] suggestion-manager.css
-│   │   │   │   └── [ ] suggestion-manager.js
+│   │   │   │   ├── [x] suggestion-manager.css
+│   │   │   │   └── [x] suggestion-manager.js
 │   │   │   └── next-word/
-│   │   │       └── [ ] next-word-suggestions.js
+│   │   │       └── [x] next-word-suggestions.js
 │   │   ├── word-tree/
-│   │   │   └── [ ] word-tree.js
+│   │   │   └── [x] word-tree.js
 │   │   └── workspace/
 │   │       ├── file-manager/
-│   │       │   ├── [ ] .gitkeep
-│   │       │   ├── [ ] file-manager-drawer.js
-│   │       │   ├── [ ] file-manager.css
-│   │       │   └── [ ] file-manager.js
+│   │       │   ├── [x] .gitkeep
+│   │       │   ├── [x] file-manager-drawer.js
+│   │       │   ├── [x] file-manager.css
+│   │       │   └── [x] file-manager.js
 │   │       ├── project-storage/
-│   │       │   └── [ ] .gitkeep
+│   │       │   └── [x] .gitkeep
 │   │       ├── search/
-│   │       │   ├── [ ] search-header.css
-│   │       │   └── [ ] search-header.js
+│   │       │   ├── [x] search-header.css
+│   │       │   └── [x] search-header.js
 │   │       └── toolbar/
-│   │           ├── [ ] toolbar-sidebar.css
-│   │           └── [ ] toolbar-sidebar.js
+│   │           ├── [x] toolbar-sidebar.css
+│   │           └── [x] toolbar-sidebar.js
 │   ├── shared/
 │   │   ├── dom/
-│   │   │   └── [ ] .gitkeep
+│   │   │   └── [x] .gitkeep
 │   │   ├── i18n/
-│   │   │   └── [ ] i18n.js
+│   │   │   └── [x] i18n.js
 │   │   ├── storage/
-│   │   │   └── [ ] .gitkeep
+│   │   │   └── [x] .gitkeep
 │   │   ├── ui/
-│   │   │   └── [ ] .gitkeep
+│   │   │   └── [x] .gitkeep
 │   │   └── validation/
-│   │       └── [ ] .gitkeep
+│   │       └── [x] .gitkeep
 │   └── styles/
-│       └── [ ] .gitkeep
-├── [ ] style.css
+│       └── [x] .gitkeep
+├── [x] style.css
 └── tools/
-    └── [ ] build-single-file.js
+    └── [x] build-single-file.js
 
-==================== 2) جدول بررسی فایل‌ها ====================
-| فایل | وضعیت خواندن | ایرادهای ثبت‌شده | چهار راه‌حل و انتخاب بهتر |
-|---|---|---|---|
-| `.github/workflows/check-index.yml` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `.github/workflows/company-delivery.yml` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `.github/workflows/deploy-pages.yml` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `.gitignore` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `README.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `docs/architecture/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `docs/architecture/main-files-audit.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `docs/architecture/ui-sections-structure.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `docs/suggestions/tree-world-suggestion.md` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `index 2.html` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `index.html` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `locales/en.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `locales/fa.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `package-lock.json` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `package.json` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `script.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/build-codemirror.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/build-test-editor.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/build/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-backup-restore.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-color-picker.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-editor-code-processing.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-editor-overlay-alignment.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-index-integrity.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-settings-button-placement.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-settings-dialog-keyboard.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/check-standalone-editor.mjs` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/checks/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `scripts/codemirror-entry.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/app/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/backup-restore/backup-restore.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/backup-restore/backup-restore.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/export/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/help/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/libraries/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/quick-insert/quick-insert.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/quick-insert/quick-insert.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/settings/settings.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/settings/settings.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/suggestions/data/css-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/suggestions/data/html-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/suggestions/data/js-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/suggestions/manager/suggestion-manager.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/suggestions/manager/suggestion-manager.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/suggestions/next-word/next-word-suggestions.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/word-tree/word-tree.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/file-manager/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/file-manager/file-manager-drawer.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/file-manager/file-manager.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/file-manager/file-manager.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/project-storage/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/search/search-header.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/search/search-header.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/toolbar/toolbar-sidebar.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/features/workspace/toolbar/toolbar-sidebar.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/shared/dom/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/shared/i18n/i18n.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/shared/storage/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/shared/ui/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/shared/validation/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `src/styles/.gitkeep` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `style.css` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
-| `tools/build-single-file.js` | [ ] در انتظار بررسی کامل | در انتظار بررسی | در انتظار بررسی |
+==================== 2) جدول فهرست فایل‌ها و وضعیت بررسی ====================
+| فایل | وضعیت بررسی | ایراد/یافتهٔ ایستا |
+|---|---|---|
+| `.github/workflows/check-index.yml` | [x] خواندن کامل ایستا | کل job اعتبارسنجی با if:false غیرفعال است؛ مسیر قدیمی integrations/github در فیلترها مانده |
+| `.github/workflows/company-delivery.yml` | [x] خواندن کامل ایستا | ارسال فایل با body=file://… و بدون attachments صریح؛ تقسیم ورودی عملاً فقط یک بخش است |
+| `.github/workflows/deploy-pages.yml` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `.gitignore` | [x] خواندن کامل ایستا | فایل‌های خروجی build و تست در ignore list دیده نمی‌شوند؛ نیازمند بررسی انتشار artifact |
+| `docs/architecture/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `docs/architecture/main-files-audit.md` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `docs/architecture/ui-sections-structure.md` | [x] خواندن کامل ایستا | مراجع/ساختار قدیمی Futures با ساختار فعلی منطبق نیست |
+| `docs/suggestions/tree-world-suggestion.md` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `index 2.html` | [x] خواندن کامل ایستا | دکمه‌های Undo/Redo/Download/Clear/Reset/Search/Settings/Help و ابزارهای Preview بی‌اتصال؛ لینک‌های # |
+| `index.html` | [x] خواندن کامل ایستا | textarea به‌جای CodeMirror؛ ورودی اصلی با محدودیت ۱۲۰ نویسه در تضاد با محدودیت ۴۰ نویسهٔ ذخیره‌سازی |
+| `locales/en.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `locales/fa.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `package-lock.json` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `package.json` | [x] خواندن کامل ایستا | npm test فقط check:index را اجرا می‌کند؛ آزمون کامل مجموعه را پوشش نمی‌دهد؛ build:all خروجی CodeMirror قدیمی می‌سازد |
+| `README.md` | [x] خواندن کامل ایستا | درخت و اطلاعات مستندات پس از افزودن گزارش باید بازتولید/به‌روز شوند |
+| `REPOSITORY_AUDIT.txt` | [ ] (خود گزارش؛ عمداً خارج از ممیزی محتوایی) | هنوز بررسی کامل نشده |
+| `script.js` | [x] خواندن کامل ایستا | نام فایل هنگام بارگذاری به ۴۰ نویسه محدود می‌شود؛ موتور اصلی textarea است نه CodeMirror |
+| `scripts/build-codemirror.mjs` | [x] خواندن کامل ایستا | خروجی به مسیر حذف‌شدهٔ futures/editor/core/codemirror.js می‌رود |
+| `scripts/build-test-editor.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/build/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-backup-restore.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-color-picker.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-editor-code-processing.mjs` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `scripts/check-editor-overlay-alignment.mjs` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `scripts/check-index-integrity.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-settings-button-placement.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-settings-dialog-keyboard.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-standalone-editor.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/checks/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/codemirror-entry.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/app/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/backup-restore/backup-restore.css` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/backup-restore/backup-restore.js` | [x] خواندن کامل ایستا | اعتبارسنجی project name نیز با حداکثر ۴۰ نویسه هم‌راستاست و محدودیت UI ۱۲۰ را نقض می‌کند |
+| `src/features/export/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/help/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/libraries/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/quick-insert/quick-insert.css` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/quick-insert/quick-insert.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/settings/settings.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/settings/settings.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/suggestions/data/css-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/suggestions/data/html-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/suggestions/data/js-suggestions.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/suggestions/manager/suggestion-manager.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/suggestions/manager/suggestion-manager.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/suggestions/next-word/next-word-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/word-tree/word-tree.js` | [x] خواندن کامل ایستا | ایراد قطعی مهمی در خواندن ایستا ثبت نشد |
+| `src/features/workspace/file-manager/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/file-manager/file-manager-drawer.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/file-manager/file-manager.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/file-manager/file-manager.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/project-storage/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/search/search-header.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/search/search-header.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/toolbar/toolbar-sidebar.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/toolbar/toolbar-sidebar.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/shared/dom/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/i18n/i18n.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/storage/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/ui/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/validation/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/styles/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `style.css` | [x] خواندن کامل ایستا | قواعد واکنش‌گرایی divider در چند media block تکرار و بعضاً override می‌شوند |
+| `tools/build-single-file.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
 
-==================== 3) یافته‌های مشترک و تست‌ها ====================
-این بخش پس از بررسی فایل‌های مرتبط تکمیل می‌شود.
+==================== 3) ایرادها و چهار راه‌حل برای هر مورد ====================
 
-==================== 4) محدودیت‌ها و موارد تأییدنشده ====================
-هر موردی که صرفاً با بررسی ایستا قابل تعیین نباشد، به‌عنوان نیازمند تست اجرایی ثبت می‌شود.
+نکته: برای هر ایراد چهار راه‌حل مستقل آمده است. علامت [x] فقط بهترین گزینهٔ پیشنهادی را نشان می‌دهد؛ این علامت به معنی اجرای آن راه‌حل نیست.
+
+ایراد 1 — گردش‌کار اعتبارسنجی عملاً خاموش است
+فایل: .github/workflows/check-index.yml
+شاهد: job اصلی check-index دارای شرط if: ${{ false }} است؛ بنابراین حتی با push یا pull_request اجرا نمی‌شود. در فیلتر مسیر نیز src/features/integrations/github/github-update.js باقی مانده که در درخت فعلی وجود ندارد.
+راه‌حل‌ها:
+1. [ ] حذف کامل workflow قدیمی و انتقال آزمون‌ها به workflow فعال.
+2. [x] فعال‌سازی job پس از پاک‌سازی مسیرهای منسوخ و افزودن بررسی اجباری وجود همهٔ ورودی‌های آزمون.
+3. [ ] نگه‌داشتن workflow به‌صورت دستی با workflow_dispatch و توضیح شفاف غیرفعال بودن خودکار.
+4. [ ] ادغام آزمون‌های آن با check:main و تعریف ماتریس CI واحد.
+بهترین گزینه: 2؛ هم پوشش فعلی حفظ می‌شود و هم CI واقعاً اجرا می‌شود.
+
+ایراد 2 — شیوهٔ ارسال فایل در گردش‌کار ایمیل مبهم/احتمالاً نادرست است
+فایل: .github/workflows/company-delivery.yml
+شاهد: محتوای فایل در ورودی body به شکل file://dist/company-delivery/part-….txt قرار گرفته و در بخش تنظیمات action فیلد attachments مشخص نشده است. همچنین chunks برابر آرایهٔ تک‌عضوی [source] است؛ در نتیجه تقسیم واقعی به قطعه‌های محدود انجام نمی‌شود.
+راه‌حل‌ها:
+1. [x] ارسال فایل با ورودی رسمی attachments و نگه‌داشتن body به‌عنوان متن توضیحی؛ سپس یک تست end-to-end با گیرندهٔ آزمایشی.
+2. [ ] قراردادن کل HTML در body و حذف artifact واسط.
+3. [ ] استفاده از سرویس انتقال artifact به‌جای ایمیل برای فایل‌های بزرگ.
+4. [ ] پیاده‌سازی chunking با سقف بایت مشخص و شماره‌گذاری قطعات، سپس ارسال چندپخشی کنترل‌شده.
+بهترین گزینه: 1 برای فایل‌های عادی؛ اگر اندازه از سقف سرویس ایمیل گذشت، گزینهٔ 3 یا 4 مناسب‌تر است.
+وضعیت: رفتار واقعی action در این مخزن اجرا نشده و باید با مستندات/تست آن action تأیید شود.
+
+ایراد 3 — نام فایل در UI و مدل ذخیره‌سازی محدودیت یکسان ندارد
+فایل‌های مرتبط: index.html، script.js، src/features/backup-restore/backup-restore.js و scripts/check-backup-restore.mjs
+شاهد: ورودی نام فایل در index.html تا ۱۲۰ نویسه می‌پذیرد؛ در مسیر بارگذاری/نرمال‌سازی پروژه نام به ۴۰ نویسه کوتاه می‌شود. بنابراین نام‌های ۴۱ تا ۱۲۰ نویسه ممکن است پس از ذخیره و بارگذاری مجدد تغییر کنند یا ناقص نمایش داده شوند.
+راه‌حل‌ها:
+1. [ ] افزایش همهٔ محدودیت‌های ذخیره‌سازی و backup به ۱۲۰ بدون سنجش سازگاری پروژه‌های قدیمی.
+2. [x] تعریف یک ثابت مشترک MAX_FILE_NAME_LENGTH و اعمال یکسان آن در فرم، ایجاد، rename، load، backup/restore و تست‌ها؛ تصمیم صریح درباره مهاجرت نام‌های قبلی.
+3. [ ] کاهش maxlength رابط کاربری به ۴۰ برای تطبیق با مدل فعلی.
+4. [ ] حذف محدودیت ثابت و اعتبارسنجی با سقف اندازهٔ کل پروژه/Storage.
+بهترین گزینه: 2؛ یک منبع حقیقت ایجاد می‌کند و تست رگرسیون امکان‌پذیر می‌شود.
+
+ایراد 4 — خروجی CodeMirror به مسیر منسوخ نوشته می‌شود و در صفحهٔ اصلی بارگذاری نمی‌شود
+فایل‌ها: scripts/build-codemirror.mjs، scripts/codemirror-entry.js، package.json، index.html
+شاهد: build-codemirror.mjs خروجی را در futures/editor/core/codemirror.js می‌سازد؛ پوشهٔ Futures از ساختار فعلی حذف شده است. index.html نیز bundle یا global مربوط به CodeMirror را بارگذاری و استفاده نمی‌کند؛ ادیتور عملیاتی اصلی با textarea اداره می‌شود.
+راه‌حل‌ها:
+1. [ ] فقط تغییر مسیر خروجی به src/vendor/codemirror.js بدون اتصال به UI.
+2. [x] تعیین تکلیف معماری: اگر CodeMirror موتور هدف است، خروجی را به مسیر جاری منتقل، در index.html بارگذاری و به چرخهٔ editor state/preview/settings متصل کن؛ اگر هدف نیست، dependency و build بلااستفاده حذف شود.
+3. [ ] نگه‌داشتن خروجی در مسیر فعلی و بازگرداندن پوشهٔ futures.
+4. [ ] تولید bundle در dist و ثبت آن به‌عنوان artifact صرفاً آزمایشی با نام‌گذاری شفاف.
+بهترین گزینه: 2؛ فقط build موفق کافی نیست، موتور باید در صفحه واقعاً مصرف شود یا از پروژه حذف گردد.
+
+ایراد 5 — پوشش آزمون پیش‌فرض ناقص است و CI خودکار غیرفعال
+فایل‌ها: package.json، .github/workflows/check-index.yml، scripts/check-standalone-editor.mjs
+شاهد: npm test فقط check:index را فراخوانی می‌کند و check:main و آزمون‌های تخصصی را اجرا نمی‌کند؛ job اعتبارسنجی GitHub Actions نیز غیرفعال است.
+راه‌حل‌ها:
+1. [x] ساخت فرمان test:all که تمام checkها و build/verify standalone را اجرا کند و workflow فعال آن را روی push و pull_request فراخوانی کند.
+2. [ ] نگه‌داشتن npm test فعلی و افزودن فرمان‌های جداگانه برای هر آزمون.
+3. [ ] انتقال همهٔ آزمون‌ها به یک اسکریپت Node واحد.
+4. [ ] اجرای آزمون‌های اصلی در workflow دستی و آزمون‌های سبک در CI خودکار.
+بهترین گزینه: 1؛ فرمان استاندارد واحد و اجرای خودکار قابل تکرار می‌سازد.
+
+ایراد 6 — کنترل‌های نمایشی بدون عملکرد در index 2.html
+فایل: index 2.html
+شاهد: دکمه‌های Undo، Redo، Download، Clear، Reset، Search، Settings و Help در نوار بالا تعریف شده‌اند اما listener متناظر در اسکریپت‌های این فایل دیده نشد. کنترل‌های Refresh، Run، Copy، Share و Fullscreen پنل پیش‌نمایش نیز بی‌اتصال‌اند.
+راه‌حل‌ها:
+1. [x] اتصال هر کنترل به عملکرد واقعی با شناسهٔ پایدار، مدیریت خطا و تست یکپارچه؛ هر کنترلِ خارج از دامنه تا زمان پیاده‌سازی disabled یا حذف شود.
+2. [ ] حذف همهٔ کنترل‌های بی‌عملکرد و نگه‌داشتن فقط تب‌ها، import و preview.
+3. [ ] اضافه‌کردن tooltip «به‌زودی» و نگه‌داشتن ظاهری.
+4. [ ] اتصال موقت کنترل‌ها به پیام toast بدون اجرای عمل اصلی.
+بهترین گزینه: 1؛ ظاهر رابط با انتظاری که ایجاد می‌کند هم‌سو می‌شود.
+
+ایراد 7 — پیوندهای ناوبری index 2.html مقصد واقعی ندارند
+فایل: index 2.html
+شاهد: لینک‌های سایدبار و footer عمدتاً href="#" هستند و مسیر/تعامل ناوبری معناداری در کد پیاده نشده است.
+راه‌حل‌ها:
+1. [x] برای هر لینک مقصد معتبر یا handler مشخص تعریف کن؛ موارد غیرقابل استفاده را به‌جای href="#" به متن/دکمهٔ غیرفعال تبدیل کن.
+2. [ ] حذف هر دو سایدبار و footer تا زمان آماده‌شدن صفحات.
+3. [ ] تبدیل همهٔ لینک‌ها به دکمه‌های تعاملی و ارائهٔ پنل‌های داخلی.
+4. [ ] نگه‌داشتن placeholderها با توضیح «در حال توسعه».
+بهترین گزینه: 1؛ دسترس‌پذیری و رفتار مرورگر قابل پیش‌بینی‌تر می‌شود.
+
+ایراد 8 — صفحهٔ index 2 و برنامهٔ اصلی از نظر موتور و تجربهٔ ویرایش هم‌سطح نیستند
+فایل‌ها: index 2.html، index.html، scripts/codemirror-entry.js
+شاهد: هر سه محیط ویرایش index 2 از textarea هستند؛ index.html هم از textarea و overlayهای اختصاصی استفاده می‌کند. CodeMirror 6 فقط در entry/build آماده شده و به صفحه متصل نیست. Monaco در این فایل‌ها موتور فعال نیست.
+راه‌حل‌ها:
+1. [x] انتخاب یک موتور واحد برای برنامهٔ اصلی و مهاجرت مرحله‌ای همراه حفظ ذخیره‌سازی، autocomplete، search، undo/redo و preview.
+2. [ ] حفظ textarea و تکمیل قابلیت‌های افزوده با overlayهای فعلی.
+3. [ ] استفاده از CodeMirror فقط در index 2 به‌عنوان نمونهٔ مجزا.
+4. [ ] حذف فایل CodeMirror و مستندسازی textarea به‌عنوان تصمیم معماری.
+بهترین گزینه: 1 اگر هدف ویرایشگر حرفه‌ای است؛ در غیر این صورت گزینهٔ 4 از باقی ماندن build بی‌مصرف بهتر است.
+
+ایراد 9 — قواعد واکنش‌گرایی divider در CSS تکراری و متناقض‌اند
+فایل: style.css
+شاهد: در media query موبایل ابتدا divider مخفی شده، سپس در بلوک‌های بعدی با !important دوباره فعال می‌شود؛ محاسبهٔ ارتفاع preview نیز در چند بخش مجدداً override شده است.
+راه‌حل‌ها:
+1. [x] ادغام قواعد breakpoint در یک بخش منسجم و حذف overrideهای تکراری پس از تعیین رفتار نهایی موبایل.
+2. [ ] نگه‌داشتن تمام overrideها اما افزودن توضیح برای هرکدام.
+3. [ ] انتقال همهٔ قواعد responsive به فایل جداگانه و افزودن آن در انتهای سند.
+4. [ ] جایگزینی همهٔ !importantها با متغیرهای layout بدون تست رگرسیون.
+بهترین گزینه: 1؛ cascade ساده‌تر و اصلاح آینده کم‌خطرتر می‌شود.
+
+ایراد 10 — مستند معماری با وضعیت واقعی ساختار منطبق نیست
+فایل: docs/architecture/ui-sections-structure.md
+شاهد: سند به ساختار/مسیر Futures اشاره دارد، در حالی که پوشهٔ futures در درخت جاری نیست و فایل‌های واقعی UI در index.html و src/features قرار گرفته‌اند.
+راه‌حل‌ها:
+1. [x] بازنویسی سند براساس snapshot جاری: فایل‌های bootstrap، ماژول‌ها، ترتیب بارگذاری، وابستگی‌ها و مسیر داده.
+2. [ ] برچسب‌گذاری سند به‌عنوان طرح تاریخی/آرشیوی و حذف ادعاهای معماری جاری.
+3. [ ] حذف سند از مخزن.
+4. [ ] تولید خودکار سند معماری از manifest فایل‌ها و import order.
+بهترین گزینه: 1؛ اگر سند صرفاً تاریخچه است، گزینهٔ 2 مناسب‌تر است.
+
+==================== 4) جمع‌بندی وضعیت هر فایل ====================
+| مسیر فایل | وضعیت | نتیجه/ایراد اصلی |
+|---|---|---|
+| `.github/workflows/check-index.yml` | [x] خواندن کامل ایستا | کل job اعتبارسنجی با if:false غیرفعال است؛ مسیر قدیمی integrations/github در فیلترها مانده |
+| `.github/workflows/company-delivery.yml` | [x] خواندن کامل ایستا | ارسال فایل با body=file://… و بدون attachments صریح؛ تقسیم ورودی عملاً فقط یک بخش است |
+| `.github/workflows/deploy-pages.yml` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `.gitignore` | [x] خواندن کامل ایستا | فایل‌های خروجی build و تست در ignore list دیده نمی‌شوند؛ نیازمند بررسی انتشار artifact |
+| `docs/architecture/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `docs/architecture/main-files-audit.md` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `docs/architecture/ui-sections-structure.md` | [x] خواندن کامل ایستا | مراجع/ساختار قدیمی Futures با ساختار فعلی منطبق نیست |
+| `docs/suggestions/tree-world-suggestion.md` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `index 2.html` | [x] خواندن کامل ایستا | دکمه‌های Undo/Redo/Download/Clear/Reset/Search/Settings/Help و ابزارهای Preview بی‌اتصال؛ لینک‌های # |
+| `index.html` | [x] خواندن کامل ایستا | textarea به‌جای CodeMirror؛ ورودی اصلی با محدودیت ۱۲۰ نویسه در تضاد با محدودیت ۴۰ نویسهٔ ذخیره‌سازی |
+| `locales/en.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `locales/fa.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `package-lock.json` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `package.json` | [x] خواندن کامل ایستا | npm test فقط check:index را اجرا می‌کند؛ آزمون کامل مجموعه را پوشش نمی‌دهد؛ build:all خروجی CodeMirror قدیمی می‌سازد |
+| `README.md` | [x] خواندن کامل ایستا | درخت و اطلاعات مستندات پس از افزودن گزارش باید بازتولید/به‌روز شوند |
+| `REPOSITORY_AUDIT.txt` | [ ] (خود گزارش؛ عمداً خارج از ممیزی محتوایی) | هنوز بررسی کامل نشده |
+| `script.js` | [x] خواندن کامل ایستا | نام فایل هنگام بارگذاری به ۴۰ نویسه محدود می‌شود؛ موتور اصلی textarea است نه CodeMirror |
+| `scripts/build-codemirror.mjs` | [x] خواندن کامل ایستا | خروجی به مسیر حذف‌شدهٔ futures/editor/core/codemirror.js می‌رود |
+| `scripts/build-test-editor.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/build/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-backup-restore.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-color-picker.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-editor-code-processing.mjs` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `scripts/check-editor-overlay-alignment.mjs` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `scripts/check-index-integrity.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-settings-button-placement.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-settings-dialog-keyboard.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/check-standalone-editor.mjs` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/checks/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `scripts/codemirror-entry.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/app/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/backup-restore/backup-restore.css` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/backup-restore/backup-restore.js` | [x] خواندن کامل ایستا | اعتبارسنجی project name نیز با حداکثر ۴۰ نویسه هم‌راستاست و محدودیت UI ۱۲۰ را نقض می‌کند |
+| `src/features/export/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/help/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/libraries/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/quick-insert/quick-insert.css` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/quick-insert/quick-insert.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/settings/settings.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/settings/settings.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/suggestions/data/css-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/suggestions/data/html-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/suggestions/data/js-suggestions.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/suggestions/manager/suggestion-manager.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/suggestions/manager/suggestion-manager.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/suggestions/next-word/next-word-suggestions.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/word-tree/word-tree.js` | [x] خواندن کامل ایستا | ایراد قطعی مهمی در خواندن ایستا ثبت نشد |
+| `src/features/workspace/file-manager/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/file-manager/file-manager-drawer.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/file-manager/file-manager.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/file-manager/file-manager.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/project-storage/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/search/search-header.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/search/search-header.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/features/workspace/toolbar/toolbar-sidebar.css` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/features/workspace/toolbar/toolbar-sidebar.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+| `src/shared/dom/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/i18n/i18n.js` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/storage/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/ui/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/shared/validation/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `src/styles/.gitkeep` | [x] خواندن کامل ایستا | ایراد قطعی در خواندن ایستا ثبت نشد؛ تست اجرایی انجام نشده |
+| `style.css` | [x] خواندن کامل ایستا | قواعد واکنش‌گرایی divider در چند media block تکرار و بعضاً override می‌شوند |
+| `tools/build-single-file.js` | [ ] در انتظار بررسی کامل | هنوز بررسی کامل نشده |
+
+==================== 5) پوشش بررسی و محدودیت‌ها ====================
+- فایل‌های دارای [x]: 46 از 64.
+- فایل‌های نیازمند بررسی کامل بعدی: 18.
+- [x] برای فایل‌های .gitkeep فقط تأیید خالی بودن محتواست؛ این علامت به معنی تأیید عملکرد پوشه یا وجود پیاده‌سازی نیست.
+- این بررسی static/source review است. کدهای علامت‌خورده در بازه‌های کامل خوانده شده‌اند؛ اما اجرای Node/npm، تست مرورگری، تست دستگاه موبایل، اعتبارسنجی واقعی ایمیل یا اجرای workflowها در این مرحله انجام نشده است.
+- فایل REPOSITORY_AUDIT.txt در درخت حضور دارد ولی به‌دلیل جلوگیری از ممیزی خودارجاعی، وضعیت محتوایی آن [ ] باقی مانده است.
+- فایل‌هایی که پاسخ دریافت آن‌ها بریده/ناقص بود عمداً [ ] باقی مانده‌اند؛ تیک فقط پس از خواندن کامل زده می‌شود.
+- تا این commit هیچ فایل برنامه/سورس تغییر نکرده؛ فقط همین گزارش ممیزی به‌روزرسانی شده است.
 
 پایان گزارش

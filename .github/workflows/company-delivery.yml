@@ -11,8 +11,7 @@ on:
           - "Main Editor"
           - "Visual Editor"
           - "Combined Editor"
-          - "Futures — futures/offline-dashboard-futures.html"
-        default: "Futures — futures/offline-dashboard-futures.html"
+        default: "Main Editor"
       confirm_send:
         description: "I confirm sending the selected code by email."
         required: true
@@ -78,14 +77,6 @@ jobs:
           node scripts/check-combined-editor.mjs
           test -s "editor v.html"
 
-      - name: Build standalone Futures HTML
-        if: startsWith(env.SELECTED_CODE, 'Futures')
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/build-futures-offline.mjs
-          test -s futures/offline-dashboard-futures.html
-
       - name: Prepare email content parts
         id: parts
         shell: bash
@@ -97,12 +88,10 @@ jobs:
           import crypto from 'node:crypto';
 
           const selected = process.env.SELECTED_CODE;
-          const isFutures = selected.startsWith('Futures');
           const fileBySelection = {
             'Main Editor': 'index-test-etitor.html',
             'Visual Editor': 'standalone-visual-editor.html',
             'Combined Editor': 'editor v.html',
-            'Futures — futures/offline-dashboard-futures.html': 'futures/offline-dashboard-futures.html'
           };
           const file = fileBySelection[selected];
           if (!file || !fs.existsSync(file)) throw new Error('Selected source file is missing.');
@@ -118,52 +107,26 @@ jobs:
             .update(commit + ':' + file + ':' + source.length)
             .digest('hex').slice(0, 16);
 
-          const maxChunkBytes = 900 * 1024;
-          const chunks = [];
-          if (isFutures) {
-            let offset = 0;
-            while (offset < source.length) {
-              let end = Math.min(offset + maxChunkBytes, source.length);
-              while (end < source.length && (source[end] & 0xc0) === 0x80) end--;
-              if (end === offset) throw new Error('Could not find a safe UTF-8 split boundary.');
-              chunks.push(source.subarray(offset, end));
-              offset = end;
-            }
-          } else {
-            chunks.push(source);
-          }
-
+          const chunks = [source];
           const total = chunks.length;
           chunks.forEach((chunk, index) => {
             const part = index + 1;
             const begin = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} begin -->`;
             const finish = `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=${part}/${total} end -->`;
-            const body = isFutures
-              ? Buffer.concat([
-                  Buffer.from(begin + '\n', 'utf8'),
-                  chunk,
-                  Buffer.from('\n' + finish, 'utf8')
-                ])
-              : Buffer.from(
-                  `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 begin -->\n` +
-                  `<!-- Selected source: ${file}; commit: ${commit} -->\n` +
-                  `<!-- This message contains the selected source as plain text. -->\n` +
-                  chunk.toString('utf8') +
-                  `\n<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 end -->`,
-                  'utf8'
-                );
-            if (isFutures) {
-              const prefix = Buffer.from(begin + '\n', 'utf8');
-              const suffix = Buffer.from('\n' + finish, 'utf8');
-              const extracted = body.subarray(prefix.length, body.length - suffix.length);
-              if (!extracted.equals(chunk)) throw new Error(`Part ${part} failed exact-content validation.`);
-            }
+            const body = Buffer.from(
+              `<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 begin -->\n` +
+              `<!-- Selected source: ${file}; commit: ${commit} -->\n` +
+              `<!-- This message contains the selected source as plain text. -->\n` +
+              chunk.toString('utf8') +
+              `\n<!-- OFFLINE-EMAIL-TRANSFER id=${transferId} part=1/1 end -->`,
+              'utf8'
+            );
             fs.writeFileSync(path.join(outDir, `part-${part}.txt`), body);
           });
 
           const matrix = JSON.stringify({ include: chunks.map((_, index) => ({ part: index + 1 })) });
           fs.appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${matrix}\n`);
-          console.log(`Prepared ${total} email part(s) from ${file}; each Futures source chunk is at most ${maxChunkBytes} bytes.`);
+          console.log(`Prepared ${total} email part(s) from ${file}.`);
           NODE
           test -s dist/company-delivery/part-1.txt
 

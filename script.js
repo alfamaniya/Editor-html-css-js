@@ -4,6 +4,7 @@
         // ==========================================
         //  ثابت‌ها
         // ==========================================
+        const MAX_FILE_NAME_LENGTH = Number(window.EDITOR_FILE_NAME_MAX_LENGTH) || 40;
         const DEFAULT_HTML = '<h1>Hello, world!</h1>';
         const DEFAULT_CSS = 'body { font-family: sans-serif; }';
         const DEFAULT_JS = 'console.log("Hello, world!");';
@@ -242,7 +243,7 @@
                                 if (seenIds.has(id)) id = makeId();
                                 seenIds.add(id);
                                 const name = (typeof file.name === 'string' && file.name.trim())
-                                    ? file.name.trim().slice(0, 40)
+                                    ? file.name.trim().slice(0, MAX_FILE_NAME_LENGTH)
                                     : 'untitled.' + file.type;
                                 return { id: id, name: name, type: file.type, content: file.content };
                             });
@@ -496,7 +497,7 @@
 
         function fileNameError(name, type, excludeId) {
             if (!name) return 'Enter a file name.';
-            if (name.length > 120) return 'File names must be 120 characters or fewer.';
+            if (name.length > MAX_FILE_NAME_LENGTH) return 'File names must be ' + MAX_FILE_NAME_LENGTH + ' characters or fewer.';
             if (/[\\/:*?"<>|\u0000-\u001f\u007f-\u009f]/.test(name)) return 'File names cannot contain \\ / : * ? " < > | or control characters.';
             if (project.files.some(function(f) { return f.id !== excludeId && f.name.toLowerCase() === name.toLowerCase(); })) return 'A file with that name already exists.';
             return '';
@@ -584,7 +585,7 @@
             input.type = 'text';
             input.className = 'fe-rename-input';
             input.value = file.name;
-            input.maxLength = 120;
+            input.maxLength = MAX_FILE_NAME_LENGTH;
             input.spellcheck = false;
             nameEl.replaceWith(input);
             input.focus();

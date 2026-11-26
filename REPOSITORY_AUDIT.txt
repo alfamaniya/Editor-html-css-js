@@ -1,6 +1,6 @@
 گزارش ممیزی مخزن — Editor-html-css-js
 شاخه: main
-مبنای snapshot اصلاحات: commit fb82149de6e14a83a1d82e91ce732ca9f1e524ff
+مبنای snapshot ساختار: commit c35a5a0c1fd6a3dc18dcc1ac97a4c9efa4bc2927
 تعداد فایل‌ها در snapshot فعلی: 67
 روش: خواندن ایستای سورس در بازه‌های متوالی؛ تیک فقط برای فایل‌هایی که محتوای کاملشان خوانده شده است.
 

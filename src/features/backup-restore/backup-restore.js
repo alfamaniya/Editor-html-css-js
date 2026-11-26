@@ -8,6 +8,7 @@
     var MAX_BYTES = 5 * 1024 * 1024;
     var MAX_NODES = 100000;
     var MAX_ITEMS = 10000;
+    var MAX_FILE_NAME_LENGTH = Number(window.EDITOR_FILE_NAME_MAX_LENGTH) || 40;
     var LANGS = ['html', 'css', 'js'];
     var SETTINGS_KEYS = [
         'theme', 'accentColor', 'density', 'autoSaveSettings', 'fontSize',
@@ -157,7 +158,7 @@
             assert(LANGS.indexOf(file.type) !== -1, 'نوع فایل پروژه پشتیبانی نمی‌شود.');
             return {
                 id: id,
-                name: text(file.name, 'نام فایل', 40, false).trim(),
+                name: text(file.name, 'نام فایل', MAX_FILE_NAME_LENGTH, false).trim(),
                 type: file.type,
                 content: text(file.content, 'محتوای فایل', 1024 * 1024, true)
             };

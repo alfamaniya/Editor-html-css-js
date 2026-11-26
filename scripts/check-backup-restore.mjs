@@ -4,6 +4,15 @@ import vm from 'node:vm';
 
 const source = readFileSync(new URL('../src/features/backup-restore/backup-restore.js', import.meta.url), 'utf8');
 const editorSource = readFileSync(new URL('../script.js', import.meta.url), 'utf8');
+const indexSource = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const filenameRule = readFileSync(new URL('../src/shared/validation/file-name.js', import.meta.url), 'utf8');
+assert.match(filenameRule, /EDITOR_FILE_NAME_MAX_LENGTH = 40/);
+assert.match(editorSource, /MAX_FILE_NAME_LENGTH = Number\(window\.EDITOR_FILE_NAME_MAX_LENGTH\) \|\| 40/);
+assert.match(editorSource, /slice\(0, MAX_FILE_NAME_LENGTH\)/);
+assert.match(editorSource, /name\.length > MAX_FILE_NAME_LENGTH/);
+assert.match(indexSource, /id="feNewName"[^>]*maxlength="40"/);
+assert.doesNotMatch(indexSource, /feNewName[^>]*maxlength="120"/);
+
 const exposedWindow = {};
 const sandbox = {
     window: exposedWindow,

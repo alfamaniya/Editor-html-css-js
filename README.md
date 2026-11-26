@@ -6,7 +6,7 @@
 
 ## ساختار مخزن
 
-درخت زیر با ساختار فعلی شاخه `main` هماهنگ شده است. فایل‌ها و پوشه‌های خالیِ نگه‌دارندهٔ مسیر نیز نمایش داده شده‌اند.
+درخت زیر از ساختار واقعی شاخه `fix/audit-remediations` تولید شده است. فایل‌های `.gitkeep` و گزارش ممیزی نیز نمایش داده شده‌اند.
 
 ```text
 Editor-html-css-js/
@@ -15,21 +15,27 @@ Editor-html-css-js/
 │       ├── check-index.yml
 │       ├── company-delivery.yml
 │       └── deploy-pages.yml
+├── .gitignore
 ├── docs/
 │   ├── architecture/
+│   │   ├── .gitkeep
 │   │   ├── main-files-audit.md
 │   │   └── ui-sections-structure.md
 │   └── suggestions/
 │       └── tree-world-suggestion.md
+├── index 2.html
+├── index.html
 ├── locales/
 │   ├── en.js
 │   └── fa.js
+├── package-lock.json
+├── package.json
+├── README.md
+├── REPOSITORY_AUDIT.txt
+├── script.js
 ├── scripts/
 │   ├── build/
 │   │   └── .gitkeep
-│   ├── checks/
-│   │   └── .gitkeep
-│   ├── build-codemirror.mjs
 │   ├── build-test-editor.mjs
 │   ├── check-backup-restore.mjs
 │   ├── check-color-picker.mjs
@@ -39,7 +45,9 @@ Editor-html-css-js/
 │   ├── check-settings-button-placement.mjs
 │   ├── check-settings-dialog-keyboard.mjs
 │   ├── check-standalone-editor.mjs
-│   └── codemirror-entry.js
+│   ├── checks/
+│   │   └── .gitkeep
+│   └── run-checks.mjs
 ├── src/
 │   ├── app/
 │   │   └── .gitkeep
@@ -73,6 +81,7 @@ Editor-html-css-js/
 │   │   │   └── word-tree.js
 │   │   └── workspace/
 │   │       ├── file-manager/
+│   │       │   ├── .gitkeep
 │   │       │   ├── file-manager-drawer.js
 │   │       │   ├── file-manager.css
 │   │       │   └── file-manager.js
@@ -94,19 +103,13 @@ Editor-html-css-js/
 │   │   ├── ui/
 │   │   │   └── .gitkeep
 │   │   └── validation/
-│   │       └── .gitkeep
+│   │       ├── .gitkeep
+│   │       └── file-name.js
 │   └── styles/
 │       └── .gitkeep
-├── tools/
-│   └── build-single-file.js
-├── .gitignore
-├── index 2.html
-├── index.html
-├── package-lock.json
-├── package.json
-├── README.md
-├── script.js
-└── style.css
+├── style.css
+└── tools/
+    └── build-single-file.js
 ```
 
 ## فایل‌های اصلی
@@ -146,12 +149,12 @@ npm test
 
 | فرمان | عملکرد |
 |---|---|
-| `npm test` | اجرای بررسی یکپارچگی فایل ورودی |
+| `npm test` | ساخت خروجی مستقل و اجرای همهٔ بررسی‌های کیفیت |
 | `npm run check:index` | بررسی یکپارچگی `index.html` |
 | `npm run build:main` | تولید خروجی مستقل با اسکریپت `build-test-editor.mjs` |
 | `npm run check:main` | اعتبارسنجی خروجی مستقل |
-| `npm run build:all` | ساخت CodeMirror، ساخت خروجی مستقل و اعتبارسنجی آن |
-| `npm run build:codemirror` | ساخت bundle محلی CodeMirror با esbuild |
+| `npm run build:main` | تولید خروجی مستقل از سورس چندفایلی |
+| `npm run check:index` | بررسی یکپارچگی `index.html` |
 
 ## ساخت خروجی مستقل
 
@@ -160,7 +163,11 @@ npm run build:main
 npm run check:main
 ```
 
-سورس اصلی در `index.html` و فایل‌های CSS/JavaScript معرفی‌شده در اسکریپت ساخت قرار دارد. خروجی تولیدشده یک فایل build است و نباید به‌صورت دستی ویرایش شود.
+سورس اصلی در `index.html`، `style.css`، `script.js` و ماژول‌های `src/` قرار دارد. خروجی تولیدشده یک فایل build است و نباید به‌صورت دستی ویرایش شود. موتور فعلی ویرایش در صفحهٔ اصلی textarea است؛ CodeMirror/Monaco به‌عنوان موتور فعال استفاده نمی‌شوند.
+
+## گزارش ممیزی
+
+گزارش درخت، وضعیت بررسی فایل‌ها، ایرادها و راه‌حل‌های پیشنهادی در [REPOSITORY_AUDIT.txt](REPOSITORY_AUDIT.txt) قرار دارد.
 
 ## GitHub Actions
 

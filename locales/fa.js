@@ -225,7 +225,6 @@
     "Save settings": "ذخیرهٔ تنظیمات",
     "Save editing": "ذخیرهٔ ویرایش",
     "Discard unsaved changes": "نادیده‌گرفتن تغییرات ذخیره‌نشده",
-    "Editor V": "ویرایشگر V",
     "HTML / CSS / JS Editor": "ویرایشگر HTML / CSS / JS",
     "❌ Saving failed. Check available browser storage.": "❌ ذخیره‌سازی ناموفق بود. حافظهٔ مرورگر را بررسی کنید.",
     "✅ Project saved locally": "✅ پروژه به‌صورت محلی ذخیره شد",

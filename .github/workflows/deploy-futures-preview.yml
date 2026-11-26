@@ -1,4 +1,4 @@
-name: انتشار کامل سایت
+name: انتشار سایت در GitHub Pages
 
 on:
   push:
@@ -27,9 +27,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-
-      - name: ساخت فایل آفلاین Futures
-        run: node scripts/build-futures-offline.mjs
 
       - name: پیکربندی GitHub Pages
         uses: actions/configure-pages@v5

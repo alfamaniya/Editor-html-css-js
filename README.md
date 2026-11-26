@@ -16,6 +16,8 @@ Editor-html-css-js/
 │       ├── company-delivery.yml
 │       └── deploy-pages.yml
 ├── .gitignore
+├── README.md
+├── REPOSITORY_AUDIT.txt
 ├── docs
 │   ├── architecture
 │   │   ├── .gitkeep
@@ -23,17 +25,12 @@ Editor-html-css-js/
 │   │   └── ui-sections-structure.md
 │   └── suggestions
 │       └── tree-world-suggestion.md
-├── index 2.html
-├── index-2.css
-├── index-2.js
 ├── index.html
 ├── locales
 │   ├── en.js
 │   └── fa.js
 ├── package-lock.json
 ├── package.json
-├── README.md
-├── REPOSITORY_AUDIT.txt
 ├── script.js
 ├── scripts
 │   ├── build
@@ -41,7 +38,6 @@ Editor-html-css-js/
 │   ├── build-test-editor.mjs
 │   ├── check-backup-restore.mjs
 │   ├── check-color-picker.mjs
-│   ├── check-demo-ui.mjs
 │   ├── check-editor-code-processing.mjs
 │   ├── check-editor-overlay-alignment.mjs
 │   ├── check-index-integrity.mjs
@@ -123,7 +119,6 @@ Editor-html-css-js/
 |---|---|
 | `index.html` | ساختار رابط ویرایشگر، پنل‌های HTML/CSS/JS و پیش‌نمایش |
 | `style.css` | استایل عمومی، چیدمان و واکنش‌گرایی |
-| `index 2.html` | پوستهٔ HTML نمونهٔ مستقل Alfa-Code |\n| `index-2.css` | استایل‌های نمونهٔ مستقل Alfa-Code |\n| `index-2.js` | رفتارها، تعاملات، ذخیره‌سازی محلی و پیش‌نمایش نمونهٔ مستقل |\n| `script.js` | منطق اصلی ویرایشگر، مدیریت کد و پیش‌نمایش زنده |
 | `locales/fa.js` و `locales/en.js` | متن‌های رابط فارسی و انگلیسی |
 | `src/features/` | پیاده‌سازی قابلیت‌های مستقل ویرایشگر |
 | `src/shared/` | ماژول‌های مشترک بین قابلیت‌ها |

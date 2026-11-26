@@ -9,8 +9,6 @@ on:
         type: choice
         options:
           - "Main Editor"
-          - "Visual Editor"
-          - "Combined Editor"
         default: "Main Editor"
       confirm_send:
         description: "I confirm sending the selected code by email."
@@ -53,29 +51,10 @@ jobs:
           node-version: 24
 
       - name: Build Main Editor
-        if: env.SELECTED_CODE == 'Main Editor' || env.SELECTED_CODE == 'Combined Editor'
         run: node scripts/build-test-editor.mjs
 
       - name: Validate Main Editor
-        if: env.SELECTED_CODE == 'Main Editor' || env.SELECTED_CODE == 'Combined Editor'
         run: node scripts/check-standalone-editor.mjs
-
-      - name: Build Visual Editor
-        if: env.SELECTED_CODE == 'Visual Editor' || env.SELECTED_CODE == 'Combined Editor'
-        run: node scripts/build-standalone-visual-editor.mjs
-
-      - name: Validate Visual Editor
-        if: env.SELECTED_CODE == 'Visual Editor' || env.SELECTED_CODE == 'Combined Editor'
-        run: node scripts/check-standalone-visual-editor.mjs
-
-      - name: Build Combined Editor
-        if: env.SELECTED_CODE == 'Combined Editor'
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/build-combined-editor.mjs
-          node scripts/check-combined-editor.mjs
-          test -s "editor v.html"
 
       - name: Prepare email content parts
         id: parts
@@ -90,8 +69,6 @@ jobs:
           const selected = process.env.SELECTED_CODE;
           const fileBySelection = {
             'Main Editor': 'index-test-etitor.html',
-            'Visual Editor': 'standalone-visual-editor.html',
-            'Combined Editor': 'editor v.html',
           };
           const file = fileBySelection[selected];
           if (!file || !fs.existsSync(file)) throw new Error('Selected source file is missing.');

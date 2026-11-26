@@ -1,7 +1,7 @@
 گزارش ممیزی مخزن — Editor-html-css-js
 شاخه: main
 مبنای snapshot ساختار: commit 7ab445897bfb916329a4c29ba43d4d7124a7e87f
-تعداد فایل‌ها در snapshot فعلی: 69
+تعداد فایل‌ها در snapshot فعلی: 65
 روش: خواندن ایستای سورس در بازه‌های متوالی؛ تیک فقط برای فایل‌هایی که محتوای کاملشان خوانده شده است.
 
 راهنمای وضعیت:
@@ -10,6 +10,7 @@
 فایل‌های .gitkeep با محتوای صفر بایت فقط از نظر خالی بودن بررسی شده‌اند.
 راه‌حل [x] در بخش ایرادها بهترین گزینهٔ پیشنهادی است؛ به معنی اجرای تغییر نیست.
 فایل گزارش عمداً از ممیزی محتوایی خودش مستثناست.
+یادداشت به‌روزرسانی: نمونهٔ مستقل قبلی (فایل‌های index 2 و فایل‌های CSS/JS و آزمون اختصاصی آن) از شاخهٔ main حذف شده است تا در مخزن مستقل AlfaCode توسعه یابد. جدول‌ها و ایرادهای تاریخی پایین گزارش برای ثبت سابقه حفظ شده‌اند و ارجاع‌های آن‌ها به نمونهٔ دوم، وضعیت فعلی مخزن را توصیف نمی‌کنند.
 
 ==================== 1) درخت کامل مخزن ====================
 Editor-html-css-js/
@@ -19,6 +20,8 @@ Editor-html-css-js/
 │       ├── [x] company-delivery.yml
 │       └── [x] deploy-pages.yml
 ├── [x] .gitignore
+├── [x] README.md
+├── [ ] REPOSITORY_AUDIT.txt
 ├── [x] docs
 │   ├── [x] architecture
 │   │   ├── [x] .gitkeep
@@ -26,17 +29,12 @@ Editor-html-css-js/
 │   │   └── [x] ui-sections-structure.md
 │   └── [x] suggestions
 │       └── [x] tree-world-suggestion.md
-├── [x] index 2.html
-├── [x] index-2.css
-├── [x] index-2.js
 ├── [x] index.html
 ├── [x] locales
 │   ├── [x] en.js
 │   └── [x] fa.js
 ├── [x] package-lock.json
 ├── [x] package.json
-├── [x] README.md
-├── [ ] REPOSITORY_AUDIT.txt
 ├── [x] script.js
 ├── [x] scripts
 │   ├── [x] build
@@ -44,7 +42,6 @@ Editor-html-css-js/
 │   ├── [x] build-test-editor.mjs
 │   ├── [x] check-backup-restore.mjs
 │   ├── [x] check-color-picker.mjs
-│   ├── [x] check-demo-ui.mjs
 │   ├── [x] check-editor-code-processing.mjs
 │   ├── [x] check-editor-overlay-alignment.mjs
 │   ├── [x] check-index-integrity.mjs
@@ -130,9 +127,6 @@ Editor-html-css-js/
 | `docs/architecture/main-files-audit.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آمار خطوط/نویسه و Blob SHAها با snapshot فعلی هماهنگ شد |
 | `docs/architecture/ui-sections-structure.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ارجاع‌های اجرایی Futures حذف و معماری واقعی textarea/ماژول‌های فعال مستند شد |
 | `docs/suggestions/tree-world-suggestion.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد؛ سند صریحاً مستندات نمایشی و غیر اجرایی معرفی شده است |
-| `index 2.html` | [x] استخراج CSS و JavaScript و بازبینی اتصال فایل‌ها | پوستهٔ HTML به `index-2.css` و `index-2.js` متصل شد؛ کدهای inline حذف شدند |
-| `index-2.css` | [x] استخراج از style داخلی نمونه | تمام قواعد CSS نمونه بدون تغییر طراحی به فایل مستقل منتقل شدند |
-| `index-2.js` | [x] استخراج دو script داخلی نمونه | منطق تعاملات، ذخیره‌سازی، import و preview به فایل مستقل منتقل شد |
 | `index.html` | [x] خواندن کامل ایستا و بازبینی اصلاحات | حداکثر طول نام فایل با ثابت مشترک ۴۰ هماهنگ و فایل validation پیش از script.js بارگذاری می‌شود |
 | `locales/en.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کلیدهای تکراری و ۲۶ کلید Visual Editor بدون مصرف حذف شدند |
 | `locales/fa.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کلیدهای تکراری و ترجمهٔ قدیمی Editor V و کلید Visual Editor بدون مصرف حذف شدند |
@@ -145,7 +139,6 @@ Editor-html-css-js/
 | `scripts/build/.gitkeep` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
 | `scripts/check-backup-restore.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون محدودیت مشترک ۴۰ نویسه در UI، load و backup افزوده شد |
 | `scripts/check-color-picker.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |
-| `scripts/check-demo-ui.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون disabled بودن کنترل‌های نمایشی و نبود href=# افزوده شد |
 | `scripts/check-editor-code-processing.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | انتظار قدیمی redirect حذف شد؛ 17 سناریوی پردازش paste در CI موفق شدند |
 | `scripts/check-editor-overlay-alignment.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آزمون ایستای selector و tokenهاست؛ اجرای آن در این دور انجام نشده است |
 | `scripts/check-index-integrity.mjs` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد |

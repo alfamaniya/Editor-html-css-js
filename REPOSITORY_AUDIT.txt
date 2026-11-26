@@ -1,7 +1,7 @@
 گزارش ممیزی مخزن — Editor-html-css-js
 شاخه: main
-مبنای snapshot ساختار: commit c35a5a0c1fd6a3dc18dcc1ac97a4c9efa4bc2927
-تعداد فایل‌ها در snapshot فعلی: 67
+مبنای snapshot ساختار: commit 7ab445897bfb916329a4c29ba43d4d7124a7e87f
+تعداد فایل‌ها در snapshot فعلی: 69
 روش: خواندن ایستای سورس در بازه‌های متوالی؛ تیک فقط برای فایل‌هایی که محتوای کاملشان خوانده شده است.
 
 راهنمای وضعیت:
@@ -13,22 +13,24 @@
 
 ==================== 1) درخت کامل مخزن ====================
 Editor-html-css-js/
-├── .github/
-│   └── workflows/
+├── [x] .github
+│   └── [x] workflows
 │       ├── [x] check-index.yml
 │       ├── [x] company-delivery.yml
 │       └── [x] deploy-pages.yml
 ├── [x] .gitignore
-├── docs/
-│   ├── architecture/
+├── [x] docs
+│   ├── [x] architecture
 │   │   ├── [x] .gitkeep
 │   │   ├── [x] main-files-audit.md
 │   │   └── [x] ui-sections-structure.md
-│   └── suggestions/
+│   └── [x] suggestions
 │       └── [x] tree-world-suggestion.md
 ├── [x] index 2.html
+├── [x] index-2.css
+├── [x] index-2.js
 ├── [x] index.html
-├── locales/
+├── [x] locales
 │   ├── [x] en.js
 │   └── [x] fa.js
 ├── [x] package-lock.json
@@ -36,8 +38,8 @@ Editor-html-css-js/
 ├── [x] README.md
 ├── [ ] REPOSITORY_AUDIT.txt
 ├── [x] script.js
-├── scripts/
-│   ├── build/
+├── [x] scripts
+│   ├── [x] build
 │   │   └── [x] .gitkeep
 │   ├── [x] build-test-editor.mjs
 │   ├── [x] check-backup-restore.mjs
@@ -51,71 +53,72 @@ Editor-html-css-js/
 │   ├── [x] check-settings-button-placement.mjs
 │   ├── [x] check-settings-dialog-keyboard.mjs
 │   ├── [x] check-standalone-editor.mjs
-│   ├── checks/
+│   ├── [x] checks
 │   │   └── [x] .gitkeep
 │   └── [x] run-checks.mjs
-├── src/
-│   ├── app/
+├── [x] src
+│   ├── [x] app
 │   │   └── [x] .gitkeep
-│   ├── features/
-│   │   ├── backup-restore/
+│   ├── [x] features
+│   │   ├── [x] backup-restore
 │   │   │   ├── [x] backup-restore.css
 │   │   │   └── [x] backup-restore.js
-│   │   ├── export/
+│   │   ├── [x] export
 │   │   │   └── [x] .gitkeep
-│   │   ├── help/
+│   │   ├── [x] help
 │   │   │   └── [x] .gitkeep
-│   │   ├── libraries/
+│   │   ├── [x] libraries
 │   │   │   └── [x] .gitkeep
-│   │   ├── quick-insert/
+│   │   ├── [x] quick-insert
 │   │   │   ├── [x] quick-insert.css
 │   │   │   └── [x] quick-insert.js
-│   │   ├── settings/
+│   │   ├── [x] settings
 │   │   │   ├── [x] settings.css
 │   │   │   └── [x] settings.js
-│   │   ├── suggestions/
-│   │   │   ├── data/
+│   │   ├── [x] suggestions
+│   │   │   ├── [x] data
 │   │   │   │   ├── [x] css-suggestions.js
 │   │   │   │   ├── [x] html-suggestions.js
 │   │   │   │   └── [x] js-suggestions.js
-│   │   │   ├── manager/
+│   │   │   ├── [x] manager
 │   │   │   │   ├── [x] suggestion-manager.css
 │   │   │   │   └── [x] suggestion-manager.js
-│   │   │   └── next-word/
+│   │   │   └── [x] next-word
 │   │   │       └── [x] next-word-suggestions.js
-│   │   ├── word-tree/
+│   │   ├── [x] word-tree
 │   │   │   └── [x] word-tree.js
-│   │   └── workspace/
-│   │       ├── file-manager/
+│   │   └── [x] workspace
+│   │       ├── [x] file-manager
 │   │       │   ├── [x] .gitkeep
 │   │       │   ├── [x] file-manager-drawer.js
 │   │       │   ├── [x] file-manager.css
 │   │       │   └── [x] file-manager.js
-│   │       ├── project-storage/
+│   │       ├── [x] project-storage
 │   │       │   └── [x] .gitkeep
-│   │       ├── search/
+│   │       ├── [x] search
 │   │       │   ├── [x] search-header.css
 │   │       │   └── [x] search-header.js
-│   │       └── toolbar/
+│   │       └── [x] toolbar
 │   │           ├── [x] toolbar-sidebar.css
 │   │           └── [x] toolbar-sidebar.js
-│   ├── shared/
-│   │   ├── dom/
+│   ├── [x] shared
+│   │   ├── [x] dom
 │   │   │   └── [x] .gitkeep
-│   │   ├── i18n/
+│   │   ├── [x] i18n
 │   │   │   └── [x] i18n.js
-│   │   ├── storage/
+│   │   ├── [x] storage
 │   │   │   └── [x] .gitkeep
-│   │   ├── ui/
+│   │   ├── [x] ui
 │   │   │   └── [x] .gitkeep
-│   │   └── validation/
+│   │   └── [x] validation
 │   │       ├── [x] .gitkeep
 │   │       └── [x] file-name.js
-│   └── styles/
+│   └── [x] styles
 │       └── [x] .gitkeep
 ├── [x] style.css
-└── tools/
+└── [x] tools
     └── [x] build-single-file.js
+
 ==================== 2) جدول فهرست فایل‌ها و وضعیت بررسی ====================
 | فایل | وضعیت بررسی/اصلاح | نتیجهٔ فعلی |
 |---|---|---|
@@ -127,7 +130,9 @@ Editor-html-css-js/
 | `docs/architecture/main-files-audit.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | آمار خطوط/نویسه و Blob SHAها با snapshot فعلی هماهنگ شد |
 | `docs/architecture/ui-sections-structure.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ارجاع‌های اجرایی Futures حذف و معماری واقعی textarea/ماژول‌های فعال مستند شد |
 | `docs/suggestions/tree-world-suggestion.md` | [x] خواندن کامل ایستا و بازبینی اصلاحات | ایراد قطعی در بررسی ایستا ثبت نشد؛ سند صریحاً مستندات نمایشی و غیر اجرایی معرفی شده است |
-| `index 2.html` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کنترل‌های پیاده‌سازی‌نشده غیرفعال و navigation/footer placeholder از href=# به span غیرفعال تبدیل شدند |
+| `index 2.html` | [x] استخراج CSS و JavaScript و بازبینی اتصال فایل‌ها | پوستهٔ HTML به `index-2.css` و `index-2.js` متصل شد؛ کدهای inline حذف شدند |
+| `index-2.css` | [x] استخراج از style داخلی نمونه | تمام قواعد CSS نمونه بدون تغییر طراحی به فایل مستقل منتقل شدند |
+| `index-2.js` | [x] استخراج دو script داخلی نمونه | منطق تعاملات، ذخیره‌سازی، import و preview به فایل مستقل منتقل شد |
 | `index.html` | [x] خواندن کامل ایستا و بازبینی اصلاحات | حداکثر طول نام فایل با ثابت مشترک ۴۰ هماهنگ و فایل validation پیش از script.js بارگذاری می‌شود |
 | `locales/en.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کلیدهای تکراری و ۲۶ کلید Visual Editor بدون مصرف حذف شدند |
 | `locales/fa.js` | [x] خواندن کامل ایستا و بازبینی اصلاحات | کلیدهای تکراری و ترجمهٔ قدیمی Editor V و کلید Visual Editor بدون مصرف حذف شدند |

@@ -1,153 +1,75 @@
-https://github.com/alfamaniya/Editor-html-css-js/actions/workflows/company-delivery.yml
 # Editor HTML / CSS / JavaScript
 
-ویرایشگر تحت وب برای نوشتن، مدیریت و پیش‌نمایش زندهٔ کدهای HTML، CSS و JavaScript؛ همراه با ابزارهای تکمیل کد، درج سریع، مدیریت فایل‌ها، تنظیمات، پشتیبان‌گیری و محیط طراحی بصری.
+ویرایشگر تحت وب برای نوشتن و اجرای زندهٔ کدهای HTML، CSS و JavaScript. مخزن شامل ویرایشگر اصلی، محیط ویرایش بصری، ابزارهای ساخت خروجی مستقل، آزمون‌های Node.js و گردش‌کارهای GitHub Actions است.
 
-> **مرجع توسعه، نسخهٔ چندفایلی مخزن است.** فایل‌های `index.html`، `style.css`، `script.js` و ماژول‌های `src/` سورس‌های قابل نگهداری برنامه هستند. فایل یکپارچهٔ `editor v.html` خروجی توزیع برای ارسال از طریق ایمیل و آزمایش در محیط شرکت است؛ آن فایل جایگزین ساختار سورس چندفایلی نیست.
-
----
+> **مرجع توسعه:** نسخهٔ چندفایلی شامل `index.html`، `style.css`، `script.js` و فایل‌های مرتبط در `src/` است. فایل‌های مستقل و فایل یکپارچه خروجی‌های تولیدشده‌اند و نباید به‌عنوان منبع اصلی توسعه ویرایش شوند.
 
 ## فهرست مطالب
 
-- [معرفی و مرزبندی اجزای پروژه](#معرفی-و-مرزبندی-اجزای-پروژه)
-- [درخت کامل مخزن](#درخت-کامل-مخزن)
-- [راهنمای فایل‌ها و پوشه‌ها](#راهنمای-فایلها-و-پوشهها)
-- [جریان اجرای برنامه](#جریان-اجرای-برنامه)
-- [ساخت خروجی‌های یکپارچه](#ساخت-خروجیهای-یکپارچه)
+- [ساختار و فناوری‌ها](#ساختار-و-فناوریها)
+- [درخت فعلی مخزن](#درخت-فعلی-مخزن)
+- [فایل‌های اصلی برنامه](#فایلهای-اصلی-برنامه)
+- [قابلیت‌های ماژولار](#قابلیتهای-ماژولار)
+- [نصب و دستورها](#نصب-و-دستورها)
+- [ساخت خروجی‌ها](#ساخت-خروجیها)
 - [آزمون و کنترل کیفیت](#آزمون-و-کنترل-کیفیت)
-- [استقرار و تحویل شرکتی](#استقرار-و-تحویل-شرکتی)
-- [ذخیره‌سازی و محدودیت‌های فعلی](#ذخیرهسازی-و-محدودیتهای-فعلی)
-- [راهنمای مشارکت و توسعه](#راهنمای-مشارکت-و-توسعه)
+- [GitHub Actions و انتشار](#github-actions-و-انتشار)
+- [محدودیت‌ها و موارد نیازمند اصلاح](#محدودیتها-و-موارد-نیازمند-اصلاح)
+- [مشارکت و توسعه](#مشارکت-و-توسعه)
 
-## معرفی و مرزبندی اجزای پروژه
+## ساختار و فناوری‌ها
 
-این مخزن از سه لایهٔ متمایز تشکیل شده است:
+پروژه از سه بخش اصلی تشکیل شده است:
 
-1. **برنامهٔ اصلی (Main Application):** نسخهٔ چندفایلی که از HTML، CSS، JavaScript و ماژول‌های پوشهٔ `src/` تشکیل شده است. این ساختار مرجع تغییرات و توسعهٔ قابلیت‌هاست.
-2. **ابزارهای توسعه و بسته‌بندی (Build & QA):** اسکریپت‌های پوشهٔ `scripts/` و `tools/` که خروجی‌های قابل حمل می‌سازند یا صحت فایل‌ها و رفتارهای مشخص را بررسی می‌کنند.
-3. **خروجی توزیع (Distribution Artifact):** فایل `editor v.html` که نسخهٔ یکپارچهٔ Editor و Visual Editor برای انتقال از طریق ایمیل و آزمایش در محیط محدود شرکت است. این فایل خروجی بسته‌بندی است، نه محل اصلی توسعهٔ قابلیت‌ها.
+1. **برنامهٔ اصلی:** صفحهٔ چندفایلی `index.html`، استایل عمومی `style.css`، منطق مرکزی `script.js` و قابلیت‌های ماژولار در `src/`.
+2. **ابزارهای ساخت و بررسی:** اسکریپت‌های Node.js در `scripts/` و ابزار سازگاری قدیمی در `tools/`.
+3. **خروجی‌های توزیع:** فایل `index-test-etitor.html` برای نسخهٔ مستقل Editor، فایل `standalone-visual-editor.html` برای نسخهٔ مستقل Visual Editor و فایل `editor v.html` برای پوستهٔ ترکیبی. این سه خروجی در زمان ساخت تولید می‌شوند و در درخت فعلی مخزن به‌عنوان فایل منبع حضور ندارند.
 
-### فناوری‌ها
+فناوری‌های قابل مشاهده در مخزن:
 
-- HTML برای ساختار رابط و پنل‌ها
-- CSS برای پوسته، چیدمان، واکنش‌گرایی و استایل قابلیت‌ها
-- JavaScript خام (Vanilla JS) برای منطق برنامه و ماژول‌ها
-- Node.js برای ابزارهای ساخت و آزمون
-- npm برای نصب و مدیریت وابستگی‌های توسعه و ساخت بستهٔ محلی CodeMirror 6
+- HTML و CSS
+- JavaScript بدون چارچوب (Vanilla JavaScript)
+- Node.js و npm برای ساخت و اجرای آزمون‌ها
+- esbuild برای تولید bundle محلی CodeMirror 6
+- GitHub Actions برای انتشار Pages و تحویل ایمیلی
+- Playwright در اسکریپت آزمون مرورگری؛ این بسته در وابستگی‌های فعلی `package.json` تعریف نشده است.
 
-## راه‌اندازی و استفاده از npm
+## درخت فعلی مخزن
 
-برای مدیریت دستورهای ساخت و بررسی پروژه، مخزن اکنون دارای `package.json` است؛ اجرای `npm install` فایل قفل معتبر `package-lock.json` را با نسخه‌های حل‌شده تولید می‌کند. CodeMirror 6 به‌عنوان وابستگی توسعه نصب می‌شود و با esbuild در مسیر `futures/editor/core/codemirror.js` بسته‌بندی می‌شود. فایل تولیدشده برای اجرای برنامه محلی است؛ کاربر نهایی برای اجرای برنامه به npm نیاز ندارد. فایل `package-lock.json` پس از نخستین اجرای موفق `npm install` ساخته می‌شود و باید همراه تغییرات وابستگی commit شود.
-
-پس از نصب Node.js (که npm را نیز همراه دارد)، در پوشهٔ اصلی مخزن این دستور را اجرا کنید:
-
-```bash
-npm install
-```
-
-دستورهای پرکاربرد:
-
-| دستور | کاربرد |
-|---|---|
-| `npm test` | بررسی یکپارچگی فایل ورودی اصلی |
-| `npm run check:index` | اجرای بررسی ساختار و کد `index.html` |
-| `npm run build:codemirror` | ساخت بستهٔ محلی CodeMirror 6 در `futures/editor/core/` |
-| `npm run build:main` | ساخت نسخهٔ مستقل ویرایشگر اصلی |
-| `npm run check:main` | اعتبارسنجی نسخهٔ مستقل ویرایشگر اصلی |
-| `npm run build:visual` | ساخت نسخهٔ مستقل Visual Editor |
-| `npm run check:visual` | اعتبارسنجی نسخهٔ مستقل Visual Editor |
-| `npm run build:combined` | ساخت فایل یکپارچه از خروجی‌های مستقل |
-| `npm run check:combined` | اعتبارسنجی فایل یکپارچهٔ ساخته‌شده |
-| `npm run build:all` | اجرای زنجیرهٔ کامل ساخت و اعتبارسنجی خروجی‌ها |
-
-`node_modules/` و فایل‌های موقت npm در Git نادیده گرفته می‌شوند. برای نصب وابستگی‌ها `npm install` و برای تولید bundle محلی CodeMirror 6 دستور `npm run build:codemirror` را اجرا کنید. اضافه‌شدن npm به معنی آنلاین‌شدن برنامه نیست؛ bundle تولیدشده باید از مسیر محلی بارگذاری شود.
-
-- GitHub Actions برای کنترل کیفیت، انتشار صفحات و فرایند تحویل شرکتی
-- Playwright در آزمون مرورگری خروجی یکپارچه
-
-## درخت کامل مخزن
-
-درخت زیر از فایل‌ها و پوشه‌های موجود در شاخهٔ `main` تهیه شده است. پوشه‌های دارای `.gitkeep` عمداً فعلاً محل رزرو برای توسعه‌های آینده هستند و نباید با ماژول پیاده‌سازی‌شده اشتباه گرفته شوند.
+این فهرست بر اساس فایل‌های موجود در شاخهٔ `main` تهیه شده است. فایل‌های خروجی موقت که اسکریپت‌های ساخت تولید می‌کنند، در این درخت نیامده‌اند.
 
 ```text
 Editor-html-css-js/
 ├── .github/
 │   └── workflows/
 │       ├── build-combined-editor.yml
-│       ├── build-futures-offline.yml
 │       ├── check-index.yml
 │       ├── company-delivery.yml
-│       ├── deploy-futures-preview.yml
 │       └── deploy-pages.yml
 ├── docs/
 │   ├── architecture/
-│   │   ├── .gitkeep
-│   │   └── main-files-audit.md
+│   │   ├── main-files-audit.md
+│   │   └── ui-sections-structure.md
 │   └── suggestions/
 │       └── tree-world-suggestion.md
 ├── .gitignore
-├── package.json
-├── package-lock.json
+├── README.md
 ├── editor v.html
-├── futures/
-│   ├── offline-dashboard-futures.html (generated standalone offline build)
-│   ├── header/
-│   │   ├── index.html
-│   │   ├── style.css
-│   │   └── script.js
-│   ├── file-manager/
-│   │   ├── index.html
-│   │   ├── style.css
-│   │   └── script.js
-│   ├── editor/
-│   │   ├── header/
-│   │   │   ├── index.html
-│   │   │   ├── style.css
-│   │   │   └── script.js
-│   │   ├── index.html
-│   │   ├── style.css
-│   │   ├── script.js
-│   │   ├── core/
-│   │   │   ├── README.md
-│   │   │   └── codemirror.js (generated local CodeMirror 6 bundle)
-│   │   ├── autocomplete/.gitkeep
-│   │   ├── color-picker/.gitkeep
-│   │   ├── editing-commands/.gitkeep
-│   │   ├── paste-processing/.gitkeep
-│   │   ├── search/.gitkeep
-│   │   └── syntax-highlighting/.gitkeep
-│   ├── editor-terminal/
-│   │   ├── index.html
-│   │   ├── style.css
-│   │   └── script.js
-│   ├── right-menu/
-│   │   ├── index.html
-│   │   ├── style.css
-│   │   └── script.js
-│   ├── live-preview/
-│   │   ├── index.html
-│   │   ├── style.css
-│   │   └── script.js
-│   └── preview-terminal/
-│       ├── index.html
-│       ├── style.css
-│       └── script.js
+├── index 2.html
 ├── index.html
 ├── locales/
 │   ├── en.js
 │   └── fa.js
+├── package.json
+├── package-lock.json
 ├── script.js
+├── style.css
 ├── scripts/
-│   ├── build-futures-offline.mjs
 │   ├── build-codemirror.mjs
 │   ├── codemirror-entry.js
 │   ├── build-combined-editor.mjs
 │   ├── build-standalone-visual-editor.mjs
 │   ├── build-test-editor.mjs
-│   ├── build/
-│   │   └── .gitkeep
-│   ├── checks/
-│   │   └── .gitkeep
 │   ├── check-backup-restore.mjs
 │   ├── check-color-picker.mjs
 │   ├── check-combined-editor-browser.mjs
@@ -158,383 +80,187 @@ Editor-html-css-js/
 │   ├── check-settings-button-placement.mjs
 │   ├── check-settings-dialog-keyboard.mjs
 │   ├── check-standalone-editor.mjs
-│   └── check-standalone-visual-editor.mjs
-├── src/
-│   ├── app/
+│   ├── check-standalone-visual-editor.mjs
+│   ├── build/
 │   │   └── .gitkeep
+│   └── checks/
+│       └── .gitkeep
+├── src/
+│   ├── app/.gitkeep
 │   ├── features/
 │   │   ├── backup-restore/
-│   │   │   ├── backup-restore.css
-│   │   │   └── backup-restore.js
 │   │   ├── export/.gitkeep
 │   │   ├── help/.gitkeep
 │   │   ├── libraries/.gitkeep
 │   │   ├── live-preview/
-│   │   │   └── element-inspector.js
 │   │   ├── quick-insert/
-│   │   │   ├── quick-insert.css
-│   │   │   └── quick-insert.js
 │   │   ├── settings/
-│   │   │   ├── settings.css
-│   │   │   └── settings.js
 │   │   ├── suggestions/
 │   │   │   ├── data/
-│   │   │   │   ├── css-suggestions.js
-│   │   │   │   ├── html-suggestions.js
-│   │   │   │   └── js-suggestions.js
 │   │   │   ├── manager/
-│   │   │   │   ├── suggestion-manager.css
-│   │   │   │   └── suggestion-manager.js
 │   │   │   └── next-word/
-│   │   │       └── next-word-suggestions.js
 │   │   ├── visual-editor/
-│   │   │   ├── README.md
-│   │   │   ├── visual-editor-remote.js
-│   │   │   ├── visual-editor-session.js
-│   │   │   ├── visual-editor.css
-│   │   │   ├── visual-editor.html
-│   │   │   └── visual-editor.js
 │   │   ├── word-tree/
-│   │   │   └── word-tree.js
 │   │   └── workspace/
 │   │       ├── file-manager/
-│   │       │   ├── .gitkeep
-│   │       │   ├── file-manager-drawer.js
-│   │       │   ├── file-manager.css
-│   │       │   └── file-manager.js
 │   │       ├── project-storage/.gitkeep
 │   │       ├── search/
-│   │       │   ├── search-header.css
-│   │       │   └── search-header.js
 │   │       └── toolbar/
-│   │           ├── toolbar-sidebar.css
-│   │           └── toolbar-sidebar.js
 │   ├── shared/
 │   │   ├── dom/.gitkeep
 │   │   ├── i18n/
-│   │   │   └── i18n.js
 │   │   ├── storage/.gitkeep
 │   │   ├── ui/.gitkeep
 │   │   └── validation/.gitkeep
 │   └── styles/.gitkeep
-├── style.css
 └── tools/
     └── build-single-file.js
 ```
 
-## راهنمای فایل‌ها و پوشه‌ها
+پوشه‌ها یا مسیرهایی که فقط `.gitkeep` دارند، محل رزرو هستند و به‌معنای وجود قابلیت پیاده‌سازی‌شده در آن مسیر نیستند.
 
-در این بخش نقش هر فایل موجود در درخت بالا توضیح داده شده است. توضیحات بر اساس محتوای فعلی فایل‌ها و مسئولیت قابل مشاهدهٔ آن‌هاست؛ پوشه‌های رزروشده جداگانه مشخص شده‌اند.
+## فایل‌های اصلی برنامه
 
-### ۱. فایل‌های اصلی برنامه
-
-| مسیر | مسئولیت و کارکرد |
+| مسیر | نقش فعلی |
 |---|---|
-| `index.html` | نقطهٔ ورود رابط ویرایشگر اصلی. ساختار هدر، تب‌های HTML/CSS/JS، ناحیهٔ ویرایش، پیش‌نمایش، فایل‌منیجر، سایدبار ابزارها، جست‌وجو، تنظیمات، درج سریع و پنجره‌های قابلیت‌ها را در خود دارد. همچنین فایل‌های CSS و JavaScript ماژولار را به صفحه متصل می‌کند. |
-| `style.css` | استایل پایه و اصلی برنامه؛ شامل پوستهٔ ویرایشگر، پنل کد و پیش‌نمایش، لایه‌های نمایش کد و هایلایت، چیدمان، رنگ‌ها، کنترل‌ها و قواعد واکنش‌گرا. تغییرات عمومی ظاهر برنامه باید با توجه به استایل‌های اختصاصی ماژول‌ها در این فایل انجام شوند. |
-| `script.js` | هستهٔ اصلی منطق ویرایشگر. مدیریت محتوای HTML/CSS/JS، تب‌ها و فایل‌های پروژه، پردازش کد و Paste، پیش‌نمایش زنده، تاریخچهٔ Undo/Redo، تعاملات ویرایش، کتابخانه‌های آماده، ابزارهای کد، رنگ و بخش‌هایی از تکمیل خودکار و هماهنگی قابلیت‌ها را بر عهده دارد. این فایل هنوز بخش بزرگی از منطق مرکزی را در خود نگه داشته است. |
-| `editor v.html` | خروجی HTML یکپارچهٔ حجیم برای ارسال محتوای کامل برنامه از طریق ایمیل و تست در محیط شرکت. این فایل باید از منابع چندفایلی ساخته/به‌روزرسانی شود؛ تغییر قابلیت‌ها مستقیماً در این خروجی انجام نشود، چون با بسته‌بندی مجدد از بین می‌رود. |
-| `locales/fa.js` | فرهنگ متن فارسی رابط کاربری؛ رشته‌ها و ترجمه‌های فارسی که سامانهٔ بین‌المللی‌سازی از آن‌ها استفاده می‌کند. |
-| `locales/en.js` | فرهنگ متن انگلیسی رابط کاربری؛ همتای انگلیسی فایل فارسی برای تغییر زبان و نمایش متن‌های رابط. |
+| `index.html` | نقطهٔ ورود و ساختار رابط ویرایشگر اصلی؛ شامل پنل‌های کد، پیش‌نمایش، ابزارها، تنظیمات و ارجاع به فایل‌های CSS و JavaScript |
+| `style.css` | استایل عمومی برنامه، چیدمان، پنل ویرایش، پیش‌نمایش، پوسته و قواعد واکنش‌گرا |
+| `script.js` | هستهٔ اصلی منطق؛ مدیریت ویرایش HTML/CSS/JS، فایل‌ها، پیش‌نمایش، پردازش Paste، Undo/Redo، جست‌وجو، تکمیل کد و ابزار انتخاب رنگ |
+| `editor v.html` | فایل یکپارچهٔ موجود در مخزن؛ شامل پوستهٔ ترکیبی و محتوای تعبیه‌شدهٔ دو محیط ویرایش |
+| `index 2.html` | صفحهٔ HTML مستقل با عنوان Alfa-Code Layout؛ در ورودی‌های ساخت و زنجیرهٔ اصلی برنامه به آن ارجاعی دیده نمی‌شود |
+| `locales/fa.js` و `locales/en.js` | داده‌های متن فارسی و انگلیسی رابط کاربری |
+| `package.json` | تعریف فرمان‌های npm و وابستگی‌های توسعه |
+| `package-lock.json` | قفل نسخه‌های حل‌شدهٔ وابستگی‌های npm |
 
-### ۲. قابلیت پشتیبان‌گیری و بازیابی
+## قابلیت‌های ماژولار
 
-| مسیر | مسئولیت و کارکرد |
+| مسیر | مسئولیت |
 |---|---|
-| `src/features/backup-restore/backup-restore.js` | منطق تهیه و بازیابی نسخهٔ پشتیبان. داده‌های قابل مدیریت مانند تنظیمات، پروژه و فایل‌ها، کتابخانه‌ها، بانک کلمات پیشنهادی و درج سریع را جمع‌آوری و اعتبارسنجی می‌کند. ساختار نسخه، نسخهٔ schema، محدودیت حجم و تعداد، کلیدهای مجاز و صحت شناسه‌ها بررسی می‌شوند تا دادهٔ نامعتبر یا ساختار ناامن وارد برنامه نشود. |
-| `src/features/backup-restore/backup-restore.css` | ظاهر پنل پشتیبان‌گیری و بازیابی، گزینه‌های انتخاب بخش‌ها، خلاصهٔ فایل، کنترل‌های ورود/خروج و پیام‌های وضعیت موفقیت، هشدار، خطا و پردازش؛ همراه با قواعد موبایل. |
+| `src/features/backup-restore/` | تهیه، اعتبارسنجی و بازیابی نسخهٔ پشتیبان |
+| `src/features/live-preview/element-inspector.js` | انتخاب المان از پیش‌نمایش و ارسال اطلاعات آن برای محیط ویرایش بصری |
+| `src/features/quick-insert/` | نوار درج سریع قطعه‌کدها |
+| `src/features/settings/` | تنظیمات ظاهر و رفتار ویرایشگر |
+| `src/features/suggestions/data/` | بانک پیشنهادهای HTML، CSS و JavaScript |
+| `src/features/suggestions/manager/` | مدیریت و نمایش بانک پیشنهادها |
+| `src/features/suggestions/next-word/` | پیشنهاد ادامهٔ کد بر اساس متن و زمینه |
+| `src/features/visual-editor/` | رابط، استایل، منطق و ارتباطات محیط طراحی بصری |
+| `src/features/word-tree/` | قابلیت درخت واژگان |
+| `src/features/workspace/file-manager/` | مدیریت فایل‌ها و پنل فایل‌منیجر |
+| `src/features/workspace/search/` | نوار و رابط جست‌وجو |
+| `src/features/workspace/toolbar/` | نوار ابزار کناری |
+| `src/shared/i18n/i18n.js` | زیرساخت تغییر زبان و اعمال ترجمه‌ها |
 
-### ۳. ابزار انتخاب المان در پیش‌نمایش
+## نصب و دستورها
 
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/features/live-preview/element-inspector.js` | کد تزریق‌شونده به سند پیش‌نمایش برای فعال‌کردن حالت انتخاب المان. هنگام حرکت اشاره‌گر المان زیر آن را مشخص می‌کند و اطلاعاتی مانند تگ، شناسه، کلاس‌ها، مسیر DOM، متن و انتخابگرهای CSS مرتبط را جمع می‌کند. پس از انتخاب، اطلاعات را با پیام به پنجرهٔ اصلی/محیط Visual Editor می‌فرستد. این فایل رابط انتخاب بین پیش‌نمایش زنده و ویرایش بصری است. |
+پیش‌نیاز: Node.js و npm.
 
-### ۴. درج سریع قطعه‌کدها
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/features/quick-insert/quick-insert.js` | ساخت نوار درج سریع متناسب با زبان فعال (HTML، CSS یا JavaScript). داده‌های پایه را از بانک پیشنهادها می‌گیرد، آیتم‌های سفارشی ذخیره‌شده را می‌خواند و امکان مدیریت تغییرات آیتم‌های داخلی مانند حذف یا بازنویسی را لحاظ می‌کند. آیتم انتخاب‌شده در محل ویرایش درج می‌شود. |
-| `src/features/quick-insert/quick-insert.css` | چیدمان افقی و پیمایش‌پذیر نوار درج سریع، دکمه‌ها، حالت‌های تعاملی و سازگاری با عرض کم صفحه را تعریف می‌کند. |
-
-### ۵. تنظیمات برنامه
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/features/settings/settings.js` | مدیریت پنل تنظیمات و اعمال گزینه‌ها روی برنامه. تنظیماتی مانند پوستهٔ روشن/تیره/سیستمی، رنگ تأکیدی، تراکم رابط، اندازهٔ قلم، شمارهٔ خطوط، شکستن خطوط، تکمیل خودکار، پیش‌نمایش خودکار، تأخیر پیش‌نمایش و نسبت پنل‌ها را بارگذاری، اعتبارسنجی و ذخیره می‌کند. سازگاری با کلیدهای ذخیره‌سازی قدیمی و API مورد استفادهٔ پشتیبان‌گیری نیز در این فایل دیده می‌شود. |
-| `src/features/settings/settings.css` | استایل صفحهٔ تنظیمات، سربرگ، بخش‌ها، کنترل‌ها، پیام‌های وضعیت، دکمه‌های ذخیره/بازگشت و چیدمان واکنش‌گرا را فراهم می‌کند. |
-
-### ۶. سامانهٔ پیشنهاد و تکمیل کد
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/features/suggestions/data/html-suggestions.js` | بانک واژگان و پیشنهادهای HTML؛ شامل تگ‌ها، ویژگی‌های عمومی و ویژگی‌های وابسته به تگ و داده‌های تکمیلی مرتبط با HTML. |
-| `src/features/suggestions/data/css-suggestions.js` | بانک پیشنهادهای CSS؛ شامل ویژگی‌ها، مقادیر، انتخابگرها، توابع، واحدها و الگوهای رایج CSS. |
-| `src/features/suggestions/data/js-suggestions.js` | بانک واژگان JavaScript و APIهای مرورگر؛ شامل کلمات کلیدی، اشیا، متدها، ویژگی‌ها و نام‌های متداول محیط مرورگر. |
-| `src/features/suggestions/next-word/next-word-suggestions.js` | موتور پیشنهاد ادامهٔ کد بر اساس زمینهٔ تایپ‌شده. با قواعد و الگوهای از پیش تعریف‌شده، برای HTML، CSS و JavaScript گزینه‌های بعدی را پیشنهاد می‌دهد؛ مانند تکمیل تگ، ویژگی، مقدار، عبارت یا الگوی متداول. این ماژول یک پایگاه قواعد و الگوهای curated است، نه مدل هوش مصنوعی یا parser کامل زبان. |
-| `src/features/suggestions/manager/suggestion-manager.js` | رابط و منطق مدیریت بانک‌های پیشنهاد. دسته‌ها و بانک‌های داخلی/سفارشی را نمایش می‌دهد، امکان افزودن و ویرایش و حذف و ذخیرهٔ بانک‌ها را فراهم می‌کند و داده‌های مدیریت‌شده را به بانک واقعی تکمیل خودکار متصل نگه می‌دارد. |
-| `src/features/suggestions/manager/suggestion-manager.css` | ظاهر پنجرهٔ مدیریت پیشنهادها، فهرست بانک‌ها، جست‌وجو، فرم ویرایش، دکمه‌ها و وضعیت تغییرات ذخیره‌نشده را تعیین می‌کند. |
-
-### ۷. محیط طراحی بصری (Visual Editor)
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/features/visual-editor/visual-editor.html` | سند HTML محیط مستقل Visual Editor. پنل کد، تب‌های HTML/CSS/JS، فضای طراحی و پیش‌نمایش، نوار وضعیت، کنترل‌های همگام‌سازی و کپی کد و نقاط اتصال رابط را تعریف می‌کند. |
-| `src/features/visual-editor/visual-editor.css` | استایل مستقل استودیوی طراحی بصری؛ شامل چیدمان دوپنلی کد و فضای طراحی، splitter قابل تغییر، ابزارها، کنترل‌ها، پنل ویژگی‌ها و قواعد واکنش‌گرا. |
-| `src/features/visual-editor/visual-editor.js` | منطق اصلی محیط طراحی بصری؛ مدیریت اجزا و طرح، پیش‌نمایش، هایلایت کد، انتخاب و ویرایش ویژگی‌های بصری و تولید/همگام‌سازی کد را انجام می‌دهد. |
-| `src/features/visual-editor/visual-editor-session.js` | مدیریت تراکنش ویرایش روی یک المان DOM. وضعیت اولیهٔ style، class و محتوای المان را ثبت می‌کند؛ تغییرات CSS را به‌صورت موقت پیش‌نمایش می‌دهد؛ در صورت تأیید تغییرات را تحویل می‌دهد و در صورت لغو وضعیت قبلی را بازمی‌گرداند. |
-| `src/features/visual-editor/visual-editor-remote.js` | اتصال Visual Editor به المانی که از پیش‌نمایش ویرایشگر اصلی انتخاب شده است. از پیام‌رسانی بین پنجره‌ها برای دریافت مشخصات هدف و اعمال تغییرات مجاز CSS روی المان زنده استفاده می‌کند و کنترل‌های ویرایش ویژگی‌ها را می‌سازد. |
-| `src/features/visual-editor/README.md` | مستندات اختصاصی معماری Visual Editor، نقش فایل‌های این پوشه و مسیر انتخاب المان از پیش‌نمایش تا اعمال و ثبت تغییرات در کد. |
-
-### ۸. درخت واژه و راهنمای ساختار کد
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/features/word-tree/word-tree.js` | ساخت درخت/نمای سلسله‌مراتبی واژه‌ها و ساختارهای HTML، نمایش جزئیات تگ یا ویژگی، فیلتر زبان و جست‌وجو، توضیحات و نمونهٔ کد و امکان کپی نمونه. این قابلیت برای شناخت رابطهٔ اجزای زبان و دسترسی سریع به توضیح هر مورد است. |
-
-### ۹. محیط کاری و ابزارهای Workspace
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/features/workspace/file-manager/file-manager.js` | بخش نمایشی فایل‌منیجر. آرایهٔ فایل‌های پروژه را به فهرست HTML تبدیل می‌کند، فایل فعال را مشخص می‌کند، علامت تغییرات ذخیره‌نشده را نشان می‌دهد و دکمه‌های بازکردن، تغییر نام و حذف را رندر می‌کند. منطق داده و عملیات اصلی فایل در هستهٔ ویرایشگر باقی می‌ماند. |
-| `src/features/workspace/file-manager/file-manager-drawer.js` | کنترل باز و بسته شدن فایل‌منیجر کشویی، پس‌زمینهٔ پوشاننده، وضعیت دسترس‌پذیری، مدیریت فوکوس و رفتار صفحه‌کلید/موبایل. |
-| `src/features/workspace/file-manager/file-manager.css` | استایل فایل‌منیجر، ردیف فایل‌ها، آیکون‌ها، نام‌ها، وضعیت ذخیره‌نشده، کنترل‌ها و چیدمان واکنش‌گرا. |
-| `src/features/workspace/search/search-header.js` | رفتار باز و بسته شدن کادر جست‌وجوی هدر، انتقال فوکوس به ورودی، انتخاب متن و بستن پنل با Escape. این ماژول پوستهٔ جست‌وجو را کنترل می‌کند؛ جست‌وجوی واقعی در کد توسط منطق اصلی برنامه انجام می‌شود. |
-| `src/features/workspace/search/search-header.css` | ظاهر هدر ثابت Workspace، ناحیهٔ جست‌وجو، دکمه‌های دسترسی سریع و اجزای مرتبط با سربرگ. |
-| `src/features/workspace/toolbar/toolbar-sidebar.js` | رفتار باز و بسته شدن سایدبار ابزارها، backdrop، فوکوس و وضعیت ARIA؛ برای یکسان بودن رفتار در نمایشگر دسکتاپ و موبایل. |
-| `src/features/workspace/toolbar/toolbar-sidebar.css` | ظاهر سایدبار کناری ابزارها، موقعیت ثابت، انیمیشن ورود/خروج، پس‌زمینه، دکمه‌ها و حالت‌های واکنش‌گرا. |
-
-### ۱۰. بین‌المللی‌سازی و ترجمه
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `src/shared/i18n/i18n.js` | زیرساخت مشترک ترجمه. زبان فعال را نگهداری می‌کند، متن‌ها و ویژگی‌های قابل ترجمهٔ عناصر را به‌روزرسانی می‌کند، تغییر زبان را با فضای تعبیه‌شده هماهنگ می‌کند و تغییرات DOM را برای ترجمهٔ عناصر تازه‌ساخته‌شده زیر نظر می‌گیرد. فرهنگ واژه‌ها در پوشهٔ `locales/` قرار دارد. |
-
-### ۱۱. ابزارهای ساخت و بسته‌بندی
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `scripts/build-test-editor.mjs` | سازندهٔ نسخهٔ یکپارچهٔ تستی ویرایشگر اصلی. فایل HTML، استایل‌ها و اسکریپت‌های ماژولار را از منابع اصلی می‌خواند، ارجاع‌های دارایی را با محتوای درون‌خطی جایگزین می‌کند و خروجی مستقل `index-test-etitor.html` را می‌سازد. منابع چندفایلی را مرجع نگه می‌دارد. |
-| `scripts/build-standalone-visual-editor.mjs` | ساخت نسخهٔ مستقل Visual Editor با جاسازی CSS و JavaScriptهای لازم در یک سند HTML. فایل‌های زیر `src/features/visual-editor/` و فایل‌های ترجمه و i18n منابع اصلی باقی می‌مانند. |
-| `scripts/build-combined-editor.mjs` | ترکیب نسخهٔ یکپارچهٔ ویرایشگر اصلی و نسخهٔ مستقل Visual Editor در پوستهٔ واحد و تولید `editor v.html`. این مرحله برای ساخت خروجی قابل ارسال و تست در محیط شرکت است، نه اجرای توسعهٔ روزمره روی سورس. |
-| `tools/build-single-file.js` | فرمان سازگاری قدیمی برای اجرای سازندهٔ یکپارچهٔ ویرایشگر اصلی از مسیر `scripts/build-test-editor.mjs`. منطق بسته‌بندی مستقلی ندارد و اجرای اسکریپت مرجع را به Node.js واگذار می‌کند. |
-
-### ۱۲. اسکریپت‌های کنترل کیفیت و آزمون
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `scripts/check-backup-restore.mjs` | آزمون منطق اعتبارسنجی نسخهٔ پشتیبان؛ داده‌های معتبر و نامعتبر و قواعد ساختار، محدودیت‌ها و بخش‌های قابل بازیابی را بررسی می‌کند. |
-| `scripts/check-color-picker.mjs` | آزمون توابع انتخاب و تبدیل رنگ؛ خواندن و تبدیل قالب‌های رنگی و توابع مرتبط با RGB/HSV و قالب خروجی را بررسی می‌کند. |
-| `scripts/check-combined-editor-browser.mjs` | آزمون مرورگری فایل یکپارچه با Playwright و سرور محلی؛ رفتار بارگذاری و تعاملات محیط ترکیبی را در مرورگر بررسی می‌کند. |
-| `scripts/check-combined-editor.mjs` | اعتبارسنجی ساختار فایل ترکیبی؛ بررسی وجود بسته‌های تعبیه‌شده، استخراج محتوای Base64، تطبیق دارایی‌های بسته‌بندی‌شده و بررسی سازگاری خروجی با منابع. |
-| `scripts/check-editor-code-processing.mjs` | آزمون پردازش Paste و استخراج اجزای یک سند HTML؛ حفظ ساختار، متن و کد و مدیریت منابع/دارایی‌های درون سند را بررسی می‌کند. |
-| `scripts/check-editor-overlay-alignment.mjs` | بررسی یکسان بودن ویژگی‌های مهم لایهٔ ورودی کد و لایهٔ هایلایت روی آن، برای جلوگیری از جابه‌جایی متن و ناهماهنگی نمایش کد. |
-| `scripts/check-index-integrity.mjs` | بررسی سلامت ساختار HTML و delimiterهای کد در فایل ورودی؛ تگ‌ها، پرانتزها، آکولادها، براکت‌ها و بخش‌های کدنویسی را از نظر بسته‌شدن و توازن بررسی می‌کند. |
-| `scripts/check-settings-button-placement.mjs` | بررسی ساختاری جایگاه دکمهٔ تنظیمات در `index.html`؛ از یکتا بودن دکمه و قرارگرفتن آن در هدر اصلی اطمینان می‌گیرد. |
-| `scripts/check-settings-dialog-keyboard.mjs` | آزمون رفتار صفحه‌کلید در پنجرهٔ تنظیمات و پنجرهٔ درج سریع، به‌ویژه مدیریت کلیدهای مربوط به بستن/تعامل با dialogها. |
-| `scripts/check-standalone-editor.mjs` | اعتبارسنجی خروجی مستقل ویرایشگر اصلی در برابر فایل‌های HTML، CSS و JavaScript منبع؛ کامل بودن و همگامی بستهٔ ساخته‌شده را کنترل می‌کند. |
-| `scripts/check-standalone-visual-editor.mjs` | اعتبارسنجی خروجی مستقل Visual Editor در برابر HTML، CSS و اسکریپت‌های مرجع؛ بررسی می‌کند منابع لازم به‌درستی در خروجی تعبیه شده باشند. |
-
-### ۱۳. مستندات و پیشنهادهای توسعه
-
-| مسیر | مسئولیت و کارکرد |
-|---|---|
-| `docs/architecture/main-files-audit.md` | گزارش بررسی ساختار سه فایل اصلی `index.html`، `style.css` و `script.js`؛ شامل محدوده‌های محتوایی، مشخصات snapshot، عملیات پیشنهادی برای هر بخش و نقشه انتقال تدریجی به معماری ماژولار. |
-| `docs/suggestions/tree-world-suggestion.md` | مستند متنی/درختی برای قواعد پیشنهاد ادامهٔ کد HTML، CSS و JavaScript. این فایل برای مطالعه و مستندسازی است و در زمان اجرای برنامه بارگذاری یا وارد نمی‌شود. |
-| `src/features/visual-editor/README.md` | راهنمای جزئی‌تر قابلیت طراحی بصری که در بخش Visual Editor توضیح داده شد. |
-| `README.md` | همین سند؛ معرفی پروژه، نمایش درخت واقعی مخزن، توضیح فایل‌ها، تفکیک سورس از خروجی بسته‌بندی و راهنمای توسعه. |
-
-### ۱۴. فایل‌های رزرو شده با `.gitkeep`
-
-فایل `.gitkeep` صرفاً برای نگه‌داشتن یک پوشهٔ خالی در Git استفاده شده است؛ منطق اجرایی ندارد. مسیرهای زیر در ساختار فعلی رزرو شده‌اند:
-
-- `docs/architecture/.gitkeep`: نشانگر نگهدارنده پوشه معماری؛ گزارش بررسی فایل‌های اصلی در همین پوشه و در فایل `main-files-audit.md` نگهداری می‌شود.
-- `scripts/build/.gitkeep`: محل آتی سازمان‌دهی ابزارهای ساخت.
-- `scripts/checks/.gitkeep`: محل آتی دسته‌بندی آزمون‌ها.
-- `src/app/.gitkeep`: محل آتی کدهای سطح برنامه و راه‌اندازی.
-- `futures/editor/autocomplete/.gitkeep`: محل آتی ماژول مستقل تکمیل خودکار.
-- `futures/editor/color-picker/.gitkeep`: محل آتی انتقال مستقل انتخابگر رنگ.
-- `futures/editor/editing-commands/.gitkeep`: محل آتی فرمان‌های ویرایش.
-- `futures/editor/paste-processing/.gitkeep`: محل آتی پردازش Paste.
-- `futures/editor/search/.gitkeep`: محل آتی موتور جست‌وجوی کد.
-- `futures/editor/syntax-highlighting/.gitkeep`: محل آتی هایلایت نحوی.
-- `src/features/export/.gitkeep`: محل آتی قابلیت‌های خروجی گرفتن.
-- `src/features/help/.gitkeep`: محل آتی راهنما و آموزش درون‌برنامه‌ای.
-- `src/features/libraries/.gitkeep`: محل آتی ماژول مستقل مدیریت کتابخانه‌ها.
-- `src/features/workspace/file-manager/.gitkeep`: نشانگر پوشه‌ای که فایل‌های واقعی فایل‌منیجر نیز در آن قرار دارند.
-- `src/features/workspace/project-storage/.gitkeep`: محل آتی لایهٔ مستقل ذخیره‌سازی پروژه.
-- `src/shared/dom/.gitkeep`: محل آتی توابع مشترک DOM.
-- `src/shared/storage/.gitkeep`: محل آتی سرویس‌های مشترک ذخیره‌سازی.
-- `src/shared/ui/.gitkeep`: محل آتی اجزای رابط کاربری مشترک.
-- `src/shared/validation/.gitkeep`: محل آتی اعتبارسنجی‌های مشترک.
-- `src/styles/.gitkeep`: محل آتی سازمان‌دهی استایل‌های سراسری.
-
-وجود این پوشه‌ها به معنی پیاده‌سازی کامل قابلیت مربوطه نیست؛ فقط جایگاه معماری پیشنهادی/رزروشده را حفظ می‌کند.
-
-## ساختار هفت بخش اصلی رابط کاربری
-
-برای چیدمان جدید، هفت بخش مستقل در پوشهٔ ریشهٔ `futures/` قرار دارند: `header`، `file-manager`، `editor`، `editor-terminal`، `right-menu`، `live-preview` و `preview-terminal`. هر بخش سه فایل `index.html`، `style.css` و `script.js` دارد. همین قرارداد برای قابلیت‌های فرزند نیز رعایت می‌شود؛ برای نمونه هدر اختصاصی ویرایشگر در `futures/editor/header/` و قابلیت جست‌وجوی آینده در `futures/editor/search/` هرکدام سه فایل مستقل دارند.
-
-موتور Monaco از Futures حذف شده و CodeMirror 6 به‌صورت bundle محلی در `futures/editor/core/codemirror.js` بارگذاری می‌شود. فایل `futures/editor/script.js` این موتور را به تب‌های HTML، CSS و JavaScript متصل می‌کند و وضعیت مستقل هر تب، Undo، Redo و Clear را مدیریت می‌کند. منوی سمت راست عمداً بدون قابلیت تعریف‌شده باقی مانده تا محتوای آن بعداً مشخص شود. فایل‌های قدیمی مانند `src/features/live-preview/element-inspector.js` و ماژول‌های `src/features/workspace/file-manager/` حفظ شده‌اند و انتقال آن‌ها در مرحله‌ای جداگانه انجام خواهد شد. جزئیات قرارداد در [مستند ساختار هفت بخش](docs/architecture/ui-sections-structure.md) ثبت شده است.
-
-## جریان اجرای برنامه
-
-نمای کلی وابستگی‌ها به این شکل است:
-
-```text
-index.html
-  ├── style.css
-  ├── CSS قابلیت‌ها
-  │    ├── quick-insert
-  │    ├── workspace (toolbar / file-manager / search)
-  │    ├── settings
-  │    ├── suggestions manager
-  │    └── backup-restore
-  └── JavaScript
-       ├── بانک‌های پیشنهاد HTML / CSS / JS
-       ├── suggestion manager و next-word suggestions
-       ├── quick-insert
-       ├── workspace toolbar و file-manager view
-       ├── script.js (هستهٔ اصلی)
-       ├── settings
-       ├── backup-restore
-       ├── word-tree
-       ├── file-manager drawer و search header
-       ├── locales/en.js و locales/fa.js
-       └── shared/i18n/i18n.js
-
-Visual Editor مستقل:
-visual-editor.html
-  ├── visual-editor.css
-  ├── visual-editor-session.js
-  ├── visual-editor.js
-  ├── visual-editor-remote.js
-  └── ترجمه و i18n مشترک
-```
-
-ترتیب واقعی بارگذاری اسکریپت‌ها در `index.html` اهمیت دارد؛ ماژول‌هایی که بانک داده یا API مشترک می‌سازند باید پیش از ماژول مصرف‌کننده بارگذاری شوند. هنگام افزودن یک فایل جدید، هم ارجاع آن در HTML و هم فهرست ورودی‌های سازنده‌های مستقل و آزمون‌های مرتبط را بررسی کنید.
-
-
-### وضعیت موتور ویرایشگر Futures
-
-موتور Monaco و فایل‌های اختصاصی آن از Futures حذف شده‌اند. CodeMirror 6 اکنون از bundle محلی `futures/editor/core/codemirror.js` بارگذاری می‌شود. منطق اتصال در `futures/editor/script.js` قرار دارد؛ تب‌های HTML، CSS و JavaScript هرکدام وضعیت مستقل دارند و دکمه‌های Undo، Redo و Clear به ویرایشگر متصل‌اند.
-
-ساختار فعلی قسمت Editor:
-
-```text
-futures/editor/
-├── index.html
-├── style.css
-├── script.js
-├── core/
-│   ├── README.md
-│   └── codemirror.js
-├── header/
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-├── autocomplete/.gitkeep
-├── color-picker/.gitkeep
-├── editing-commands/.gitkeep
-├── paste-processing/.gitkeep
-├── search/.gitkeep
-└── syntax-highlighting/.gitkeep
-```
-
-## ساخت خروجی‌های یکپارچه
-
-خروجی‌های یکپارچه برای شرایطی هستند که انتقال چندین فایل ممکن نیست؛ برای نمونه، ارسال متن کامل از طریق ایمیل به محیط شرکت.
-
-### نقش خروجی‌ها
-
-| خروجی | تولیدکننده | کاربرد |
-|---|---|---|
-| `index-test-etitor.html` | `scripts/build-test-editor.mjs` | نسخهٔ مستقل ویرایشگر اصلی برای آزمون/بسته‌بندی |
-| `standalone-visual-editor.html` | `scripts/build-standalone-visual-editor.mjs` | نسخهٔ مستقل محیط طراحی بصری |
-| `editor v.html` | `scripts/build-combined-editor.mjs` | بستهٔ نهایی ترکیبی برای ارسال ایمیلی و تست شرکت |
-
-فایل‌های میانی ممکن است در زمان اجرای فرایند ساخت ایجاد شوند و لزوماً در درخت سورس نگهداری نشوند. فایل `editor v.html` موجود در مخزن یک خروجی حجیم آمادهٔ توزیع است. پس از تغییر منابع، فرایند ساخت و اعتبارسنجی مربوطه باید اجرا شود تا خروجی توزیع با سورس هماهنگ بماند.
-
-**قاعدهٔ نگهداری:** قابلیت جدید را در فایل ماژولار/منبع مربوطه پیاده‌سازی کنید؛ سپس ورودی‌های build و check را در صورت نیاز به‌روز کنید و خروجی توزیع را از روی منابع بسازید. از ویرایش دستی و مستقل فایل یکپارچه خودداری کنید.
-
-## ساخت نسخهٔ مستقل آفلاین Futures
-
-فایل `futures/offline-dashboard-futures.html` خروجی مستقل پروژهٔ جدید Futures است و با فایل قدیمی `editor v.html` هیچ ارتباط تولیدی ندارد. سورس مرجع همچنان ساختار چندفایلی پوشهٔ `futures/` است.
-
-ساخت دستی خروجی:
+در ریشهٔ مخزن اجرا کنید:
 
 ```bash
-npm run build:offline-futures
+npm install
 ```
 
-اسکریپت `scripts/build-futures-offline.mjs` تمام فایل‌های زیر `futures/` را به‌صورت بازگشتی می‌خواند (به‌جز خود خروجی و پوشه‌های موقت/وابستگی)، آن‌ها را بر اساس نوع در دسته‌هایی مانند HTML components، Stylesheets، JavaScript، Libraries، Assets و Data and documentation طبقه‌بندی می‌کند و محتوای همهٔ فایل‌ها را در کاتالوگ داخلی HTML نگه می‌دارد. فایل‌های CSS و JavaScript محلی ارجاع‌شده از `futures/index.html` در محل مناسب درون‌خطی می‌شوند و منابع تصویری/فونت محلی ارجاع‌شده نیز به Data URL تبدیل می‌شوند.
+فرمان‌های تعریف‌شده در `package.json`:
 
-Workflow مستقل `.github/workflows/build-futures-offline.yml` پس از تغییر سورس Futures یا اجرای دستی، خروجی را بازسازی و در صورت تغییر، فقط فایل آفلاین Futures را commit می‌کند. Workflow انتشار `.github/workflows/deploy-futures-preview.yml` نیز پیش از انتشار Pages همین سازنده را اجرا می‌کند. بنابراین فایل آفلاین و نسخهٔ پیش‌نمایش از یک سورس ساخته می‌شوند.
+| فرمان | عملکرد |
+|---|---|
+| `npm test` | اجرای `npm run check:index` |
+| `npm run check:index` | بررسی ساختار HTML و بخش‌هایی از نحو کد در `index.html` |
+| `npm run build:codemirror` | ساخت bundle محلی CodeMirror 6 با esbuild |
+| `npm run build:main` | تولید `index-test-etitor.html` از منابع ویرایشگر اصلی |
+| `npm run check:main` | اعتبارسنجی خروجی مستقل ویرایشگر اصلی |
+| `npm run build:visual` | تولید `standalone-visual-editor.html` |
+| `npm run check:visual` | اعتبارسنجی خروجی مستقل Visual Editor |
+| `npm run build:combined` | ترکیب دو خروجی مستقل در `editor v.html` |
+| `npm run check:combined` | بررسی فایل ترکیبی و محتوای تعبیه‌شده |
+| `npm run build:all` | اجرای زنجیرهٔ ساخت CodeMirror، Editor، Visual Editor و فایل ترکیبی همراه با بررسی‌های مربوط |
 
-**محدودیت مهم:** این سازنده، تمام فایل‌ها را در کاتالوگ دسته‌بندی‌شده نگه می‌دارد، اما برای اجرای برنامه فقط منابع محلی قابل ارجاع از سند ورودی را به‌صورت خودکار درون‌خطی می‌کند. وابستگی‌های JavaScript مبتنی بر `type="module"`، بارگذاری پویا با `import()` یا `fetch()`، Workerها و URLهای خارجی نیازمند رسیدگی جداگانه‌اند و در گزارش build به‌عنوان هشدار اعلام می‌شوند؛ وجود آن‌ها به‌تنهایی به معنی آفلاین بودن کامل نیست. قبل از تحویل هر نسخه، فایل خروجی باید مستقیماً در مرورگر گوشی و در حالت بدون اینترنت آزمایش شود.
+## ساخت خروجی‌ها
 
----
+### ویرایشگر اصلی
+
+```bash
+npm run build:main
+npm run check:main
+```
+
+اسکریپت `scripts/build-test-editor.mjs` منابع معرفی‌شده در manifest داخلی خود را از `index.html` می‌خواند، CSS و JavaScript را در سند مستقل جاسازی می‌کند و خروجی را با نام `index-test-etitor.html` می‌نویسد. نام فایل خروجی در اسکریپت با همین املای `etitor` تعریف شده است.
+
+### ویرایشگر بصری
+
+```bash
+npm run build:visual
+npm run check:visual
+```
+
+منابع `src/features/visual-editor/` به‌همراه فایل‌های زبان و بین‌المللی‌سازی در یک سند مستقل با نام `standalone-visual-editor.html` جاسازی می‌شوند.
+
+### خروجی ترکیبی
+
+```bash
+npm run build:combined
+npm run check:combined
+```
+
+اسکریپت ترکیب، دو سند مستقل را در فایل `editor v.html` قرار می‌دهد و پوسته‌ای برای جابه‌جایی میان Editor و Visual Editor می‌سازد.
+
+### بستهٔ محلی CodeMirror
+
+```bash
+npm run build:codemirror
+```
+
+اسکریپت `scripts/build-codemirror.mjs` ورودی `scripts/codemirror-entry.js` را با esbuild بسته‌بندی می‌کند و در مسیر `futures/editor/core/codemirror.js` می‌نویسد. این مسیر در حال حاضر در درخت مخزن وجود ندارد و اجرای فرمان آن را دوباره ایجاد می‌کند. همچنین در HTML اصلی، ارجاع فعالی به این bundle مشاهده نمی‌شود؛ بنابراین نباید فرض کرد که CodeMirror در رابط فعلی بارگذاری و استفاده می‌شود.
+
 ## آزمون و کنترل کیفیت
 
-اسکریپت‌های کنترل کیفیت با Node.js اجرا می‌شوند. برای آزمون مرورگری ترکیب‌شده، وابستگی Playwright نیز لازم است.
+اسکریپت‌های بررسی موجود عبارت‌اند از:
 
-نمونهٔ اجرای بررسی‌های مستقل:
+- `check-index-integrity.mjs`: بررسی ساختار و جفت‌شدن تگ‌ها و برخی جداکننده‌های کد در صفحهٔ اصلی.
+- `check-backup-restore.mjs`: آزمون منطق اعتبارسنجی و بازیابی داده‌های پشتیبان.
+- `check-color-picker.mjs`: آزمون توابع تبدیل و تشخیص رنگ.
+- `check-editor-code-processing.mjs`: آزمون پردازش Paste و استخراج HTML/CSS/JavaScript.
+- `check-editor-overlay-alignment.mjs`: بررسی قواعد هم‌ترازی لایهٔ ورودی و هایلایت.
+- `check-settings-button-placement.mjs`: بررسی محل قرارگیری دکمهٔ تنظیمات.
+- `check-settings-dialog-keyboard.mjs`: بررسی رفتار صفحه‌کلید در پنجره‌های تنظیمات.
+- `check-standalone-editor.mjs`: اعتبارسنجی خروجی مستقل Editor.
+- `check-standalone-visual-editor.mjs`: اعتبارسنجی خروجی مستقل Visual Editor.
+- `check-combined-editor.mjs`: اعتبارسنجی ساختار و منابع فایل ترکیبی.
+- `check-combined-editor-browser.mjs`: آزمون مرورگری با Chromium و Playwright؛ این اسکریپت در فرمان‌های npm فعلی فراخوانی نشده است.
 
-```bash
-node scripts/check-index-integrity.mjs
-node scripts/check-backup-restore.mjs
-node scripts/check-color-picker.mjs
-node scripts/check-editor-code-processing.mjs
-node scripts/check-editor-overlay-alignment.mjs
-node scripts/check-settings-button-placement.mjs
-node scripts/check-settings-dialog-keyboard.mjs
-node scripts/check-standalone-editor.mjs
-node scripts/check-standalone-visual-editor.mjs
-node scripts/check-combined-editor.mjs
-```
+برای اجرای بررسی‌های پایه و ساخت خروجی‌ها از فرمان‌های npm بالا استفاده کنید. وجود یک اسکریپت آزمون در مخزن به‌تنهایی به معنی اجرای خودکار آن در CI نیست.
 
-آزمون مرورگری خروجی ترکیبی:
+## GitHub Actions و انتشار
 
-```bash
-node scripts/check-combined-editor-browser.mjs
-```
+فایل‌های Workflow موجود در شاخهٔ `main`:
 
-برای اجرای آزمون‌های مرورگری باید Playwright و مرورگر Chromium در محیط Node.js نصب و آماده باشند. این دستورات، نام و هدف آزمون‌های موجود را نشان می‌دهند؛ موفقیت اجرای آن‌ها باید از خروجی واقعی همان اجرا بررسی شود.
+| فایل | عملکرد و وضعیت قابل مشاهده |
+|---|---|
+| `.github/workflows/deploy-pages.yml` | فعال؛ با push به شاخهٔ `main` یا اجرای دستی، سایت را با GitHub Pages منتشر می‌کند |
+| `.github/workflows/company-delivery.yml` | فعال؛ اجرای دستی برای آماده‌سازی و ارسال نسخهٔ انتخاب‌شدهٔ Main Editor، Visual Editor یا Combined Editor از طریق ایمیل |
+| `.github/workflows/check-index.yml` | تعریف شده، اما job اصلی آن با شرط `if: false` غیرفعال است |
+| `.github/workflows/build-combined-editor.yml` | تعریف شده، اما job ساخت آن با شرط `if: false` غیرفعال است |
 
-## استقرار و تحویل شرکتی
+Workflow تحویل ایمیلی به Secrets مربوط به SMTP نیاز دارد. گیرنده و نوع خروجی از ورودی‌های اجرای دستی انتخاب می‌شوند و ارسال فقط در صورت فعال‌کردن تأیید ارسال انجام می‌شود.
 
-### کنترل کیفیت و ترتیب ساخت
+## محدودیت‌ها و موارد نیازمند اصلاح
 
-فایل `.github/workflows/check-index.yml` مرحلهٔ اول CI است. این Workflow ابتدا `scripts/check-index-integrity.mjs` را اجرا می‌کند، سپس ساختار ورودی، ارجاع دارایی‌ها و آزمون‌های سورس را بررسی می‌کند. در صورت شکست این مرحله، مراحل بعدی آغاز نمی‌شوند.
+موارد زیر در کد یا پیکربندی فعلی مشاهده شده‌اند و صرفاً برای شفافیت مستند شده‌اند؛ این README آن‌ها را اصلاح نمی‌کند:
 
-فایل `.github/workflows/build-combined-editor.yml` فقط پس از موفقیت `Check index file` روی شاخهٔ `main` اجرا می‌شود. این Workflow همان commit اعتبارسنجی‌شده را دریافت می‌کند، نسخهٔ مستقل Editor و Visual Editor را می‌سازد، سپس `editor v.html` را تولید و اعتبارسنجی می‌کند. خروجی نهایی به‌صورت artifact با نام `editor-v-html` برای ۱۴ روز در GitHub Actions نگهداری می‌شود؛ این فرایند فایل حجیم را خودکار به سورس مخزن commit نمی‌کند.
+1. **ارجاع باقیمانده به مسیر حذف‌شده:** در `index.html` یک لینک به `futures/index.html` وجود دارد، اما چنین فایلی در شاخهٔ فعلی مخزن نیست. این لینک در رابط کاربری به مقصد ناموجود می‌رود.
+2. **مسیر خروجی قدیمی CodeMirror:** `scripts/build-codemirror.mjs` هنوز bundle را در `futures/editor/core/codemirror.js` تولید می‌کند. اجرای `npm run build:codemirror` پوشهٔ حذف‌شدهٔ `futures/` را دوباره ایجاد خواهد کرد.
+3. **عدم اتصال bundle CodeMirror به صفحهٔ اصلی:** در ارجاع‌های فایل `index.html`، بارگذاری bundle تولیدشدهٔ CodeMirror دیده نمی‌شود. وجود وابستگی‌ها و اسکریپت ساخت به‌تنهایی نشان‌دهندهٔ استفادهٔ برنامه از آن نیست.
+4. **غیرفعال بودن کنترل کیفیت خودکار:** Workflow مربوط به `check-index.yml` با `if: false` اجرا نمی‌شود؛ در نتیجه pushها این job را به‌عنوان کنترل خودکار اجرا نمی‌کنند.
+5. **غیرفعال بودن Workflow ساخت Combined:** فایل `build-combined-editor.yml` نیز job غیرفعال دارد. ساخت خروجی ترکیبی از طریق فرمان npm یا Workflow تحویل ایمیلی قابل درخواست است، اما این Workflow ساخت به‌صورت خودکار اجرا نمی‌شود.
+6. **وابستگی تعریف‌نشدهٔ Playwright:** اسکریپت `scripts/check-combined-editor-browser.mjs` از بستهٔ `playwright` استفاده می‌کند، اما Playwright در `dependencies` یا `devDependencies` فعلی `package.json` ثبت نشده و فرمان npm مستقیمی نیز برای این آزمون تعریف نشده است.
+7. **خروجی‌های ساخت در مخزن ثبت نشده‌اند:** فایل‌های `index-test-etitor.html` و `standalone-visual-editor.html` توسط اسکریپت‌ها تولید می‌شوند و در درخت فعلی وجود ندارند. بررسی‌کننده‌های مستقل و ترکیبی برای اجرا به خروجی‌های ساخته‌شده نیاز دارند.
+8. **صفحهٔ مستقل با نقش نامشخص:** فایل `index 2.html` با عنوان Alfa-Code Layout در مخزن وجود دارد، اما در ورودی‌های ساخت اصلی و فهرست فایل‌های مورد استفادهٔ `index.html` نقشی برای آن پیدا نشد. ارتباط آن با برنامه باید مشخص شود.
+9. **بخش‌هایی از منطق هنوز متمرکز هستند:** بخش عمده‌ای از منطق برنامه همچنان در `script.js` قرار دارد و `index.html` و `style.css` نیز ساختار و استایل‌های قابل‌توجهی را در خود نگه داشته‌اند. پوشه‌های رزرو‌شده در `src/app`، `src/shared` و برخی قابلیت‌ها هنوز صرفاً دارای `.gitkeep` هستند.
 
-### انتشار GitHub Pages
+## مشارکت و توسعه
 
-فایل `.github/workflows/deploy-pages.yml` فقط پس از موفقیت `Build Combined Editor` اجرا می‌شود. انتشار، همان commit اعتبارسنجی‌شده را دریافت می‌کند و دیگر با هر Push به‌صورت مستقل اجرا نمی‌شود؛ بنابراین شکست بررسی سورس یا ساخت فایل تکی، انتشار را متوقف می‌کند.
-
-### تحویل ایمیلی به شرکت
-
-فایل `.github/workflows/company-delivery.yml` فرایند دستی تحویل را مدیریت می‌کند. اجرای آن نیازمند تأیید صریح ورودی workflow و پیکربندی Secretهای SMTP در تنظیمات GitHub است. برای گزینهٔ Futures، ابتدا فایل `futures/offline-dashboard-futures.html` از سورس شاخهٔ `main` دوباره ساخته می‌شود؛ سپس محتوای آن بدون پیوست و به‌صورت خودکار به بخش‌های متوالی با سقف ۹۰۰ کیلوبایت محتوای UTF-8 برای هر ایمیل تقسیم و هر بخش در یک ایمیل جداگانه ارسال می‌شود. هر ایمیل شناسه و شمارهٔ بخش را فقط در کامنت HTML (`<!-- ... -->`) دارد و متن توضیحی خارج از کامنت به بدنه افزوده نمی‌شود. برای بازسازی فایل، محتوای بین نشانگرهای `begin` و `end` هر بخش را به ترتیب شمارهٔ بخش به هم متصل کنید؛ نشانگرها جزو فایل اصلی نیستند. سازنده پیش از ارسال، برابری بایت‌به‌بایت هر بخش استخراج‌شده با محتوای منبع را کنترل می‌کند. انتخاب گیرنده بین نشانی شرکت و Gmail آزمایشی باقی مانده است. برای نسخه‌های قدیمی‌تر، انتخاب‌های قبلی workflow حفظ شده‌اند.
-
-## ذخیره‌سازی و محدودیت‌های فعلی
-
-- تنظیمات و داده‌های قابل مدیریت در حال حاضر از سازوکار ذخیره‌سازی مرورگر، از جمله `localStorage`، استفاده می‌کنند.
-- کلیدهای ذخیره‌سازی و ساختار داده‌ها در ماژول‌های مربوطه تعریف شده‌اند؛ هنگام تغییر schema، سازگاری نسخه‌های قبلی و ابزار Backup/Restore را نیز بررسی کنید.
-- در ساختار فعلی مخزن، پوشهٔ `src/features/workspace/project-storage/` هنوز فقط رزرو شده است؛ وجود آن به‌تنهایی به معنی وجود سرویس مستقل ذخیره‌سازی پروژه یا ذخیره‌سازی ابری نیست.
-- ذخیره‌سازی ابری در آینده می‌تواند به‌صورت یک لایهٔ مستقل به معماری افزوده شود؛ اما نباید قابلیت ابری را تا زمان پیاده‌سازی و اتصال واقعی، ویژگی موجود معرفی کرد.
-- بانک‌های پیشنهاد و آیتم‌های درج سریع، داده‌های داخلی و سفارشی دارند؛ تغییرات این بخش‌ها باید با مدیریت پیشنهادها و پشتیبان‌گیری هماهنگ بماند.
-
-## راهنمای مشارکت و توسعه
-
-1. پیش از تغییر، مسئولیت فایل و ماژول مرتبط را در همین راهنما پیدا کنید.
-2. منطق جدید را تا حد امکان در ماژول مستقل زیر `src/features/` پیاده‌سازی کنید؛ از بزرگ‌تر کردن غیرضروری `script.js` پرهیز کنید.
-3. اگر قابلیت به منطق مرکزی وابسته است، API و نقطهٔ اتصال آن را روشن و محدود نگه دارید.
-4. برای هر قابلیت، استایل اختصاصی را در CSS همان قابلیت قرار دهید؛ قواعد عمومی را فقط در صورت نیاز در `style.css` تغییر دهید.
-5. ترتیب بارگذاری فایل‌ها در `index.html` را بررسی کنید.
-6. اگر فایل جدید باید در نسخهٔ یکپارچه وجود داشته باشد، فهرست ورودی‌های سازنده و checker متناظر را به‌روز کنید.
-7. آزمون‌های مرتبط را اجرا کنید و نتیجهٔ واقعی را بررسی کنید.
-8. پس از تأیید، خروجی‌های توزیع را از منابع چندفایلی بازتولید کنید.
-9. در تغییر ساختار پوشه‌ها یا فایل‌ها، درخت و توضیحات همین README را هم‌زمان به‌روز کنید.
-
----
+- تغییر قابلیت‌ها را در فایل‌های منبع چندفایلی انجام دهید، نه در خروجی‌های تولیدشده.
+- پس از تغییر منابع، خروجی مستقل مربوط را دوباره بسازید و checker متناظر را اجرا کنید.
+- اگر مسیر یا ترتیب فایل‌های CSS/JavaScript در `index.html` تغییر کرد، manifestهای مورد استفاده در اسکریپت ساخت و بررسی مستقل نیز باید با آن هماهنگ شوند.
+- پیش از فعال‌کردن Workflowهای غیرفعال، وابستگی‌ها و فرمان‌های آن‌ها را بررسی کنید.
+- پس از هر تغییر ساختاری، این README و درخت فایل‌ها را با وضعیت واقعی شاخهٔ `main` تطبیق دهید.

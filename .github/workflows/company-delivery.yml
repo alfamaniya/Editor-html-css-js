@@ -189,4 +189,7 @@ jobs:
           subject: "Editor offline source transfer"
           to: ${{ env.RECIPIENT }}
           from: ${{ secrets.SMTP_USERNAME }}
-          body: "Attached is the requested standalone editor source file.\n\nTransfer ID: ${{ github.sha }}"\n          attachments: dist/company-delivery/part-${{ matrix.part }}.txt
+          body: |
+            Attached is the requested standalone editor source file.
+            Transfer ID: ${{ github.sha }}
+          attachments: dist/company-delivery/part-${{ matrix.part }}.txt

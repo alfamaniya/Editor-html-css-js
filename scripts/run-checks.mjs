@@ -11,6 +11,8 @@ const commands = [
     ['Check settings button placement', ['scripts/check-settings-button-placement.mjs']],
     ['Check settings dialog keyboard behavior', ['scripts/check-settings-dialog-keyboard.mjs']],
     ['Check locale dictionaries', ['scripts/check-locales.mjs']],
+    ['Check standalone demo UI', ['scripts/check-demo-ui.mjs']],
+    ['Check responsive layout rules', ['scripts/check-layout-responsive.mjs']],
 ];
 
 let failed = false;

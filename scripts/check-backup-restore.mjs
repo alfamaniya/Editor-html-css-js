@@ -74,6 +74,10 @@ assert.equal(validated.sections.project.value.files[0].content, '<h1>سلام �
 assert.equal(validated.sections.suggestedWords.value.data.cssProperties[0].label, 'box-shadow');
 assert.equal(validated.sections.quickInsert.items.html[0].label, 'کارت');
 assert.equal(validated.sections.quickInsert.items.html[0].prefix, '<article>سلام</article>');
+const longNameProject = JSON.parse(JSON.stringify(valid));
+longNameProject.sections.project.value.files[0].name = 'a'.repeat(41) + '.html';
+assert.throws(() => tools.validateBackupPayload(longNameProject), /نام فایل/);
+
 
 assert.throws(() => tools.validateBackupPayload({ ...valid, schemaVersion: 99 }), /نسخهٔ قالب/);
 assert.throws(() => tools.validateBackupPayload({ ...valid, format: 'not-a-backup' }), /قالب پشتیبان/);

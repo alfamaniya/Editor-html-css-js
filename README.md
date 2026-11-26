@@ -39,9 +39,12 @@ Editor-html-css-js/
 │   ├── build-test-editor.mjs
 │   ├── check-backup-restore.mjs
 │   ├── check-color-picker.mjs
+│   ├── check-demo-ui.mjs
 │   ├── check-editor-code-processing.mjs
 │   ├── check-editor-overlay-alignment.mjs
 │   ├── check-index-integrity.mjs
+│   ├── check-layout-responsive.mjs
+│   ├── check-locales.mjs
 │   ├── check-settings-button-placement.mjs
 │   ├── check-settings-dialog-keyboard.mjs
 │   ├── check-standalone-editor.mjs

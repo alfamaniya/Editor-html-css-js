@@ -256,7 +256,8 @@
     align-items: center;
     gap: 18px;
   }
-  .footer-links a{
+  .footer-links a,
+  .footer-links .footer-link-placeholder{
     color: var(--c-muted);
     text-decoration: none;
     font-size: 13px;
@@ -264,6 +265,7 @@
     transition: color .16s;
   }
   .footer-links a:hover{ color: var(--c-turquoise); }
+  .footer-link-placeholder{ cursor: not-allowed; opacity: .65; }
 
   .header-actions{
     flex: 1 1 auto;
@@ -356,7 +358,8 @@
   }
   .sidebar-nav li + li{ margin-top: 4px; }
 
-  .sidebar-nav a{
+  .sidebar-nav a,
+  .sidebar-nav .nav-link-placeholder{
     display: flex;
     align-items: center;
     gap: 12px;

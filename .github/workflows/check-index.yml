@@ -6,8 +6,6 @@ on:
       - main
     paths:
       - "index.html"
-      - "editor v.html"
-      - "scripts/check-combined-editor.mjs"
       - "style.css"
       - "script.js"
       - "src/features/settings/settings.css"

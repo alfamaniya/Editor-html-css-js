@@ -1,7 +1,7 @@
 # گزارش معماری فایل‌های اصلی
 
 - مخزن: [Editor-html-css-js](https://github.com/alfamaniya/Editor-html-css-js)
-- شاخهٔ مبنا: `fix/audit-remediations`
+- شاخهٔ مبنا: `main`
 - فایل‌های مرجع: `index.html`، `style.css` و `script.js`
 - وضعیت: اندازه‌ها و SHAهای زیر از snapshot فعلی شاخه استخراج شده‌اند؛ پس از هر تغییر باید دوباره تولید شوند.
 
